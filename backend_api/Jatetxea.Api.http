@@ -1,0 +1,6 @@
+@Jatetxea.Api_HostAddress = http://localhost:5099
+
+GET {{Jatetxea.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

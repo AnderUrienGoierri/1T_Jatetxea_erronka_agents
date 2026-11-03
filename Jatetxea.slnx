@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend_api/">
+    <Project Path="backend_api/Jatetxea.Api.csproj" />
+  </Folder>
+  <Folder Name="/desktop_csharp/">
+    <Project Path="desktop_csharp/Jatetxea.Desktop.csproj" />
+  </Folder>
+</Solution>
