@@ -4,7 +4,8 @@
  * Arau profesionala: emotikonorik gabe
  */
 
-const API_BASE = window.API_BASE_URL || 'http://localhost:5000/api/v1';
+const rawBase = window.API_BASE_URL;
+const API_BASE = (rawBase && !rawBase.includes('<?php')) ? rawBase : 'http://localhost:5000/api/v1';
 
 // Barne egoera
 let platerakCache = [];
@@ -417,3 +418,4 @@ function eskapatuHtml(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+

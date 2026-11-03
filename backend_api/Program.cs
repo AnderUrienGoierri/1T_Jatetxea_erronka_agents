@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Zerbitzuak gehitu kontainerrean
@@ -24,6 +26,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+// Web aplikazioaren fitxategiak zerbitzatu /app bidean
+var webAppPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "web_php"));
+if (Directory.Exists(webAppPath))
+{
+    app.UseFileServer(new FileServerOptions
+    {
+        FileProvider = new PhysicalFileProvider(webAppPath),
+        RequestPath = "/app",
+        EnableDefaultFiles = true
+    });
+}
 
 app.UseAuthorization();
 
