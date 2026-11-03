@@ -26,7 +26,7 @@ Dokumentu honek orain arte egindako aurrerapen, erabaki tekniko, arau eta hurren
 
 * **Portua:** `3308` (3306 Windows zerbitzuak eta 3307 beste edukiontzi batek hartuta dutelako).
 * **Kredentzialak:** `localhost:3308`, DB: `jatetxea_db`, Erabiltzailea: `root`, Pasahitza: `root`.
-* **Taulak (11):** `lehengaiak`, `platerak`, `plater_osagaiak`, `mahaiak`, `bezeroak`, `langileak`, `erreserbak`, `eskaerak`, `eskaera_lerroak`, `stock_mugimenduak`, eta `iritziak` (0-5 izar arteko balorazioarekin).
+* **Taulak (11):** `lehengaiak` (47 lehengai orotara biltegian), `platerak` (35 plater eta edari zabalduta: Sarrerakoak, Lehenak, Bigarrenak, Postreak eta Edariak), `plater_osagaiak` (errezeta eta eskandallo proportzio osoak), `mahaiak`, `bezeroak`, `langileak`, `erreserbak`, `eskaerak`, `eskaera_lerroak`, `stock_mugimenduak`, eta `iritziak` (0-5 izar arteko balorazioarekin).
 * **CHECK Murrizketak:** Aktibo MySQL 8.0 mailan eremu zenbakizko guztietan.
 * **Ikuspegiak:** `v_erosi_beharreko_lehengaiak`, `v_plateren_stock_ahalmena`, `v_balorazio_orokorrak`.
 
