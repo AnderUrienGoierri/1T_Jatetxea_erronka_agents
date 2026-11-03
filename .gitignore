@@ -1,0 +1,28 @@
+# Visual Studio / .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Java / Maven / Gradle
+target/
+.gradle/
+build/
+*.class
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+
+# Node / Web / PHP
+vendor/
+node_modules/
+
+# OS / Docker
+.DS_Store
+Thumbs.db
+jatetxea_db_data/
