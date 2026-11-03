@@ -1,0 +1,108 @@
+/* ==========================================================================
+   JATETXEA - Oinarrizko Estiloak eta Aldagaiak (base.css)
+   ========================================================================== */
+
+:root {
+    --kolore-nagusia: #1e293b;
+    --kolore-bigarrena: #881337;
+    --kolore-bigarrena-hover: #9f1239;
+    --kolore-atzeko: #f8fafc;
+    --kolore-kutxa: #ffffff;
+    --kolore-testua: #334155;
+    --kolore-testua-argia: #64748b;
+    --kolore-ertza: #e2e8f0;
+    --kolore-arrakasta: #15803d;
+    --kolore-arrakasta-atzeko: #dcfce7;
+    --kolore-abisua: #b45309;
+    --kolore-abisua-atzeko: #fef3c7;
+    --kolore-errorea: #b91c1c;
+    --kolore-errorea-atzeko: #fee2e2;
+    --itzala-arina: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --itzala-ertaina: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    --itzala-sakona: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    --erradioa: 8px;
+    --trantsizioa: all 0.2s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--kolore-atzeko);
+    color: var(--kolore-testua);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+section {
+    margin-bottom: 4rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.85rem;
+    color: var(--kolore-nagusia);
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--kolore-testua-argia);
+    font-size: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--erradioa);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--trantsizioa);
+}
+
+.btn-primary {
+    background-color: var(--kolore-bigarrena);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--kolore-bigarrena-hover);
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: var(--kolore-nagusia);
+}
+
+.btn-secondary:hover {
+    background-color: #f1f5f9;
+}
+
+footer {
+    background-color: var(--kolore-nagusia);
+    color: #94a3b8;
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid #334155;
+}
+
+footer a {
+    color: #cbd5e1;
+    text-decoration: none;
+}

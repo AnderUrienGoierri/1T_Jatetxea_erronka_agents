@@ -1,0 +1,109 @@
+/* ==========================================================================
+   JATETXEA - Iritziak eta Balorazioak (iritziak.css)
+   ========================================================================== */
+
+.iritziak-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+@media (max-width: 850px) {
+    .iritziak-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.estatistikak-kaxa {
+    background-color: var(--kolore-kutxa);
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--itzala-arina);
+}
+
+.batez-bestekoa {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--kolore-bigarrena);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.izar-bistaratzailea {
+    font-size: 1.35rem;
+    color: #eab308;
+    margin-bottom: 0.75rem;
+}
+
+.guztira-label {
+    font-size: 0.9rem;
+    color: var(--kolore-testua-argia);
+}
+
+.izarren-banaketa {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.izar-lerroa {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+}
+
+.barra-atzeko {
+    flex-grow: 1;
+    height: 8px;
+    background-color: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.barra-aurreko {
+    height: 100%;
+    background-color: #eab308;
+    border-radius: 4px;
+}
+
+.iritziak-zerrenda-kaxa {
+    background-color: var(--kolore-kutxa);
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    padding: 1.5rem;
+    box-shadow: var(--itzala-arina);
+}
+
+.iritzi-txartela {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--kolore-ertza);
+}
+
+.iritzi-txartela:last-child {
+    border-bottom: none;
+}
+
+.iritzi-goiburua {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.iritzi-egilea {
+    font-weight: 600;
+    color: var(--kolore-nagusia);
+}
+
+.iritzi-data {
+    font-size: 0.8rem;
+    color: var(--kolore-testua-argia);
+}
+
+.iritzi-testua {
+    font-size: 0.95rem;
+    color: var(--kolore-testua);
+}

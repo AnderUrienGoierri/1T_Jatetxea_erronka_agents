@@ -1,0 +1,130 @@
+/* ==========================================================================
+   JATETXEA - Mahai Erreserbak eta Alertak (erreserbak.css)
+   ========================================================================== */
+
+.erreserba-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background-color: var(--kolore-kutxa);
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    padding: 2.5rem;
+    box-shadow: var(--itzala-ertaina);
+}
+
+@media (max-width: 850px) {
+    .erreserba-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+.erreserba-form-area h3, .erreserba-info-area h3 {
+    margin-bottom: 1.25rem;
+    color: var(--kolore-nagusia);
+    font-size: 1.35rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: var(--kolore-testua);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    font-size: 0.95rem;
+    background-color: #ffffff;
+    transition: var(--trantsizioa);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--kolore-bigarrena);
+    box-shadow: 0 0 0 3px rgba(136, 19, 55, 0.15);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.erreserba-info-area {
+    background-color: #f8fafc;
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.txanden-ordutegiak {
+    list-style: none;
+    margin: 1rem 0;
+}
+
+.txanden-ordutegiak li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--kolore-ertza);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.oharra-kaxa {
+    background-color: var(--kolore-abisua-atzeko);
+    border-left: 4px solid var(--kolore-abisua);
+    color: var(--kolore-abisua);
+    padding: 0.85rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+/* Alerta kaxak (409 Conflict, 201 Created, 400 Bad Request) */
+.alert-kaxa {
+    padding: 1rem 1.25rem;
+    border-radius: var(--erradioa);
+    margin-bottom: 1.5rem;
+    display: none;
+    font-weight: 500;
+}
+
+.alert-kaxa.show {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.alert-arrakasta {
+    background-color: var(--kolore-arrakasta-atzeko);
+    border: 1px solid var(--kolore-arrakasta);
+    color: var(--kolore-arrakasta);
+}
+
+.alert-errorea {
+    background-color: var(--kolore-errorea-atzeko);
+    border: 1px solid var(--kolore-errorea);
+    color: var(--kolore-errorea);
+}
+
+.alert-abisua {
+    background-color: var(--kolore-abisua-atzeko);
+    border: 1px solid var(--kolore-abisua);
+    color: var(--kolore-abisua);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
