@@ -1,184 +1,104 @@
 using Jatetxea.Desktop.Models;
-using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public class MahaikideakModal : Form
+public partial class MahaikideakModal : Form
 {
-    public int PertsonaKopurua { get; private set; } = 2;
-    private readonly Label _lblKopurua;
-    private readonly MahaiaDto _mahaia;
+    public int PertsonaKopurua { get; private set; } = 4;
+    private readonly MahaiaDto? _mahaia;
+    private readonly List<Button> _quickButtons = new();
 
-    public MahaikideakModal(MahaiaDto mahaia)
+    /// <summary>
+    /// Visual Studio WinForms Designer-erako eraikitzailea
+    /// </summary>
+    public MahaikideakModal()
+    {
+        InitializeComponent();
+        KonfiguratuBotoiak();
+    }
+
+    public MahaikideakModal(MahaiaDto mahaia) : this()
     {
         _mahaia = mahaia;
-        PertsonaKopurua = Math.Min(2, mahaia.Edukiera > 0 ? mahaia.Edukiera : 2);
+        PertsonaKopurua = Math.Clamp(mahaia.Edukiera > 0 ? Math.Min(4, mahaia.Edukiera) : 4, 1, 20);
 
-        Text = $"Mahaia {_mahaia.Zenbakia} - Pertsona Kopurua";
-        Size = new Size(460, 420);
-        StartPosition = FormStartPosition.CenterParent;
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
-        MinimizeBox = false;
-        BackColor = Theme.Surface;
-
-        var pnlRoot = new Panel
+        lblTitulua.Text = $"Mahaia {_mahaia.Zenbakia} - Mahaikide Kopurua";
+        Text = $"Mahaia {_mahaia.Zenbakia} - Mahaikide Kopurua";
+        if (_mahaia.Edukiera > 0)
         {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(25)
-        };
-        Controls.Add(pnlRoot);
-
-        // Titulua
-        var lblTitulua = new Label
-        {
-            Text = $"Mahaia {_mahaia.Zenbakia} ({_mahaia.Kokapena})",
-            Font = Theme.FontTitle,
-            ForeColor = Theme.AccentWine,
-            Dock = DockStyle.Top,
-            Height = 35,
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        pnlRoot.Controls.Add(lblTitulua);
-
-        var lblAzpi = new Label
-        {
-            Text = $"Hautatu mahaikide kopurua (Gehieneko edukiera: {_mahaia.Edukiera})",
-            Font = Theme.FontBody,
-            ForeColor = Theme.TextMuted,
-            Dock = DockStyle.Top,
-            Height = 25,
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        pnlRoot.Controls.Add(lblAzpi);
-
-        // Zenbatzaile handia ([-] 4 [+])
-        var pnlStepper = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 85,
-            Margin = new Padding(0, 15, 0, 15)
-        };
-        pnlRoot.Controls.Add(pnlStepper);
-
-        var btnMinus = new Button
-        {
-            Text = "-",
-            Font = Theme.FontTitle,
-            Size = new Size(65, 65),
-            Location = new Point(50, 10),
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Theme.TextMain,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
-        };
-        btnMinus.FlatAppearance.BorderColor = Theme.Border;
-        btnMinus.Click += (s, e) => AldatuKopurua(-1);
-        pnlStepper.Controls.Add(btnMinus);
-
-        _lblKopurua = new Label
-        {
-            Text = PertsonaKopurua.ToString(),
-            Font = new Font("Segoe UI", 32, FontStyle.Bold),
-            ForeColor = Theme.TextMain,
-            Size = new Size(130, 65),
-            Location = new Point(135, 10),
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        pnlStepper.Controls.Add(_lblKopurua);
-
-        var btnPlus = new Button
-        {
-            Text = "+",
-            Font = Theme.FontTitle,
-            Size = new Size(65, 65),
-            Location = new Point(285, 10),
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Theme.TextMain,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
-        };
-        btnPlus.FlatAppearance.BorderColor = Theme.Border;
-        btnPlus.Click += (s, e) => AldatuKopurua(1);
-        pnlStepper.Controls.Add(btnPlus);
-
-        // Botoi azkarrak (1..8)
-        var pnlQuick = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            Height = 90,
-            Padding = new Padding(10, 5, 10, 5)
-        };
-        pnlRoot.Controls.Add(pnlQuick);
-
-        for (int i = 1; i <= 8; i++)
-        {
-            int balioa = i;
-            var btnQuick = new Button
-            {
-                Text = balioa.ToString(),
-                Size = new Size(42, 42),
-                Margin = new Padding(4),
-                Font = Theme.FontBodyBold,
-                BackColor = Color.FromArgb(248, 250, 252),
-                ForeColor = Theme.TextMain,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnQuick.FlatAppearance.BorderColor = Theme.Border;
-            btnQuick.Click += (s, e) =>
-            {
-                PertsonaKopurua = balioa;
-                _lblKopurua.Text = PertsonaKopurua.ToString();
-            };
-            pnlQuick.Controls.Add(btnQuick);
+            lblAzpititulua.Text = $"Aukeratu pertsona kopurua (Gehieneko edukiera: {_mahaia.Edukiera})";
         }
 
-        // Beheko ekintza botoiak
-        var pnlEkintzak = new Panel
-        {
-            Dock = DockStyle.Bottom,
-            Height = 55
-        };
-        pnlRoot.Controls.Add(pnlEkintzak);
+        EguneratuUI();
+    }
 
-        var btnUtzi = new Button
-        {
-            Text = "Utzi",
-            DialogResult = DialogResult.Cancel,
-            Size = new Size(130, 48),
-            Location = new Point(20, 4),
-            Font = Theme.FontBodyBold,
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Theme.TextMuted,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
-        };
-        btnUtzi.FlatAppearance.BorderColor = Theme.Border;
-        pnlEkintzak.Controls.Add(btnUtzi);
+    private void KonfiguratuBotoiak()
+    {
+        _quickButtons.Clear();
+        _quickButtons.Add(btnNum1);
+        _quickButtons.Add(btnNum2);
+        _quickButtons.Add(btnNum3);
+        _quickButtons.Add(btnNum4);
+        _quickButtons.Add(btnNum5);
+        _quickButtons.Add(btnNum6);
+        _quickButtons.Add(btnNum7);
+        _quickButtons.Add(btnNum8Plus);
 
-        var btnJarraitu = new Button
+        for (int i = 0; i < _quickButtons.Count; i++)
         {
-            Text = "JARRAITU",
-            DialogResult = DialogResult.OK,
-            Size = new Size(220, 48),
-            Location = new Point(170, 4),
-            Font = Theme.FontBodyBold,
-            BackColor = Theme.AccentWine,
-            ForeColor = Color.White,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
-        };
-        btnJarraitu.FlatAppearance.BorderSize = 0;
-        pnlEkintzak.Controls.Add(btnJarraitu);
+            int balioa = i + 1;
+            var btn = _quickButtons[i];
+            btn.Click += (s, e) =>
+            {
+                PertsonaKopurua = balioa;
+                EguneratuUI();
+            };
+        }
 
-        AcceptButton = btnJarraitu;
-        CancelButton = btnUtzi;
+        btnMinus.Click += (s, e) => AldatuKopurua(-1);
+        btnPlus.Click += (s, e) => AldatuKopurua(1);
+
+        EguneratuUI();
     }
 
     private void AldatuKopurua(int aldaketa)
     {
-        PertsonaKopurua = Math.Max(1, Math.Min(20, PertsonaKopurua + aldaketa));
-        _lblKopurua.Text = PertsonaKopurua.ToString();
+        int berria = PertsonaKopurua + aldaketa;
+        if (berria < 1) berria = 1;
+
+        if (_mahaia != null && _mahaia.Edukiera > 0 && berria > _mahaia.Edukiera + 4)
+        {
+            // Gehiegi gainditzea saihestu
+            return;
+        }
+
+        PertsonaKopurua = berria;
+        EguneratuUI();
+    }
+
+    private void EguneratuUI()
+    {
+        lblKopuruaTestua.Text = $"{PertsonaKopurua} {(PertsonaKopurua == 1 ? "pertsona" : "pertsona")}";
+
+        for (int i = 0; i < _quickButtons.Count; i++)
+        {
+            var btn = _quickButtons[i];
+            int balioa = i + 1;
+            bool isHautatua = (i < 7 && PertsonaKopurua == balioa) || (i == 7 && PertsonaKopurua >= 8);
+
+            if (isHautatua)
+            {
+                btn.BackColor = Color.FromArgb(136, 19, 55);
+                btn.ForeColor = Color.White;
+                btn.FlatAppearance.BorderSize = 0;
+            }
+            else
+            {
+                btn.BackColor = Color.FromArgb(248, 250, 252);
+                btn.ForeColor = Color.FromArgb(30, 41, 59);
+                btn.FlatAppearance.BorderSize = 1;
+                btn.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+            }
+        }
     }
 }
