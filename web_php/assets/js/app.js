@@ -24,6 +24,21 @@ document.addEventListener("DOMContentLoaded", () => {
     egiaztatuEdoKargatuKarta();
   }
 
-  // Oharra: Formularioen bidalketak (Erreserba eta Iritziak) modu naturalean PHP zerbitzarira
-  // bideratzen dira (POST bidez), PHPk kudea ditzan negozio-logika eta C# REST API deiak.
+  // 5. Goiburuko izenean edo logoan klikatzean orria freskatu eta goran kokatu
+  const hasieraEstekak = document.querySelectorAll(".brand-title-link, .header-logo-link");
+  hasieraEstekak.forEach((esteka) => {
+    esteka.addEventListener("click", (e) => {
+      e.preventDefault();
+      // URL-ko hash fragmentoa kendu eta hasierako orrira birbideratu goran kokatuz
+      if (window.location.hash) {
+        window.location.href = "index.php";
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        // Behar izanez gero freskatu
+        setTimeout(() => {
+          window.location.href = "index.php";
+        }, 150);
+      }
+    });
+  });
 });

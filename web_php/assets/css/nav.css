@@ -5,7 +5,7 @@
 header {
     background-color: var(--kolore-nagusia);
     color: #ffffff;
-    padding: 1rem 2rem;
+    padding: 0.85rem 2rem;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -19,22 +19,47 @@ header {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
-.logo-area h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+/* Ezkerreko Titulua eta Marka */
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+.brand-title-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    transition: var(--trantsizioa);
+    cursor: pointer;
+}
+
+.brand-title-link:hover h1 {
+    color: #fbbf24;
+}
+
+.brand-title-link h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.75px;
     color: #f1f5f9;
+    line-height: 1.15;
+    margin: 0;
+    transition: var(--trantsizioa);
 }
 
-.logo-area span {
-    font-size: 0.85rem;
+.brand-title-link span {
+    font-size: 0.8rem;
     color: #94a3b8;
     display: block;
+    margin-top: 0.2rem;
+    font-weight: 400;
 }
 
+/* Nabigazio-menua */
 nav ul {
     list-style: none;
     display: flex;
@@ -55,14 +80,45 @@ nav a:hover, nav a.active {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Eskuinaldeko gunea: API egoera eta T1 logoa */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    transition: var(--trantsizioa);
+    cursor: pointer;
+}
+
+.header-logo-link:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.45));
+}
+
+.header-logo-img {
+    width: 48px;
+    height: 48px;
+    display: block;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
 .api-status-badge {
     font-size: 0.75rem;
-    padding: 0.25rem 0.6rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 999px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    white-space: nowrap;
 }
 
 .api-status-badge.online {
@@ -73,6 +129,24 @@ nav a:hover, nav a.active {
 .api-status-badge.offline {
     background-color: var(--kolore-errorea-atzeko);
     color: var(--kolore-errorea);
+}
+
+@media (max-width: 850px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.85rem;
+    }
+
+    .brand-title-link {
+        align-items: center;
+    }
+
+    .header-right {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Hero atala */

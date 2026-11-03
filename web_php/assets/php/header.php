@@ -11,7 +11,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jatetxea - Euskal Gastronomia eta Erreserbak</title>
+    <title>T1 Jatetxea - Euskal Gastronomia eta Erreserbak</title>
+    <link rel="icon" type="image/svg+xml" href="assets/img/t1_logo.svg">
     <link rel="stylesheet" href="assets/css/style.css">
     <script>
         // Bezeroaren JavaScript logikari API helbidea pasa
@@ -23,10 +24,15 @@
     <!-- GOIBURUA -->
     <header>
         <div class="header-container">
+            <!-- Ezkerrean: Jatetxearen Izena (klikatzean orria freskatu eta goran kokatu) -->
             <div class="logo-area">
-                <h1>JATETXEA</h1>
-                <span>Euskal Sukaldaritza Tradizionala eta Garaikidea</span>
+                <a href="index.php" class="brand-title-link" title="T1 Jatetxea - Hasierara Itzuli">
+                    <h1>T1 JATETXEA</h1>
+                    <span>Euskal Sukaldaritza Tradizionala eta Garaikidea</span>
+                </a>
             </div>
+
+            <!-- Erdian: Nabigazio-menua -->
             <nav>
                 <ul>
                     <li><a href="#karta" class="active">Karta</a></li>
@@ -35,12 +41,21 @@
                     <li><a href="#kontaktua">Kontaktua</a></li>
                 </ul>
             </nav>
-            <div>
-                <?php if (!empty($api_online)): ?>
-                    <span id="api-status" class="api-status-badge online">API Linean (C# REST API)</span>
-                <?php else: ?>
-                    <span id="api-status" class="api-status-badge offline">API Deskonektatuta</span>
-                <?php endif; ?>
+
+            <!-- Eskuinaldean: API egoera eta T1 Logoa profesionalki kokatuta -->
+            <div class="header-right">
+                <div class="api-status-wrapper">
+                    <?php if (!empty($api_online)): ?>
+                        <span id="api-status" class="api-status-badge online">API Linean</span>
+                    <?php else: ?>
+                        <span id="api-status" class="api-status-badge offline">API Deskonektatuta</span>
+                    <?php endif; ?>
+                </div>
+
+                <!-- T1 Logoa (klikatzean orria freskatu eta goran kokatu) -->
+                <a href="index.php" class="header-logo-link" title="T1 Jatetxea - Hasierara Itzuli">
+                    <img src="assets/img/t1_logo.svg" alt="T1 Jatetxea Logoa" class="header-logo-img">
+                </a>
             </div>
         </div>
     </header>
