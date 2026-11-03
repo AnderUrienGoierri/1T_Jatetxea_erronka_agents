@@ -17,23 +17,20 @@ public partial class LoginForm : Form
         InitializeComponent();
         _api = new ApiService();
 
-        // Zentratze dinamikoa tamaina aldatzean
-        Resize += (s, e) => ZentratuGuztia();
-        Load += async (s, e) =>
+        // Zentratu goiburuko "Zerbitzariak" testua automatikoki
+        pnlTopBar.Resize += (s, e) =>
         {
-            ZentratuGuztia();
-            EraikiTeklatua();
-            await KargatuLangileakAsync();
+            lblZerbitzariak.Location = new Point((pnlTopBar.Width - lblZerbitzariak.Width) / 2, (pnlTopBar.Height - lblZerbitzariak.Height) / 2);
         };
 
-        // Goiko barraren beheko marra margotu
+        // Goiko barraren beheko ertza margotu
         pnlTopBar.Paint += (s, e) =>
         {
             using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
             e.Graphics.DrawLine(pen, 0, pnlTopBar.Height - 1, pnlTopBar.Width, pnlTopBar.Height - 1);
         };
 
-        // Txartelaren ertz dotorea margotu
+        // Txartelaren kanpoko ertz dotorea margotu
         pnlCard.Paint += (s, e) =>
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -41,103 +38,116 @@ public partial class LoginForm : Form
             e.Graphics.DrawRectangle(pen, 0, 0, pnlCard.Width - 1, pnlCard.Height - 1);
         };
 
-        // 4 PIN borobilak margotu (1-saioa_hasi_interfazea.jpg zirriborroaren arabera)
-        pnlPinDots.Paint += (s, e) =>
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            int count = 4;
-            int diameter = 14;
-            int spacing = 14;
-            int totalWidth = (count * diameter) + ((count - 1) * spacing);
-            int startX = (pnlPinDots.Width - totalWidth) / 2;
-            int y = (pnlPinDots.Height - diameter) / 2;
+        // PIN borobilak margotu
+        SetupPinDotsPaint();
 
-            for (int i = 0; i < count; i++)
+        // Teklatuko botoiak lotu
+        LotuTeklatuBotoiak();
+
+        // Avatarren klikak eta margoak prestatu
+        PrestatuAvatarrak();
+
+        btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
+
+        Load += async (s, e) =>
+        {
+            lblZerbitzariak.Location = new Point((pnlTopBar.Width - lblZerbitzariak.Width) / 2, (pnlTopBar.Height - lblZerbitzariak.Height) / 2);
+            await KargatuLangileakAsync();
+        };
+    }
+
+    private void SetupPinDotsPaint()
+    {
+        Label[] dots = { lblDot1, lblDot2, lblDot3, lblDot4 };
+        for (int i = 0; i < dots.Length; i++)
+        {
+            int index = i;
+            var dot = dots[index];
+            dot.Paint += (s, e) =>
             {
-                int x = startX + i * (diameter + spacing);
-                bool betea = i < _pin.Length;
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                bool betea = index < _pin.Length;
 
                 if (betea)
                 {
                     using var brush = new SolidBrush(Color.FromArgb(51, 65, 85)); // Borobil betea
-                    e.Graphics.FillEllipse(brush, x, y, diameter, diameter);
+                    e.Graphics.FillEllipse(brush, 1, 1, dot.Width - 3, dot.Height - 3);
                 }
                 else
                 {
                     using var pen = new Pen(Color.FromArgb(148, 163, 184), 2f); // Borobil hutsaren ertza
-                    e.Graphics.DrawEllipse(pen, x, y, diameter, diameter);
+                    e.Graphics.DrawEllipse(pen, 1, 1, dot.Width - 3, dot.Height - 3);
+                }
+            };
+        }
+    }
+
+    private void LotuTeklatuBotoiak()
+    {
+        btnKey1.Click += (s, e) => KeypadBotoiaKlikatua("1");
+        btnKey2.Click += (s, e) => KeypadBotoiaKlikatua("2");
+        btnKey3.Click += (s, e) => KeypadBotoiaKlikatua("3");
+        btnKey4.Click += (s, e) => KeypadBotoiaKlikatua("4");
+        btnKey5.Click += (s, e) => KeypadBotoiaKlikatua("5");
+        btnKey6.Click += (s, e) => KeypadBotoiaKlikatua("6");
+        btnKey7.Click += (s, e) => KeypadBotoiaKlikatua("7");
+        btnKey8.Click += (s, e) => KeypadBotoiaKlikatua("8");
+        btnKey9.Click += (s, e) => KeypadBotoiaKlikatua("9");
+        btnKeyClear.Click += (s, e) => KeypadBotoiaKlikatua("X Clear");
+        btnKey0.Click += (s, e) => KeypadBotoiaKlikatua("0");
+        btnKeyBack.Click += (s, e) => KeypadBotoiaKlikatua("<-");
+    }
+
+    private void PrestatuAvatarrak()
+    {
+        (Panel Panel, Label Circle, Label Name)[] items = {
+            (pnlAvatar1, lblCircle1, lblName1),
+            (pnlAvatar2, lblCircle2, lblName2),
+            (pnlAvatar3, lblCircle3, lblName3),
+            (pnlAvatar4, lblCircle4, lblName4),
+            (pnlAvatar5, lblCircle5, lblName5)
+        };
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            int index = i;
+            var item = items[index];
+
+            item.Circle.Paint += (s, e) =>
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                bool isSelected = false;
+                if (index < _langileak.Count && _aukeratutakoLangilea != null)
+                {
+                    isSelected = _aukeratutakoLangilea.Id == _langileak[index].Id;
+                }
+
+                var ertzAkolorea = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(203, 213, 225);
+                float stroke = isSelected ? 2.8f : 1.2f;
+                using var pen = new Pen(ertzAkolorea, stroke);
+                e.Graphics.DrawEllipse(pen, 2, 2, item.Circle.Width - 5, item.Circle.Height - 5);
+            };
+
+            void OnClick(object? s, EventArgs e)
+            {
+                if (index < _langileak.Count)
+                {
+                    HautatuLangilea(_langileak[index]);
                 }
             }
-        };
 
-        btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
-    }
-
-    private void ZentratuGuztia()
-    {
-        if (pnlTopBar != null)
-        {
-            lblZerbitzariak.Location = new Point((pnlTopBar.Width - lblZerbitzariak.Width) / 2, (pnlTopBar.Height - lblZerbitzariak.Height) / 2);
-        }
-
-        if (pnlCard != null && pnlTopBar != null)
-        {
-            int x = Math.Max(10, (ClientSize.Width - pnlCard.Width) / 2);
-            int erabilgarria = ClientSize.Height - pnlTopBar.Height;
-            int y = pnlTopBar.Height + Math.Max(15, (erabilgarria - pnlCard.Height) / 2);
-            pnlCard.Location = new Point(x, y);
-        }
-    }
-
-    private void EraikiTeklatua()
-    {
-        pnlKeypad.Controls.Clear();
-
-        string[] botoiak = {
-            "1", "2", "3",
-            "4", "5", "6",
-            "7", "8", "9",
-            "X Clear", "0", "<-"
-        };
-
-        foreach (var txt in botoiak)
-        {
-            var btn = new Button
-            {
-                Text = txt,
-                Dock = DockStyle.Fill,
-                Font = txt.Length > 2 ? new Font("Segoe UI", 10F, FontStyle.Bold) : new Font("Segoe UI", 14F, FontStyle.Bold),
-                Margin = new Padding(4),
-                BackColor = txt switch
-                {
-                    "X Clear" => Color.FromArgb(254, 242, 242),
-                    "<-" => Color.FromArgb(248, 250, 252),
-                    _ => Color.White
-                },
-                ForeColor = txt switch
-                {
-                    "X Clear" => Color.FromArgb(220, 38, 38),
-                    _ => Color.FromArgb(30, 41, 59)
-                },
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btn.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
-            btn.FlatAppearance.BorderSize = 1;
-            btn.Click += (s, e) => KeypadBotoiaKlikatua(txt);
-            pnlKeypad.Controls.Add(btn);
+            item.Panel.Click += OnClick;
+            item.Circle.Click += OnClick;
+            item.Name.Click += OnClick;
         }
     }
 
     private async Task KargatuLangileakAsync()
     {
-        pnlAvatars.Controls.Clear();
-
         _langileak = await _api.GetLangileakAsync();
 
         if (_langileak.Count == 0)
         {
-            // Zirriborroko 5 zerbitzariak lehenetsita
             _langileak = new List<LangileaDto>
             {
                 new() { Id = 1, Erabiltzailea = "aitor", Izena = "Aitor B.", Rola = "Zerbitzaria", Aktibo = true },
@@ -148,115 +158,56 @@ public partial class LoginForm : Form
             };
         }
 
-        // Lehen 5ak erakutsi zirriborroaren arabera
-        var bistaratzekoak = _langileak.Take(5).ToList();
+        (Panel Panel, Label Circle, Label Name)[] items = {
+            (pnlAvatar1, lblCircle1, lblName1),
+            (pnlAvatar2, lblCircle2, lblName2),
+            (pnlAvatar3, lblCircle3, lblName3),
+            (pnlAvatar4, lblCircle4, lblName4),
+            (pnlAvatar5, lblCircle5, lblName5)
+        };
 
-        foreach (var l in bistaratzekoak)
+        for (int i = 0; i < items.Length; i++)
         {
-            var avatarCard = SortuAvatarTxartela(l);
-            pnlAvatars.Controls.Add(avatarCard);
+            if (i < _langileak.Count)
+            {
+                var l = _langileak[i];
+                var zatiak = l.Izena.Split(' ');
+                string shortName = l.Izena;
+                if (zatiak.Length >= 2 && !l.Izena.Contains('.'))
+                {
+                    shortName = $"{zatiak[0]} {zatiak[1][0]}.";
+                }
+                string initials = string.Join("", zatiak.Select(z => z.Length > 0 ? z[0].ToString() : "")).ToUpper();
+                if (initials.Length > 2) initials = initials.Substring(0, 2);
+
+                items[i].Name.Text = shortName;
+                items[i].Circle.Text = initials;
+                items[i].Panel.Visible = true;
+            }
+            else
+            {
+                items[i].Panel.Visible = false;
+            }
         }
 
-        // Lehenengoa (Aitor B.) lehenetsi zirriborroan bezala
-        if (bistaratzekoak.Count > 0)
+        if (_langileak.Count > 0)
         {
-            HautatuLangilea(bistaratzekoak[0]);
+            HautatuLangilea(_langileak[0]);
         }
-    }
-
-    private Control SortuAvatarTxartela(LangileaDto langilea)
-    {
-        var item = new Panel
-        {
-            Width = 70,
-            Height = 74,
-            Margin = new Padding(2, 2, 2, 2),
-            BackColor = Color.Transparent,
-            Cursor = Cursors.Hand,
-            Tag = langilea
-        };
-
-        // Zirriborroko izen laburtua (adib. "Aitor B.")
-        string izenLaburtua = langilea.Izena;
-        var zatiak = langilea.Izena.Split(' ');
-        if (zatiak.Length >= 2 && !langilea.Izena.Contains('.'))
-        {
-            izenLaburtua = $"{zatiak[0]} {zatiak[1][0]}.";
-        }
-
-        // Inizialak (adib. "AB")
-        string initials = string.Join("", zatiak.Select(z => z.Length > 0 ? z[0].ToString() : "")).ToUpper();
-        if (initials.Length > 2) initials = initials.Substring(0, 2);
-
-        var pnlCircle = new Panel
-        {
-            Location = new Point(14, 2),
-            Size = new Size(42, 42),
-            BackColor = Color.Transparent
-        };
-
-        var lblInitial = new Label
-        {
-            Dock = DockStyle.Fill,
-            Text = initials,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(71, 85, 105),
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        pnlCircle.Controls.Add(lblInitial);
-        item.Controls.Add(pnlCircle);
-
-        var lblName = new Label
-        {
-            Text = izenLaburtua,
-            Font = new Font("Segoe UI", 8F, FontStyle.Regular),
-            ForeColor = Color.FromArgb(51, 65, 85),
-            Location = new Point(0, 48),
-            Size = new Size(70, 20),
-            TextAlign = ContentAlignment.TopCenter,
-            AutoEllipsis = true
-        };
-        item.Controls.Add(lblName);
-
-        // Zirriborroko borobila margotu
-        pnlCircle.Paint += (s, e) =>
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            bool isSelected = _aukeratutakoLangilea?.Id == langilea.Id;
-
-            using var bgBrush = new SolidBrush(isSelected ? Color.FromArgb(239, 246, 255) : Color.FromArgb(241, 245, 249));
-            e.Graphics.FillEllipse(bgBrush, 2, 2, 38, 38);
-
-            var ertzAkolorea = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(203, 213, 225);
-            float ertzAStroked = isSelected ? 2.5f : 1.2f;
-            using var pen = new Pen(ertzAkolorea, ertzAStroked);
-            e.Graphics.DrawEllipse(pen, 2, 2, 38, 38);
-        };
-
-        void OnClick(object? s, EventArgs e) => HautatuLangilea(langilea);
-        item.Click += OnClick;
-        pnlCircle.Click += OnClick;
-        lblInitial.Click += OnClick;
-        lblName.Click += OnClick;
-
-        return item;
     }
 
     private void HautatuLangilea(LangileaDto langilea)
     {
         _aukeratutakoLangilea = langilea;
         _pin = string.Empty;
-        pnlPinDots.Invalidate();
+        FreskatuPinDots();
         lblStatus.Text = "";
 
-        // Avatar borobilak birbalidatu
-        foreach (Control c in pnlAvatars.Controls)
-        {
-            foreach (Control sub in c.Controls)
-            {
-                sub.Invalidate();
-            }
-        }
+        lblCircle1.Invalidate();
+        lblCircle2.Invalidate();
+        lblCircle3.Invalidate();
+        lblCircle4.Invalidate();
+        lblCircle5.Invalidate();
     }
 
     private void KeypadBotoiaKlikatua(string txt)
@@ -278,7 +229,15 @@ public partial class LoginForm : Form
                 _pin += txt;
         }
 
-        pnlPinDots.Invalidate();
+        FreskatuPinDots();
+    }
+
+    private void FreskatuPinDots()
+    {
+        lblDot1.Invalidate();
+        lblDot2.Invalidate();
+        lblDot3.Invalidate();
+        lblDot4.Invalidate();
     }
 
     private async Task LoginExekutatuAsync()
@@ -306,14 +265,14 @@ public partial class LoginForm : Form
         if (arrakasta && langilea != null)
         {
             _pin = string.Empty;
-            pnlPinDots.Invalidate();
+            FreskatuPinDots();
 
             var mahaiakForm = new MahaiakForm(langilea, _api);
             mahaiakForm.FormClosed += (s, e) =>
             {
                 Show();
                 _pin = string.Empty;
-                pnlPinDots.Invalidate();
+                FreskatuPinDots();
             };
 
             Hide();
@@ -323,7 +282,7 @@ public partial class LoginForm : Form
         {
             lblStatus.Text = mezua;
             _pin = string.Empty;
-            pnlPinDots.Invalidate();
+            FreskatuPinDots();
         }
     }
 }
