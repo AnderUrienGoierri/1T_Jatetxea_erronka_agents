@@ -20,7 +20,7 @@
                 </div>
                 <div>
                     <h4 class="kontaktua-titulua">E-posta</h4>
-                    <p class="kontaktua-testua">erreserbak@jatetxea.eus</p>
+                    <p class="kontaktua-testua">info@t1jatetxea.eus</p>
                 </div>
                 <div>
                     <h4 class="kontaktua-titulua">Asteazkenetik Igandera</h4>

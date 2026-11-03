@@ -143,7 +143,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                                 <label for="iritzi-testua">Iruzkina:</label>
                                 <textarea name="iritzi_testua" id="iritzi-testua" class="form-control" rows="2" placeholder="Nola joan da zure esperientzia?"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-secondary btn-block">Iritzia Bidali (PHP bidez)</button>
+                            <button type="submit" class="btn btn-secondary btn-block">Iritzia Bidali</button>
                         </form>
                     </div>
                 </div>
