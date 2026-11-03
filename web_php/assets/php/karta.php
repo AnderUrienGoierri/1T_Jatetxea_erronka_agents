@@ -1,3 +1,13 @@
+<?php
+/**
+ * JATETXEA - Karta eta Plateren Atala (karta.php)
+ *
+ * @var array $platerak
+ * @var array $ahalmenaMap
+ */
+$platerak = $platerak ?? [];
+$ahalmenaMap = $ahalmenaMap ?? [];
+?>
         <!-- 1. KARTA ATALA (PHP ZERBITZARI-MAILAKO ERRENDERIZAZIOA) -->
         <section id="karta">
             <div class="section-header">

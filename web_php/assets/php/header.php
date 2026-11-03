@@ -1,3 +1,11 @@
+<?php
+/**
+ * JATETXEA - Web Goiburua (header.php)
+ *
+ * @var string $api_base_url
+ * @var bool $api_online
+ */
+?>
 <!DOCTYPE html>
 <html lang="eu">
 <head>
@@ -7,7 +15,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <script>
         // Bezeroaren JavaScript logikari API helbidea pasa
-        window.API_BASE_URL = "<?php echo htmlspecialchars($api_base_url, ENT_QUOTES, 'UTF-8'); ?>";
+        window.API_BASE_URL = "<?php echo htmlspecialchars($api_base_url ?? '', ENT_QUOTES, 'UTF-8'); ?>";
     </script>
 </head>
 <body>
@@ -28,7 +36,7 @@
                 </ul>
             </nav>
             <div>
-                <?php if ($api_online): ?>
+                <?php if (!empty($api_online)): ?>
                     <span id="api-status" class="api-status-badge online">API Linean (C# REST API)</span>
                 <?php else: ?>
                     <span id="api-status" class="api-status-badge offline">API Deskonektatuta</span>

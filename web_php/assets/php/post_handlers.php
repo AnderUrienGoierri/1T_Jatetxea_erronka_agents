@@ -2,7 +2,10 @@
 /**
  * JATETXEA - Formularioen Bidalketak Kudeatzeko Handlerra (post_handlers.php)
  * POST eskaerak prozesatu, C# REST APIari bidali eta flash mezuekin berbideratu.
+ *
+ * @var string $api_base_url
  */
+require_once __DIR__ . '/api.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';

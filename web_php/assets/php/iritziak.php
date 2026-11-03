@@ -1,3 +1,17 @@
+<?php
+/**
+ * JATETXEA - Bezeroen Iritzien Atala (iritziak.php)
+ *
+ * @var array $iritziak
+ * @var array $estatistikak
+ * @var string|null $flash_iritzi_success
+ * @var string|null $flash_iritzi_error
+ */
+$iritziak = $iritziak ?? [];
+$estatistikak = $estatistikak ?? [];
+$flash_iritzi_success = $flash_iritzi_success ?? null;
+$flash_iritzi_error = $flash_iritzi_error ?? null;
+?>
         <!-- 3. BEZEROEN IRITZIAK ATALA (PHP ZERBITZARI-MAILAKO ERRENDERIZAZIOA) -->
         <section id="iritziak">
             <div class="section-header">
@@ -87,13 +101,13 @@
                     <div class="erreserba-form-area" style="margin-top: 1.5rem; padding: 1.5rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
                         <h4 style="margin-bottom: 1rem; color: #1e293b;">Utzi Zure Balorazioa</h4>
                         
-                        <?php if ($flash_iritzi_success): ?>
+                        <?php if (!empty($flash_iritzi_success)): ?>
                             <div class="alert-kaxa alert-success" style="display: block;">
                                 <?php echo htmlspecialchars($flash_iritzi_success, ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                         <?php endif; ?>
 
-                        <?php if ($flash_iritzi_error): ?>
+                        <?php if (!empty($flash_iritzi_error)): ?>
                             <div class="alert-kaxa alert-error" style="display: block;">
                                 <?php echo htmlspecialchars($flash_iritzi_error, ENT_QUOTES, 'UTF-8'); ?>
                             </div>

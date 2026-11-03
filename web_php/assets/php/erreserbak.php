@@ -1,3 +1,17 @@
+<?php
+/**
+ * JATETXEA - Mahai Erreserben Atala (erreserbak.php)
+ *
+ * @var array $mahaiak
+ * @var string|null $flash_success
+ * @var string|null $flash_conflict
+ * @var string|null $flash_error
+ */
+$mahaiak = $mahaiak ?? [];
+$flash_success = $flash_success ?? null;
+$flash_conflict = $flash_conflict ?? null;
+$flash_error = $flash_error ?? null;
+?>
         <!-- 2. MAHAI ERRESERBA ATALA -->
         <section id="erreserba">
             <div class="section-header">
@@ -11,19 +25,19 @@
                     <h3>Erreserbaren Datuak</h3>
                     
                     <!-- PHP bidezko Alertak -->
-                    <?php if ($flash_success): ?>
+                    <?php if (!empty($flash_success)): ?>
                         <div class="alert-kaxa alert-success" style="display: block;">
                             <strong>Baieztatuta:</strong> <?php echo htmlspecialchars($flash_success, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($flash_conflict): ?>
+                    <?php if (!empty($flash_conflict)): ?>
                         <div class="alert-kaxa alert-error" style="display: block; border-left: 4px solid #dc2626;">
                             <strong>Gatazka (409):</strong> <?php echo htmlspecialchars($flash_conflict, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($flash_error): ?>
+                    <?php if (!empty($flash_error)): ?>
                         <div class="alert-kaxa alert-error" style="display: block;">
                             <?php echo htmlspecialchars($flash_error, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
