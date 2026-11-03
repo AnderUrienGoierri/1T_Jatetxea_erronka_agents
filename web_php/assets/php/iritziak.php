@@ -51,9 +51,9 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                                 $portzentaia = $guztira > 0 ? round(($kopurua / $guztira) * 100) : 0;
                         ?>
                             <div class="distribuzio-lerroa">
-                                <span><?php echo $izar; ?> ★</span>
+                                <span class="distribuzio-izarrak"><?php echo $izar; ?> ★</span>
                                 <div class="barra-hutsik">
-                                    <div class="barra-beteta" style="--zabalera: <?php echo $portzentaia; ?>%;"></div>
+                                    <div class="barra-beteta" style="width: <?php echo $portzentaia; ?>%;"></div>
                                 </div>
                                 <span class="lerro-kopurua"><?php echo $kopurua; ?></span>
                             </div>
@@ -78,7 +78,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                                     ?>
                                     <div class="iritzi-txartela">
                                         <div class="iritzi-goiburua">
-                                            <strong><?php echo $bezeroa; ?></strong>
+                                            <strong class="iritzi-egilea"><?php echo $bezeroa; ?></strong>
                                             <span class="iritzi-data"><?php echo $dataIritzi; ?></span>
                                         </div>
                                         <div class="iritzi-izarrak">
@@ -98,7 +98,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                     </div>
 
                     <!-- Iritzia uzteko inprimakia -->
-                    <div class="erreserba-form-area iritzi-form-kaxa">
+                    <div class="iritzi-form-kaxa">
                         <h4 class="iritzi-form-titulua">Utzi Zure Balorazioa</h4>
                         
                         <?php if (!empty($flash_iritzi_success)): ?>
@@ -129,14 +129,14 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="iritzi-balorazioa">Puntuazioa (0 eta 5 artean) (*):</label>
-                                <select name="iritzi_balorazioa" id="iritzi-balorazioa" class="form-control" required>
-                                    <option value="5">5 izar - Bikaina</option>
-                                    <option value="4">4 izar - Oso ona</option>
-                                    <option value="3">3 izar - Ona</option>
-                                    <option value="2">2 izar - Hobetzekoa</option>
-                                    <option value="1">1 izar - Eskasa</option>
-                                    <option value="0">0 izar - Oso txarra</option>
+                                <label for="iritzi-balorazioa">Puntuazioa (*):</label>
+                                <select name="iritzi_balorazioa" id="iritzi-balorazioa" class="form-control balorazio-select" required>
+                                    <option value="5">★★★★★ - Bikaina (5/5)</option>
+                                    <option value="4">★★★★☆ - Oso ona (4/5)</option>
+                                    <option value="3">★★★☆☆ - Ona (3/5)</option>
+                                    <option value="2">★★☆☆☆ - Hobetzekoa (2/5)</option>
+                                    <option value="1">★☆☆☆☆ - Eskasa (1/5)</option>
+                                    <option value="0">☆☆☆☆☆ - Oso txarra (0/5)</option>
                                 </select>
                             </div>
                             <div class="form-group">
