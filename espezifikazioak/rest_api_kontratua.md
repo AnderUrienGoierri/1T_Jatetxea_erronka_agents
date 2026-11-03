@@ -29,6 +29,10 @@ Dokumentu honek zehazten du nola deskontatzen den lehengaien stocka platerak kon
 ### Komandetan Platerak Eskatzea (`POST /api/v1/eskaerak/{id}/lerroak`)
 - Plater bat gehitzean edo sukaldera bidaltzean, **automatikoki deskontatzen dira plateraren osagaiak** dagokien proportzioan.
 
+### Bezeroen Iritziak eta Balorazioak (`/api/v1/iritziak`)
+- `GET /api/v1/iritziak` -> Iritzi guztien zerrenda eta estatistikak (`v_balorazio_orokorrak`) (200 OK)
+- `POST /api/v1/iritziak` -> Iritzi berria gorde: emaila, balorazioa (0-5), testua (201 Created / 400 Bad Request)
+
 ---
 
 ## 2. Transakzio Pesimista: Plateraren Osagaien Deskontua (`C#`)

@@ -181,6 +181,26 @@ CREATE TABLE stock_mugimenduak (
         REFERENCES eskaerak(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+-- 11. IRITZIAK TAULA (BEZEROEN BALORAZIOAK ETA IRUZKINAK)
+-- Bezeroek iritziak (0-5 izar) eta iruzkinak uzteko aukera
+CREATE TABLE iritziak (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bezeroa_id INT NOT NULL,
+    balorazioa TINYINT NOT NULL, -- 0 eta 5 izar artean
+    testua TEXT NULL,
+    aktibo TINYINT(1) NOT NULL DEFAULT 1,
+    ezabatua TINYINT(1) NOT NULL DEFAULT 0,
+    ezabatze_data DATETIME NULL,
+    sortze_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT chk_iritzia_balorazioa CHECK (balorazioa >= 0 AND balorazioa <= 5),
+    CONSTRAINT fk_iritziak_bezeroak FOREIGN KEY (bezeroa_id)
+        REFERENCES bezeroak(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+        
+    INDEX idx_iritzia_balorazioa (balorazioa),
+    INDEX idx_iritzia_bezeroa (bezeroa_id, ezabatua)
+) ENGINE=InnoDB;
+
 -- =====================================================================
 -- IKUSPEGIAK (VIEWS) STOCK KONTROLERAKO
 -- =====================================================================
@@ -209,6 +229,20 @@ JOIN plater_osagaiak po ON p.id = po.platera_id
 JOIN lehengaiak l ON po.lehengaia_id = l.id
 WHERE p.ezabatua = 0 AND l.ezabatua = 0
 GROUP BY p.id, p.izena;
+
+-- 3. Iritzien estatistika orokorrak (bataz besteko puntuazioa eta izar banaketa)
+CREATE OR REPLACE VIEW v_balorazio_orokorrak AS
+SELECT 
+    COUNT(*) AS guztira_iritziak,
+    ROUND(AVG(balorazioa), 1) AS bataz_besteko_balorazioa,
+    COUNT(CASE WHEN balorazioa = 5 THEN 1 END) AS bost_izarrak,
+    COUNT(CASE WHEN balorazioa = 4 THEN 1 END) AS lau_izarrak,
+    COUNT(CASE WHEN balorazioa = 3 THEN 1 END) AS hiru_izarrak,
+    COUNT(CASE WHEN balorazioa = 2 THEN 1 END) AS bi_izarrak,
+    COUNT(CASE WHEN balorazioa = 1 THEN 1 END) AS izar_bat,
+    COUNT(CASE WHEN balorazioa = 0 THEN 1 END) AS zero_izar
+FROM iritziak
+WHERE ezabatua = 0 AND aktibo = 1;
 
 -- =====================================================================
 -- DATUAK TXERTATU DB-an 
@@ -272,3 +306,8 @@ INSERT INTO langileak (erabiltzailea, pasahitza_hash, izena, rola) VALUES
 INSERT INTO bezeroak (izena, abizena, telefonoa, emaila) VALUES
 ('Ane', 'Iparragirre', '600112233', 'ane@adibidea.eus'),
 ('Ion', 'Zubizarreta', '611223344', 'ion@adibidea.eus');
+
+-- Iritziak (0-5 izar)
+INSERT INTO iritziak (bezeroa_id, balorazioa, testua) VALUES
+(1, 5, 'Txuleta zoragarria eta zerbitzu bikaina! Seguru itzuliko garela.'),
+(2, 4, 'Babarrun goxoak eta giro atsegina, baina postreetan aukera zabalagoa eskertuko litzateke.');
