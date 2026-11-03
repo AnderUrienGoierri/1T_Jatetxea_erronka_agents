@@ -5,341 +5,260 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public class LoginForm : Form
+public partial class LoginForm : Form
 {
     private readonly ApiService _api;
-    private readonly FlowLayoutPanel _panelLangileak;
-    private readonly Label _lblPinDisplay;
-    private readonly Label _lblStatus;
-    private readonly Label _lblAukeratutakoLangilea;
-    private readonly Button _btnLogin;
-
     private List<LangileaDto> _langileak = new();
     private LangileaDto? _aukeratutakoLangilea;
     private string _pin = string.Empty;
 
     public LoginForm()
     {
+        InitializeComponent();
         _api = new ApiService();
 
-        Text = "T1 Jatetxea - Saioa Hasi (TPV Tablet)";
-        Size = new Size(1024, 700);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Theme.Background;
-        MinimumSize = new Size(900, 600);
-
-        // Edukiontzi Nagusia (Split: Ezkerra Langileak, Eskuina PIN Teklatua)
-        var splitContainer = new SplitContainer
+        // Zentratze dinamikoa tamaina aldatzean
+        Resize += (s, e) => ZentratuTxartela();
+        Load += async (s, e) =>
         {
-            Dock = DockStyle.Fill,
-            Orientation = Orientation.Vertical,
-            SplitterDistance = 560,
-            IsSplitterFixed = true,
-            BackColor = Theme.Border
+            ZentratuTxartela();
+            EraikiTeklatua();
+            await KargatuLangileakAsync();
         };
-        splitContainer.Panel1.BackColor = Theme.Background;
-        splitContainer.Panel2.BackColor = Theme.Surface;
-        Controls.Add(splitContainer);
 
-        // === EZKERREKO PANELA: Langileen Aukeratzailea ===
-        var ezkerPanela = new Panel
+        // Goiko barraren beheko ertza margotu
+        pnlTopBar.Paint += (s, e) =>
         {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(30),
-            BackColor = Theme.Background
+            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1f);
+            e.Graphics.DrawLine(pen, 0, pnlTopBar.Height - 1, pnlTopBar.Width, pnlTopBar.Height - 1);
         };
-        splitContainer.Panel1.Controls.Add(ezkerPanela);
 
-        // Titulua eta Azpititulua
-        var lblTitulua = new Label
+        // Txartelaren ertz dotorea margotu
+        pnlCard.Paint += (s, e) =>
         {
-            Text = "T1 JATETXEA",
-            Font = new Font("Segoe UI", 22, FontStyle.Bold),
-            ForeColor = Theme.AccentWine,
-            AutoSize = true,
-            Location = new Point(30, 25)
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
+            e.Graphics.DrawRectangle(pen, 0, 0, pnlCard.Width - 1, pnlCard.Height - 1);
         };
-        ezkerPanela.Controls.Add(lblTitulua);
 
-        var lblAzpititulua = new Label
+        // 4 PIN borobilak margotu (1-saioa_hasi_interfazea.jpg zirriborroaren arabera)
+        pnlPinDots.Paint += (s, e) =>
         {
-            Text = "Hautatu zure erabiltzailea saioa hasteko:",
-            Font = Theme.FontSubtitle,
-            ForeColor = Theme.TextMuted,
-            AutoSize = true,
-            Location = new Point(30, 70)
-        };
-        ezkerPanela.Controls.Add(lblAzpititulua);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            int count = 4;
+            int diameter = 18;
+            int spacing = 16;
+            int totalWidth = (count * diameter) + ((count - 1) * spacing);
+            int startX = (pnlPinDots.Width - totalWidth) / 2;
+            int y = (pnlPinDots.Height - diameter) / 2;
 
-        _panelLangileak = new FlowLayoutPanel
-        {
-            Location = new Point(30, 110),
-            Size = new Size(500, 480),
-            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-            AutoScroll = true,
-            BackColor = Color.Transparent
-        };
-        ezkerPanela.Controls.Add(_panelLangileak);
+            for (int i = 0; i < count; i++)
+            {
+                int x = startX + i * (diameter + spacing);
+                bool betea = i < _pin.Length;
 
-        // === ESKUINEKO PANELA: PIN Teklatua eta Display-a ===
-        var eskuinPanela = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(35),
-            BackColor = Theme.Surface
+                if (betea)
+                {
+                    using var brush = new SolidBrush(Color.FromArgb(51, 65, 85)); // Borobil betea
+                    e.Graphics.FillEllipse(brush, x, y, diameter, diameter);
+                }
+                else
+                {
+                    using var pen = new Pen(Color.FromArgb(148, 163, 184), 2f); // Borobil hutsaren ertza
+                    e.Graphics.DrawEllipse(pen, x, y, diameter, diameter);
+                }
+            }
         };
-        splitContainer.Panel2.Controls.Add(eskuinPanela);
 
-        var lblPinIzenburua = new Label
-        {
-            Text = "Sartu zure PIN kodea",
-            Font = Theme.FontTitle,
-            ForeColor = Theme.TextMain,
-            Dock = DockStyle.Top,
-            Height = 40,
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        eskuinPanela.Controls.Add(lblPinIzenburua);
+        btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
+    }
 
-        _lblAukeratutakoLangilea = new Label
-        {
-            Text = "Ez dago inor hautatuta",
-            Font = Theme.FontSubtitle,
-            ForeColor = Theme.AccentWine,
-            Dock = DockStyle.Top,
-            Height = 35,
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        eskuinPanela.Controls.Add(_lblAukeratutakoLangilea);
+    private void ZentratuTxartela()
+    {
+        if (pnlCard == null || pnlTopBar == null) return;
+        int x = Math.Max(10, (ClientSize.Width - pnlCard.Width) / 2);
+        int erabilgarriAltua = ClientSize.Height - pnlTopBar.Height;
+        int y = pnlTopBar.Height + Math.Max(10, (erabilgarriAltua - pnlCard.Height) / 2);
+        pnlCard.Location = new Point(x, y);
+    }
 
-        // PIN display koadroa
-        var pnlPinDisplay = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 60,
-            BackColor = Theme.Background,
-            Margin = new Padding(0, 10, 0, 10)
-        };
-        _lblPinDisplay = new Label
-        {
-            Dock = DockStyle.Fill,
-            Text = "----",
-            Font = Theme.FontPinDisplay,
-            ForeColor = Theme.TextMain,
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-        pnlPinDisplay.Controls.Add(_lblPinDisplay);
-        eskuinPanela.Controls.Add(pnlPinDisplay);
+    private void EraikiTeklatua()
+    {
+        pnlKeypad.Controls.Clear();
 
-        _lblStatus = new Label
-        {
-            Dock = DockStyle.Top,
-            Height = 30,
-            Text = "",
-            Font = Theme.FontSmall,
-            ForeColor = Theme.Danger,
-            TextAlign = ContentAlignment.MiddleCenter
+        string[] botoiak = {
+            "1", "2", "3",
+            "4", "5", "6",
+            "7", "8", "9",
+            "X Clear", "0", "<-"
         };
-        eskuinPanela.Controls.Add(_lblStatus);
 
-        // PIN Teklatua (TableLayoutPanel 4x3)
-        var keypad = new TableLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            Height = 280,
-            RowCount = 4,
-            ColumnCount = 3,
-            Padding = new Padding(10)
-        };
-        for (int i = 0; i < 3; i++) keypad.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
-        for (int i = 0; i < 4; i++) keypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25f));
-
-        string[] botoiak = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "<-" };
         foreach (var txt in botoiak)
         {
             var btn = new Button
             {
                 Text = txt,
                 Dock = DockStyle.Fill,
-                Font = Theme.FontKeypad,
-                Margin = new Padding(4),
+                Font = txt.Length > 2 ? new Font("Segoe UI", 11F, FontStyle.Bold) : new Font("Segoe UI", 16F, FontStyle.Bold),
+                Margin = new Padding(5),
                 BackColor = txt switch
                 {
-                    "C" => Color.FromArgb(254, 226, 226),
-                    "<-" => Color.FromArgb(241, 245, 249),
+                    "X Clear" => Color.FromArgb(254, 242, 242),
+                    "<-" => Color.FromArgb(248, 250, 252),
                     _ => Color.White
                 },
                 ForeColor = txt switch
                 {
-                    "C" => Theme.Danger,
-                    _ => Theme.TextMain
+                    "X Clear" => Color.FromArgb(220, 38, 38),
+                    _ => Color.FromArgb(30, 41, 59)
                 },
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand
             };
-            btn.FlatAppearance.BorderColor = Theme.Border;
+            btn.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
             btn.FlatAppearance.BorderSize = 1;
             btn.Click += (s, e) => KeypadBotoiaKlikatua(txt);
-            keypad.Controls.Add(btn);
+            pnlKeypad.Controls.Add(btn);
         }
-        eskuinPanela.Controls.Add(keypad);
-
-        // HASI SAIOA Botoi Nagusia
-        _btnLogin = new Button
-        {
-            Text = "HASI SAIOA",
-            Dock = DockStyle.Bottom,
-            Height = 55,
-            Font = Theme.FontTitle,
-            BackColor = Theme.AccentWine,
-            ForeColor = Color.White,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
-        };
-        _btnLogin.FlatAppearance.BorderSize = 0;
-        _btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
-        eskuinPanela.Controls.Add(_btnLogin);
-
-        // Karga asinkronoa
-        Load += async (s, e) => await KargatuLangileakAsync();
     }
 
     private async Task KargatuLangileakAsync()
     {
-        _panelLangileak.Controls.Clear();
-        var lblKargatzen = new Label
-        {
-            Text = "Langileak kargatzen...",
-            Font = Theme.FontBody,
-            ForeColor = Theme.TextMuted,
-            AutoSize = true
-        };
-        _panelLangileak.Controls.Add(lblKargatzen);
+        pnlAvatars.Controls.Clear();
 
         _langileak = await _api.GetLangileakAsync();
 
         if (_langileak.Count == 0)
         {
-            // Demo langileak fallback gisa API martxan ez badago
+            // Zirriborroko 5 zerbitzariak lehenetsita
             _langileak = new List<LangileaDto>
             {
-                new() { Id = 1, Erabiltzailea = "aitor", Izena = "Aitor Mendia", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 2, Erabiltzailea = "maite", Izena = "Maite Alberdi", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 3, Erabiltzailea = "mikel", Izena = "Mikel Agirre", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 4, Erabiltzailea = "ane", Izena = "Ane Garmendia", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 5, Erabiltzailea = "iker", Izena = "Iker Zabaleta", Rola = "Zerbitzaria", Aktibo = true }
+                new() { Id = 1, Erabiltzailea = "aitor", Izena = "Aitor B.", Rola = "Zerbitzaria", Aktibo = true },
+                new() { Id = 2, Erabiltzailea = "maite", Izena = "Maite L.", Rola = "Zerbitzaria", Aktibo = true },
+                new() { Id = 3, Erabiltzailea = "mikel", Izena = "Mikel A.", Rola = "Zerbitzaria", Aktibo = true },
+                new() { Id = 4, Erabiltzailea = "ane", Izena = "Ane G.", Rola = "Zerbitzaria", Aktibo = true },
+                new() { Id = 5, Erabiltzailea = "iker", Izena = "Iker M.", Rola = "Zerbitzaria", Aktibo = true }
             };
         }
 
-        _panelLangileak.Controls.Clear();
+        // Gehienez lehen 5ak erakutsi zirriborroaren arabera
+        var bistaratzekoak = _langileak.Take(5).ToList();
 
-        foreach (var l in _langileak)
+        foreach (var l in bistaratzekoak)
         {
-            var btnCard = SortuLangileTxartela(l);
-            _panelLangileak.Controls.Add(btnCard);
+            var avatarCard = SortuAvatarTxartela(l);
+            pnlAvatars.Controls.Add(avatarCard);
         }
 
-        // Lehenengoa hautatu lehenetsita
-        if (_langileak.Count > 0)
+        // Lehenengoa (Aitor) lehenetsi zirriborroan bezala
+        if (bistaratzekoak.Count > 0)
         {
-            HautatuLangilea(_langileak[0]);
+            HautatuLangilea(bistaratzekoak[0]);
         }
     }
 
-    private Control SortuLangileTxartela(LangileaDto langilea)
+    private Control SortuAvatarTxartela(LangileaDto langilea)
     {
-        var card = new Panel
+        var item = new Panel
         {
-            Width = 230,
-            Height = 85,
-            Margin = new Padding(6),
-            BackColor = Color.White,
+            Width = 80,
+            Height = 82,
+            Margin = new Padding(2, 2, 2, 2),
+            BackColor = Color.Transparent,
             Cursor = Cursors.Hand,
             Tag = langilea
         };
 
-        // Zirkulua inizialekin
-        var initials = string.Join("", langilea.Izena.Split(' ').Select(n => n.Length > 0 ? n[0].ToString() : "")).ToUpper();
+        // Zirriborroko izen laburtua prestatu (adib. "Aitor B.")
+        string izenLaburtua = langilea.Izena;
+        var zatiak = langilea.Izena.Split(' ');
+        if (zatiak.Length >= 2 && !langilea.Izena.Contains('.'))
+        {
+            izenLaburtua = $"{zatiak[0]} {zatiak[1][0]}.";
+        }
+
+        // Inizialak (adib. "AB")
+        string initials = string.Join("", zatiak.Select(z => z.Length > 0 ? z[0].ToString() : "")).ToUpper();
         if (initials.Length > 2) initials = initials.Substring(0, 2);
 
-        var pnlAvatar = new Panel
+        var pnlCircle = new Panel
         {
-            Location = new Point(12, 16),
-            Size = new Size(52, 52),
-            BackColor = Theme.AccentWine
+            Location = new Point(16, 4),
+            Size = new Size(48, 48),
+            BackColor = Color.Transparent
         };
-        var lblAvatar = new Label
+
+        var lblInitial = new Label
         {
             Dock = DockStyle.Fill,
             Text = initials,
-            ForeColor = Color.White,
-            Font = Theme.FontSubtitle,
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            ForeColor = Color.FromArgb(71, 85, 105),
             TextAlign = ContentAlignment.MiddleCenter
         };
-        pnlAvatar.Controls.Add(lblAvatar);
-        card.Controls.Add(pnlAvatar);
+        pnlCircle.Controls.Add(lblInitial);
+        item.Controls.Add(pnlCircle);
 
-        var lblIzena = new Label
+        var lblName = new Label
         {
-            Text = langilea.Izena,
-            Font = Theme.FontBodyBold,
-            ForeColor = Theme.TextMain,
-            Location = new Point(72, 18),
-            Size = new Size(150, 24),
+            Text = izenLaburtua,
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Regular),
+            ForeColor = Color.FromArgb(51, 65, 85),
+            Location = new Point(0, 56),
+            Size = new Size(80, 20),
+            TextAlign = ContentAlignment.TopCenter,
             AutoEllipsis = true
         };
-        card.Controls.Add(lblIzena);
+        item.Controls.Add(lblName);
 
-        var lblRola = new Label
+        // Zirriborroko borobila margotu (hautatuta badago borobil urdin/bordelegina inguruan)
+        pnlCircle.Paint += (s, e) =>
         {
-            Text = langilea.Rola,
-            Font = Theme.FontSmall,
-            ForeColor = Theme.TextMuted,
-            Location = new Point(72, 42),
-            Size = new Size(150, 20)
-        };
-        card.Controls.Add(lblRola);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            bool isSelected = _aukeratutakoLangilea?.Id == langilea.Id;
 
-        // Klik gertaera kontrol guztietan
-        void OnClick(object? sender, EventArgs e) => HautatuLangilea(langilea);
-        card.Click += OnClick;
-        pnlAvatar.Click += OnClick;
-        lblAvatar.Click += OnClick;
-        lblIzena.Click += OnClick;
-        lblRola.Click += OnClick;
+            // Barruko hondo leuna
+            using var bgBrush = new SolidBrush(isSelected ? Color.FromArgb(239, 246, 255) : Color.FromArgb(241, 245, 249));
+            e.Graphics.FillEllipse(bgBrush, 2, 2, 43, 43);
 
-        card.Paint += (s, e) =>
-        {
-            var isSelected = _aukeratutakoLangilea?.Id == langilea.Id;
-            var borderColor = isSelected ? Theme.AccentWine : Theme.Border;
-            var borderWidth = isSelected ? 3 : 1;
-            using var pen = new Pen(borderColor, borderWidth);
-            e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
+            // Kanpoko ertza (hautatua denean zirriborroko borobil urdina)
+            var ertzAkolorea = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(203, 213, 225);
+            float ertzAStroked = isSelected ? 2.5f : 1.2f;
+            using var pen = new Pen(ertzAkolorea, ertzAStroked);
+            e.Graphics.DrawEllipse(pen, 2, 2, 43, 43);
         };
 
-        return card;
+        void OnClick(object? s, EventArgs e) => HautatuLangilea(langilea);
+        item.Click += OnClick;
+        pnlCircle.Click += OnClick;
+        lblInitial.Click += OnClick;
+        lblName.Click += OnClick;
+
+        return item;
     }
 
     private void HautatuLangilea(LangileaDto langilea)
     {
         _aukeratutakoLangilea = langilea;
-        _lblAukeratutakoLangilea.Text = $"{langilea.Izena} ({langilea.Rola})";
         _pin = string.Empty;
-        EguneratuPinDisplay();
-        _lblStatus.Text = "";
+        pnlPinDots.Invalidate();
+        lblStatus.Text = "";
 
-        // Txartelen ertzak birbalidatu
-        foreach (Control c in _panelLangileak.Controls)
+        // Avatar guztien borobilak birbalidatu
+        foreach (Control c in pnlAvatars.Controls)
         {
-            c.Invalidate();
+            foreach (Control sub in c.Controls)
+            {
+                sub.Invalidate();
+            }
         }
     }
 
     private void KeypadBotoiaKlikatua(string txt)
     {
-        _lblStatus.Text = "";
+        lblStatus.Text = "";
 
-        if (txt == "C")
+        if (txt == "X Clear")
         {
             _pin = string.Empty;
         }
@@ -350,61 +269,46 @@ public class LoginForm : Form
         }
         else
         {
-            if (_pin.Length < 6)
+            if (_pin.Length < 4)
                 _pin += txt;
         }
 
-        EguneratuPinDisplay();
-    }
-
-    private void EguneratuPinDisplay()
-    {
-        if (_pin.Length == 0)
-        {
-            _lblPinDisplay.Text = "----";
-            _lblPinDisplay.ForeColor = Theme.TextMuted;
-        }
-        else
-        {
-            _lblPinDisplay.Text = new string('*', _pin.Length);
-            _lblPinDisplay.ForeColor = Theme.TextMain;
-        }
+        pnlPinDots.Invalidate();
     }
 
     private async Task LoginExekutatuAsync()
     {
         if (_aukeratutakoLangilea == null)
         {
-            _lblStatus.Text = "Aukeratu zerbitzari bat lehenik.";
+            lblStatus.Text = "Hautatu zerbitzari bat lehenik.";
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_pin))
         {
-            _lblStatus.Text = "Sartu zure PIN kodea.";
+            lblStatus.Text = "Sartu 4 digituko PIN zenbakia.";
             return;
         }
 
-        _btnLogin.Enabled = false;
-        _btnLogin.Text = "Egiaztatzen...";
+        btnLogin.Enabled = false;
+        btnLogin.Text = "EGIAZTATZEN...";
 
         var (arrakasta, mezua, langilea) = await _api.LoginAsync(_aukeratutakoLangilea.Erabiltzailea, _pin);
 
-        _btnLogin.Enabled = true;
-        _btnLogin.Text = "HASI SAIOA";
+        btnLogin.Enabled = true;
+        btnLogin.Text = "HASI SAIOA";
 
         if (arrakasta && langilea != null)
         {
             _pin = string.Empty;
-            EguneratuPinDisplay();
+            pnlPinDots.Invalidate();
 
-            // Ireki MahaiakForm
             var mahaiakForm = new MahaiakForm(langilea, _api);
             mahaiakForm.FormClosed += (s, e) =>
             {
                 Show();
                 _pin = string.Empty;
-                EguneratuPinDisplay();
+                pnlPinDots.Invalidate();
             };
 
             Hide();
@@ -412,9 +316,9 @@ public class LoginForm : Form
         }
         else
         {
-            _lblStatus.Text = mezua;
+            lblStatus.Text = mezua;
             _pin = string.Empty;
-            EguneratuPinDisplay();
+            pnlPinDots.Invalidate();
         }
     }
 }
