@@ -26,19 +26,19 @@ $flash_error = $flash_error ?? null;
                     
                     <!-- PHP bidezko Alertak -->
                     <?php if (!empty($flash_success)): ?>
-                        <div class="alert-kaxa alert-success" style="display: block;">
+                        <div class="alert-kaxa alert-arrakasta alert-ikusgai">
                             <strong>Baieztatuta:</strong> <?php echo htmlspecialchars($flash_success, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if (!empty($flash_conflict)): ?>
-                        <div class="alert-kaxa alert-error" style="display: block; border-left: 4px solid #dc2626;">
+                        <div class="alert-kaxa alert-gatazka">
                             <strong>Gatazka (409):</strong> <?php echo htmlspecialchars($flash_conflict, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if (!empty($flash_error)): ?>
-                        <div class="alert-kaxa alert-error" style="display: block;">
+                        <div class="alert-kaxa alert-errorea alert-ikusgai">
                             <?php echo htmlspecialchars($flash_error, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
@@ -113,7 +113,7 @@ $flash_error = $flash_error ?? null;
                             <textarea name="erreserba_oharrak" id="erreserba-oharrak" class="form-control" rows="2" placeholder="Aulki gehigarria, ospakizuna, gluten intolerantea..."></textarea>
                         </div>
 
-                        <button type="submit" id="btn-erreserbatu" class="btn btn-primary" style="width: 100%;">Erreserba Baieztatu (PHP bidez)</button>
+                        <button type="submit" id="btn-erreserbatu" class="btn btn-primary btn-block">Erreserba Baieztatu (PHP bidez)</button>
                     </form>
                 </div>
 
@@ -121,7 +121,7 @@ $flash_error = $flash_error ?? null;
                 <div class="erreserba-info-area">
                     <div>
                         <h3>Jantokiko Arauak eta Ordutegiak</h3>
-                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">
+                        <p class="arauak-azpititulua">
                             Gure zerbitzua ahalik eta ondoen antolatzeko eta elikagaien alferrik galtzea saihesteko, mahai bakoitza txandaka kudeatzen da:
                         </p>
                         <ul class="txanden-ordutegiak">

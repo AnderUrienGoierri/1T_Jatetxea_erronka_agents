@@ -52,7 +52,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
                             <p class="plater-deskribapena"><?php echo $deskribapena; ?></p>
                             
                             <?php if (!empty($alergenoak)): ?>
-                                <p style="font-size: 0.8rem; color: #d97706; margin-bottom: 0.5rem;">
+                                <p class="plater-alergenoak">
                                     <strong>Alergenoak:</strong> <?php echo $alergenoak; ?>
                                 </p>
                             <?php endif; ?>
@@ -70,7 +70,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
 
                             <div class="plater-meta">
                                 <span class="kategoria-tag"><?php echo $kategoria; ?></span>
-                                <span class="prestatze-denbora" style="font-size: 0.8rem; color: #64748b;"><?php echo $denbora; ?> min</span>
+                                <span class="prestatze-denbora"><?php echo $denbora; ?> min</span>
                                 <?php if ($agortuta): ?>
                                     <span class="stock-tag agortuta">Agortuta</span>
                                 <?php elseif ($stockAhalmena !== null): ?>

@@ -84,6 +84,12 @@
     flex-grow: 1;
 }
 
+.plater-alergenoak {
+    font-size: 0.8rem;
+    color: var(--kolore-abisua);
+    margin-bottom: 0.5rem;
+}
+
 .plater-osagaiak {
     font-size: 0.8rem;
     color: var(--kolore-testua-argia);
@@ -117,6 +123,11 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+.prestatze-denbora {
+    font-size: 0.8rem;
+    color: var(--kolore-testua-argia);
 }
 
 .kategoria-tag {

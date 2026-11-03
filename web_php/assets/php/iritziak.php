@@ -53,7 +53,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                             <div class="distribuzio-lerroa">
                                 <span><?php echo $izar; ?> ★</span>
                                 <div class="barra-hutsik">
-                                    <div class="barra-beteta" style="width: <?php echo $portzentaia; ?>%;"></div>
+                                    <div class="barra-beteta" style="--zabalera: <?php echo $portzentaia; ?>%;"></div>
                                 </div>
                                 <span class="lerro-kopurua"><?php echo $kopurua; ?></span>
                             </div>
@@ -64,7 +64,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                 <!-- Eskuina: Iritzi zerrenda eta iritzi berria idazteko inprimakia -->
                 <div>
                     <div class="iritziak-zerrenda-kaxa">
-                        <h3 style="margin-bottom: 1rem; color: #1e293b; font-size: 1.15rem;">Azken Iritziak (<?php echo count($iritziak); ?>)</h3>
+                        <h3 class="azken-iritziak-titulua">Azken Iritziak (<?php echo count($iritziak); ?>)</h3>
                         <div id="iritziak-zerrenda">
                             <?php if (empty($iritziak)): ?>
                                 <p class="oharra-testua">Oraindik ez dago iritzirik. Izan zaitez lehena zure esperientzia partekatzen!</p>
@@ -98,17 +98,17 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                     </div>
 
                     <!-- Iritzia uzteko inprimakia -->
-                    <div class="erreserba-form-area" style="margin-top: 1.5rem; padding: 1.5rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <h4 style="margin-bottom: 1rem; color: #1e293b;">Utzi Zure Balorazioa</h4>
+                    <div class="erreserba-form-area iritzi-form-kaxa">
+                        <h4 class="iritzi-form-titulua">Utzi Zure Balorazioa</h4>
                         
                         <?php if (!empty($flash_iritzi_success)): ?>
-                            <div class="alert-kaxa alert-success" style="display: block;">
+                            <div class="alert-kaxa alert-arrakasta alert-ikusgai">
                                 <?php echo htmlspecialchars($flash_iritzi_success, ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                         <?php endif; ?>
 
                         <?php if (!empty($flash_iritzi_error)): ?>
-                            <div class="alert-kaxa alert-error" style="display: block;">
+                            <div class="alert-kaxa alert-errorea alert-ikusgai">
                                 <?php echo htmlspecialchars($flash_iritzi_error, ENT_QUOTES, 'UTF-8'); ?>
                             </div>
                         <?php endif; ?>
@@ -143,7 +143,7 @@ $flash_iritzi_error = $flash_iritzi_error ?? null;
                                 <label for="iritzi-testua">Iruzkina:</label>
                                 <textarea name="iritzi_testua" id="iritzi-testua" class="form-control" rows="2" placeholder="Nola joan da zure esperientzia?"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-secondary" style="width: 100%;">Iritzia Bidali (PHP bidez)</button>
+                            <button type="submit" class="btn btn-secondary btn-block">Iritzia Bidali (PHP bidez)</button>
                         </form>
                     </div>
                 </div>

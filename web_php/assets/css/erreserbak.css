@@ -69,6 +69,12 @@
     justify-content: space-between;
 }
 
+.arauak-azpititulua {
+    font-size: 0.9rem;
+    color: var(--kolore-testua-argia);
+    margin-bottom: 1rem;
+}
+
 .txanden-ordutegiak {
     list-style: none;
     margin: 1rem 0;
@@ -101,7 +107,8 @@
     font-weight: 500;
 }
 
-.alert-kaxa.show {
+.alert-kaxa.show,
+.alert-kaxa.alert-ikusgai {
     display: block;
     animation: fadeIn 0.3s ease-in;
 }
@@ -116,6 +123,15 @@
     background-color: var(--kolore-errorea-atzeko);
     border: 1px solid var(--kolore-errorea);
     color: var(--kolore-errorea);
+}
+
+.alert-gatazka {
+    display: block;
+    background-color: var(--kolore-errorea-atzeko);
+    border: 1px solid var(--kolore-errorea);
+    border-left: 4px solid #dc2626;
+    color: var(--kolore-errorea);
+    animation: fadeIn 0.3s ease-in;
 }
 
 .alert-abisua {

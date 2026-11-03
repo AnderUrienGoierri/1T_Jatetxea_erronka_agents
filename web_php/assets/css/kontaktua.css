@@ -1,0 +1,27 @@
+/* ==========================================================================
+   JATETXEA - Kokapena eta Kontaktua (kontaktua.css)
+   ========================================================================== */
+
+.kontaktua-kaxa {
+    background-color: var(--kolore-kutxa);
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+    box-shadow: var(--itzala-arina);
+}
+
+.kontaktua-titulua {
+    color: var(--kolore-nagusia);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.kontaktua-testua {
+    color: var(--kolore-testua-argia);
+    font-size: 0.95rem;
+}

@@ -23,6 +23,7 @@
     box-shadow: var(--itzala-arina);
 }
 
+.estatistika-puntuazioa,
 .batez-bestekoa {
     font-size: 3rem;
     font-weight: 800;
@@ -31,22 +32,26 @@
     margin-bottom: 0.5rem;
 }
 
+.estatistika-izarrak,
 .izar-bistaratzailea {
     font-size: 1.35rem;
     color: #eab308;
     margin-bottom: 0.75rem;
 }
 
+.estatistika-guztira,
 .guztira-label {
     font-size: 0.9rem;
     color: var(--kolore-testua-argia);
 }
 
+.izar-distribuzioa,
 .izarren-banaketa {
     margin-top: 1.5rem;
     text-align: left;
 }
 
+.distribuzio-lerroa,
 .izar-lerroa {
     display: flex;
     align-items: center;
@@ -55,6 +60,7 @@
     margin-bottom: 0.35rem;
 }
 
+.barra-hutsik,
 .barra-atzeko {
     flex-grow: 1;
     height: 8px;
@@ -63,10 +69,18 @@
     overflow: hidden;
 }
 
+.barra-beteta,
 .barra-aurreko {
     height: 100%;
     background-color: #eab308;
     border-radius: 4px;
+}
+
+.lerro-kopurua {
+    min-width: 1.5rem;
+    text-align: right;
+    color: var(--kolore-testua-argia);
+    font-size: 0.8rem;
 }
 
 .iritziak-zerrenda-kaxa {
@@ -75,6 +89,12 @@
     border-radius: var(--erradioa);
     padding: 1.5rem;
     box-shadow: var(--itzala-arina);
+}
+
+.azken-iritziak-titulua {
+    margin-bottom: 1rem;
+    color: var(--kolore-nagusia);
+    font-size: 1.15rem;
 }
 
 .iritzi-txartela {
@@ -93,6 +113,12 @@
     margin-bottom: 0.35rem;
 }
 
+.iritzi-izarrak {
+    color: #eab308;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+}
+
 .iritzi-egilea {
     font-weight: 600;
     color: var(--kolore-nagusia);
@@ -106,4 +132,17 @@
 .iritzi-testua {
     font-size: 0.95rem;
     color: var(--kolore-testua);
+}
+
+.iritzi-form-kaxa {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--kolore-kutxa);
+    border: 1px solid var(--kolore-ertza);
+    border-radius: var(--erradioa);
+}
+
+.iritzi-form-titulua {
+    margin-bottom: 1rem;
+    color: var(--kolore-nagusia);
 }

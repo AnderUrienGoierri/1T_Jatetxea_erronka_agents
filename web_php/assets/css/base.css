@@ -87,10 +87,15 @@ section {
 .btn-secondary {
     background-color: #ffffff;
     color: var(--kolore-nagusia);
+    border: 1px solid var(--kolore-ertza);
 }
 
 .btn-secondary:hover {
     background-color: #f1f5f9;
+}
+
+.btn-block {
+    width: 100%;
 }
 
 footer {
