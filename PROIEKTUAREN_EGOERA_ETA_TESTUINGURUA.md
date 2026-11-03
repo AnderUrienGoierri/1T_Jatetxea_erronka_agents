@@ -32,20 +32,23 @@ Dokumentu honek orain arte egindako aurrerapen, erabaki tekniko, arau eta hurren
 
 ---
 
-## 4. Zehaztapen Giltzarriak (PDF eta Ereduak)
+## 4. REST APIa (backend_api/) - EGOERA: EGINDA ETA EGIAZTATUTA
 
-* `espezifikazioak/T1_jatetxea_erronka_balidazioak_transakzioak.pdf`: Zerbitzariaren tableta interfazea (PIN bidezko saio-hasiera, mahaien zerrenda eta mapa koloreekin, mahaikide kopuruaren hautatzaile modala, produktuen katalogoa eta karrito interaktiboa, blokeo pesimistak `SELECT ... FOR UPDATE` eta transakzio laburrak).
-* `espezifikazioak/datu_basea_schema.sql`: Eskema osoa.
-* `espezifikazioak/rest_api_kontratua.md`: Endpoint-en kontratua eta salbuespenen kudeaketa.
+* **Teknologia:** C# ASP.NET Core (.NET 10).
+* **Arkitektura:** Controllers, DTO, Models, Responses (`ApiResponse<T>`, `ApiError`), `BaseApiKontroladorea`.
+* **Giltzarriak eta Transakzio Pesimistak:**
+  - `POST /api/v1/erreserbak`: `SELECT ... FOR UPDATE` mahaia blokeatuz, txanda/data gatazkak egiaztatuz eta 1062 errorea 409 Conflict bihurtuz.
+  - `POST /api/v1/eskaerak/{id}/lerroak`: `SELECT ... FOR UPDATE` lehengaiak blokeatuz, errezeta bidezko stock deskontua, prezioa datu-basetik soilik eskuratzea eta `stock_mugimenduak` taulan auditoria erregistratzea.
+  - `POST /api/v1/lehengaiak/sarrera`: Hornitzailearen albarana erregistratzea transakzioan eta stocka gehitzea.
+  - `GET /api/v1/lehengaiak/alertak`: Gutxieneko stocketik behera dauden lehengaien erosketa-zerrenda.
+  - `GET /api/v1/platerak/erabilgarritasuna`: Lehengaien uneko stockaren arabera zenbat plater prestatu daitezkeen kalkulatuta.
+  - `POST /api/v1/langileak/login`: PIN edo erabiltzaile bidezko saio-hasiera.
+  - `GET /api/v1/iritziak/estatistikak`: 0-5 izarren banaketa eta batez besteko balorazio orokorra.
 
 ---
 
-## 5. Hurrengo Ekintza: REST APIaren Garapena (2. Urratsa)
+## 5. Hurrengo Urratsak (Frontend eta Desktop Garapena)
 
-* Agentea: `Backend-API-Agent`
-* Karpetan: `backend_api/`
-* Zereginak:
-  1. `MySqlConnector` liburutegia txertatu.
-  2. `appsettings.json` konfiguratuta (`localhost:3308`).
-  3. Kontroladoreak eta transakzio pesimistak inplementatzea (`ErreserbakController`, `MahaiakController`, `PlaterakController`, `LehengaiakController`, `EskaerakController`, `IritziakController`, `LangileakController`).
-  4. Git commit eta push aldaketa bakoitzeko.
+1. **3. Urratsa (Web-Frontend-Agent):** `web_php/` garatzea bezeroen erreserbak kudeatzeko eta 409 Conflict mezuak tratatzeko (agortutako platerak desgaituz).
+2. **4. Urratsa (Desktop-CSharp-Agent):** `desktop_csharp/` garatzea jantokiko zerbitzariaren tableta/TPV interfazerako (PIN saio-hasiera, mahai mapa koloreekin, komandak eta karrito interaktiboa).
+3. **5. Urratsa (Desktop-JavaFX-Agent):** `desktop_javafx/` garatzea sukaldeko KDS pantailarako eta biltegiko erosketa-zerrendarako.
