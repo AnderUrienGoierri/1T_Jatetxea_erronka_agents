@@ -69,58 +69,56 @@ partial class LoginForm
         pnlPinDots.SuspendLayout();
         pnlKeypad.SuspendLayout();
         SuspendLayout();
-
         // 
-        // pnlTopBar (Goiburua: Logoa, Jatetxe izena eta Zerbitzariak)
+        // pnlTopBar
         // 
         pnlTopBar.BackColor = Color.White;
         pnlTopBar.Controls.Add(lblLogo);
         pnlTopBar.Controls.Add(lblBrand);
         pnlTopBar.Controls.Add(lblZerbitzariak);
         pnlTopBar.Dock = DockStyle.Top;
-        pnlTopBar.Height = 65;
         pnlTopBar.Location = new Point(0, 0);
         pnlTopBar.Name = "pnlTopBar";
-        pnlTopBar.Size = new Size(1024, 65);
+        pnlTopBar.Size = new Size(1024, 94);
         pnlTopBar.TabIndex = 0;
-
+        pnlTopBar.Paint += pnlTopBar_Paint;
         // 
-        // lblLogo (T1 logo txapa bordelea)
+        // lblLogo
         // 
-        lblLogo.BackColor = Color.FromArgb(136, 19, 55); // #881337
+        lblLogo.BackColor = Color.FromArgb(136, 19, 55);
         lblLogo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         lblLogo.ForeColor = Color.White;
         lblLogo.Location = new Point(25, 12);
         lblLogo.Name = "lblLogo";
         lblLogo.Size = new Size(42, 42);
+        lblLogo.TabIndex = 0;
         lblLogo.Text = "T1";
         lblLogo.TextAlign = ContentAlignment.MiddleCenter;
-
         // 
-        // lblBrand ("T1 Jatetxea")
+        // lblBrand
         // 
         lblBrand.AutoSize = true;
         lblBrand.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
         lblBrand.ForeColor = Color.FromArgb(136, 19, 55);
         lblBrand.Location = new Point(76, 18);
         lblBrand.Name = "lblBrand";
-        lblBrand.Size = new Size(122, 28);
+        lblBrand.Size = new Size(240, 54);
+        lblBrand.TabIndex = 1;
         lblBrand.Text = "T1 Jatetxea";
-
         // 
-        // lblZerbitzariak ("Zerbitzariak")
+        // lblZerbitzariak
         // 
         lblZerbitzariak.AutoSize = true;
         lblZerbitzariak.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
         lblZerbitzariak.ForeColor = Color.FromArgb(51, 65, 85);
-        lblZerbitzariak.Location = new Point(450, 18);
+        lblZerbitzariak.Location = new Point(384, 18);
         lblZerbitzariak.Name = "lblZerbitzariak";
-        lblZerbitzariak.Size = new Size(125, 28);
+        lblZerbitzariak.Size = new Size(249, 54);
+        lblZerbitzariak.TabIndex = 2;
         lblZerbitzariak.Text = "Zerbitzariak";
         lblZerbitzariak.TextAlign = ContentAlignment.MiddleCenter;
-
         // 
-        // pnlCard (Txartel nagusia, zentratuta automatikoki)
+        // pnlCard
         // 
         pnlCard.Anchor = AnchorStyles.None;
         pnlCard.BackColor = Color.White;
@@ -133,11 +131,10 @@ partial class LoginForm
         pnlCard.Controls.Add(btnLogin);
         pnlCard.Location = new Point(292, 100);
         pnlCard.Name = "pnlCard";
-        pnlCard.Size = new Size(440, 560);
+        pnlCard.Size = new Size(440, 608);
         pnlCard.TabIndex = 1;
-
         // 
-        // pnlAvatars (5 Zerbitzarien zerrenda horizontala)
+        // pnlAvatars
         // 
         pnlAvatars.Controls.Add(pnlAvatar1);
         pnlAvatars.Controls.Add(pnlAvatar2);
@@ -146,182 +143,238 @@ partial class LoginForm
         pnlAvatars.Controls.Add(pnlAvatar5);
         pnlAvatars.Location = new Point(10, 15);
         pnlAvatars.Name = "pnlAvatars";
-        pnlAvatars.Size = new Size(420, 75);
+        pnlAvatars.Size = new Size(420, 111);
         pnlAvatars.TabIndex = 0;
-
-        // Avatar 1: Aitor B.
+        // 
+        // pnlAvatar1
+        // 
         pnlAvatar1.Controls.Add(lblCircle1);
         pnlAvatar1.Controls.Add(lblName1);
+        pnlAvatar1.Cursor = Cursors.Hand;
         pnlAvatar1.Location = new Point(4, 2);
         pnlAvatar1.Name = "pnlAvatar1";
-        pnlAvatar1.Size = new Size(78, 70);
-        pnlAvatar1.Cursor = Cursors.Hand;
+        pnlAvatar1.Size = new Size(78, 106);
+        pnlAvatar1.TabIndex = 0;
+        // 
+        // lblCircle1
+        // 
         lblCircle1.BackColor = Color.FromArgb(239, 246, 255);
         lblCircle1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblCircle1.ForeColor = Color.FromArgb(37, 99, 235);
         lblCircle1.Location = new Point(17, 2);
         lblCircle1.Name = "lblCircle1";
         lblCircle1.Size = new Size(44, 44);
+        lblCircle1.TabIndex = 0;
         lblCircle1.Text = "AB";
         lblCircle1.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // lblName1
+        // 
         lblName1.Font = new Font("Segoe UI", 8.5F);
         lblName1.ForeColor = Color.FromArgb(51, 65, 85);
         lblName1.Location = new Point(0, 48);
         lblName1.Name = "lblName1";
-        lblName1.Size = new Size(78, 18);
+        lblName1.Size = new Size(78, 41);
+        lblName1.TabIndex = 1;
         lblName1.Text = "Aitor B.";
         lblName1.TextAlign = ContentAlignment.TopCenter;
-
-        // Avatar 2: Maite L.
+        // 
+        // pnlAvatar2
+        // 
         pnlAvatar2.Controls.Add(lblCircle2);
         pnlAvatar2.Controls.Add(lblName2);
+        pnlAvatar2.Cursor = Cursors.Hand;
         pnlAvatar2.Location = new Point(87, 2);
         pnlAvatar2.Name = "pnlAvatar2";
-        pnlAvatar2.Size = new Size(78, 70);
-        pnlAvatar2.Cursor = Cursors.Hand;
+        pnlAvatar2.Size = new Size(78, 106);
+        pnlAvatar2.TabIndex = 1;
+        // 
+        // lblCircle2
+        // 
         lblCircle2.BackColor = Color.FromArgb(241, 245, 249);
         lblCircle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblCircle2.ForeColor = Color.FromArgb(71, 85, 105);
         lblCircle2.Location = new Point(17, 2);
         lblCircle2.Name = "lblCircle2";
         lblCircle2.Size = new Size(44, 44);
+        lblCircle2.TabIndex = 0;
         lblCircle2.Text = "ML";
         lblCircle2.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // lblName2
+        // 
         lblName2.Font = new Font("Segoe UI", 8.5F);
         lblName2.ForeColor = Color.FromArgb(51, 65, 85);
         lblName2.Location = new Point(0, 48);
         lblName2.Name = "lblName2";
-        lblName2.Size = new Size(78, 18);
+        lblName2.Size = new Size(78, 31);
+        lblName2.TabIndex = 1;
         lblName2.Text = "Maite L.";
         lblName2.TextAlign = ContentAlignment.TopCenter;
-
-        // Avatar 3: Mikel A.
+        // 
+        // pnlAvatar3
+        // 
         pnlAvatar3.Controls.Add(lblCircle3);
         pnlAvatar3.Controls.Add(lblName3);
+        pnlAvatar3.Cursor = Cursors.Hand;
         pnlAvatar3.Location = new Point(170, 2);
         pnlAvatar3.Name = "pnlAvatar3";
-        pnlAvatar3.Size = new Size(78, 70);
-        pnlAvatar3.Cursor = Cursors.Hand;
+        pnlAvatar3.Size = new Size(78, 106);
+        pnlAvatar3.TabIndex = 2;
+        // 
+        // lblCircle3
+        // 
         lblCircle3.BackColor = Color.FromArgb(241, 245, 249);
         lblCircle3.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblCircle3.ForeColor = Color.FromArgb(71, 85, 105);
         lblCircle3.Location = new Point(17, 2);
         lblCircle3.Name = "lblCircle3";
         lblCircle3.Size = new Size(44, 44);
+        lblCircle3.TabIndex = 0;
         lblCircle3.Text = "MA";
         lblCircle3.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // lblName3
+        // 
         lblName3.Font = new Font("Segoe UI", 8.5F);
         lblName3.ForeColor = Color.FromArgb(51, 65, 85);
         lblName3.Location = new Point(0, 48);
         lblName3.Name = "lblName3";
-        lblName3.Size = new Size(78, 18);
+        lblName3.Size = new Size(78, 31);
+        lblName3.TabIndex = 1;
         lblName3.Text = "Mikel A.";
         lblName3.TextAlign = ContentAlignment.TopCenter;
-
-        // Avatar 4: Ane G.
+        // 
+        // pnlAvatar4
+        // 
         pnlAvatar4.Controls.Add(lblCircle4);
         pnlAvatar4.Controls.Add(lblName4);
+        pnlAvatar4.Cursor = Cursors.Hand;
         pnlAvatar4.Location = new Point(253, 2);
         pnlAvatar4.Name = "pnlAvatar4";
-        pnlAvatar4.Size = new Size(78, 70);
-        pnlAvatar4.Cursor = Cursors.Hand;
+        pnlAvatar4.Size = new Size(78, 106);
+        pnlAvatar4.TabIndex = 3;
+        // 
+        // lblCircle4
+        // 
         lblCircle4.BackColor = Color.FromArgb(241, 245, 249);
         lblCircle4.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblCircle4.ForeColor = Color.FromArgb(71, 85, 105);
         lblCircle4.Location = new Point(17, 2);
         lblCircle4.Name = "lblCircle4";
         lblCircle4.Size = new Size(44, 44);
+        lblCircle4.TabIndex = 0;
         lblCircle4.Text = "AG";
         lblCircle4.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // lblName4
+        // 
         lblName4.Font = new Font("Segoe UI", 8.5F);
         lblName4.ForeColor = Color.FromArgb(51, 65, 85);
         lblName4.Location = new Point(0, 48);
         lblName4.Name = "lblName4";
-        lblName4.Size = new Size(78, 18);
+        lblName4.Size = new Size(78, 31);
+        lblName4.TabIndex = 1;
         lblName4.Text = "Ane G.";
         lblName4.TextAlign = ContentAlignment.TopCenter;
-
-        // Avatar 5: Iker M.
+        // 
+        // pnlAvatar5
+        // 
         pnlAvatar5.Controls.Add(lblCircle5);
         pnlAvatar5.Controls.Add(lblName5);
+        pnlAvatar5.Cursor = Cursors.Hand;
         pnlAvatar5.Location = new Point(336, 2);
         pnlAvatar5.Name = "pnlAvatar5";
-        pnlAvatar5.Size = new Size(78, 70);
-        pnlAvatar5.Cursor = Cursors.Hand;
+        pnlAvatar5.Size = new Size(78, 106);
+        pnlAvatar5.TabIndex = 4;
+        // 
+        // lblCircle5
+        // 
         lblCircle5.BackColor = Color.FromArgb(241, 245, 249);
         lblCircle5.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblCircle5.ForeColor = Color.FromArgb(71, 85, 105);
         lblCircle5.Location = new Point(17, 2);
         lblCircle5.Name = "lblCircle5";
         lblCircle5.Size = new Size(44, 44);
+        lblCircle5.TabIndex = 0;
         lblCircle5.Text = "IM";
         lblCircle5.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // lblName5
+        // 
         lblName5.Font = new Font("Segoe UI", 8.5F);
         lblName5.ForeColor = Color.FromArgb(51, 65, 85);
         lblName5.Location = new Point(0, 48);
         lblName5.Name = "lblName5";
-        lblName5.Size = new Size(78, 18);
+        lblName5.Size = new Size(78, 31);
+        lblName5.TabIndex = 1;
         lblName5.Text = "Iker M.";
         lblName5.TextAlign = ContentAlignment.TopCenter;
-
         // 
-        // pnlDivider (Marra banatzailea)
+        // pnlDivider
         // 
         pnlDivider.BackColor = Color.FromArgb(226, 232, 240);
         pnlDivider.Location = new Point(20, 95);
         pnlDivider.Name = "pnlDivider";
         pnlDivider.Size = new Size(400, 1);
         pnlDivider.TabIndex = 1;
-
         // 
-        // lblPinTitle ("SARTU PIN ZENBAKIA")
+        // lblPinTitle
         // 
         lblPinTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblPinTitle.ForeColor = Color.FromArgb(30, 41, 59);
-        lblPinTitle.Location = new Point(20, 106);
+        lblPinTitle.Location = new Point(20, 164);
         lblPinTitle.Name = "lblPinTitle";
-        lblPinTitle.Size = new Size(400, 24);
+        lblPinTitle.Size = new Size(400, 47);
+        lblPinTitle.TabIndex = 2;
         lblPinTitle.Text = "SARTU PIN ZENBAKIA";
         lblPinTitle.TextAlign = ContentAlignment.MiddleCenter;
-        lblPinTitle.TabIndex = 2;
-
         // 
-        // pnlPinDots (4 PIN borobilak)
+        // pnlPinDots
         // 
         pnlPinDots.Controls.Add(lblDot1);
         pnlPinDots.Controls.Add(lblDot2);
         pnlPinDots.Controls.Add(lblDot3);
         pnlPinDots.Controls.Add(lblDot4);
-        pnlPinDots.Location = new Point(130, 134);
+        pnlPinDots.Location = new Point(127, 227);
         pnlPinDots.Name = "pnlPinDots";
         pnlPinDots.Size = new Size(180, 26);
         pnlPinDots.TabIndex = 3;
-
+        // 
+        // lblDot1
+        // 
         lblDot1.Location = new Point(25, 4);
         lblDot1.Name = "lblDot1";
         lblDot1.Size = new Size(18, 18);
+        lblDot1.TabIndex = 0;
+        // 
+        // lblDot2
+        // 
         lblDot2.Location = new Point(65, 4);
         lblDot2.Name = "lblDot2";
         lblDot2.Size = new Size(18, 18);
+        lblDot2.TabIndex = 1;
+        // 
+        // lblDot3
+        // 
         lblDot3.Location = new Point(105, 4);
         lblDot3.Name = "lblDot3";
         lblDot3.Size = new Size(18, 18);
+        lblDot3.TabIndex = 2;
+        // 
+        // lblDot4
+        // 
         lblDot4.Location = new Point(145, 4);
         lblDot4.Name = "lblDot4";
         lblDot4.Size = new Size(18, 18);
-
+        lblDot4.TabIndex = 3;
         // 
-        // pnlKeypad (3x4 Matrizea)
+        // pnlKeypad
         // 
         pnlKeypad.ColumnCount = 3;
         pnlKeypad.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         pnlKeypad.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
         pnlKeypad.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
-        pnlKeypad.RowCount = 4;
-        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.Controls.Add(btnKey1, 0, 0);
         pnlKeypad.Controls.Add(btnKey2, 1, 0);
         pnlKeypad.Controls.Add(btnKey3, 2, 0);
@@ -334,25 +387,207 @@ partial class LoginForm
         pnlKeypad.Controls.Add(btnKeyClear, 0, 3);
         pnlKeypad.Controls.Add(btnKey0, 1, 3);
         pnlKeypad.Controls.Add(btnKeyBack, 2, 3);
-        pnlKeypad.Location = new Point(45, 166);
+        pnlKeypad.Location = new Point(45, 277);
         pnlKeypad.Name = "pnlKeypad";
+        pnlKeypad.RowCount = 4;
+        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+        pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.Size = new Size(350, 255);
         pnlKeypad.TabIndex = 4;
-
-        // Botoien estiloak
-        ConfigureKeypadButton(btnKey1, "1");
-        ConfigureKeypadButton(btnKey2, "2");
-        ConfigureKeypadButton(btnKey3, "3");
-        ConfigureKeypadButton(btnKey4, "4");
-        ConfigureKeypadButton(btnKey5, "5");
-        ConfigureKeypadButton(btnKey6, "6");
-        ConfigureKeypadButton(btnKey7, "7");
-        ConfigureKeypadButton(btnKey8, "8");
-        ConfigureKeypadButton(btnKey9, "9");
-        ConfigureKeypadButton(btnKeyClear, "X Clear");
-        ConfigureKeypadButton(btnKey0, "0");
-        ConfigureKeypadButton(btnKeyBack, "<-");
-
+        // 
+        // btnKey1
+        // 
+        btnKey1.BackColor = Color.White;
+        btnKey1.Cursor = Cursors.Hand;
+        btnKey1.Dock = DockStyle.Fill;
+        btnKey1.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey1.FlatStyle = FlatStyle.Flat;
+        btnKey1.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey1.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey1.Location = new Point(3, 3);
+        btnKey1.Name = "btnKey1";
+        btnKey1.Size = new Size(110, 57);
+        btnKey1.TabIndex = 0;
+        btnKey1.Text = "1";
+        btnKey1.UseVisualStyleBackColor = false;
+        // 
+        // btnKey2
+        // 
+        btnKey2.BackColor = Color.White;
+        btnKey2.Cursor = Cursors.Hand;
+        btnKey2.Dock = DockStyle.Fill;
+        btnKey2.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey2.FlatStyle = FlatStyle.Flat;
+        btnKey2.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey2.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey2.Location = new Point(119, 3);
+        btnKey2.Name = "btnKey2";
+        btnKey2.Size = new Size(110, 57);
+        btnKey2.TabIndex = 1;
+        btnKey2.Text = "2";
+        btnKey2.UseVisualStyleBackColor = false;
+        // 
+        // btnKey3
+        // 
+        btnKey3.BackColor = Color.White;
+        btnKey3.Cursor = Cursors.Hand;
+        btnKey3.Dock = DockStyle.Fill;
+        btnKey3.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey3.FlatStyle = FlatStyle.Flat;
+        btnKey3.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey3.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey3.Location = new Point(235, 3);
+        btnKey3.Name = "btnKey3";
+        btnKey3.Size = new Size(112, 57);
+        btnKey3.TabIndex = 2;
+        btnKey3.Text = "3";
+        btnKey3.UseVisualStyleBackColor = false;
+        // 
+        // btnKey4
+        // 
+        btnKey4.BackColor = Color.White;
+        btnKey4.Cursor = Cursors.Hand;
+        btnKey4.Dock = DockStyle.Fill;
+        btnKey4.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey4.FlatStyle = FlatStyle.Flat;
+        btnKey4.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey4.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey4.Location = new Point(3, 66);
+        btnKey4.Name = "btnKey4";
+        btnKey4.Size = new Size(110, 57);
+        btnKey4.TabIndex = 3;
+        btnKey4.Text = "4";
+        btnKey4.UseVisualStyleBackColor = false;
+        // 
+        // btnKey5
+        // 
+        btnKey5.BackColor = Color.White;
+        btnKey5.Cursor = Cursors.Hand;
+        btnKey5.Dock = DockStyle.Fill;
+        btnKey5.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey5.FlatStyle = FlatStyle.Flat;
+        btnKey5.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey5.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey5.Location = new Point(119, 66);
+        btnKey5.Name = "btnKey5";
+        btnKey5.Size = new Size(110, 57);
+        btnKey5.TabIndex = 4;
+        btnKey5.Text = "5";
+        btnKey5.UseVisualStyleBackColor = false;
+        // 
+        // btnKey6
+        // 
+        btnKey6.BackColor = Color.White;
+        btnKey6.Cursor = Cursors.Hand;
+        btnKey6.Dock = DockStyle.Fill;
+        btnKey6.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey6.FlatStyle = FlatStyle.Flat;
+        btnKey6.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey6.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey6.Location = new Point(235, 66);
+        btnKey6.Name = "btnKey6";
+        btnKey6.Size = new Size(112, 57);
+        btnKey6.TabIndex = 5;
+        btnKey6.Text = "6";
+        btnKey6.UseVisualStyleBackColor = false;
+        // 
+        // btnKey7
+        // 
+        btnKey7.BackColor = Color.White;
+        btnKey7.Cursor = Cursors.Hand;
+        btnKey7.Dock = DockStyle.Fill;
+        btnKey7.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey7.FlatStyle = FlatStyle.Flat;
+        btnKey7.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey7.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey7.Location = new Point(3, 129);
+        btnKey7.Name = "btnKey7";
+        btnKey7.Size = new Size(110, 57);
+        btnKey7.TabIndex = 6;
+        btnKey7.Text = "7";
+        btnKey7.UseVisualStyleBackColor = false;
+        // 
+        // btnKey8
+        // 
+        btnKey8.BackColor = Color.White;
+        btnKey8.Cursor = Cursors.Hand;
+        btnKey8.Dock = DockStyle.Fill;
+        btnKey8.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey8.FlatStyle = FlatStyle.Flat;
+        btnKey8.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey8.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey8.Location = new Point(119, 129);
+        btnKey8.Name = "btnKey8";
+        btnKey8.Size = new Size(110, 57);
+        btnKey8.TabIndex = 7;
+        btnKey8.Text = "8";
+        btnKey8.UseVisualStyleBackColor = false;
+        // 
+        // btnKey9
+        // 
+        btnKey9.BackColor = Color.White;
+        btnKey9.Cursor = Cursors.Hand;
+        btnKey9.Dock = DockStyle.Fill;
+        btnKey9.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey9.FlatStyle = FlatStyle.Flat;
+        btnKey9.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey9.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey9.Location = new Point(235, 129);
+        btnKey9.Name = "btnKey9";
+        btnKey9.Size = new Size(112, 57);
+        btnKey9.TabIndex = 8;
+        btnKey9.Text = "9";
+        btnKey9.UseVisualStyleBackColor = false;
+        // 
+        // btnKeyClear
+        // 
+        btnKeyClear.BackColor = Color.FromArgb(254, 242, 242);
+        btnKeyClear.Cursor = Cursors.Hand;
+        btnKeyClear.Dock = DockStyle.Fill;
+        btnKeyClear.FlatAppearance.BorderColor = Color.FromArgb(254, 202, 202);
+        btnKeyClear.FlatStyle = FlatStyle.Flat;
+        btnKeyClear.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+        btnKeyClear.ForeColor = Color.FromArgb(220, 38, 38);
+        btnKeyClear.Location = new Point(3, 192);
+        btnKeyClear.Name = "btnKeyClear";
+        btnKeyClear.Size = new Size(110, 60);
+        btnKeyClear.TabIndex = 9;
+        btnKeyClear.Text = "X Clear";
+        btnKeyClear.UseVisualStyleBackColor = false;
+        // 
+        // btnKey0
+        // 
+        btnKey0.BackColor = Color.White;
+        btnKey0.Cursor = Cursors.Hand;
+        btnKey0.Dock = DockStyle.Fill;
+        btnKey0.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKey0.FlatStyle = FlatStyle.Flat;
+        btnKey0.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey0.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKey0.Location = new Point(119, 192);
+        btnKey0.Name = "btnKey0";
+        btnKey0.Size = new Size(110, 60);
+        btnKey0.TabIndex = 10;
+        btnKey0.Text = "0";
+        btnKey0.UseVisualStyleBackColor = false;
+        // 
+        // btnKeyBack
+        // 
+        btnKeyBack.BackColor = Color.FromArgb(248, 250, 252);
+        btnKeyBack.Cursor = Cursors.Hand;
+        btnKeyBack.Dock = DockStyle.Fill;
+        btnKeyBack.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        btnKeyBack.FlatStyle = FlatStyle.Flat;
+        btnKeyBack.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKeyBack.ForeColor = Color.FromArgb(30, 41, 59);
+        btnKeyBack.Location = new Point(235, 192);
+        btnKeyBack.Name = "btnKeyBack";
+        btnKeyBack.Size = new Size(112, 60);
+        btnKeyBack.TabIndex = 11;
+        btnKeyBack.Text = "<-";
+        btnKeyBack.UseVisualStyleBackColor = false;
         // 
         // lblStatus
         // 
@@ -361,25 +596,23 @@ partial class LoginForm
         lblStatus.Location = new Point(20, 430);
         lblStatus.Name = "lblStatus";
         lblStatus.Size = new Size(400, 22);
-        lblStatus.TextAlign = ContentAlignment.MiddleCenter;
         lblStatus.TabIndex = 5;
-
+        lblStatus.TextAlign = ContentAlignment.MiddleCenter;
         // 
-        // btnLogin ("HASI SAIOA")
+        // btnLogin
         // 
         btnLogin.BackColor = Color.FromArgb(136, 19, 55);
+        btnLogin.Cursor = Cursors.Hand;
         btnLogin.FlatAppearance.BorderSize = 0;
         btnLogin.FlatStyle = FlatStyle.Flat;
         btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnLogin.ForeColor = Color.White;
-        btnLogin.Location = new Point(45, 462);
+        btnLogin.Location = new Point(45, 538);
         btnLogin.Name = "btnLogin";
         btnLogin.Size = new Size(350, 52);
+        btnLogin.TabIndex = 6;
         btnLogin.Text = "HASI SAIOA";
         btnLogin.UseVisualStyleBackColor = false;
-        btnLogin.Cursor = Cursors.Hand;
-        btnLogin.TabIndex = 6;
-
         // 
         // LoginForm
         // 
@@ -392,6 +625,7 @@ partial class LoginForm
         Name = "LoginForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Saioa Hasi (TPV Tablet)";
+        Load += LoginForm_Load;
         pnlTopBar.ResumeLayout(false);
         pnlTopBar.PerformLayout();
         pnlCard.ResumeLayout(false);
