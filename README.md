@@ -6,7 +6,7 @@ Jatetxearen Kudeaketa Sistema: 3 Mailako Arkitektura eta IA Agente Kolaboratzail
 
 ---
 
-## 📖 Deskribapena
+## Deskribapena
 
 Proiektu honek jatetxe baten kudeaketa sistema osoa barneratzen du:
 * **Datu-Basea (MySQL 8.0 InnoDB):** Taulak, errezetak/eskandalloak, CHECK murrizketak eta errenkada-mailako blokeo pesimistak (`SELECT ... FOR UPDATE`).
@@ -18,7 +18,7 @@ Proiektu honek jatetxe baten kudeaketa sistema osoa barneratzen du:
 
 ---
 
-## 🛠️ Arkitektura eta Gidak
+## Arkitektura eta Gidak
 
 * [Arkitektura Gida Osoa](JATETXEA_AGENTEEN_ARKITEKTURA_GIDA.md)
 * [Datu-Basearen Eskema (SQL)](espezifikazioak/datu_basea_schema.sql)
@@ -29,10 +29,11 @@ Proiektu honek jatetxe baten kudeaketa sistema osoa barneratzen du:
 
 ---
 
-## 🚀 Azkar Hasteko (Datu-basea)
+## Azkar Hasteko (Datu-basea)
 
 ```bash
 docker compose up -d
 ```
 * Portua: `3308`
 * Datu-basea: `jatetxea_db` (root / root)
+
