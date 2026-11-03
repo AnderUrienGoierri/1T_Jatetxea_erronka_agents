@@ -47,8 +47,21 @@ Dokumentu honek orain arte egindako aurrerapen, erabaki tekniko, arau eta hurren
 
 ---
 
-## 5. Hurrengo Urratsak (Frontend eta Desktop Garapena)
+## 5. Web Frontend-a (web_php/) - EGOERA: EGINDA ETA EGIAZTATUTA
 
-1. **3. Urratsa (Web-Frontend-Agent):** `web_php/` garatzea bezeroen erreserbak kudeatzeko eta 409 Conflict mezuak tratatzeko (agortutako platerak desgaituz).
-2. **4. Urratsa (Desktop-CSharp-Agent):** `desktop_csharp/` garatzea jantokiko zerbitzariaren tableta/TPV interfazerako (PIN saio-hasiera, mahai mapa koloreekin, komandak eta karrito interaktiboa).
-3. **5. Urratsa (Desktop-JavaFX-Agent):** `desktop_javafx/` garatzea sukaldeko KDS pantailarako eta biltegiko erosketa-zerrendarako.
+* **Teknologia:** HTML5, CSS3 modernoa eta sentikorra, JavaScript asinkronoa (Fetch) eta PHP.
+* **Fitxategiak:**
+  - `web_php/index.php`: Interfaze orokorra (Goiburua, Hero, Karta kategoria iragazkiekin, Erreserba panela, Iritziak estatistikekin eta Kontaktua).
+  - `web_php/assets/css/style.css`: Estilo garbiak, paleta profesionala, txartel sentikorrak, erreserba inprimakia eta jakinarazpen alertak.
+  - `web_php/assets/js/app.js`: REST APIarekiko konexio asinkronoa, stock erabilgarritasunaren arabera agortutako platerak automatikoki desgaitzea, 409 Conflict gatazken kudeaketa atsegina eta balorazio sistema.
+
+---
+
+## 6. Hurrengo Urratsak (Desktop Aplikazioak)
+
+1. **4. Urratsa (Desktop-CSharp-Agent):** `desktop_csharp/` garatzea jantokiko zerbitzariaren tableta/TPV interfazerako (.NET 10 WinForms):
+   - PIN bidezko saio-hasiera (`POST /api/v1/langileak/login`).
+   - Mahaien mapa koloreen arabera (`Libre`, `Okupatuta`, `Erreserbatuta`, `Garbitzen`).
+   - Mahaikide kopuruaren hautatzaile modala.
+   - Produktuen katalogoa eta komandaren karrito interaktiboa (`POST /api/v1/eskaerak/{id}/lerroak`).
+2. **5. Urratsa (Desktop-JavaFX-Agent):** `desktop_javafx/` garatzea sukaldeko KDS pantailarako eta biltegiko erosketa-zerrendarako (Java 21 JavaFX MVC).

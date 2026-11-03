@@ -25,7 +25,12 @@ Dokumentu honek elkarrizketetan zehar hartutako erabaki, arkitektura, egiaztapen
 - Gatazken kontrola: 1062 errorea 409 Conflict bihurtua.
 - Stock deskontu automatikoa platerak eskatzean errezeta eta proporzioen arabera.
 
-## 5. Hurrengo Urratsak
-- 3. Urratsa: `Web-Frontend-Agent` (`web_php/`)
+## 5. Web Frontend-a (web_php/) - Garatuta eta Egiaztatuta
+- HTML5, CSS3 sentikorra eta JavaScript asinkronoa (Fetch) PHP ingurunean.
+- Karta dinamikoa: lehengaien stockaren arabera anoa kalkulua eta agortutako platerak automatikoki desgaitzea.
+- Mahai erreserba sistema interaktiboa: data, txanda, mahaia eta bezeroaren datuak, 409 Conflict gatazken kudeaketa atseginarekin.
+- Bezeroen iritziak eta izar bidezko balorazio estatistikak.
+
+## 6. Hurrengo Urratsak
 - 4. Urratsa: `Desktop-CSharp-Agent` (`desktop_csharp/`)
 - 5. Urratsa: `Desktop-JavaFX-Agent` (`desktop_javafx/`)
