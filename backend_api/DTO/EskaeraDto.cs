@@ -36,6 +36,8 @@ public class EskaeraSortuDto
 
     [Required]
     public int LangileaId { get; set; }
+
+    public int PertsonaKopurua { get; set; } = 2;
 }
 
 public class EskaeraLerroaGehituDto

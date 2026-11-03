@@ -147,8 +147,10 @@ public class EskaerakController : BaseApiKontroladorea
         try
         {
             // Egiaztatu mahaia aktibo dagoela eta blokeatu
-            const string sqlMahaia = "SELECT zenbakia, egoera, ezabatua FROM mahaiak WHERE id = @mId FOR UPDATE;";
+            const string sqlMahaia = "SELECT zenbakia, edukiera, egoera, ezabatua FROM mahaiak WHERE id = @mId FOR UPDATE;";
             int mahaiZenbakia;
+            int edukiera;
+            string unekoEgoera;
             await using (var cmdM = new MySqlCommand(sqlMahaia, kon, tx))
             {
                 cmdM.Parameters.AddWithValue("@mId", dto.MahaiaId);
@@ -164,6 +166,22 @@ public class EskaerakController : BaseApiKontroladorea
                     return ConflictError("Mahaia desgaituta dago.");
                 }
                 mahaiZenbakia = readerM.GetInt32("zenbakia");
+                edukiera = readerM.GetInt32("edukiera");
+                unekoEgoera = readerM.GetString("egoera");
+            }
+
+            // 1. Egoera balidatu: ezin da eskaera berria ireki mahaia okupatuta badago
+            if (unekoEgoera == "Okupatuta")
+            {
+                await tx.RollbackAsync();
+                return ConflictError($"{mahaiZenbakia}. mahaia okupatuta dago dagoeneko.");
+            }
+
+            // 2. Aforoa balidatu: pertsona kopuruak ezin du mahaiaren edukiera gainditu
+            if (dto.PertsonaKopurua > 0 && dto.PertsonaKopurua > edukiera)
+            {
+                await tx.RollbackAsync();
+                return BadRequestError($"Mahaiaren aforoa gainditu da: {mahaiZenbakia}. mahaiak gehienez {edukiera} lagunentzako lekua du ({dto.PertsonaKopurua} eskatu dira).");
             }
 
             // Egiaztatu langilea aktibo dagoela

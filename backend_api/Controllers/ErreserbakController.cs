@@ -209,6 +209,13 @@ public class ErreserbakController : BaseApiKontroladorea
                 kokapena = readerM.GetString("kokapena");
             }
 
+            // Balidatu aforoa / gehieneko edukiera
+            if (dto.PertsonaKopurua > edukiera)
+            {
+                await tx.RollbackAsync();
+                return BadRequestError($"Mahaiaren aforoa gainditu da: {mahaiZenbakia}. mahaiak gehienez {edukiera} lagunentzako lekua du ({dto.PertsonaKopurua} pertsona eskatu dira).");
+            }
+
             // Data eta txanda berean erreserbarik dagoen egiaztatu (SELECT ... FOR UPDATE)
             const string sqlCheckErreserba = @"
                 SELECT id FROM erreserbak 
