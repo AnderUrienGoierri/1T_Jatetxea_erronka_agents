@@ -18,18 +18,18 @@ public partial class LoginForm : Form
         _api = new ApiService();
 
         // Zentratze dinamikoa tamaina aldatzean
-        Resize += (s, e) => ZentratuTxartela();
+        Resize += (s, e) => ZentratuGuztia();
         Load += async (s, e) =>
         {
-            ZentratuTxartela();
+            ZentratuGuztia();
             EraikiTeklatua();
             await KargatuLangileakAsync();
         };
 
-        // Goiko barraren beheko ertza margotu
+        // Goiko barraren beheko marra margotu
         pnlTopBar.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1f);
+            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
             e.Graphics.DrawLine(pen, 0, pnlTopBar.Height - 1, pnlTopBar.Width, pnlTopBar.Height - 1);
         };
 
@@ -46,8 +46,8 @@ public partial class LoginForm : Form
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             int count = 4;
-            int diameter = 18;
-            int spacing = 16;
+            int diameter = 14;
+            int spacing = 14;
             int totalWidth = (count * diameter) + ((count - 1) * spacing);
             int startX = (pnlPinDots.Width - totalWidth) / 2;
             int y = (pnlPinDots.Height - diameter) / 2;
@@ -73,13 +73,20 @@ public partial class LoginForm : Form
         btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
     }
 
-    private void ZentratuTxartela()
+    private void ZentratuGuztia()
     {
-        if (pnlCard == null || pnlTopBar == null) return;
-        int x = Math.Max(10, (ClientSize.Width - pnlCard.Width) / 2);
-        int erabilgarriAltua = ClientSize.Height - pnlTopBar.Height;
-        int y = pnlTopBar.Height + Math.Max(10, (erabilgarriAltua - pnlCard.Height) / 2);
-        pnlCard.Location = new Point(x, y);
+        if (pnlTopBar != null)
+        {
+            lblZerbitzariak.Location = new Point((pnlTopBar.Width - lblZerbitzariak.Width) / 2, (pnlTopBar.Height - lblZerbitzariak.Height) / 2);
+        }
+
+        if (pnlCard != null && pnlTopBar != null)
+        {
+            int x = Math.Max(10, (ClientSize.Width - pnlCard.Width) / 2);
+            int erabilgarria = ClientSize.Height - pnlTopBar.Height;
+            int y = pnlTopBar.Height + Math.Max(15, (erabilgarria - pnlCard.Height) / 2);
+            pnlCard.Location = new Point(x, y);
+        }
     }
 
     private void EraikiTeklatua()
@@ -99,8 +106,8 @@ public partial class LoginForm : Form
             {
                 Text = txt,
                 Dock = DockStyle.Fill,
-                Font = txt.Length > 2 ? new Font("Segoe UI", 11F, FontStyle.Bold) : new Font("Segoe UI", 16F, FontStyle.Bold),
-                Margin = new Padding(5),
+                Font = txt.Length > 2 ? new Font("Segoe UI", 10F, FontStyle.Bold) : new Font("Segoe UI", 14F, FontStyle.Bold),
+                Margin = new Padding(4),
                 BackColor = txt switch
                 {
                     "X Clear" => Color.FromArgb(254, 242, 242),
@@ -141,7 +148,7 @@ public partial class LoginForm : Form
             };
         }
 
-        // Gehienez lehen 5ak erakutsi zirriborroaren arabera
+        // Lehen 5ak erakutsi zirriborroaren arabera
         var bistaratzekoak = _langileak.Take(5).ToList();
 
         foreach (var l in bistaratzekoak)
@@ -150,7 +157,7 @@ public partial class LoginForm : Form
             pnlAvatars.Controls.Add(avatarCard);
         }
 
-        // Lehenengoa (Aitor) lehenetsi zirriborroan bezala
+        // Lehenengoa (Aitor B.) lehenetsi zirriborroan bezala
         if (bistaratzekoak.Count > 0)
         {
             HautatuLangilea(bistaratzekoak[0]);
@@ -161,15 +168,15 @@ public partial class LoginForm : Form
     {
         var item = new Panel
         {
-            Width = 80,
-            Height = 82,
+            Width = 70,
+            Height = 74,
             Margin = new Padding(2, 2, 2, 2),
             BackColor = Color.Transparent,
             Cursor = Cursors.Hand,
             Tag = langilea
         };
 
-        // Zirriborroko izen laburtua prestatu (adib. "Aitor B.")
+        // Zirriborroko izen laburtua (adib. "Aitor B.")
         string izenLaburtua = langilea.Izena;
         var zatiak = langilea.Izena.Split(' ');
         if (zatiak.Length >= 2 && !langilea.Izena.Contains('.'))
@@ -183,8 +190,8 @@ public partial class LoginForm : Form
 
         var pnlCircle = new Panel
         {
-            Location = new Point(16, 4),
-            Size = new Size(48, 48),
+            Location = new Point(14, 2),
+            Size = new Size(42, 42),
             BackColor = Color.Transparent
         };
 
@@ -192,7 +199,7 @@ public partial class LoginForm : Form
         {
             Dock = DockStyle.Fill,
             Text = initials,
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
             ForeColor = Color.FromArgb(71, 85, 105),
             TextAlign = ContentAlignment.MiddleCenter
         };
@@ -202,30 +209,28 @@ public partial class LoginForm : Form
         var lblName = new Label
         {
             Text = izenLaburtua,
-            Font = new Font("Segoe UI", 8.5F, FontStyle.Regular),
+            Font = new Font("Segoe UI", 8F, FontStyle.Regular),
             ForeColor = Color.FromArgb(51, 65, 85),
-            Location = new Point(0, 56),
-            Size = new Size(80, 20),
+            Location = new Point(0, 48),
+            Size = new Size(70, 20),
             TextAlign = ContentAlignment.TopCenter,
             AutoEllipsis = true
         };
         item.Controls.Add(lblName);
 
-        // Zirriborroko borobila margotu (hautatuta badago borobil urdin/bordelegina inguruan)
+        // Zirriborroko borobila margotu
         pnlCircle.Paint += (s, e) =>
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             bool isSelected = _aukeratutakoLangilea?.Id == langilea.Id;
 
-            // Barruko hondo leuna
             using var bgBrush = new SolidBrush(isSelected ? Color.FromArgb(239, 246, 255) : Color.FromArgb(241, 245, 249));
-            e.Graphics.FillEllipse(bgBrush, 2, 2, 43, 43);
+            e.Graphics.FillEllipse(bgBrush, 2, 2, 38, 38);
 
-            // Kanpoko ertza (hautatua denean zirriborroko borobil urdina)
             var ertzAkolorea = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(203, 213, 225);
             float ertzAStroked = isSelected ? 2.5f : 1.2f;
             using var pen = new Pen(ertzAkolorea, ertzAStroked);
-            e.Graphics.DrawEllipse(pen, 2, 2, 43, 43);
+            e.Graphics.DrawEllipse(pen, 2, 2, 38, 38);
         };
 
         void OnClick(object? s, EventArgs e) => HautatuLangilea(langilea);
@@ -244,7 +249,7 @@ public partial class LoginForm : Form
         pnlPinDots.Invalidate();
         lblStatus.Text = "";
 
-        // Avatar guztien borobilak birbalidatu
+        // Avatar borobilak birbalidatu
         foreach (Control c in pnlAvatars.Controls)
         {
             foreach (Control sub in c.Controls)
