@@ -84,47 +84,6 @@ public partial class LoginForm : Form
 
     private void LotuTeklatuBotoiak()
     {
-        btnKey1.Text = "1";
-        btnKey2.Text = "2";
-        btnKey3.Text = "3";
-        btnKey4.Text = "4";
-        btnKey5.Text = "5";
-        btnKey6.Text = "6";
-        btnKey7.Text = "7";
-        btnKey8.Text = "8";
-        btnKey9.Text = "9";
-        btnKeyClear.Text = "X Clear";
-        btnKey0.Text = "0";
-        btnKeyBack.Text = "<-";
-
-        Button[] zenbakiak = { btnKey1, btnKey2, btnKey3, btnKey4, btnKey5, btnKey6, btnKey7, btnKey8, btnKey9, btnKey0 };
-        foreach (var b in zenbakiak)
-        {
-            b.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            b.ForeColor = Color.FromArgb(30, 41, 59);
-            b.BackColor = Color.White;
-            b.FlatStyle = FlatStyle.Flat;
-            b.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
-            b.FlatAppearance.BorderSize = 1;
-            b.Cursor = Cursors.Hand;
-        }
-
-        btnKeyClear.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        btnKeyClear.ForeColor = Color.FromArgb(220, 38, 38);
-        btnKeyClear.BackColor = Color.FromArgb(254, 242, 242);
-        btnKeyClear.FlatStyle = FlatStyle.Flat;
-        btnKeyClear.FlatAppearance.BorderColor = Color.FromArgb(254, 202, 202);
-        btnKeyClear.FlatAppearance.BorderSize = 1;
-        btnKeyClear.Cursor = Cursors.Hand;
-
-        btnKeyBack.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-        btnKeyBack.ForeColor = Color.FromArgb(30, 41, 59);
-        btnKeyBack.BackColor = Color.FromArgb(248, 250, 252);
-        btnKeyBack.FlatStyle = FlatStyle.Flat;
-        btnKeyBack.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
-        btnKeyBack.FlatAppearance.BorderSize = 1;
-        btnKeyBack.Cursor = Cursors.Hand;
-
         btnKey1.Click += (s, e) => KeypadBotoiaKlikatua("1");
         btnKey2.Click += (s, e) => KeypadBotoiaKlikatua("2");
         btnKey3.Click += (s, e) => KeypadBotoiaKlikatua("3");
@@ -327,13 +286,12 @@ public partial class LoginForm : Form
         }
     }
 
-    private void LoginForm_Load(object sender, EventArgs e)
+    private void btnKeyClear_Click(object? sender, EventArgs e)
     {
-
+        KeypadBotoiaKlikatua("X Clear");
     }
 
-    private void pnlTopBar_Paint(object sender, PaintEventArgs e)
+    private void LoginForm_Load(object? sender, EventArgs e)
     {
-
     }
 }
