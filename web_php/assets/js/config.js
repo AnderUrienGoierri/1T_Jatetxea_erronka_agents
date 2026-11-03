@@ -3,9 +3,11 @@
  */
 
 const rawBase = window.API_BASE_URL;
+// host.docker.internal baletor, automatikoki localhost-era bihurtu nabigatzailean
+const sanitizedBase = (rawBase || "").replace("host.docker.internal", "localhost");
 const API_BASE =
-  rawBase && !rawBase.includes("<?php")
-    ? rawBase
+  sanitizedBase && !sanitizedBase.includes("<?php")
+    ? sanitizedBase
     : "http://localhost:5000/api/v1";
 
 /**
@@ -17,16 +19,16 @@ async function egiaztatuApiEgoera() {
 
   try {
     const rootUrl = API_BASE.replace("/api/v1", "");
-    const res = await fetch(rootUrl);
+    const res = await fetch(rootUrl, { mode: "cors" });
     if (res.ok) {
       badge.className = "api-status-badge online";
-      badge.textContent = "REST API konektatuta";
+      badge.textContent = "API Linean";
     } else {
-      throw new Error("Errorea");
+      throw new Error("API erantzun ez-zuzena");
     }
-  } catch {
+  } catch (err) {
     badge.className = "api-status-badge offline";
-    badge.textContent = "REST API deskonektatuta (localhost:5000)";
+    badge.textContent = "API Deskonektatuta";
   }
 }
 
@@ -49,14 +51,11 @@ function ezkutatuAlerta(elementua) {
 }
 
 /**
- * XSS ahultasunak saihesteko HTML karaktere bereziak ihes egiten ditu.
+ * HTML karaktere bereziak segurtasunez eskapatzen ditu XSS saihesteko.
  */
-function eskapatuHtml(str) {
-  if (!str) return "";
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+function eskapatuHtml(testua) {
+  if (!testua) return "";
+  const div = document.createElement("div");
+  div.textContent = testua;
+  return div.innerHTML;
 }

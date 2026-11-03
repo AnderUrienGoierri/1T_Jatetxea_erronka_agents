@@ -5,6 +5,12 @@
  * @var string $api_base_url
  * @var bool $api_online
  */
+
+// Nabigatzailearentzako (bezeroa) API helbidea: Docker barruko 'host.docker.internal'
+// ordezkatzen dugu 'localhost'-ekin, nabigatzaileak errore gabe atzitu dezan.
+$client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.internal') !== false)
+    ? str_replace('host.docker.internal', 'localhost', $api_base_url)
+    : ($api_base_url ?? 'http://localhost:5000/api/v1');
 ?>
 <!DOCTYPE html>
 <html lang="eu">
@@ -15,8 +21,8 @@
     <link rel="icon" type="image/svg+xml" href="assets/img/t1_logo.svg">
     <link rel="stylesheet" href="assets/css/style.css">
     <script>
-        // Bezeroaren JavaScript logikari API helbidea pasa
-        window.API_BASE_URL = "<?php echo htmlspecialchars($api_base_url ?? '', ENT_QUOTES, 'UTF-8'); ?>";
+        // Bezeroaren JavaScript logikari API helbidea pasa (nabigatzailetik erabilgarria)
+        window.API_BASE_URL = "<?php echo htmlspecialchars($client_api_url, ENT_QUOTES, 'UTF-8'); ?>";
     </script>
 </head>
 <body>
