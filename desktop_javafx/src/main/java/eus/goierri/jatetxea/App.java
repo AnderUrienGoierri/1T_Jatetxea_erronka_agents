@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * Sukaldeko KDS eta Biltegiko JavaFX Interfaze Nagusia (MVC).
+ * Sukaldeko KDS, Barrako BDS eta Biltegiko JavaFX Interfaze Nagusia (MVC).
  */
 public class App extends Application {
 
@@ -19,7 +19,7 @@ public class App extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root, 1180, 750);
 
-        stage.setTitle("T1 Jatetxea - Sukaldea eta Biltegia (KDS eta Stock)");
+        stage.setTitle("T1 Jatetxea - Sukaldea, Barra eta Biltegia (KDS, BDS eta Stock)");
         stage.setMinWidth(960);
         stage.setMinHeight(620);
         stage.setScene(scene);

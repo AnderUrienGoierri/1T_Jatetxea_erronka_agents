@@ -43,10 +43,17 @@ public partial class EskaeraForm : Form
 
     private void KonfiguratuInterfazea()
     {
-        Text = $"T1 Jatetxea - Komanda Berria - Mahaia {_mahaia.Zenbakia}";
+        Text = _dagoenekoEskaeraId.HasValue
+            ? $"T1 Jatetxea - Platerak Gehitu - Mahaia {_mahaia.Zenbakia}"
+            : $"T1 Jatetxea - Komanda Berria - Mahaia {_mahaia.Zenbakia}";
         lblMahaiaTit.Text = $"T1 Jatetxea - Mahaia {_mahaia.Zenbakia}";
         lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_pertsonaKopurua} pax)";
         lblKomandaTit.Text = $"ESKAERA - Mahaia {_mahaia.Zenbakia}";
+
+        if (_dagoenekoEskaeraId.HasValue)
+        {
+            btnBidali.Text = "PLATERAK GEHITU";
+        }
 
         btnAtzera.Click += (s, e) => Close();
         btnBidali.Click += async (s, e) => await EskaeraBidaliAsync();
@@ -296,7 +303,9 @@ public partial class EskaeraForm : Form
 
     private void GehituKarritora(PlateraDto platera)
     {
-        var dagoena = _karritoa.FirstOrDefault(c => c.Platera.Id == platera.Id);
+        // Oharrik gabeko lerro berdina badago, kopurua gehitu.
+        // Oharra duen lerroa badago, lerro berri bat sortu (oharra desberdina izan daitekeelako).
+        var dagoena = _karritoa.FirstOrDefault(c => c.Platera.Id == platera.Id && string.IsNullOrWhiteSpace(c.Oharrak));
         if (dagoena != null)
         {
             dagoena.Kopurua++;
@@ -337,16 +346,16 @@ public partial class EskaeraForm : Form
     }
 
     /// <summary>
-    /// Zirriborroko (5-eskaera_produktuak_interfaazea.jpg) karrito txartela eraikitzen du
+    /// Zirriborroko (5-eskaera_produktuak_interfaazea.jpg) karrito txartela eraikitzen du oharrekin
     /// </summary>
     private Control SortuKarritoLerroa(CartItem item)
     {
         bool hasOharra = !string.IsNullOrWhiteSpace(item.Oharrak);
-        int cardHeight = hasOharra ? 122 : 92;
+        int cardHeight = hasOharra ? 138 : 118;
 
         var row = new Panel
         {
-            Width = 400,
+            Width = 390,
             Height = cardHeight,
             Margin = new Padding(0, 0, 0, 10),
             BackColor = Color.FromArgb(248, 250, 252)
@@ -355,7 +364,7 @@ public partial class EskaeraForm : Form
         row.Paint += (s, e) =>
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.2f);
+            using var pen = new Pen(hasOharra ? Color.FromArgb(252, 211, 77) : Color.FromArgb(226, 232, 240), 1.2f);
             e.Graphics.DrawRectangle(pen, 0, 0, row.Width - 1, row.Height - 1);
         };
 
@@ -363,15 +372,36 @@ public partial class EskaeraForm : Form
         var lblIzena = new Label
         {
             Text = $"{item.Platera.Izena} ({item.Platera.Prezioa:F2} €)",
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             Location = new Point(10, 8),
-            Size = new Size(346, 32),
+            Size = new Size(335, 30),
             AutoEllipsis = true,
             TextAlign = ContentAlignment.MiddleLeft,
             UseCompatibleTextRendering = false
         };
         row.Controls.Add(lblIzena);
+
+        // Kendu botoia [X]
+        var btnDel = new Button
+        {
+            Text = "X",
+            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            ForeColor = Color.FromArgb(148, 163, 184),
+            BackColor = Color.Transparent,
+            Location = new Point(350, 8),
+            Size = new Size(32, 30),
+            FlatStyle = FlatStyle.Flat,
+            Cursor = Cursors.Hand,
+            UseCompatibleTextRendering = false
+        };
+        btnDel.FlatAppearance.BorderSize = 0;
+        btnDel.Click += (s, e) =>
+        {
+            _karritoa.Remove(item);
+            EguneratuKarritoBistaratzea();
+        };
+        row.Controls.Add(btnDel);
 
         // Stepper: [-]  Kop  [+]  Zenbatekoa
         var btnMinus = new Button
@@ -380,8 +410,8 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
-            Location = new Point(10, 44),
-            Size = new Size(38, 36),
+            Location = new Point(10, 40),
+            Size = new Size(36, 34),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand,
             UseCompatibleTextRendering = false
@@ -398,10 +428,10 @@ public partial class EskaeraForm : Form
         var lblKop = new Label
         {
             Text = item.Kopurua.ToString(),
-            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 11.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(52, 44),
-            Size = new Size(38, 36),
+            Location = new Point(50, 40),
+            Size = new Size(36, 34),
             TextAlign = ContentAlignment.MiddleCenter,
             UseCompatibleTextRendering = false
         };
@@ -413,8 +443,8 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
-            Location = new Point(94, 44),
-            Size = new Size(38, 36),
+            Location = new Point(90, 40),
+            Size = new Size(36, 34),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand,
             UseCompatibleTextRendering = false
@@ -432,63 +462,113 @@ public partial class EskaeraForm : Form
             Text = $"{item.Azpitotala:F2} €",
             Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(144, 44),
-            Size = new Size(210, 36),
+            Location = new Point(136, 40),
+            Size = new Size(244, 34),
             TextAlign = ContentAlignment.MiddleLeft,
             UseCompatibleTextRendering = false
         };
         row.Controls.Add(lblLerroTotala);
 
-        // Kendu botoia [X]
-        var btnDel = new Button
+        // Oharra kudeatzeko atala (hasOharra ? bistaratu eta aldatu : gehitzeko botoia)
+        if (!hasOharra)
         {
-            Text = "X",
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(148, 163, 184),
-            BackColor = Color.Transparent,
-            Location = new Point(362, 8),
-            Size = new Size(30, 30),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            UseCompatibleTextRendering = false
-        };
-        btnDel.FlatAppearance.BorderSize = 0;
-        btnDel.Click += (s, e) =>
-        {
-            _karritoa.Remove(item);
-            EguneratuKarritoBistaratzea();
-        };
-        row.Controls.Add(btnDel);
-
-        // Oharraren panela (zirriborroko "Tipularik gabe ✏️")
-        if (hasOharra)
+            var btnGehituOharra = new Button
+            {
+                Text = "+ Oharra / Adierazpena gehitu (gazta gutxi, puntua...)",
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(2, 132, 199),
+                BackColor = Color.FromArgb(240, 249, 255),
+                Location = new Point(10, 78),
+                Size = new Size(370, 30),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(6, 0, 0, 0),
+                UseCompatibleTextRendering = false
+            };
+            btnGehituOharra.FlatAppearance.BorderColor = Color.FromArgb(186, 230, 253);
+            btnGehituOharra.Click += (s, e) => IrekiOharraModala(item);
+            row.Controls.Add(btnGehituOharra);
+        }
+        else
         {
             var pnlOharra = new Panel
             {
-                Location = new Point(10, 84),
-                Size = new Size(380, 30),
-                BackColor = Color.FromArgb(241, 245, 249)
+                Location = new Point(10, 78),
+                Size = new Size(370, 48),
+                BackColor = Color.FromArgb(254, 243, 199)
             };
             pnlOharra.Paint += (s, e) =>
             {
-                using var p = new Pen(Color.FromArgb(203, 213, 225), 1f);
+                using var p = new Pen(Color.FromArgb(252, 211, 77), 1f);
                 e.Graphics.DrawRectangle(p, 0, 0, pnlOharra.Width - 1, pnlOharra.Height - 1);
             };
 
             var lblOharra = new Label
             {
-                Text = $"{item.Oharrak}",
+                Text = $"Oharra: {item.Oharrak}",
                 Font = new Font("Segoe UI", 9F, FontStyle.Italic),
-                ForeColor = Color.FromArgb(71, 85, 105),
-                Dock = DockStyle.Fill,
+                ForeColor = Color.FromArgb(146, 64, 14),
+                Location = new Point(6, 2),
+                Size = new Size(270, 44),
                 TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(6, 0, 0, 0)
+                AutoEllipsis = true,
+                Cursor = Cursors.Hand,
+                UseCompatibleTextRendering = false
             };
+            lblOharra.Click += (s, e) => IrekiOharraModala(item);
             pnlOharra.Controls.Add(lblOharra);
+
+            var btnAldatu = new Button
+            {
+                Text = "Aldatu",
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(2, 132, 199),
+                BackColor = Color.White,
+                Location = new Point(280, 8),
+                Size = new Size(54, 30),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                UseCompatibleTextRendering = false
+            };
+            btnAldatu.FlatAppearance.BorderColor = Color.FromArgb(252, 211, 77);
+            btnAldatu.Click += (s, e) => IrekiOharraModala(item);
+            pnlOharra.Controls.Add(btnAldatu);
+
+            var btnKenduOharra = new Button
+            {
+                Text = "X",
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(220, 38, 38),
+                BackColor = Color.White,
+                Location = new Point(338, 8),
+                Size = new Size(26, 30),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                UseCompatibleTextRendering = false
+            };
+            btnKenduOharra.FlatAppearance.BorderColor = Color.FromArgb(252, 211, 77);
+            btnKenduOharra.Click += (s, e) =>
+            {
+                item.Oharrak = null;
+                EguneratuKarritoBistaratzea();
+            };
+            pnlOharra.Controls.Add(btnKenduOharra);
+
             row.Controls.Add(pnlOharra);
         }
 
         return row;
+    }
+
+    private void IrekiOharraModala(CartItem item)
+    {
+        using var modal = new OharraModal(item.Platera.Izena, item.Oharrak);
+        if (modal.ShowDialog(this) == DialogResult.OK)
+        {
+            item.Oharrak = string.IsNullOrWhiteSpace(modal.Oharra) ? null : modal.Oharra.Trim();
+            EguneratuKarritoBistaratzea();
+        }
     }
 
     private async Task EskaeraBidaliAsync()

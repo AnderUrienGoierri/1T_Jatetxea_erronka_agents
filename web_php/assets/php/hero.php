@@ -5,7 +5,7 @@
             <p>Euskal Okela Txuleta, Tolosako Babarrunak sakramentu guztiekin eta eguneko arrain freskoak. Gozatu esperientzia gastronomiko paregabeaz.</p>
             <div class="hero-buttons">
                 <a href="#erreserba" class="btn btn-primary">Mahaia Erreserbatu</a>
-                <a href="#karta" class="btn btn-secondary">Karta Arakatu</a>
+                <a href="#karta" class="btn btn-secondary">Karta Ikusi</a>
             </div>
         </div>
     </section>

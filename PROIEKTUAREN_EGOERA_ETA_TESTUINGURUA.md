@@ -100,9 +100,9 @@ Dokumentu honek proiektuaren egoera osoa, arkitektura erabakiak, inplementatutak
   * `api/`: `ApiClient` (Java 11 `HttpClient` asinkronoa, Jackson JSON analisia, errore kudeaketa eta konexio egoera).
   * `controller/`:
     * `SukaldeaController`: Sukaldeko KDS eskaera aktiboak eta platerak kudeatzeko (Sarrerakoak, Lehenak, Bigarrenak, Postreak). Plater bakoitzaren egoera aldatzeko botoiak (Zai, Martxan, Eginda) eta eskaera osoa eginda markatzeko botoia.
-    * `BarraController`: Barrako KDS pantaila bereizia, edariak eta kafeak bakarrik bistaratzeko eta prestatzeko (`Kategoria == 'Edaria'`).
+    * `BarraController`: Barrako BDS pantaila bereizia (Bar Display System), edariak eta kafeak bakarrik bistaratzeko eta prestatzeko (`Kategoria == 'Edaria'`).
     * `BiltegiaController`: Biltegiko lehengaien zerrenda osoa, uneko stocka, gutxieneko stocka, stock alertak gorriz eta albaranen bidezko sarrerak erregistratzeko inprimakia.
-    * `PantailaAldatzailea`: Goiko nabigazio-fitxak aldatzeko zerbitzua (`Sukaldea (KDS)`, `Barra (KDS)`, `Biltegia (Stocka)`).
+    * `PantailaAldatzailea`: Goiko nabigazio-fitxak aldatzeko zerbitzua (`Sukaldea (KDS)`, `Barra (BDS)`, `Biltegia (Stocka)`).
   * `resources/`: `sukaldea-view.fxml`, `barra-view.fxml`, `biltegia-view.fxml`, `styles.css`.
 * **Irisgarritasuna eta UX:** Kontraste handiko TableView estiloak hautatutako lerroan (`#881337` hondo ardo-iluna eta letra zuri lodiak) datuak argi irakurtzeko. Auto-freskatze automatikoa (10 segundoro).
 

@@ -24,7 +24,7 @@
             
             <HBox alignment="CENTER" spacing="8.0">
                 <Button mnemonicParsing="false" styleClass="nav-button-active" text="Sukaldea (KDS)" />
-                <Button mnemonicParsing="false" onAction="#onBarraClick" styleClass="nav-button" text="Barra (KDS)" />
+                <Button mnemonicParsing="false" onAction="#onBarraClick" styleClass="nav-button" text="Barra (BDS)" />
                 <Button mnemonicParsing="false" onAction="#onBiltegiaClick" styleClass="nav-button" text="Biltegia (Stocka)" />
             </HBox>
             

@@ -17,7 +17,7 @@ Proiektu honek jatetxe baten kudeaketa sistema osoa barneratzen du, 3 mailako ar
 3. **Aurre-Maila (3 Bezero Independente):**
    * `web_php/`: Karta, plateren erabilgarritasuna, mahai-erreserbak eta bezeroen iritziak (PHP / HTML5 / JS Fetch).
    * `desktop_csharp/`: Zerbitzarien TPV salmenta-puntua eta mahaien kudeaketa tablet diseinuan (.NET 10 WinForms).
-   * `desktop_javafx/`: Sukaldeko KDS, Barrako KDS eta biltegiko stock kontrola (Java 17/21 JavaFX MVC).
+   * `desktop_javafx/`: Sukaldeko KDS, Barrako BDS (Bar Display System) eta biltegiko stock kontrola (Java 17/21 JavaFX MVC).
 
 ---
 
@@ -52,7 +52,7 @@ Proiektu honek jatetxe baten kudeaketa sistema osoa barneratzen du, 3 mailako ar
   * Komanden produktuen hautatzailea eta karrito interaktiboa.
 * **`desktop_javafx/`**: Sukaldeko eta biltegiko kudeaketa:
   * **Sukaldea (KDS):** Janari plateren eskaera aktiboak (Sarrerakoak, Lehenak, Bigarrenak, Postreak) eta prestaketa-egoerak.
-  * **Barra (KDS):** Edariak eta kafeak bakarrik kudeatzeko pantaila bereizia.
+  * **Barra (BDS):** Bar Display System, edariak eta kafeak bakarrik kudeatzeko pantaila bereizia.
   * **Biltegia (Stocka):** Lehengaien stocka, gutxieneko stock alertak eta albaranen bidezko sarrerak erregistratzea.
 * **`web_php/`**: Jatetxeko webgune publikoa karta interaktiboarekin, stockaren araberako erabilgarritasunarekin eta erreserba-sistemarekin.
 

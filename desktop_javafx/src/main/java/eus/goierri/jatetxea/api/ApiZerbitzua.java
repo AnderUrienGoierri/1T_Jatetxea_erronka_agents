@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Jatetxearen REST APIarekin (backend_api) komunikatzeko zerbitzua.
- * Sukaldeko KDS eta Biltegiko stock kudeaketarako deialdiak eskaintzen ditu.
+ * Sukaldeko KDS, Barrako BDS eta Biltegiko stock kudeaketarako deialdiak eskaintzen ditu.
  */
 public class ApiZerbitzua {
     private static final String BASE_URL = "http://localhost:5000/api/v1";

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Barrako KDS kontroladorea (MVC ereduaren kontroladore geruza).
+ * Barrako BDS kontroladorea (Bar Display System - MVC ereduaren kontroladore geruza).
  * Edariak eta kafeak kudeatzeko diseinatua.
  */
 public class BarraController {
