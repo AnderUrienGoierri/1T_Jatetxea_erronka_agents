@@ -241,9 +241,9 @@ public partial class MahaiakForm : Form
     {
         var card = new Panel
         {
-            Width = 350,
-            Height = 175,
-            Margin = new Padding(12),
+            Width = 360,
+            Height = 195,
+            Margin = new Padding(14),
             BackColor = Color.White,
             Cursor = Cursors.Hand
         };
@@ -252,10 +252,10 @@ public partial class MahaiakForm : Form
         var lblZenbakia = new Label
         {
             Text = $"Mahaia {mahaia.Zenbakia}",
-            Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 18F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(18, 14),
-            Size = new Size(210, 44),
+            Location = new Point(20, 16),
+            Size = new Size(200, 42),
             TextAlign = ContentAlignment.MiddleLeft
         };
         card.Controls.Add(lblZenbakia);
@@ -264,10 +264,10 @@ public partial class MahaiakForm : Form
         var lblSeats = new Label
         {
             Text = $"{mahaia.Edukiera} seats",
-            Font = new Font("Segoe UI", 10.5F),
+            Font = new Font("Segoe UI", 12F, FontStyle.Regular),
             ForeColor = Color.FromArgb(100, 116, 139),
-            Location = new Point(18, 58),
-            Size = new Size(150, 28),
+            Location = new Point(20, 62),
+            Size = new Size(160, 32),
             TextAlign = ContentAlignment.MiddleLeft
         };
         card.Controls.Add(lblSeats);
@@ -282,10 +282,10 @@ public partial class MahaiakForm : Form
             var lblTime = new Label
             {
                 Text = denbora,
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(51, 65, 85),
-                Location = new Point(18, 124),
-                Size = new Size(120, 36),
+                Location = new Point(20, 140),
+                Size = new Size(130, 38),
                 TextAlign = ContentAlignment.MiddleLeft
             };
             card.Controls.Add(lblTime);
@@ -309,11 +309,11 @@ public partial class MahaiakForm : Form
             _ => (Color.FromArgb(219, 234, 254), Color.FromArgb(30, 64, 175), Color.FromArgb(147, 197, 253))
         };
 
-        int badgeWidth = Math.Max(120, egoeraText.Length * 11 + 24);
+        int badgeWidth = Math.Max(135, egoeraText.Length * 12 + 28);
         var pnlBadge = new Panel
         {
-            Location = new Point(card.Width - badgeWidth - 16, 90),
-            Size = new Size(badgeWidth, 34),
+            Location = new Point(card.Width - badgeWidth - 20, 100),
+            Size = new Size(badgeWidth, 38),
             BackColor = badgeBg
         };
         pnlBadge.Paint += (s, e) =>
@@ -327,7 +327,7 @@ public partial class MahaiakForm : Form
         {
             Dock = DockStyle.Fill,
             Text = egoeraText,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = badgeFg,
             TextAlign = ContentAlignment.MiddleCenter
         };
@@ -340,10 +340,10 @@ public partial class MahaiakForm : Form
             var lblPax = new Label
             {
                 Text = $"{mahaia.Edukiera} PAX",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(71, 85, 105),
-                Location = new Point(card.Width - badgeWidth - 16, 128),
-                Size = new Size(badgeWidth, 26),
+                Location = new Point(card.Width - badgeWidth - 20, 144),
+                Size = new Size(badgeWidth, 32),
                 TextAlign = ContentAlignment.MiddleRight
             };
             card.Controls.Add(lblPax);

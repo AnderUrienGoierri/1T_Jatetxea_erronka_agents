@@ -48,7 +48,7 @@ partial class EskaeraForm
         pnlKomandaGoiburua.SuspendLayout();
         SuspendLayout();
         // 
-        // pnlTopBar (Goiko barra ardo-ilun/zuria)
+        // pnlTopBar (Goiko barra ardo-ilun/zuria - POS tablet estiloko goiburu zabala)
         // 
         pnlTopBar.BackColor = Color.White;
         pnlTopBar.Controls.Add(lblZerbitzaria);
@@ -57,31 +57,33 @@ partial class EskaeraForm
         pnlTopBar.Dock = DockStyle.Top;
         pnlTopBar.Location = new Point(0, 0);
         pnlTopBar.Name = "pnlTopBar";
-        pnlTopBar.Size = new Size(1184, 60);
+        pnlTopBar.Size = new Size(1280, 84);
         pnlTopBar.TabIndex = 0;
         // 
         // lblZerbitzaria
         // 
         lblZerbitzaria.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblZerbitzaria.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblZerbitzaria.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblZerbitzaria.ForeColor = Color.FromArgb(71, 85, 105);
-        lblZerbitzaria.Location = new Point(940, 16);
+        lblZerbitzaria.Location = new Point(830, 24);
         lblZerbitzaria.Name = "lblZerbitzaria";
-        lblZerbitzaria.Size = new Size(224, 28);
+        lblZerbitzaria.Size = new Size(420, 36);
         lblZerbitzaria.TabIndex = 2;
-        lblZerbitzaria.Text = "Zerbitzaria: Ane G.";
+        lblZerbitzaria.Text = "Zerbitzaria: Ane G. (4 pax)";
         lblZerbitzaria.TextAlign = ContentAlignment.MiddleRight;
+        lblZerbitzaria.UseCompatibleTextRendering = true;
         // 
         // lblMahaiaTit
         // 
-        lblMahaiaTit.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblMahaiaTit.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
         lblMahaiaTit.ForeColor = Color.FromArgb(136, 19, 55);
-        lblMahaiaTit.Location = new Point(135, 14);
+        lblMahaiaTit.Location = new Point(208, 18);
         lblMahaiaTit.Name = "lblMahaiaTit";
-        lblMahaiaTit.Size = new Size(450, 32);
+        lblMahaiaTit.Size = new Size(580, 48);
         lblMahaiaTit.TabIndex = 1;
         lblMahaiaTit.Text = "T1 Jatetxea - Mahaia 4";
         lblMahaiaTit.TextAlign = ContentAlignment.MiddleLeft;
+        lblMahaiaTit.UseCompatibleTextRendering = true;
         // 
         // btnAtzera ("< Mahaiak")
         // 
@@ -89,13 +91,15 @@ partial class EskaeraForm
         btnAtzera.Cursor = Cursors.Hand;
         btnAtzera.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnAtzera.FlatStyle = FlatStyle.Flat;
-        btnAtzera.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        btnAtzera.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         btnAtzera.ForeColor = Color.FromArgb(51, 65, 85);
-        btnAtzera.Location = new Point(16, 12);
+        btnAtzera.Location = new Point(20, 18);
         btnAtzera.Name = "btnAtzera";
-        btnAtzera.Size = new Size(100, 36);
+        btnAtzera.Size = new Size(175, 48);
         btnAtzera.TabIndex = 0;
         btnAtzera.Text = "< Mahaiak";
+        btnAtzera.TextAlign = ContentAlignment.MiddleCenter;
+        btnAtzera.UseCompatibleTextRendering = true;
         btnAtzera.UseVisualStyleBackColor = false;
         // 
         // splitMain (Ezkerra Platerak, Eskuina Komanda)
@@ -103,7 +107,7 @@ partial class EskaeraForm
         splitMain.Dock = DockStyle.Fill;
         splitMain.FixedPanel = FixedPanel.Panel2;
         splitMain.IsSplitterFixed = true;
-        splitMain.Location = new Point(0, 60);
+        splitMain.Location = new Point(0, 84);
         splitMain.Name = "splitMain";
         // 
         // splitMain.Panel1 (Ezkerra: Kategoriak eta Platerak)
@@ -112,7 +116,7 @@ partial class EskaeraForm
         splitMain.Panel1.Controls.Add(pnlPlaterak);
         splitMain.Panel1.Controls.Add(pnlKategoriaIzenburua);
         splitMain.Panel1.Controls.Add(pnlKategoriak);
-        splitMain.Panel1.Padding = new Padding(16, 12, 16, 16);
+        splitMain.Panel1.Padding = new Padding(16, 12, 16, 12);
         // 
         // splitMain.Panel2 (Eskuina: Komandaren laburpena eta Sortu)
         // 
@@ -120,142 +124,138 @@ partial class EskaeraForm
         splitMain.Panel2.Controls.Add(pnlKarritoa);
         splitMain.Panel2.Controls.Add(pnlLaburpena);
         splitMain.Panel2.Controls.Add(pnlKomandaGoiburua);
-        splitMain.Panel2.Padding = new Padding(14);
-        splitMain.Size = new Size(1184, 660);
-        splitMain.SplitterDistance = 790;
+        splitMain.Panel2.Padding = new Padding(16);
+        splitMain.Size = new Size(1280, 716);
+        splitMain.SplitterDistance = 860;
         splitMain.TabIndex = 1;
         // 
         // pnlPlaterak (Produktuen txartelen flow panela)
         // 
         pnlPlaterak.AutoScroll = true;
         pnlPlaterak.Dock = DockStyle.Fill;
-        pnlPlaterak.Location = new Point(16, 102);
+        pnlPlaterak.Location = new Point(20, 118);
         pnlPlaterak.Name = "pnlPlaterak";
-        pnlPlaterak.Size = new Size(758, 542);
+        pnlPlaterak.Size = new Size(820, 582);
         pnlPlaterak.TabIndex = 2;
         // 
         // pnlKategoriaIzenburua ("EDARIAK")
         // 
         pnlKategoriaIzenburua.Controls.Add(lblKategoriaAktiboa);
         pnlKategoriaIzenburua.Dock = DockStyle.Top;
-        pnlKategoriaIzenburua.Location = new Point(16, 60);
+        pnlKategoriaIzenburua.Location = new Point(20, 68);
         pnlKategoriaIzenburua.Name = "pnlKategoriaIzenburua";
-        pnlKategoriaIzenburua.Size = new Size(758, 42);
+        pnlKategoriaIzenburua.Size = new Size(820, 50);
         pnlKategoriaIzenburua.TabIndex = 1;
         // 
         // lblKategoriaAktiboa ("EDARIAK")
         // 
         lblKategoriaAktiboa.Dock = DockStyle.Left;
-        lblKategoriaAktiboa.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblKategoriaAktiboa.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblKategoriaAktiboa.ForeColor = Color.FromArgb(30, 41, 59);
         lblKategoriaAktiboa.Location = new Point(0, 0);
         lblKategoriaAktiboa.Name = "lblKategoriaAktiboa";
-        lblKategoriaAktiboa.Size = new Size(300, 42);
+        lblKategoriaAktiboa.Size = new Size(350, 50);
         lblKategoriaAktiboa.TabIndex = 0;
         lblKategoriaAktiboa.Text = "EDARIAK";
         lblKategoriaAktiboa.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // pnlKategoriak (EDARIAK, HASTEKOAK, HARAGIAK, POSTREAK...)
         // 
-        pnlKategoriak.AutoScroll = true;
+        pnlKategoriak.AutoScroll = false;
         pnlKategoriak.Controls.Add(btnKatEdariak);
         pnlKategoriak.Controls.Add(btnKatHastekoak);
         pnlKategoriak.Controls.Add(btnKatHaragiak);
         pnlKategoriak.Controls.Add(btnKatPostreak);
         pnlKategoriak.Controls.Add(btnKatGuztiak);
         pnlKategoriak.Dock = DockStyle.Top;
-        pnlKategoriak.Location = new Point(16, 12);
+        pnlKategoriak.Location = new Point(20, 14);
         pnlKategoriak.Name = "pnlKategoriak";
-        pnlKategoriak.Size = new Size(758, 48);
+        pnlKategoriak.Padding = new Padding(0, 4, 0, 4);
+        pnlKategoriak.Size = new Size(820, 58);
         pnlKategoriak.TabIndex = 0;
         pnlKategoriak.WrapContents = false;
         // 
         // btnKatEdariak
         // 
-        btnKatEdariak.AutoSize = true;
         btnKatEdariak.BackColor = Color.White;
         btnKatEdariak.Cursor = Cursors.Hand;
         btnKatEdariak.FlatAppearance.BorderSize = 0;
         btnKatEdariak.FlatStyle = FlatStyle.Flat;
-        btnKatEdariak.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnKatEdariak.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         btnKatEdariak.ForeColor = Color.FromArgb(136, 19, 55);
         btnKatEdariak.Location = new Point(0, 0);
-        btnKatEdariak.Margin = new Padding(0, 0, 8, 0);
+        btnKatEdariak.Margin = new Padding(0, 0, 10, 0);
         btnKatEdariak.Name = "btnKatEdariak";
-        btnKatEdariak.Padding = new Padding(16, 0, 16, 0);
-        btnKatEdariak.Size = new Size(120, 42);
+        btnKatEdariak.Padding = new Padding(12, 0, 12, 0);
+        btnKatEdariak.Size = new Size(140, 48);
         btnKatEdariak.TabIndex = 0;
-        btnKatEdariak.Text = "EDARIAK";
+        btnKatEdariak.Text = "Edariak";
         btnKatEdariak.UseVisualStyleBackColor = false;
         // 
         // btnKatHastekoak
         // 
-        btnKatHastekoak.AutoSize = true;
         btnKatHastekoak.BackColor = Color.White;
         btnKatHastekoak.Cursor = Cursors.Hand;
         btnKatHastekoak.FlatAppearance.BorderSize = 0;
         btnKatHastekoak.FlatStyle = FlatStyle.Flat;
-        btnKatHastekoak.Font = new Font("Segoe UI", 10F);
+        btnKatHastekoak.Font = new Font("Segoe UI", 11F);
         btnKatHastekoak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatHastekoak.Location = new Point(128, 0);
-        btnKatHastekoak.Margin = new Padding(0, 0, 8, 0);
+        btnKatHastekoak.Location = new Point(150, 0);
+        btnKatHastekoak.Margin = new Padding(0, 0, 10, 0);
         btnKatHastekoak.Name = "btnKatHastekoak";
-        btnKatHastekoak.Padding = new Padding(16, 0, 16, 0);
-        btnKatHastekoak.Size = new Size(130, 42);
+        btnKatHastekoak.Padding = new Padding(12, 0, 12, 0);
+        btnKatHastekoak.Size = new Size(150, 48);
         btnKatHastekoak.TabIndex = 1;
-        btnKatHastekoak.Text = "HASTEKOAK";
+        btnKatHastekoak.Text = "Hastekoak";
         btnKatHastekoak.UseVisualStyleBackColor = false;
         // 
         // btnKatHaragiak
         // 
-        btnKatHaragiak.AutoSize = true;
         btnKatHaragiak.BackColor = Color.White;
         btnKatHaragiak.Cursor = Cursors.Hand;
         btnKatHaragiak.FlatAppearance.BorderSize = 0;
         btnKatHaragiak.FlatStyle = FlatStyle.Flat;
-        btnKatHaragiak.Font = new Font("Segoe UI", 10F);
+        btnKatHaragiak.Font = new Font("Segoe UI", 11F);
         btnKatHaragiak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatHaragiak.Location = new Point(266, 0);
-        btnKatHaragiak.Margin = new Padding(0, 0, 8, 0);
+        btnKatHaragiak.Location = new Point(310, 0);
+        btnKatHaragiak.Margin = new Padding(0, 0, 10, 0);
         btnKatHaragiak.Name = "btnKatHaragiak";
-        btnKatHaragiak.Padding = new Padding(16, 0, 16, 0);
-        btnKatHaragiak.Size = new Size(120, 42);
+        btnKatHaragiak.Padding = new Padding(12, 0, 12, 0);
+        btnKatHaragiak.Size = new Size(140, 48);
         btnKatHaragiak.TabIndex = 2;
-        btnKatHaragiak.Text = "HARAGIAK";
+        btnKatHaragiak.Text = "Haragiak";
         btnKatHaragiak.UseVisualStyleBackColor = false;
         // 
         // btnKatPostreak
         // 
-        btnKatPostreak.AutoSize = true;
         btnKatPostreak.BackColor = Color.White;
         btnKatPostreak.Cursor = Cursors.Hand;
         btnKatPostreak.FlatAppearance.BorderSize = 0;
         btnKatPostreak.FlatStyle = FlatStyle.Flat;
-        btnKatPostreak.Font = new Font("Segoe UI", 10F);
+        btnKatPostreak.Font = new Font("Segoe UI", 11F);
         btnKatPostreak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatPostreak.Location = new Point(394, 0);
-        btnKatPostreak.Margin = new Padding(0, 0, 8, 0);
+        btnKatPostreak.Location = new Point(460, 0);
+        btnKatPostreak.Margin = new Padding(0, 0, 10, 0);
         btnKatPostreak.Name = "btnKatPostreak";
-        btnKatPostreak.Padding = new Padding(16, 0, 16, 0);
-        btnKatPostreak.Size = new Size(120, 42);
+        btnKatPostreak.Padding = new Padding(12, 0, 12, 0);
+        btnKatPostreak.Size = new Size(140, 48);
         btnKatPostreak.TabIndex = 3;
-        btnKatPostreak.Text = "POSTREAK";
+        btnKatPostreak.Text = "Postreak";
         btnKatPostreak.UseVisualStyleBackColor = false;
         // 
         // btnKatGuztiak
         // 
-        btnKatGuztiak.AutoSize = true;
         btnKatGuztiak.BackColor = Color.White;
         btnKatGuztiak.Cursor = Cursors.Hand;
         btnKatGuztiak.FlatAppearance.BorderSize = 0;
         btnKatGuztiak.FlatStyle = FlatStyle.Flat;
-        btnKatGuztiak.Font = new Font("Segoe UI", 10F);
+        btnKatGuztiak.Font = new Font("Segoe UI", 11F);
         btnKatGuztiak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatGuztiak.Location = new Point(522, 0);
-        btnKatGuztiak.Margin = new Padding(0, 0, 8, 0);
+        btnKatGuztiak.Location = new Point(610, 0);
+        btnKatGuztiak.Margin = new Padding(0, 0, 10, 0);
         btnKatGuztiak.Name = "btnKatGuztiak";
-        btnKatGuztiak.Padding = new Padding(16, 0, 16, 0);
-        btnKatGuztiak.Size = new Size(110, 42);
+        btnKatGuztiak.Padding = new Padding(12, 0, 12, 0);
+        btnKatGuztiak.Size = new Size(130, 48);
         btnKatGuztiak.TabIndex = 4;
         btnKatGuztiak.Text = "Guztiak";
         btnKatGuztiak.UseVisualStyleBackColor = false;
@@ -267,9 +267,9 @@ partial class EskaeraForm
         pnlLaburpena.Controls.Add(lblBez);
         pnlLaburpena.Controls.Add(lblAzpitotala);
         pnlLaburpena.Dock = DockStyle.Bottom;
-        pnlLaburpena.Location = new Point(14, 466);
+        pnlLaburpena.Location = new Point(16, 470);
         pnlLaburpena.Name = "pnlLaburpena";
-        pnlLaburpena.Size = new Size(362, 180);
+        pnlLaburpena.Size = new Size(388, 230);
         pnlLaburpena.TabIndex = 2;
         // 
         // btnBidali ("ESKAERA SORTU")
@@ -278,44 +278,44 @@ partial class EskaeraForm
         btnBidali.Cursor = Cursors.Hand;
         btnBidali.FlatAppearance.BorderSize = 0;
         btnBidali.FlatStyle = FlatStyle.Flat;
-        btnBidali.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        btnBidali.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnBidali.ForeColor = Color.White;
-        btnBidali.Location = new Point(6, 120);
+        btnBidali.Location = new Point(6, 142);
         btnBidali.Name = "btnBidali";
-        btnBidali.Size = new Size(350, 52);
+        btnBidali.Size = new Size(376, 66);
         btnBidali.TabIndex = 3;
         btnBidali.Text = "ESKAERA SORTU";
         btnBidali.UseVisualStyleBackColor = false;
         // 
         // lblGuztira ("Guztira: 43.45 €")
         // 
-        lblGuztira.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
+        lblGuztira.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblGuztira.ForeColor = Color.FromArgb(30, 41, 59);
-        lblGuztira.Location = new Point(6, 78);
+        lblGuztira.Location = new Point(6, 88);
         lblGuztira.Name = "lblGuztira";
-        lblGuztira.Size = new Size(350, 32);
+        lblGuztira.Size = new Size(376, 44);
         lblGuztira.TabIndex = 2;
         lblGuztira.Text = "Guztira:                        0.00 €";
         lblGuztira.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // lblBez ("BEZ (%10): 3.95 €")
         // 
-        lblBez.Font = new Font("Segoe UI", 10.5F);
+        lblBez.Font = new Font("Segoe UI", 11.5F);
         lblBez.ForeColor = Color.FromArgb(100, 116, 139);
-        lblBez.Location = new Point(6, 44);
+        lblBez.Location = new Point(6, 50);
         lblBez.Name = "lblBez";
-        lblBez.Size = new Size(350, 24);
+        lblBez.Size = new Size(376, 32);
         lblBez.TabIndex = 1;
         lblBez.Text = "BEZ (%10):                    0.00 €";
         lblBez.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // lblAzpitotala ("Azpitotala: 39.50 €")
         // 
-        lblAzpitotala.Font = new Font("Segoe UI", 10.5F);
+        lblAzpitotala.Font = new Font("Segoe UI", 11.5F);
         lblAzpitotala.ForeColor = Color.FromArgb(100, 116, 139);
         lblAzpitotala.Location = new Point(6, 14);
         lblAzpitotala.Name = "lblAzpitotala";
-        lblAzpitotala.Size = new Size(350, 24);
+        lblAzpitotala.Size = new Size(376, 32);
         lblAzpitotala.TabIndex = 0;
         lblAzpitotala.Text = "Azpitotala:                   0.00 €";
         lblAzpitotala.TextAlign = ContentAlignment.MiddleLeft;
@@ -325,9 +325,9 @@ partial class EskaeraForm
         pnlKarritoa.AutoScroll = true;
         pnlKarritoa.Dock = DockStyle.Fill;
         pnlKarritoa.FlowDirection = FlowDirection.TopDown;
-        pnlKarritoa.Location = new Point(14, 58);
+        pnlKarritoa.Location = new Point(16, 58);
         pnlKarritoa.Name = "pnlKarritoa";
-        pnlKarritoa.Size = new Size(362, 408);
+        pnlKarritoa.Size = new Size(388, 432);
         pnlKarritoa.TabIndex = 1;
         pnlKarritoa.WrapContents = false;
         // 
@@ -335,19 +335,19 @@ partial class EskaeraForm
         // 
         pnlKomandaGoiburua.Controls.Add(lblKomandaTit);
         pnlKomandaGoiburua.Dock = DockStyle.Top;
-        pnlKomandaGoiburua.Location = new Point(14, 14);
+        pnlKomandaGoiburua.Location = new Point(16, 16);
         pnlKomandaGoiburua.Name = "pnlKomandaGoiburua";
-        pnlKomandaGoiburua.Size = new Size(362, 44);
+        pnlKomandaGoiburua.Size = new Size(388, 44);
         pnlKomandaGoiburua.TabIndex = 0;
         // 
         // lblKomandaTit
         // 
         lblKomandaTit.Dock = DockStyle.Fill;
-        lblKomandaTit.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblKomandaTit.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
         lblKomandaTit.ForeColor = Color.FromArgb(30, 41, 59);
         lblKomandaTit.Location = new Point(0, 0);
         lblKomandaTit.Name = "lblKomandaTit";
-        lblKomandaTit.Size = new Size(362, 44);
+        lblKomandaTit.Size = new Size(388, 44);
         lblKomandaTit.TabIndex = 0;
         lblKomandaTit.Text = "ESKAERA - Mahaia 4";
         lblKomandaTit.TextAlign = ContentAlignment.MiddleLeft;
@@ -356,10 +356,10 @@ partial class EskaeraForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(1184, 720);
+        ClientSize = new Size(1280, 800);
         Controls.Add(splitMain);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1000, 680);
+        MinimumSize = new Size(1024, 700);
         Name = "EskaeraForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Eskaera Berria";

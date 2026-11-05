@@ -40,25 +40,27 @@ partial class MahaikideakModal
         // 
         // lblTitulua
         // 
-        lblTitulua.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblTitulua.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblTitulua.ForeColor = Color.FromArgb(30, 41, 59);
-        lblTitulua.Location = new Point(10, 14);
+        lblTitulua.Location = new Point(10, 16);
         lblTitulua.Name = "lblTitulua";
-        lblTitulua.Size = new Size(500, 34);
+        lblTitulua.Size = new Size(560, 42);
         lblTitulua.TabIndex = 0;
         lblTitulua.Text = "Mahaia 4 - Mahaikide Kopurua";
         lblTitulua.TextAlign = ContentAlignment.MiddleCenter;
+        lblTitulua.UseCompatibleTextRendering = true;
         // 
         // lblAzpititulua
         // 
-        lblAzpititulua.Font = new Font("Segoe UI", 9.5F);
+        lblAzpititulua.Font = new Font("Segoe UI", 11F);
         lblAzpititulua.ForeColor = Color.FromArgb(100, 116, 139);
-        lblAzpititulua.Location = new Point(10, 48);
+        lblAzpititulua.Location = new Point(10, 58);
         lblAzpititulua.Name = "lblAzpititulua";
-        lblAzpititulua.Size = new Size(500, 24);
+        lblAzpititulua.Size = new Size(560, 30);
         lblAzpititulua.TabIndex = 1;
         lblAzpititulua.Text = "Aukeratu pertsona kopurua";
         lblAzpititulua.TextAlign = ContentAlignment.MiddleCenter;
+        lblAzpititulua.UseCompatibleTextRendering = true;
         // 
         // pnlSareta (4x2 botoi handien sareta)
         // 
@@ -75,12 +77,12 @@ partial class MahaikideakModal
         pnlSareta.Controls.Add(btnNum6, 1, 1);
         pnlSareta.Controls.Add(btnNum7, 2, 1);
         pnlSareta.Controls.Add(btnNum8Plus, 3, 1);
-        pnlSareta.Location = new Point(25, 80);
+        pnlSareta.Location = new Point(30, 96);
         pnlSareta.Name = "pnlSareta";
         pnlSareta.RowCount = 2;
         pnlSareta.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
         pnlSareta.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-        pnlSareta.Size = new Size(470, 160);
+        pnlSareta.Size = new Size(520, 168);
         pnlSareta.TabIndex = 2;
         // 
         // btnNum1
@@ -224,9 +226,9 @@ partial class MahaikideakModal
         pnlStepper.Controls.Add(btnPlus);
         pnlStepper.Controls.Add(lblKopuruaTestua);
         pnlStepper.Controls.Add(btnMinus);
-        pnlStepper.Location = new Point(25, 255);
+        pnlStepper.Location = new Point(30, 280);
         pnlStepper.Name = "pnlStepper";
-        pnlStepper.Size = new Size(470, 56);
+        pnlStepper.Size = new Size(520, 58);
         pnlStepper.TabIndex = 3;
         // 
         // btnMinus
@@ -235,25 +237,26 @@ partial class MahaikideakModal
         btnMinus.Cursor = Cursors.Hand;
         btnMinus.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnMinus.FlatStyle = FlatStyle.Flat;
-        btnMinus.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnMinus.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnMinus.ForeColor = Color.FromArgb(51, 65, 85);
         btnMinus.Location = new Point(4, 4);
         btnMinus.Name = "btnMinus";
-        btnMinus.Size = new Size(58, 48);
+        btnMinus.Size = new Size(64, 50);
         btnMinus.TabIndex = 0;
         btnMinus.Text = "-";
         btnMinus.UseVisualStyleBackColor = false;
         // 
         // lblKopuruaTestua
         // 
-        lblKopuruaTestua.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblKopuruaTestua.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblKopuruaTestua.ForeColor = Color.FromArgb(30, 41, 59);
-        lblKopuruaTestua.Location = new Point(68, 4);
+        lblKopuruaTestua.Location = new Point(74, 4);
         lblKopuruaTestua.Name = "lblKopuruaTestua";
-        lblKopuruaTestua.Size = new Size(334, 48);
+        lblKopuruaTestua.Size = new Size(372, 50);
         lblKopuruaTestua.TabIndex = 1;
         lblKopuruaTestua.Text = "4 pertsona";
         lblKopuruaTestua.TextAlign = ContentAlignment.MiddleCenter;
+        lblKopuruaTestua.UseCompatibleTextRendering = true;
         // 
         // btnPlus
         // 
@@ -261,11 +264,11 @@ partial class MahaikideakModal
         btnPlus.Cursor = Cursors.Hand;
         btnPlus.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnPlus.FlatStyle = FlatStyle.Flat;
-        btnPlus.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnPlus.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnPlus.ForeColor = Color.FromArgb(51, 65, 85);
-        btnPlus.Location = new Point(408, 4);
+        btnPlus.Location = new Point(452, 4);
         btnPlus.Name = "btnPlus";
-        btnPlus.Size = new Size(58, 48);
+        btnPlus.Size = new Size(64, 50);
         btnPlus.TabIndex = 2;
         btnPlus.Text = "+";
         btnPlus.UseVisualStyleBackColor = false;
@@ -274,9 +277,9 @@ partial class MahaikideakModal
         // 
         pnlEkintzak.Controls.Add(btnJarraitu);
         pnlEkintzak.Controls.Add(btnUtzi);
-        pnlEkintzak.Location = new Point(25, 325);
+        pnlEkintzak.Location = new Point(30, 360);
         pnlEkintzak.Name = "pnlEkintzak";
-        pnlEkintzak.Size = new Size(470, 58);
+        pnlEkintzak.Size = new Size(520, 62);
         pnlEkintzak.TabIndex = 4;
         // 
         // btnUtzi
@@ -286,11 +289,11 @@ partial class MahaikideakModal
         btnUtzi.DialogResult = DialogResult.Cancel;
         btnUtzi.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnUtzi.FlatStyle = FlatStyle.Flat;
-        btnUtzi.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        btnUtzi.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnUtzi.ForeColor = Color.FromArgb(71, 85, 105);
         btnUtzi.Location = new Point(4, 4);
         btnUtzi.Name = "btnUtzi";
-        btnUtzi.Size = new Size(220, 50);
+        btnUtzi.Size = new Size(245, 54);
         btnUtzi.TabIndex = 0;
         btnUtzi.Text = "Utzi";
         btnUtzi.UseVisualStyleBackColor = false;
@@ -302,11 +305,11 @@ partial class MahaikideakModal
         btnJarraitu.DialogResult = DialogResult.OK;
         btnJarraitu.FlatAppearance.BorderSize = 0;
         btnJarraitu.FlatStyle = FlatStyle.Flat;
-        btnJarraitu.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        btnJarraitu.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnJarraitu.ForeColor = Color.White;
-        btnJarraitu.Location = new Point(236, 4);
+        btnJarraitu.Location = new Point(270, 4);
         btnJarraitu.Name = "btnJarraitu";
-        btnJarraitu.Size = new Size(230, 50);
+        btnJarraitu.Size = new Size(245, 54);
         btnJarraitu.TabIndex = 1;
         btnJarraitu.Text = "Jarraitu";
         btnJarraitu.UseVisualStyleBackColor = false;
@@ -317,7 +320,7 @@ partial class MahaikideakModal
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.White;
         CancelButton = btnUtzi;
-        ClientSize = new Size(520, 410);
+        ClientSize = new Size(580, 480);
         Controls.Add(pnlEkintzak);
         Controls.Add(pnlStepper);
         Controls.Add(pnlSareta);

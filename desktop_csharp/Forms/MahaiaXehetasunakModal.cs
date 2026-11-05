@@ -104,7 +104,7 @@ public partial class MahaiaXehetasunakModal : Form
             var pnlRow = new Panel
             {
                 Location = new Point(4, y),
-                Size = new Size(pnlTicketLines.Width - 16, 36),
+                Size = new Size(pnlTicketLines.Width - 16, 44),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.White
             };
@@ -112,28 +112,28 @@ public partial class MahaiaXehetasunakModal : Form
             var lblIzena = new Label
             {
                 Text = testua,
-                Font = new Font("Segoe UI", 12.5F, FontStyle.Regular),
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
                 ForeColor = Color.FromArgb(30, 41, 59),
-                Location = new Point(8, 6),
-                Size = new Size(320, 26),
+                Location = new Point(10, 4),
+                Size = new Size(pnlRow.Width - 170, 36),
                 TextAlign = ContentAlignment.MiddleLeft
             };
             pnlRow.Controls.Add(lblIzena);
 
             var lblPrezioa = new Label
             {
-                Text = $"- {zenbatekoa:F2} €",
-                Font = new Font("Segoe UI", 12.5F, FontStyle.Regular),
+                Text = $"{zenbatekoa:F2} €",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(51, 65, 85),
-                Location = new Point(pnlRow.Width - 160, 6),
-                Size = new Size(150, 26),
+                Location = new Point(pnlRow.Width - 160, 4),
+                Size = new Size(150, 36),
                 TextAlign = ContentAlignment.MiddleRight,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             pnlRow.Controls.Add(lblPrezioa);
 
             pnlTicketLines.Controls.Add(pnlRow);
-            y += 40;
+            y += 48;
         }
 
         lblGuztira.Text = $"Guztira:  {guztira:F2} €";

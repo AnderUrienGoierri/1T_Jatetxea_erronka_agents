@@ -31,54 +31,56 @@ partial class MahaiaXehetasunakModal
         // 
         // lblTitulua ("Mahaia 4 - Xehetasuna")
         // 
-        lblTitulua.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+        lblTitulua.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
         lblTitulua.ForeColor = Color.FromArgb(30, 41, 59);
-        lblTitulua.Location = new Point(20, 20);
+        lblTitulua.Location = new Point(20, 16);
         lblTitulua.Name = "lblTitulua";
-        lblTitulua.Size = new Size(584, 40);
+        lblTitulua.Size = new Size(640, 48);
         lblTitulua.TabIndex = 0;
         lblTitulua.Text = "Mahaia 4 - Xehetasuna";
         lblTitulua.TextAlign = ContentAlignment.MiddleCenter;
+        lblTitulua.UseCompatibleTextRendering = true;
         // 
         // lblAzpititulua ("(4 pertsona) - Okupatua")
         // 
         lblAzpititulua.Font = new Font("Segoe UI", 11.5F);
         lblAzpititulua.ForeColor = Color.FromArgb(100, 116, 139);
-        lblAzpititulua.Location = new Point(20, 62);
+        lblAzpititulua.Location = new Point(20, 64);
         lblAzpititulua.Name = "lblAzpititulua";
-        lblAzpititulua.Size = new Size(584, 28);
+        lblAzpititulua.Size = new Size(640, 32);
         lblAzpititulua.TabIndex = 1;
         lblAzpititulua.Text = "(4 pertsona) - Okupatua";
         lblAzpititulua.TextAlign = ContentAlignment.MiddleCenter;
+        lblAzpititulua.UseCompatibleTextRendering = true;
         // 
         // pnlTicketCard (Tiket kaxa zuria zirriborroaren arabera)
         // 
         pnlTicketCard.BackColor = Color.White;
         pnlTicketCard.Controls.Add(pnlTicketLines);
         pnlTicketCard.Controls.Add(pnlTicketTotal);
-        pnlTicketCard.Location = new Point(32, 105);
+        pnlTicketCard.Location = new Point(35, 104);
         pnlTicketCard.Name = "pnlTicketCard";
-        pnlTicketCard.Padding = new Padding(12);
-        pnlTicketCard.Size = new Size(560, 260);
+        pnlTicketCard.Padding = new Padding(14);
+        pnlTicketCard.Size = new Size(610, 300);
         pnlTicketCard.TabIndex = 2;
         // 
         // pnlTicketTotal (Banatzailea eta Guztira)
         // 
         pnlTicketTotal.Controls.Add(lblGuztira);
         pnlTicketTotal.Dock = DockStyle.Bottom;
-        pnlTicketTotal.Location = new Point(12, 200);
+        pnlTicketTotal.Location = new Point(14, 232);
         pnlTicketTotal.Name = "pnlTicketTotal";
-        pnlTicketTotal.Size = new Size(536, 48);
+        pnlTicketTotal.Size = new Size(582, 54);
         pnlTicketTotal.TabIndex = 1;
         // 
         // lblGuztira ("Guztira: 60.00 €")
         // 
         lblGuztira.Dock = DockStyle.Fill;
-        lblGuztira.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblGuztira.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblGuztira.ForeColor = Color.FromArgb(30, 41, 59);
         lblGuztira.Location = new Point(0, 0);
         lblGuztira.Name = "lblGuztira";
-        lblGuztira.Size = new Size(536, 48);
+        lblGuztira.Size = new Size(582, 54);
         lblGuztira.TabIndex = 0;
         lblGuztira.Text = "Guztira:  60.00 €";
         lblGuztira.TextAlign = ContentAlignment.MiddleRight;
@@ -87,9 +89,9 @@ partial class MahaiaXehetasunakModal
         // 
         pnlTicketLines.AutoScroll = true;
         pnlTicketLines.Dock = DockStyle.Fill;
-        pnlTicketLines.Location = new Point(12, 12);
+        pnlTicketLines.Location = new Point(14, 14);
         pnlTicketLines.Name = "pnlTicketLines";
-        pnlTicketLines.Size = new Size(536, 188);
+        pnlTicketLines.Size = new Size(582, 218);
         pnlTicketLines.TabIndex = 0;
         // 
         // btnGehituEskaera ("+ ESKAERA GEHITU")
@@ -100,9 +102,9 @@ partial class MahaiaXehetasunakModal
         btnGehituEskaera.FlatStyle = FlatStyle.Flat;
         btnGehituEskaera.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
         btnGehituEskaera.ForeColor = Color.White;
-        btnGehituEskaera.Location = new Point(32, 385);
+        btnGehituEskaera.Location = new Point(35, 420);
         btnGehituEskaera.Name = "btnGehituEskaera";
-        btnGehituEskaera.Size = new Size(560, 52);
+        btnGehituEskaera.Size = new Size(610, 54);
         btnGehituEskaera.TabIndex = 3;
         btnGehituEskaera.Text = "+ ESKAERA GEHITU";
         btnGehituEskaera.UseVisualStyleBackColor = false;
@@ -115,9 +117,9 @@ partial class MahaiaXehetasunakModal
         btnKontuaEskatu.FlatStyle = FlatStyle.Flat;
         btnKontuaEskatu.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnKontuaEskatu.ForeColor = Color.FromArgb(51, 65, 85);
-        btnKontuaEskatu.Location = new Point(32, 448);
+        btnKontuaEskatu.Location = new Point(35, 486);
         btnKontuaEskatu.Name = "btnKontuaEskatu";
-        btnKontuaEskatu.Size = new Size(560, 50);
+        btnKontuaEskatu.Size = new Size(610, 50);
         btnKontuaEskatu.TabIndex = 4;
         btnKontuaEskatu.Text = "Kontua Eskatu";
         btnKontuaEskatu.UseVisualStyleBackColor = false;
@@ -130,9 +132,9 @@ partial class MahaiaXehetasunakModal
         btnAldatuMahaiaz.FlatStyle = FlatStyle.Flat;
         btnAldatuMahaiaz.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnAldatuMahaiaz.ForeColor = Color.FromArgb(51, 65, 85);
-        btnAldatuMahaiaz.Location = new Point(32, 510);
+        btnAldatuMahaiaz.Location = new Point(35, 548);
         btnAldatuMahaiaz.Name = "btnAldatuMahaiaz";
-        btnAldatuMahaiaz.Size = new Size(560, 50);
+        btnAldatuMahaiaz.Size = new Size(610, 50);
         btnAldatuMahaiaz.TabIndex = 5;
         btnAldatuMahaiaz.Text = "Aldatu Mahaiaz";
         btnAldatuMahaiaz.UseVisualStyleBackColor = false;
@@ -144,11 +146,11 @@ partial class MahaiaXehetasunakModal
         btnItxi.DialogResult = DialogResult.Cancel;
         btnItxi.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnItxi.FlatStyle = FlatStyle.Flat;
-        btnItxi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnItxi.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         btnItxi.ForeColor = Color.FromArgb(100, 116, 139);
-        btnItxi.Location = new Point(245, 575);
+        btnItxi.Location = new Point(265, 616);
         btnItxi.Name = "btnItxi";
-        btnItxi.Size = new Size(135, 40);
+        btnItxi.Size = new Size(150, 46);
         btnItxi.TabIndex = 6;
         btnItxi.Text = "Itxi";
         btnItxi.UseVisualStyleBackColor = false;
@@ -158,7 +160,7 @@ partial class MahaiaXehetasunakModal
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
         CancelButton = btnItxi;
-        ClientSize = new Size(624, 635);
+        ClientSize = new Size(680, 690);
         Controls.Add(btnItxi);
         Controls.Add(btnAldatuMahaiaz);
         Controls.Add(btnKontuaEskatu);

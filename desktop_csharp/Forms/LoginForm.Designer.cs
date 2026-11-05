@@ -79,43 +79,44 @@ partial class LoginForm
         pnlTopBar.Dock = DockStyle.Top;
         pnlTopBar.Location = new Point(0, 0);
         pnlTopBar.Name = "pnlTopBar";
-        pnlTopBar.Size = new Size(1024, 89);
+        pnlTopBar.Size = new Size(1280, 88);
         pnlTopBar.TabIndex = 0;
         // 
         // lblLogo
         // 
         lblLogo.BackColor = Color.FromArgb(136, 19, 55);
-        lblLogo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblLogo.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblLogo.ForeColor = Color.White;
-        lblLogo.Location = new Point(25, 12);
+        lblLogo.Location = new Point(24, 18);
         lblLogo.Name = "lblLogo";
-        lblLogo.Size = new Size(42, 42);
+        lblLogo.Size = new Size(52, 52);
         lblLogo.TabIndex = 0;
         lblLogo.Text = "T1";
         lblLogo.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblBrand
         // 
-        lblBrand.AutoSize = true;
-        lblBrand.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblBrand.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
         lblBrand.ForeColor = Color.FromArgb(136, 19, 55);
-        lblBrand.Location = new Point(76, 18);
+        lblBrand.Location = new Point(88, 18);
         lblBrand.Name = "lblBrand";
-        lblBrand.Size = new Size(240, 54);
+        lblBrand.Size = new Size(320, 52);
         lblBrand.TabIndex = 1;
         lblBrand.Text = "T1 Jatetxea";
+        lblBrand.TextAlign = ContentAlignment.MiddleLeft;
+        lblBrand.UseCompatibleTextRendering = true;
         // 
         // lblZerbitzariak
         // 
-        lblZerbitzariak.AutoSize = true;
-        lblZerbitzariak.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblZerbitzariak.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
         lblZerbitzariak.ForeColor = Color.FromArgb(51, 65, 85);
-        lblZerbitzariak.Location = new Point(386, 18);
+        lblZerbitzariak.Location = new Point(480, 18);
         lblZerbitzariak.Name = "lblZerbitzariak";
-        lblZerbitzariak.Size = new Size(249, 54);
+        lblZerbitzariak.Size = new Size(320, 52);
         lblZerbitzariak.TabIndex = 2;
         lblZerbitzariak.Text = "Zerbitzariak";
         lblZerbitzariak.TextAlign = ContentAlignment.MiddleCenter;
+        lblZerbitzariak.UseCompatibleTextRendering = true;
         // 
         // pnlCard
         // 
@@ -128,9 +129,9 @@ partial class LoginForm
         pnlCard.Controls.Add(pnlKeypad);
         pnlCard.Controls.Add(lblStatus);
         pnlCard.Controls.Add(btnLogin);
-        pnlCard.Location = new Point(291, 95);
+        pnlCard.Location = new Point(380, 114);
         pnlCard.Name = "pnlCard";
-        pnlCard.Size = new Size(440, 580);
+        pnlCard.Size = new Size(520, 660);
         pnlCard.TabIndex = 1;
         // 
         // pnlAvatars
@@ -140,9 +141,9 @@ partial class LoginForm
         pnlAvatars.Controls.Add(pnlAvatar3);
         pnlAvatars.Controls.Add(pnlAvatar4);
         pnlAvatars.Controls.Add(pnlAvatar5);
-        pnlAvatars.Location = new Point(15, 14);
+        pnlAvatars.Location = new Point(15, 16);
         pnlAvatars.Name = "pnlAvatars";
-        pnlAvatars.Size = new Size(410, 92);
+        pnlAvatars.Size = new Size(490, 105);
         pnlAvatars.TabIndex = 0;
         // 
         // pnlAvatar1
@@ -313,21 +314,22 @@ partial class LoginForm
         // pnlDivider
         // 
         pnlDivider.BackColor = Color.FromArgb(226, 232, 240);
-        pnlDivider.Location = new Point(20, 112);
+        pnlDivider.Location = new Point(20, 126);
         pnlDivider.Name = "pnlDivider";
-        pnlDivider.Size = new Size(400, 1);
+        pnlDivider.Size = new Size(480, 1);
         pnlDivider.TabIndex = 1;
         // 
         // lblPinTitle
         // 
-        lblPinTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblPinTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
         lblPinTitle.ForeColor = Color.FromArgb(30, 41, 59);
-        lblPinTitle.Location = new Point(20, 122);
+        lblPinTitle.Location = new Point(20, 136);
         lblPinTitle.Name = "lblPinTitle";
-        lblPinTitle.Size = new Size(400, 36);
+        lblPinTitle.Size = new Size(480, 42);
         lblPinTitle.TabIndex = 2;
         lblPinTitle.Text = "SARTU PIN ZENBAKIA";
         lblPinTitle.TextAlign = ContentAlignment.MiddleCenter;
+        lblPinTitle.UseCompatibleTextRendering = true;
         // 
         // pnlPinDots
         // 
@@ -335,37 +337,37 @@ partial class LoginForm
         pnlPinDots.Controls.Add(lblDot2);
         pnlPinDots.Controls.Add(lblDot3);
         pnlPinDots.Controls.Add(lblDot4);
-        pnlPinDots.Location = new Point(135, 164);
+        pnlPinDots.Location = new Point(160, 184);
         pnlPinDots.Name = "pnlPinDots";
-        pnlPinDots.Size = new Size(170, 26);
+        pnlPinDots.Size = new Size(200, 32);
         pnlPinDots.TabIndex = 3;
         // 
         // lblDot1
         // 
-        lblDot1.Location = new Point(15, 3);
+        lblDot1.Location = new Point(15, 5);
         lblDot1.Name = "lblDot1";
-        lblDot1.Size = new Size(20, 20);
+        lblDot1.Size = new Size(22, 22);
         lblDot1.TabIndex = 0;
         // 
         // lblDot2
         // 
-        lblDot2.Location = new Point(55, 3);
+        lblDot2.Location = new Point(65, 5);
         lblDot2.Name = "lblDot2";
-        lblDot2.Size = new Size(20, 20);
+        lblDot2.Size = new Size(22, 22);
         lblDot2.TabIndex = 1;
         // 
         // lblDot3
         // 
-        lblDot3.Location = new Point(95, 3);
+        lblDot3.Location = new Point(115, 5);
         lblDot3.Name = "lblDot3";
-        lblDot3.Size = new Size(20, 20);
+        lblDot3.Size = new Size(22, 22);
         lblDot3.TabIndex = 2;
         // 
         // lblDot4
         // 
-        lblDot4.Location = new Point(135, 3);
+        lblDot4.Location = new Point(165, 5);
         lblDot4.Name = "lblDot4";
-        lblDot4.Size = new Size(20, 20);
+        lblDot4.Size = new Size(22, 22);
         lblDot4.TabIndex = 3;
         // 
         // pnlKeypad
@@ -386,14 +388,14 @@ partial class LoginForm
         pnlKeypad.Controls.Add(btnKeyClear, 0, 3);
         pnlKeypad.Controls.Add(btnKey0, 1, 3);
         pnlKeypad.Controls.Add(btnKeyBack, 2, 3);
-        pnlKeypad.Location = new Point(35, 198);
+        pnlKeypad.Location = new Point(35, 224);
         pnlKeypad.Name = "pnlKeypad";
         pnlKeypad.RowCount = 4;
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-        pnlKeypad.Size = new Size(370, 256);
+        pnlKeypad.Size = new Size(450, 288);
         pnlKeypad.TabIndex = 4;
         // 
         // btnKey1
@@ -403,7 +405,7 @@ partial class LoginForm
         btnKey1.Dock = DockStyle.Fill;
         btnKey1.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey1.FlatStyle = FlatStyle.Flat;
-        btnKey1.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey1.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey1.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey1.Location = new Point(4, 4);
         btnKey1.Margin = new Padding(4);
@@ -420,7 +422,7 @@ partial class LoginForm
         btnKey2.Dock = DockStyle.Fill;
         btnKey2.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey2.FlatStyle = FlatStyle.Flat;
-        btnKey2.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey2.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey2.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey2.Location = new Point(127, 4);
         btnKey2.Margin = new Padding(4);
@@ -437,7 +439,7 @@ partial class LoginForm
         btnKey3.Dock = DockStyle.Fill;
         btnKey3.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey3.FlatStyle = FlatStyle.Flat;
-        btnKey3.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey3.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey3.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey3.Location = new Point(250, 4);
         btnKey3.Margin = new Padding(4);
@@ -454,7 +456,7 @@ partial class LoginForm
         btnKey4.Dock = DockStyle.Fill;
         btnKey4.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey4.FlatStyle = FlatStyle.Flat;
-        btnKey4.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey4.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey4.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey4.Location = new Point(4, 68);
         btnKey4.Margin = new Padding(4);
@@ -471,7 +473,7 @@ partial class LoginForm
         btnKey5.Dock = DockStyle.Fill;
         btnKey5.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey5.FlatStyle = FlatStyle.Flat;
-        btnKey5.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey5.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey5.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey5.Location = new Point(127, 68);
         btnKey5.Margin = new Padding(4);
@@ -488,7 +490,7 @@ partial class LoginForm
         btnKey6.Dock = DockStyle.Fill;
         btnKey6.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey6.FlatStyle = FlatStyle.Flat;
-        btnKey6.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey6.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey6.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey6.Location = new Point(250, 68);
         btnKey6.Margin = new Padding(4);
@@ -505,7 +507,7 @@ partial class LoginForm
         btnKey7.Dock = DockStyle.Fill;
         btnKey7.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey7.FlatStyle = FlatStyle.Flat;
-        btnKey7.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey7.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey7.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey7.Location = new Point(4, 132);
         btnKey7.Margin = new Padding(4);
@@ -522,7 +524,7 @@ partial class LoginForm
         btnKey8.Dock = DockStyle.Fill;
         btnKey8.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey8.FlatStyle = FlatStyle.Flat;
-        btnKey8.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey8.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey8.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey8.Location = new Point(127, 132);
         btnKey8.Margin = new Padding(4);
@@ -539,7 +541,7 @@ partial class LoginForm
         btnKey9.Dock = DockStyle.Fill;
         btnKey9.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey9.FlatStyle = FlatStyle.Flat;
-        btnKey9.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey9.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey9.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey9.Location = new Point(250, 132);
         btnKey9.Margin = new Padding(4);
@@ -556,7 +558,7 @@ partial class LoginForm
         btnKeyClear.Dock = DockStyle.Fill;
         btnKeyClear.FlatAppearance.BorderColor = Color.FromArgb(254, 202, 202);
         btnKeyClear.FlatStyle = FlatStyle.Flat;
-        btnKeyClear.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnKeyClear.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
         btnKeyClear.ForeColor = Color.FromArgb(220, 38, 38);
         btnKeyClear.Location = new Point(4, 196);
         btnKeyClear.Margin = new Padding(4);
@@ -565,7 +567,6 @@ partial class LoginForm
         btnKeyClear.TabIndex = 9;
         btnKeyClear.Text = "X Clear";
         btnKeyClear.UseVisualStyleBackColor = false;
-        btnKeyClear.Click += btnKeyClear_Click;
         // 
         // btnKey0
         // 
@@ -574,7 +575,7 @@ partial class LoginForm
         btnKey0.Dock = DockStyle.Fill;
         btnKey0.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKey0.FlatStyle = FlatStyle.Flat;
-        btnKey0.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        btnKey0.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
         btnKey0.ForeColor = Color.FromArgb(30, 41, 59);
         btnKey0.Location = new Point(127, 196);
         btnKey0.Margin = new Padding(4);
@@ -598,16 +599,16 @@ partial class LoginForm
         btnKeyBack.Name = "btnKeyBack";
         btnKeyBack.Size = new Size(116, 56);
         btnKeyBack.TabIndex = 11;
-        btnKeyBack.Text = "←";
+        btnKeyBack.Text = "<-";
         btnKeyBack.UseVisualStyleBackColor = false;
         // 
         // lblStatus
         // 
-        lblStatus.Font = new Font("Segoe UI", 9.5F);
+        lblStatus.Font = new Font("Segoe UI", 10F);
         lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
-        lblStatus.Location = new Point(20, 462);
+        lblStatus.Location = new Point(35, 520);
         lblStatus.Name = "lblStatus";
-        lblStatus.Size = new Size(400, 26);
+        lblStatus.Size = new Size(450, 34);
         lblStatus.TabIndex = 5;
         lblStatus.TextAlign = ContentAlignment.MiddleCenter;
         // 
@@ -617,11 +618,11 @@ partial class LoginForm
         btnLogin.Cursor = Cursors.Hand;
         btnLogin.FlatAppearance.BorderSize = 0;
         btnLogin.FlatStyle = FlatStyle.Flat;
-        btnLogin.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        btnLogin.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnLogin.ForeColor = Color.White;
-        btnLogin.Location = new Point(35, 498);
+        btnLogin.Location = new Point(35, 562);
         btnLogin.Name = "btnLogin";
-        btnLogin.Size = new Size(370, 56);
+        btnLogin.Size = new Size(450, 66);
         btnLogin.TabIndex = 6;
         btnLogin.Text = "HASI SAIOA";
         btnLogin.UseVisualStyleBackColor = false;
@@ -630,10 +631,10 @@ partial class LoginForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1024, 720);
+        ClientSize = new Size(1280, 800);
         Controls.Add(pnlCard);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(720, 680);
+        MinimumSize = new Size(900, 720);
         Name = "LoginForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Saioa Hasi (TPV Tablet)";

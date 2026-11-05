@@ -66,7 +66,7 @@ public partial class LoginForm : Form
     private void ZentratuTxartela()
     {
         int x = Math.Max(20, (ClientSize.Width - pnlCard.Width) / 2);
-        int y = Math.Max(75, (ClientSize.Height - 65 - pnlCard.Height) / 2 + 65);
+        int y = Math.Max(pnlTopBar.Height + 10, (ClientSize.Height - pnlTopBar.Height - pnlCard.Height) / 2 + pnlTopBar.Height);
         pnlCard.Location = new Point(x, y);
     }
 
@@ -108,6 +108,7 @@ public partial class LoginForm : Form
         btnKey8.Click += (s, e) => KeypadBotoiaKlikatua("8");
         btnKey9.Click += (s, e) => KeypadBotoiaKlikatua("9");
         btnKey0.Click += (s, e) => KeypadBotoiaKlikatua("0");
+        btnKeyClear.Click += (s, e) => KeypadBotoiaKlikatua("Clear");
         btnKeyBack.Click += (s, e) => KeypadBotoiaKlikatua("←");
     }
 
@@ -147,7 +148,8 @@ public partial class LoginForm : Form
 
                 // 3. Inizialen testua borobilaren barruan marraztu
                 var textColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(71, 85, 105);
-                TextRenderer.DrawText(e.Graphics, item.Circle.Text, item.Circle.Font,
+                using var fontCircle = new Font("Segoe UI", 12F, FontStyle.Bold);
+                TextRenderer.DrawText(e.Graphics, item.Circle.Text, fontCircle,
                     new Rectangle(0, 0, item.Circle.Width, item.Circle.Height),
                     textColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
@@ -201,8 +203,8 @@ public partial class LoginForm : Form
         };
 
         int count = Math.Min(_langileak.Count, 5);
-        int avatarWidth = count <= 3 ? 105 : (count == 4 ? 92 : 78);
-        int gap = count > 1 ? Math.Max(4, (pnlAvatars.Width - (count * avatarWidth)) / (count - 1)) : 0;
+        int avatarWidth = count <= 3 ? 120 : (count == 4 ? 104 : 90);
+        int gap = count > 1 ? Math.Max(8, (pnlAvatars.Width - (count * avatarWidth)) / (count - 1)) : 0;
         int totalWidth = count * avatarWidth + (count - 1) * gap;
         int startX = Math.Max(0, (pnlAvatars.Width - totalWidth) / 2);
 
@@ -224,10 +226,12 @@ public partial class LoginForm : Form
                 items[i].Circle.Text = initials;
 
                 // Neurriak eta posizioak egokitu izena moztu ez dadin
-                items[i].Panel.Size = new Size(avatarWidth, 88);
-                items[i].Circle.Location = new Point((avatarWidth - 46) / 2, 2);
-                items[i].Name.Location = new Point(0, 52);
-                items[i].Name.Size = new Size(avatarWidth, 34);
+                items[i].Panel.Size = new Size(avatarWidth, 100);
+                items[i].Circle.Location = new Point((avatarWidth - 52) / 2, 2);
+                items[i].Circle.Size = new Size(52, 52);
+                items[i].Name.Location = new Point(0, 58);
+                items[i].Name.Size = new Size(avatarWidth, 38);
+                items[i].Name.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
 
                 items[i].Panel.Location = new Point(startX + i * (avatarWidth + gap), 2);
                 items[i].Panel.Visible = true;
@@ -262,7 +266,7 @@ public partial class LoginForm : Form
         for (int i = 0; i < items.Length; i++)
         {
             bool isSelected = i < _langileak.Count && _langileak[i].Id == langilea.Id;
-            items[i].Name.Font = new Font("Segoe UI", 8F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            items[i].Name.Font = new Font("Segoe UI", 10F, isSelected ? FontStyle.Bold : FontStyle.Regular);
             items[i].Name.ForeColor = isSelected ? Color.FromArgb(30, 41, 59) : Color.FromArgb(100, 116, 139);
             items[i].Circle.Invalidate();
         }
@@ -272,11 +276,11 @@ public partial class LoginForm : Form
     {
         lblStatus.Text = "";
 
-        if (txt.Contains("Clear"))
+        if (txt.Contains("Clear") || txt == "X" || txt == "C")
         {
             _pin = string.Empty;
         }
-        else if (txt == "←" || txt == "<-")
+        else if (txt == "←" || txt == "<-" || txt == "Back")
         {
             if (_pin.Length > 0)
                 _pin = _pin.Substring(0, _pin.Length - 1);

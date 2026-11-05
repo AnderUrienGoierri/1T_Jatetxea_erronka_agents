@@ -51,6 +51,13 @@ public partial class EskaeraForm : Form
         btnAtzera.Click += (s, e) => Close();
         btnBidali.Click += async (s, e) => await EskaeraBidaliAsync();
 
+        // Zerbitzariaren etiketa eskuinean finkatu beti
+        pnlTopBar.Resize += (s, e) =>
+        {
+            lblZerbitzaria.Location = new Point(pnlTopBar.Width - lblZerbitzaria.Width - 24, (pnlTopBar.Height - lblZerbitzaria.Height) / 2);
+        };
+        lblZerbitzaria.Location = new Point(pnlTopBar.Width - lblZerbitzaria.Width - 24, (pnlTopBar.Height - lblZerbitzaria.Height) / 2);
+
         // Kategoriak botoien ekitaldiak
         btnKatEdariak.Click += (s, e) => AldatuKategoria("Edariak");
         btnKatHastekoak.Click += (s, e) => AldatuKategoria("Hastekoak");
@@ -78,6 +85,8 @@ public partial class EskaeraForm : Form
             using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
             e.Graphics.DrawLine(pen, 0, 0, pnlLaburpena.Width, 0);
         };
+
+        pnlKarritoa.BringToFront();
 
         Load += async (s, e) => await KargatuDatuakAsync();
     }
@@ -190,33 +199,33 @@ public partial class EskaeraForm : Form
         string pKat = platerKategoria.Trim().ToLowerInvariant();
         string aKat = aukeratutakoKat.Trim().ToLowerInvariant();
 
-        if (pKat.StartsWith("edari") && aKat.StartsWith("edari"))
-            return true;
+        if (aKat.StartsWith("edari"))
+            return pKat.StartsWith("edari");
 
-        if ((pKat.Contains("sarrera") || pKat.Contains("lehen") || pKat.Contains("hastek")) &&
-            (aKat.Contains("sarrera") || aKat.Contains("lehen") || aKat.Contains("hastek")))
-            return true;
+        if (aKat.StartsWith("hastek") || aKat.StartsWith("sarrera") || aKat.StartsWith("lehen"))
+            return pKat.Contains("sarrera") || pKat.Contains("lehen") || pKat.Contains("hastek");
 
-        if ((pKat.Contains("bigarren") || pKat.Contains("haragi") || pKat.Contains("arrain")) &&
-            (aKat.Contains("bigarren") || aKat.Contains("haragi") || aKat.Contains("arrain")))
-            return true;
+        if (aKat.StartsWith("haragi") || aKat.StartsWith("arrain") || aKat.StartsWith("bigarren"))
+            return pKat.Contains("bigarren") || pKat.Contains("haragi") || pKat.Contains("arrain");
 
-        if (pKat.StartsWith("postre") && aKat.StartsWith("postre"))
-            return true;
+        if (aKat.StartsWith("postre"))
+            return pKat.StartsWith("postre");
 
         return pKat.Contains(aKat) || aKat.Contains(pKat);
     }
 
     /// <summary>
     /// Zirriborroko produktuen txartela sortzen du (Ikonoa, Izena, Prezioa eta [+] botoia)
+    /// <summary>
+    /// Zirriborroko (4-eskaera_produktuak_kategoriak_interfazea.jpg) produktu-txartela sortzen du
     /// </summary>
     private Control SortuPlaterTxartela(PlateraDto platera)
     {
         var card = new Panel
         {
-            Width = 240,
-            Height = 105,
-            Margin = new Padding(8),
+            Width = 255,
+            Height = 120,
+            Margin = new Padding(6),
             BackColor = Color.White,
             Cursor = Cursors.Hand
         };
@@ -229,28 +238,30 @@ public partial class EskaeraForm : Form
             e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
         };
 
-        // Ikono kutxatxoa
-        var lblIcon = new Label
+        // Kategoria txapa / ikur laburra
+        var (badgeText, badgeBg, badgeFg) = LortuPlaterKategoriaBadge(platera);
+        var lblBadge = new Label
         {
             Location = new Point(10, 16),
-            Size = new Size(42, 68),
-            Text = LortuPlaterIkonoa(platera),
-            Font = new Font("Segoe UI Emoji", 20F),
+            Size = new Size(38, 38),
+            Text = badgeText,
+            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
             TextAlign = ContentAlignment.MiddleCenter,
-            BackColor = Color.Transparent
+            BackColor = badgeBg,
+            ForeColor = badgeFg
         };
-        card.Controls.Add(lblIcon);
+        card.Controls.Add(lblBadge);
 
-        // Izena (2 lerro har ditzake hitz luzeetan)
+        // Izena (2-3 lerro har ditzake hitz luzeetan)
         var lblIzena = new Label
         {
             Text = platera.Izena,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(54, 14),
-            Size = new Size(135, 48),
+            Location = new Point(54, 8),
+            Size = new Size(148, 62),
             AutoEllipsis = true,
-            TextAlign = ContentAlignment.MiddleLeft
+            TextAlign = ContentAlignment.TopLeft
         };
         card.Controls.Add(lblIzena);
 
@@ -258,10 +269,10 @@ public partial class EskaeraForm : Form
         var lblPrezioa = new Label
         {
             Text = $"{platera.Prezioa:F2} €",
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(136, 19, 55),
-            Location = new Point(54, 64),
-            Size = new Size(135, 26),
+            Location = new Point(54, 74),
+            Size = new Size(148, 36),
             TextAlign = ContentAlignment.MiddleLeft
         };
         card.Controls.Add(lblPrezioa);
@@ -270,11 +281,11 @@ public partial class EskaeraForm : Form
         var btnAdd = new Button
         {
             Text = "+",
-            Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 15F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             BackColor = Color.FromArgb(248, 250, 252),
-            Location = new Point(192, 32),
-            Size = new Size(38, 38),
+            Location = new Point(206, 38),
+            Size = new Size(42, 42),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand
         };
@@ -285,31 +296,30 @@ public partial class EskaeraForm : Form
         // Klik egitean (txartelean bertan)
         void OnCardClick(object? s, EventArgs e) => GehituKarritora(platera);
         card.Click += OnCardClick;
-        lblIcon.Click += OnCardClick;
+        lblBadge.Click += OnCardClick;
         lblIzena.Click += OnCardClick;
         lblPrezioa.Click += OnCardClick;
 
         return card;
     }
 
-    private static string LortuPlaterIkonoa(PlateraDto p)
+    private static (string Text, Color Bg, Color Fg) LortuPlaterKategoriaBadge(PlateraDto p)
     {
         string kat = p.Kategoria.ToLowerInvariant();
         string izena = p.Izena.ToLowerInvariant();
 
-        if (izena.Contains("ardo") || izena.Contains("txakolin")) return "🍷";
-        if (izena.Contains("zerbez") || izena.Contains("garagardo")) return "🍺";
-        if (izena.Contains("sagardo")) return "🍾";
-        if (izena.Contains("ur") || izena.Contains("ura")) return "💧";
-        if (izena.Contains("kola") || izena.Contains("refresco")) return "🥤";
-        if (izena.Contains("kafe")) return "☕";
-        if (izena.Contains("zuku")) return "🧃";
-        if (izena.Contains("txulet") || izena.Contains("haragi") || kat.Contains("haragi")) return "🥩";
-        if (izena.Contains("bakailao") || izena.Contains("arrain") || kat.Contains("arrain")) return "🐟";
-        if (izena.Contains("entsalada") || kat.Contains("hasteko")) return "🥗";
-        if (kat.Contains("postre")) return "🍰";
+        if (kat.Contains("edari") || izena.Contains("ardo") || izena.Contains("sagardo") || izena.Contains("ur") || izena.Contains("kafe"))
+            return ("ED", Color.FromArgb(239, 246, 255), Color.FromArgb(37, 99, 235));
+        if (kat.Contains("hastek") || kat.Contains("sarrera") || kat.Contains("lehen"))
+            return ("HA", Color.FromArgb(240, 253, 244), Color.FromArgb(22, 163, 74));
+        if (kat.Contains("haragi") || izena.Contains("txulet") || izena.Contains("arkume"))
+            return ("HA", Color.FromArgb(254, 242, 242), Color.FromArgb(220, 38, 38));
+        if (kat.Contains("arrain") || izena.Contains("bakailao") || izena.Contains("legatz"))
+            return ("AR", Color.FromArgb(240, 249, 255), Color.FromArgb(14, 116, 144));
+        if (kat.Contains("postre"))
+            return ("PO", Color.FromArgb(254, 243, 199), Color.FromArgb(217, 119, 6));
 
-        return "🍽️";
+        return ("PL", Color.FromArgb(241, 245, 249), Color.FromArgb(71, 85, 105));
     }
 
     private void GehituKarritora(PlateraDto platera)
@@ -360,13 +370,13 @@ public partial class EskaeraForm : Form
     private Control SortuKarritoLerroa(CartItem item)
     {
         bool hasOharra = !string.IsNullOrWhiteSpace(item.Oharrak);
-        int cardHeight = hasOharra ? 104 : 76;
+        int cardHeight = hasOharra ? 116 : 88;
 
         var row = new Panel
         {
-            Width = 346,
+            Width = 368,
             Height = cardHeight,
-            Margin = new Padding(0, 0, 0, 8),
+            Margin = new Padding(0, 0, 0, 10),
             BackColor = Color.FromArgb(248, 250, 252)
         };
 
@@ -380,11 +390,11 @@ public partial class EskaeraForm : Form
         // Goiko lerroa: Izena eta Unitate Prezioa
         var lblIzena = new Label
         {
-            Text = $"{item.Platera.Izena} ({item.Platera.Prezioa:F2}€)",
-            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+            Text = $"{item.Platera.Izena} ({item.Platera.Prezioa:F2} €)",
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             Location = new Point(10, 8),
-            Size = new Size(210, 24),
+            Size = new Size(315, 32),
             AutoEllipsis = true,
             TextAlign = ContentAlignment.MiddleLeft
         };
@@ -394,11 +404,11 @@ public partial class EskaeraForm : Form
         var btnMinus = new Button
         {
             Text = "-",
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
-            Location = new Point(10, 36),
-            Size = new Size(28, 28),
+            Location = new Point(10, 44),
+            Size = new Size(36, 34),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand
         };
@@ -414,10 +424,10 @@ public partial class EskaeraForm : Form
         var lblKop = new Label
         {
             Text = item.Kopurua.ToString(),
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(40, 36),
-            Size = new Size(28, 28),
+            Location = new Point(50, 44),
+            Size = new Size(36, 34),
             TextAlign = ContentAlignment.MiddleCenter
         };
         row.Controls.Add(lblKop);
@@ -425,11 +435,11 @@ public partial class EskaeraForm : Form
         var btnPlus = new Button
         {
             Text = "+",
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
-            Location = new Point(70, 36),
-            Size = new Size(28, 28),
+            Location = new Point(90, 44),
+            Size = new Size(36, 34),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand
         };
@@ -444,10 +454,10 @@ public partial class EskaeraForm : Form
         var lblLerroTotala = new Label
         {
             Text = $"{item.Azpitotala:F2} €",
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(120, 36),
-            Size = new Size(160, 28),
+            Location = new Point(136, 44),
+            Size = new Size(180, 34),
             TextAlign = ContentAlignment.MiddleLeft
         };
         row.Controls.Add(lblLerroTotala);
@@ -455,12 +465,12 @@ public partial class EskaeraForm : Form
         // Kendu botoia [X]
         var btnDel = new Button
         {
-            Text = "×",
-            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+            Text = "X",
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(148, 163, 184),
             BackColor = Color.Transparent,
-            Location = new Point(310, 6),
-            Size = new Size(28, 28),
+            Location = new Point(330, 8),
+            Size = new Size(32, 32),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand
         };
