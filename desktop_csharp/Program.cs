@@ -72,7 +72,7 @@ static class Program
             var form = new Forms.MahaiaXehetasunakModal(demoMahaia, demoLangilea, api);
             form.Shown += async (s, e) =>
             {
-                await Task.Delay(300);
+                await Task.Delay(1500);
                 using var bmp = new Bitmap(form.ClientSize.Width, form.ClientSize.Height);
                 form.DrawToBitmap(bmp, new Rectangle(0, 0, form.ClientSize.Width, form.ClientSize.Height));
                 string outPath = args.Length > 1 ? args[1] : "screenshot_xehetasunak.png";

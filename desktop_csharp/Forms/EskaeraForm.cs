@@ -499,7 +499,7 @@ public partial class EskaeraForm : Form
 
             var lblOharra = new Label
             {
-                Text = $"{item.Oharrak}  ✏️",
+                Text = $"{item.Oharrak}",
                 Font = new Font("Segoe UI", 9F, FontStyle.Italic),
                 ForeColor = Color.FromArgb(71, 85, 105),
                 Dock = DockStyle.Fill,

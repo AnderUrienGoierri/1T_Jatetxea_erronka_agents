@@ -457,6 +457,46 @@ public class EskaerakController : BaseApiKontroladorea
     }
 
     /// <summary>
+    /// Eskaerako plater guztiak sukaldera bidaltzen ditu ('Sukaldean' egoerara pasaz).
+    /// </summary>
+    [HttpPost("{id:int}/sukaldera")]
+    public async Task<IActionResult> BidaliSukaldera(int id)
+    {
+        await using var kon = await SortuKonexioaAsync();
+
+        // 1. Eskaera bera Sukaldean jarri
+        const string sqlE = "UPDATE eskaerak SET egoera = 'Sukaldean' WHERE id = @id AND ezabatua = 0;";
+        await using (var cmdE = new MySqlCommand(sqlE, kon))
+        {
+            cmdE.Parameters.AddWithValue("@id", id);
+            await cmdE.ExecuteNonQueryAsync();
+        }
+
+        // 2. Mahaiaren egoera 'Eskaera bidean' jarri
+        const string sqlM = @"
+            UPDATE mahaiak m
+            JOIN eskaerak e ON m.id = e.mahaia_id
+            SET m.egoera = 'Eskaera bidean'
+            WHERE e.id = @id AND m.egoera != 'Garbitzen';";
+        await using (var cmdM = new MySqlCommand(sqlM, kon))
+        {
+            cmdM.Parameters.AddWithValue("@id", id);
+            await cmdM.ExecuteNonQueryAsync();
+        }
+
+        // 3. 'Eskatua' egoeran dauden lerroak 'Sukaldean' egoerara pasa
+        const string sqlL = "UPDATE eskaera_lerroak SET egoera = 'Sukaldean' WHERE eskaera_id = @id AND egoera = 'Eskatua';";
+        int aldatuak;
+        await using (var cmdL = new MySqlCommand(sqlL, kon))
+        {
+            cmdL.Parameters.AddWithValue("@id", id);
+            aldatuak = await cmdL.ExecuteNonQueryAsync();
+        }
+
+        return Success(new { eskaeraId = id, eguneratutakoPlaterak = aldatuak }, 200, $"{aldatuak} plater sukaldera bidali dira.");
+    }
+
+    /// <summary>
     /// Sukaldeko pantailarentzat (KDS): eskaera-lerro baten egoera eguneratzen du ('Eskatua', 'Sukaldean', 'Prestatua', 'Zerbitzatua').
     /// </summary>
     [HttpPut("lerroak/{lerroId:int}/egoera")]

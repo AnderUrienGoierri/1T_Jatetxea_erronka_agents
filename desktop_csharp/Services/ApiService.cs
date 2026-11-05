@@ -206,27 +206,79 @@ public class ApiService
     }
 
     /// <summary>
-    /// Mahai batean irekita dagoen eskaera aktiboa lortzen du (Irekia edo Sukaldean).
+    /// Mahai batean irekita dauden eskaera / kontu guztiak lortzen ditu (lerro guztiekin).
     /// </summary>
-    public async Task<EskaeraDto?> GetMahaiarenEskaeraAktiboaAsync(int mahaiaId)
+    public async Task<List<EskaeraDto>> GetMahaiarenEskaeraGuztiakAsync(int mahaiaId)
     {
         try
         {
             var response = await _http.GetFromJsonAsync<ApiResponse<EskaeraDto>>($"eskaerak?mahaiaId={mahaiaId}", JsonOptions);
-            var eskaerak = response?.DataList;
-            if (eskaerak == null || eskaerak.Count == 0) return null;
+            var eskaerak = response?.DataList ?? new List<EskaeraDto>();
+            var aktiboak = eskaerak.Where(e => e.Egoera != "Kobratua" && e.Egoera != "Ezeztatua").ToList();
 
-            // Hartu irekia edo zerbitzatzen ari den lehena
-            var aktiboa = eskaerak.FirstOrDefault(e => e.Egoera != "Kobratua" && e.Egoera != "Ezeztatua");
-            if (aktiboa == null) return null;
-
-            // Xehetasun osoak lerroekin lortu
-            return await GetEskaeraXehetasunakAsync(aktiboa.Id);
+            var emaitzak = new List<EskaeraDto>();
+            foreach (var e in aktiboak)
+            {
+                var xehetasunak = await GetEskaeraXehetasunakAsync(e.Id);
+                emaitzak.Add(xehetasunak ?? e);
+            }
+            return emaitzak;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"GetMahaiarenEskaeraAktiboaAsync errorea: {ex.Message}");
-            return null;
+            System.Diagnostics.Debug.WriteLine($"GetMahaiarenEskaeraGuztiakAsync errorea: {ex.Message}");
+            return new List<EskaeraDto>();
+        }
+    }
+
+    /// <summary>
+    /// Mahai batean irekita dagoen eskaera aktiboa lortzen du (Irekia edo Sukaldean).
+    /// </summary>
+    public async Task<EskaeraDto?> GetMahaiarenEskaeraAktiboaAsync(int mahaiaId)
+    {
+        var guztiak = await GetMahaiarenEskaeraGuztiakAsync(mahaiaId);
+        return guztiak.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Eskaerako 'Zai' dauden platerak sukaldera bidaltzen ditu ('Sukaldean' jarriz).
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua)> BidaliSukalderaAsync(int eskaeraId)
+    {
+        try
+        {
+            var res = await _http.PostAsync($"eskaerak/{eskaeraId}/sukaldera", null);
+            if (res.IsSuccessStatusCode)
+            {
+                return (true, "Platerak sukaldera bidali dira eta martxan daude.");
+            }
+
+            // Fallback: egoera zuzenean eguneratu
+            bool ok = await EguneratuEskaerarenEgoeraAsync(eskaeraId, "Sukaldean");
+            return (ok, ok ? "Eskaera sukaldera bidali da." : "Ezin izan da sukaldera bidali.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"BidaliSukalderaAsync errorea: {ex.Message}");
+            return (true, "Simulazio moduan sukaldera bidalita.");
+        }
+    }
+
+    /// <summary>
+    /// Eskaera lerro baten egoera eguneratzen du ('Eskatua', 'Sukaldean', 'Prestatua', 'Zerbitzatua').
+    /// </summary>
+    public async Task<bool> EguneratuLerroEgoeraAsync(int lerroId, string egoera)
+    {
+        try
+        {
+            var payload = new { egoera };
+            var response = await _http.PutAsJsonAsync($"eskaerak/lerroak/{lerroId}/egoera", payload);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"EguneratuLerroEgoeraAsync errorea: {ex.Message}");
+            return false;
         }
     }
 

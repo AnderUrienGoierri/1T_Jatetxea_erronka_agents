@@ -378,22 +378,28 @@ public partial class MahaiakForm : Form
             {
                 int pertsonaKopurua = modalKopurua.PertsonaKopurua;
 
-                // 2. Eskaera / Komanda pantaila ireki
-                using var modalEskaera = new EskaeraForm(mahaia, _langilea, _api, pertsonaKopurua);
-                if (modalEskaera.ShowDialog() == DialogResult.OK)
+                // 2. Eskaera / Komanda pantaila ireki (pantaila osoan)
+                Hide();
+                var formEskaera = new EskaeraForm(mahaia, _langilea, _api, pertsonaKopurua);
+                formEskaera.FormClosed += async (s, e) =>
                 {
+                    Show();
                     await KargatuMahaiakAsync();
-                }
+                };
+                formEskaera.Show();
             }
         }
         else
         {
-            // Okupatuta, Garbitzen edo Erreserbatuta: Xehetasunak ireki
-            using var modalXehetasunak = new MahaiaXehetasunakModal(mahaia, _langilea, _api);
-            if (modalXehetasunak.ShowDialog() == DialogResult.OK)
+            // Okupatuta, Garbitzen edo Erreserbatuta: Mahaiaren xehetasunak (pantaila osoan)
+            Hide();
+            var formXehetasunak = new MahaiaXehetasunakModal(mahaia, _langilea, _api);
+            formXehetasunak.FormClosed += async (s, e) =>
             {
+                Show();
                 await KargatuMahaiakAsync();
-            }
+            };
+            formXehetasunak.Show();
         }
     }
 }
