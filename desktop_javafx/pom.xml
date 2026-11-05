@@ -32,11 +32,18 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- JSON liburutegia (Jackson REST API kontsumitzeko) -->
+        <!-- JSON liburutegia (Gson REST API kontsumitzeko) -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.17.0</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <!-- Datu-basea: MySQL JDBC driver-a -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.1.0</version>
         </dependency>
     </dependencies>
 
@@ -47,8 +54,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <release>17</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -56,7 +62,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>eus.goierri.jatetxea.App</mainClass>
+                    <mainClass>eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher</mainClass>
                 </configuration>
             </plugin>
         </plugins>
