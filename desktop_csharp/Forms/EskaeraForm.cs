@@ -191,9 +191,9 @@ public partial class EskaeraForm : Form
     {
         var card = new Panel
         {
-            Width = 255,
-            Height = 120,
-            Margin = new Padding(6),
+            Width = 275,
+            Height = 135,
+            Margin = new Padding(8),
             BackColor = Color.White,
             Cursor = Cursors.Hand
         };
@@ -210,13 +210,14 @@ public partial class EskaeraForm : Form
         var (badgeText, badgeBg, badgeFg) = LortuPlaterKategoriaBadge(platera);
         var lblBadge = new Label
         {
-            Location = new Point(10, 16),
-            Size = new Size(38, 38),
+            Location = new Point(12, 16),
+            Size = new Size(42, 42),
             Text = badgeText,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             TextAlign = ContentAlignment.MiddleCenter,
             BackColor = badgeBg,
-            ForeColor = badgeFg
+            ForeColor = badgeFg,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblBadge);
 
@@ -224,12 +225,13 @@ public partial class EskaeraForm : Form
         var lblIzena = new Label
         {
             Text = platera.Izena,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(54, 8),
-            Size = new Size(148, 62),
+            Location = new Point(62, 10),
+            Size = new Size(160, 68),
             AutoEllipsis = true,
-            TextAlign = ContentAlignment.TopLeft
+            TextAlign = ContentAlignment.TopLeft,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblIzena);
 
@@ -237,11 +239,12 @@ public partial class EskaeraForm : Form
         var lblPrezioa = new Label
         {
             Text = $"{platera.Prezioa:F2} €",
-            Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 12.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(136, 19, 55),
-            Location = new Point(54, 74),
-            Size = new Size(148, 36),
-            TextAlign = ContentAlignment.MiddleLeft
+            Location = new Point(62, 84),
+            Size = new Size(160, 40),
+            TextAlign = ContentAlignment.MiddleLeft,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblPrezioa);
 
@@ -252,10 +255,11 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 15F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             BackColor = Color.FromArgb(248, 250, 252),
-            Location = new Point(206, 38),
-            Size = new Size(42, 42),
+            Location = new Point(card.Width - 50, 44),
+            Size = new Size(42, 44),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            UseCompatibleTextRendering = false
         };
         btnAdd.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnAdd.Click += (s, e) => GehituKarritora(platera);
@@ -338,11 +342,11 @@ public partial class EskaeraForm : Form
     private Control SortuKarritoLerroa(CartItem item)
     {
         bool hasOharra = !string.IsNullOrWhiteSpace(item.Oharrak);
-        int cardHeight = hasOharra ? 116 : 88;
+        int cardHeight = hasOharra ? 122 : 92;
 
         var row = new Panel
         {
-            Width = 368,
+            Width = 400,
             Height = cardHeight,
             Margin = new Padding(0, 0, 0, 10),
             BackColor = Color.FromArgb(248, 250, 252)
@@ -362,9 +366,10 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             Location = new Point(10, 8),
-            Size = new Size(315, 32),
+            Size = new Size(346, 32),
             AutoEllipsis = true,
-            TextAlign = ContentAlignment.MiddleLeft
+            TextAlign = ContentAlignment.MiddleLeft,
+            UseCompatibleTextRendering = false
         };
         row.Controls.Add(lblIzena);
 
@@ -376,9 +381,10 @@ public partial class EskaeraForm : Form
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
             Location = new Point(10, 44),
-            Size = new Size(36, 34),
+            Size = new Size(38, 36),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            UseCompatibleTextRendering = false
         };
         btnMinus.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnMinus.Click += (s, e) =>
@@ -394,9 +400,10 @@ public partial class EskaeraForm : Form
             Text = item.Kopurua.ToString(),
             Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(50, 44),
-            Size = new Size(36, 34),
-            TextAlign = ContentAlignment.MiddleCenter
+            Location = new Point(52, 44),
+            Size = new Size(38, 36),
+            TextAlign = ContentAlignment.MiddleCenter,
+            UseCompatibleTextRendering = false
         };
         row.Controls.Add(lblKop);
 
@@ -406,10 +413,11 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(51, 65, 85),
             BackColor = Color.White,
-            Location = new Point(90, 44),
-            Size = new Size(36, 34),
+            Location = new Point(94, 44),
+            Size = new Size(38, 36),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            UseCompatibleTextRendering = false
         };
         btnPlus.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnPlus.Click += (s, e) =>
@@ -424,9 +432,10 @@ public partial class EskaeraForm : Form
             Text = $"{item.Azpitotala:F2} €",
             Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(136, 44),
-            Size = new Size(180, 34),
-            TextAlign = ContentAlignment.MiddleLeft
+            Location = new Point(144, 44),
+            Size = new Size(210, 36),
+            TextAlign = ContentAlignment.MiddleLeft,
+            UseCompatibleTextRendering = false
         };
         row.Controls.Add(lblLerroTotala);
 
@@ -437,10 +446,11 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(148, 163, 184),
             BackColor = Color.Transparent,
-            Location = new Point(330, 8),
-            Size = new Size(32, 32),
+            Location = new Point(362, 8),
+            Size = new Size(30, 30),
             FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand
+            Cursor = Cursors.Hand,
+            UseCompatibleTextRendering = false
         };
         btnDel.FlatAppearance.BorderSize = 0;
         btnDel.Click += (s, e) =>
@@ -455,8 +465,8 @@ public partial class EskaeraForm : Form
         {
             var pnlOharra = new Panel
             {
-                Location = new Point(10, 68),
-                Size = new Size(324, 26),
+                Location = new Point(10, 84),
+                Size = new Size(380, 30),
                 BackColor = Color.FromArgb(241, 245, 249)
             };
             pnlOharra.Paint += (s, e) =>

@@ -104,19 +104,19 @@ partial class LoginForm
         lblBrand.TabIndex = 1;
         lblBrand.Text = "T1 Jatetxea";
         lblBrand.TextAlign = ContentAlignment.MiddleLeft;
-        lblBrand.UseCompatibleTextRendering = true;
+        lblBrand.UseCompatibleTextRendering = false;
         // 
         // lblZerbitzariak
         // 
         lblZerbitzariak.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
         lblZerbitzariak.ForeColor = Color.FromArgb(51, 65, 85);
-        lblZerbitzariak.Location = new Point(480, 18);
+        lblZerbitzariak.Location = new Point(523, 18);
         lblZerbitzariak.Name = "lblZerbitzariak";
         lblZerbitzariak.Size = new Size(320, 52);
         lblZerbitzariak.TabIndex = 2;
         lblZerbitzariak.Text = "Zerbitzariak";
         lblZerbitzariak.TextAlign = ContentAlignment.MiddleCenter;
-        lblZerbitzariak.UseCompatibleTextRendering = true;
+        lblZerbitzariak.UseCompatibleTextRendering = false;
         // 
         // pnlCard
         // 
@@ -334,7 +334,7 @@ partial class LoginForm
         lblPinTitle.TabIndex = 2;
         lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";
         lblPinTitle.TextAlign = ContentAlignment.MiddleCenter;
-        lblPinTitle.UseCompatibleTextRendering = true;
+        lblPinTitle.UseCompatibleTextRendering = false;
         // 
         // pnlPinDots
         // 
@@ -638,10 +638,10 @@ partial class LoginForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1280, 800);
+        ClientSize = new Size(1366, 850);
         Controls.Add(pnlCard);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(900, 720);
+        MinimumSize = new Size(1180, 750);
         Name = "LoginForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Saioa Hasi (TPV Tablet)";

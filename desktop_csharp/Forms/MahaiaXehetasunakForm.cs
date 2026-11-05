@@ -109,11 +109,10 @@ public partial class MahaiaXehetasunakForm : Form
                 Font = new Font("Segoe UI", 10.5F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
                 BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
                 ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
-                Size = new Size(210, 44),
+                Size = new Size(245, 46),
                 Margin = new Padding(0, 0, 10, 0),
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                UseCompatibleTextRendering = true
+                Cursor = Cursors.Hand
             };
             btn.FlatAppearance.BorderColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225);
             btn.FlatAppearance.BorderSize = 1;
@@ -216,7 +215,7 @@ public partial class MahaiaXehetasunakForm : Form
         var (badgeText, badgeBg, badgeFg, badgeBorder) = GetBadgeStyle(lerroEgoera);
 
         bool hasOharra = !string.IsNullOrWhiteSpace(lerro.Oharrak);
-        int cardHeight = hasOharra ? 84 : 64;
+        int cardHeight = hasOharra ? 96 : 72;
 
         var card = new Panel
         {
@@ -240,22 +239,24 @@ public partial class MahaiaXehetasunakForm : Form
             Text = $"{lerro.Kantitatea}x",
             Font = new Font("Segoe UI", 13F, FontStyle.Bold),
             ForeColor = Color.FromArgb(136, 19, 55),
-            Location = new Point(14, 15),
-            Size = new Size(50, 34),
-            TextAlign = ContentAlignment.MiddleLeft
+            Location = new Point(14, 16),
+            Size = new Size(50, 40),
+            TextAlign = ContentAlignment.MiddleLeft,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblKop);
 
         // 2. Plateraren Izena
-        int nameWidth = Math.Max(200, cardWidth - 360);
+        int nameWidth = Math.Max(220, cardWidth - 365);
         var lblIzena = new Label
         {
             Text = lerro.PlaterIzena,
             Font = new Font("Segoe UI", 12F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(68, 15),
-            Size = new Size(nameWidth, 34),
-            TextAlign = ContentAlignment.MiddleLeft
+            Location = new Point(68, 16),
+            Size = new Size(nameWidth, 40),
+            TextAlign = ContentAlignment.MiddleLeft,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblIzena);
 
@@ -267,9 +268,10 @@ public partial class MahaiaXehetasunakForm : Form
                 Text = $"Oharra: {lerro.Oharrak}",
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Italic),
                 ForeColor = Color.FromArgb(100, 116, 139),
-                Location = new Point(68, 48),
-                Size = new Size(nameWidth, 26),
-                TextAlign = ContentAlignment.MiddleLeft
+                Location = new Point(68, 58),
+                Size = new Size(nameWidth, 28),
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseCompatibleTextRendering = false
             };
             card.Controls.Add(lblOharra);
         }
@@ -280,18 +282,19 @@ public partial class MahaiaXehetasunakForm : Form
             Text = $"{lerro.Azpitotala:F2} €",
             Font = new Font("Segoe UI", 13F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(cardWidth - 270, 15),
-            Size = new Size(120, 34),
+            Location = new Point(cardWidth - 275, 16),
+            Size = new Size(125, 40),
             TextAlign = ContentAlignment.MiddleRight,
-            Anchor = AnchorStyles.Top | AnchorStyles.Right
+            Anchor = AnchorStyles.Top | AnchorStyles.Right,
+            UseCompatibleTextRendering = false
         };
         card.Controls.Add(lblPrezioa);
 
         // 5. Egoera Txapa ([ZAI] / [MARTXAN] / [EGINDA])
         var pnlBadge = new Panel
         {
-            Location = new Point(cardWidth - 138, 14),
-            Size = new Size(124, 36),
+            Location = new Point(cardWidth - 142, 16),
+            Size = new Size(130, 40),
             BackColor = badgeBg,
             Anchor = AnchorStyles.Top | AnchorStyles.Right
         };
@@ -306,9 +309,10 @@ public partial class MahaiaXehetasunakForm : Form
         {
             Dock = DockStyle.Fill,
             Text = badgeText,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = badgeFg,
-            TextAlign = ContentAlignment.MiddleCenter
+            TextAlign = ContentAlignment.MiddleCenter,
+            UseCompatibleTextRendering = false
         };
         pnlBadge.Controls.Add(lblBadge);
         card.Controls.Add(pnlBadge);

@@ -65,25 +65,25 @@ partial class EskaeraForm
         lblZerbitzaria.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblZerbitzaria.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblZerbitzaria.ForeColor = Color.FromArgb(71, 85, 105);
-        lblZerbitzaria.Location = new Point(830, 24);
+        lblZerbitzaria.Location = new Point(810, 20);
         lblZerbitzaria.Name = "lblZerbitzaria";
-        lblZerbitzaria.Size = new Size(420, 36);
+        lblZerbitzaria.Size = new Size(530, 44);
         lblZerbitzaria.TabIndex = 2;
         lblZerbitzaria.Text = "Zerbitzaria: Ane G. (4 pax)";
         lblZerbitzaria.TextAlign = ContentAlignment.MiddleRight;
-        lblZerbitzaria.UseCompatibleTextRendering = true;
+        lblZerbitzaria.UseCompatibleTextRendering = false;
         // 
         // lblMahaiaTit
         // 
-        lblMahaiaTit.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+        lblMahaiaTit.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblMahaiaTit.ForeColor = Color.FromArgb(136, 19, 55);
-        lblMahaiaTit.Location = new Point(208, 18);
+        lblMahaiaTit.Location = new Point(195, 18);
         lblMahaiaTit.Name = "lblMahaiaTit";
-        lblMahaiaTit.Size = new Size(580, 48);
+        lblMahaiaTit.Size = new Size(600, 48);
         lblMahaiaTit.TabIndex = 1;
         lblMahaiaTit.Text = "T1 Jatetxea - Mahaia 4";
         lblMahaiaTit.TextAlign = ContentAlignment.MiddleLeft;
-        lblMahaiaTit.UseCompatibleTextRendering = true;
+        lblMahaiaTit.UseCompatibleTextRendering = false;
         // 
         // btnAtzera ("< Mahaiak")
         // 
@@ -95,11 +95,11 @@ partial class EskaeraForm
         btnAtzera.ForeColor = Color.FromArgb(51, 65, 85);
         btnAtzera.Location = new Point(20, 18);
         btnAtzera.Name = "btnAtzera";
-        btnAtzera.Size = new Size(175, 48);
+        btnAtzera.Size = new Size(160, 48);
         btnAtzera.TabIndex = 0;
         btnAtzera.Text = "< Mahaiak";
         btnAtzera.TextAlign = ContentAlignment.MiddleCenter;
-        btnAtzera.UseCompatibleTextRendering = true;
+        btnAtzera.UseCompatibleTextRendering = false;
         btnAtzera.UseVisualStyleBackColor = false;
         // 
         // splitMain (Ezkerra Platerak, Eskuina Komanda)
@@ -125,8 +125,8 @@ partial class EskaeraForm
         splitMain.Panel2.Controls.Add(pnlLaburpena);
         splitMain.Panel2.Controls.Add(pnlKomandaGoiburua);
         splitMain.Panel2.Padding = new Padding(16);
-        splitMain.Size = new Size(1280, 716);
-        splitMain.SplitterDistance = 860;
+        splitMain.Size = new Size(1366, 766);
+        splitMain.SplitterDistance = 910;
         splitMain.TabIndex = 1;
         // 
         // pnlPlaterak (Produktuen txartelen flow panela)
@@ -267,9 +267,9 @@ partial class EskaeraForm
         pnlLaburpena.Controls.Add(lblBez);
         pnlLaburpena.Controls.Add(lblAzpitotala);
         pnlLaburpena.Dock = DockStyle.Bottom;
-        pnlLaburpena.Location = new Point(16, 470);
+        pnlLaburpena.Location = new Point(16, 490);
         pnlLaburpena.Name = "pnlLaburpena";
-        pnlLaburpena.Size = new Size(388, 230);
+        pnlLaburpena.Size = new Size(424, 240);
         pnlLaburpena.TabIndex = 2;
         // 
         // btnBidali ("ESKAERA SORTU")
@@ -278,11 +278,11 @@ partial class EskaeraForm
         btnBidali.Cursor = Cursors.Hand;
         btnBidali.FlatAppearance.BorderSize = 0;
         btnBidali.FlatStyle = FlatStyle.Flat;
-        btnBidali.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        btnBidali.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
         btnBidali.ForeColor = Color.White;
-        btnBidali.Location = new Point(6, 142);
+        btnBidali.Location = new Point(6, 150);
         btnBidali.Name = "btnBidali";
-        btnBidali.Size = new Size(376, 66);
+        btnBidali.Size = new Size(412, 70);
         btnBidali.TabIndex = 3;
         btnBidali.Text = "ESKAERA SORTU";
         btnBidali.UseVisualStyleBackColor = false;
@@ -291,9 +291,9 @@ partial class EskaeraForm
         // 
         lblGuztira.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblGuztira.ForeColor = Color.FromArgb(30, 41, 59);
-        lblGuztira.Location = new Point(6, 88);
+        lblGuztira.Location = new Point(6, 96);
         lblGuztira.Name = "lblGuztira";
-        lblGuztira.Size = new Size(376, 44);
+        lblGuztira.Size = new Size(412, 46);
         lblGuztira.TabIndex = 2;
         lblGuztira.Text = "Guztira:                        0.00 €";
         lblGuztira.TextAlign = ContentAlignment.MiddleLeft;
@@ -302,9 +302,9 @@ partial class EskaeraForm
         // 
         lblBez.Font = new Font("Segoe UI", 11.5F);
         lblBez.ForeColor = Color.FromArgb(100, 116, 139);
-        lblBez.Location = new Point(6, 50);
+        lblBez.Location = new Point(6, 54);
         lblBez.Name = "lblBez";
-        lblBez.Size = new Size(376, 32);
+        lblBez.Size = new Size(412, 34);
         lblBez.TabIndex = 1;
         lblBez.Text = "BEZ (%10):                    0.00 €";
         lblBez.TextAlign = ContentAlignment.MiddleLeft;
@@ -315,7 +315,7 @@ partial class EskaeraForm
         lblAzpitotala.ForeColor = Color.FromArgb(100, 116, 139);
         lblAzpitotala.Location = new Point(6, 14);
         lblAzpitotala.Name = "lblAzpitotala";
-        lblAzpitotala.Size = new Size(376, 32);
+        lblAzpitotala.Size = new Size(412, 34);
         lblAzpitotala.TabIndex = 0;
         lblAzpitotala.Text = "Azpitotala:                   0.00 €";
         lblAzpitotala.TextAlign = ContentAlignment.MiddleLeft;
@@ -327,7 +327,7 @@ partial class EskaeraForm
         pnlKarritoa.FlowDirection = FlowDirection.TopDown;
         pnlKarritoa.Location = new Point(16, 58);
         pnlKarritoa.Name = "pnlKarritoa";
-        pnlKarritoa.Size = new Size(388, 432);
+        pnlKarritoa.Size = new Size(424, 432);
         pnlKarritoa.TabIndex = 1;
         pnlKarritoa.WrapContents = false;
         // 
@@ -337,7 +337,7 @@ partial class EskaeraForm
         pnlKomandaGoiburua.Dock = DockStyle.Top;
         pnlKomandaGoiburua.Location = new Point(16, 16);
         pnlKomandaGoiburua.Name = "pnlKomandaGoiburua";
-        pnlKomandaGoiburua.Size = new Size(388, 44);
+        pnlKomandaGoiburua.Size = new Size(424, 44);
         pnlKomandaGoiburua.TabIndex = 0;
         // 
         // lblKomandaTit
@@ -347,7 +347,7 @@ partial class EskaeraForm
         lblKomandaTit.ForeColor = Color.FromArgb(30, 41, 59);
         lblKomandaTit.Location = new Point(0, 0);
         lblKomandaTit.Name = "lblKomandaTit";
-        lblKomandaTit.Size = new Size(388, 44);
+        lblKomandaTit.Size = new Size(424, 44);
         lblKomandaTit.TabIndex = 0;
         lblKomandaTit.Text = "ESKAERA - Mahaia 4";
         lblKomandaTit.TextAlign = ContentAlignment.MiddleLeft;
@@ -356,10 +356,10 @@ partial class EskaeraForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(1280, 800);
+        ClientSize = new Size(1366, 850);
         Controls.Add(splitMain);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1024, 700);
+        MinimumSize = new Size(1180, 750);
         Name = "EskaeraForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Eskaera Berria";

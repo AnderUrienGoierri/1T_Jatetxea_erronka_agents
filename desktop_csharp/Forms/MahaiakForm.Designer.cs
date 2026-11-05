@@ -71,11 +71,11 @@ partial class MahaiakForm
         // 
         // lblBrand ("T1 Jatetxea - Mahaiak")
         // 
-        lblBrand.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+        lblBrand.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblBrand.ForeColor = Color.FromArgb(136, 19, 55);
         lblBrand.Location = new Point(84, 16);
         lblBrand.Name = "lblBrand";
-        lblBrand.Size = new Size(400, 52);
+        lblBrand.Size = new Size(420, 52);
         lblBrand.TabIndex = 1;
         lblBrand.Text = "T1 Jatetxea - Mahaiak";
         lblBrand.TextAlign = ContentAlignment.MiddleLeft;
@@ -89,9 +89,9 @@ partial class MahaiakForm
         pnlProfile.Controls.Add(lblServerName);
         pnlProfile.Controls.Add(lblAvatarCircle);
         pnlProfile.Dock = DockStyle.Right;
-        pnlProfile.Location = new Point(750, 0);
+        pnlProfile.Location = new Point(866, 0);
         pnlProfile.Name = "pnlProfile";
-        pnlProfile.Size = new Size(530, 84);
+        pnlProfile.Size = new Size(500, 84);
         pnlProfile.TabIndex = 2;
 
         // 
@@ -103,9 +103,9 @@ partial class MahaiakForm
         btnLogout.FlatStyle = FlatStyle.Flat;
         btnLogout.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         btnLogout.ForeColor = Color.White;
-        btnLogout.Location = new Point(390, 18);
+        btnLogout.Location = new Point(376, 18);
         btnLogout.Name = "btnLogout";
-        btnLogout.Size = new Size(125, 48);
+        btnLogout.Size = new Size(114, 48);
         btnLogout.TabIndex = 4;
         btnLogout.Text = "Saioa Itxi";
         btnLogout.UseVisualStyleBackColor = false;
@@ -119,9 +119,9 @@ partial class MahaiakForm
         btnFreskatu.FlatStyle = FlatStyle.Flat;
         btnFreskatu.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         btnFreskatu.ForeColor = Color.FromArgb(51, 65, 85);
-        btnFreskatu.Location = new Point(258, 18);
+        btnFreskatu.Location = new Point(256, 18);
         btnFreskatu.Name = "btnFreskatu";
-        btnFreskatu.Size = new Size(120, 48);
+        btnFreskatu.Size = new Size(110, 48);
         btnFreskatu.TabIndex = 3;
         btnFreskatu.Text = "Freskatu";
         btnFreskatu.UseVisualStyleBackColor = false;
@@ -131,9 +131,9 @@ partial class MahaiakForm
         // 
         lblServerStatus.Font = new Font("Segoe UI", 9.5F);
         lblServerStatus.ForeColor = Color.FromArgb(22, 163, 74);
-        lblServerStatus.Location = new Point(72, 46);
+        lblServerStatus.Location = new Point(66, 44);
         lblServerStatus.Name = "lblServerStatus";
-        lblServerStatus.Size = new Size(170, 26);
+        lblServerStatus.Size = new Size(185, 24);
         lblServerStatus.TabIndex = 2;
         lblServerStatus.Text = "● Online";
         lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -141,11 +141,11 @@ partial class MahaiakForm
         // 
         // lblServerName (Zerbitzariaren izena)
         // 
-        lblServerName.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblServerName.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblServerName.ForeColor = Color.FromArgb(30, 41, 59);
-        lblServerName.Location = new Point(72, 16);
+        lblServerName.Location = new Point(66, 14);
         lblServerName.Name = "lblServerName";
-        lblServerName.Size = new Size(180, 30);
+        lblServerName.Size = new Size(185, 30);
         lblServerName.TabIndex = 1;
         lblServerName.Text = "Ane G.";
         lblServerName.TextAlign = ContentAlignment.MiddleLeft;
@@ -344,11 +344,11 @@ partial class MahaiakForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1280, 800);
+        ClientSize = new Size(1366, 850);
         Controls.Add(pnlContent);
         Controls.Add(pnlTabStrip);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1024, 700);
+        MinimumSize = new Size(1180, 750);
         Name = "MahaiakForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Mahaiak";
