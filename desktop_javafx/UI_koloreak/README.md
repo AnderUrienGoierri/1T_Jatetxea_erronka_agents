@@ -29,3 +29,4 @@ Karpeta honetan T1 Jatetxearen JavaFX aplikazioaren (Sukaldeko KDS, Barrako BDS 
 5. **Bektore Fitxategiak (SVG)**
    * `t1_logo_italo_euskalduna.svg`: Logo horizontal osoa (Figma-ra arrastatu daitekeena).
    * `t1_isotipoa.svg`: Ikono biribil karratua (app icon, favicon eta leiho txikiagoetarako).
+

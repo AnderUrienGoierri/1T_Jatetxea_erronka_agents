@@ -120,3 +120,4 @@ FXML-an irudia zuzenean integratzeko:
     ...
 </HBox>
 ```
+

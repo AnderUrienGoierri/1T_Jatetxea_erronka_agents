@@ -163,3 +163,4 @@ KDS/BDS tauletan plateren egoera bereizteko:
 3. **Esportatu beharreko irudiak:**
    * Logo bektoriala SVG formatuan esportatu.
    * Ikonoak (freskatu, bilatu, abisua) SVG edo PNG garbian esportatu `desktop_javafx/src/main/resources/eus/goierri/jatetxea/icons/` karpetara.
+

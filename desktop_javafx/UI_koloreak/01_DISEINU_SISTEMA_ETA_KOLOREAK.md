@@ -105,3 +105,4 @@ Pantaila profesionaletan (KDS/BDS) maiz gertatzen den arazo bat letren eta atzek
 ### 5.3 Biltegiko Stock Txartelak
 * **Stock Normala:** Zenbaki berdea edo arbel grisa.
 * **Gutxieneko Stocka Gainditua:** Alerta koadro gorria (`#FEE2E2` hondoa, `#DC2626` testua eta ertza).
+
