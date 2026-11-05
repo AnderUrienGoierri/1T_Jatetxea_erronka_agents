@@ -313,10 +313,11 @@ public partial class LoginForm : Form
 
         if (arrakasta && langilea != null)
         {
+            var sesioLangilea = _aukeratutakoLangilea ?? langilea;
             _pin = string.Empty;
             FreskatuPinDots();
 
-            var mahaiakForm = new MahaiakForm(langilea, _api);
+            var mahaiakForm = new MahaiakForm(sesioLangilea, _api);
             mahaiakForm.FormClosed += (s, e) =>
             {
                 Show();
