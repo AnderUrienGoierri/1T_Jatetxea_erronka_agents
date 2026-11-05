@@ -1,11 +1,15 @@
 using Microsoft.Extensions.FileProviders;
 using MySqlConnector;
+using Jatetxea.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Zerbitzuak gehitu kontainerrean
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+// Datu-basearen konexioa denbora errealean (atzeko planoan) monitorizatzen duen zerbitzua
+builder.Services.AddHostedService<DatuBaseaMonitorZerbitzua>();
 
 // CORS baimentzea edozein jatorritatik (Web, WinForms eta JavaFX bezeroentzat)
 builder.Services.AddCors(options =>
@@ -140,72 +144,35 @@ app.MapGet("/", () => Results.Ok(new
 }));
 
 // Health Check endpoint-ak: APIa eta Datu-basea martxan dauden egiaztatzeko
-async Task<IResult> HealthCheckHandler(IConfiguration config)
+app.MapGet("/health", () =>
 {
-    string connStr = config.GetConnectionString("Jatetxea") ?? "";
-    try
+    bool konektatuta = DatuBaseaMonitorZerbitzua.IsKonektatuta;
+    if (konektatuta)
     {
-        await using var conn = new MySqlConnection(connStr);
-        await conn.OpenAsync();
         return Results.Ok(new
         {
             status = "Healthy",
             database = "Connected",
             engine = "MySQL 8.0 InnoDB",
             port = 3308,
+            azkenEgiaztapena = DatuBaseaMonitorZerbitzua.AzkenEgiaztapena,
             timestamp = DateTime.UtcNow
         });
     }
-    catch (Exception ex)
-    {
-        return Results.Json(new
-        {
-            status = "Unhealthy",
-            database = "Disconnected",
-            error = ex.Message,
-            solution = "Egiaztatu Docker Desktop-eko 'jatetxea_mysql' edukiontzia martxan dagoela ('docker compose up -d').",
-            timestamp = DateTime.UtcNow
-        }, statusCode: 503);
-    }
-}
 
-app.MapGet("/health", (IConfiguration config) => HealthCheckHandler(config));
-app.MapGet("/api/v1/health", (IConfiguration config) => HealthCheckHandler(config));
+    return Results.Json(new
+    {
+        status = "Unhealthy",
+        database = "Disconnected",
+        errorea = DatuBaseaMonitorZerbitzua.AzkenEgoeraMezua,
+        soluzioa = "Egiaztatu Docker Desktop-eko 'jatetxea_mysql' edukiontzia martxan dagoela ('docker compose up -d').",
+        azkenEgiaztapena = DatuBaseaMonitorZerbitzua.AzkenEgiaztapena,
+        timestamp = DateTime.UtcNow
+    }, statusCode: 503);
+});
+
+app.MapGet("/api/v1/health", () => Results.Redirect("/health"));
 
 app.MapControllers();
 
-// Abiaraztean Datu-basearen konexioa egiaztatu eta kontsolan argi inprimatu
-EgiaztatuDatuBasea(app.Configuration);
-
 app.Run();
-
-static void EgiaztatuDatuBasea(IConfiguration config)
-{
-    string connStr = config.GetConnectionString("Jatetxea") ?? "";
-    try
-    {
-        using var conn = new MySqlConnection(connStr);
-        conn.Open();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine();
-        Console.WriteLine("==================================================================");
-        Console.WriteLine("[DATU-BASEA OK] MySQL konexioa ondo ezarri da!");
-        Console.WriteLine("   -> Zerbitzaria: localhost:3308 | Datu-basea: jatetxea_db");
-        Console.WriteLine("==================================================================");
-        Console.WriteLine();
-        Console.ResetColor();
-    }
-    catch (Exception ex)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine();
-        Console.WriteLine("==================================================================");
-        Console.WriteLine("[ABISUA: DATU-BASEA EZ DAGO ERABILGARRI]");
-        Console.WriteLine($"   -> Errorea: {ex.Message}");
-        Console.WriteLine("   -> Kausa: 'jatetxea_mysql' edukiontzia (3308) itzalita egon daiteke.");
-        Console.WriteLine("   -> Konponbidea: Exekutatu 'docker compose up -d' terminalean.");
-        Console.WriteLine("==================================================================");
-        Console.WriteLine();
-        Console.ResetColor();
-    }
-}
