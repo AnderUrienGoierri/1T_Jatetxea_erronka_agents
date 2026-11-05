@@ -483,11 +483,11 @@ public class EskaerakController : BaseApiKontroladorea
             await cmdE.ExecuteNonQueryAsync();
         }
 
-        // 2. Mahaiaren egoera 'Eskaera bidean' jarri
+        // 2. Mahaiaren egoera 'Okupatuta' jarri
         const string sqlM = @"
             UPDATE mahaiak m
             JOIN eskaerak e ON m.id = e.mahaia_id
-            SET m.egoera = 'Eskaera bidean'
+            SET m.egoera = 'Okupatuta'
             WHERE e.id = @id AND m.egoera != 'Garbitzen';";
         await using (var cmdM = new MySqlCommand(sqlM, kon))
         {

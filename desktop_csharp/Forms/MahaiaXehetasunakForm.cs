@@ -366,12 +366,12 @@ public partial class MahaiaXehetasunakForm : Form
             l.Egoera = "Martxan";
         }
         eskaera.Egoera = "Sukaldean";
-        _mahaia.Egoera = "Eskaera bidean";
+        _mahaia.Egoera = "Okupatuta";
 
         // Mahaiaren egoera eguneratu datu-basean
-        _ = _api.EguneratuMahaiarenEgoeraAsync(_mahaia.Id, "Eskaera bidean");
+        _ = _api.EguneratuMahaiarenEgoeraAsync(_mahaia.Id, "Okupatuta");
 
-        lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax) · Eskaera bidean";
+        lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax) · Sukaldean";
         BistaratuHautatutakoEskaera();
 
         MessageBox.Show(

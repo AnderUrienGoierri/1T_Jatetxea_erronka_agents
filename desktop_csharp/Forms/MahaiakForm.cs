@@ -174,10 +174,9 @@ public partial class MahaiakForm : Form
         int guztira = _mahaiak.Count;
         int libre = _mahaiak.Count(m => m.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase));
         int okupatuta = _mahaiak.Count(m => m.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase));
-        int eskaeraBidean = _mahaiak.Count(m => m.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase));
         int garbitzen = _mahaiak.Count(m => m.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase));
 
-        lblSummary.Text = $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Bidean: {eskaeraBidean} · Garbitzen: {garbitzen}";
+        lblSummary.Text = $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Garbitzen: {garbitzen}";
     }
 
     private bool KokapenaBatDator(string mahaiaKokapena, string tabIzena)
