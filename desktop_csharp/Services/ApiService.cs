@@ -44,7 +44,7 @@ public class ApiService
         }
         catch
         {
-            return (false, false, "APIa deskonektatuta dago (Offline demo modua).");
+            return (false, false, "API zerbitzaria deskonektatuta dago (http://localhost:5000).");
         }
     }
 
@@ -105,23 +105,10 @@ public class ApiService
 
             return (false, apiRes?.Message ?? "Ezin izan da saioa hasi.", null);
         }
-        catch
+        catch (Exception ex)
         {
-            // Backend APIa martxan ez badago (offline/demo modua), PINa 1234 denean saioa baimendu
-            if (pasahitza == "1234" || pasahitza.Length == 4)
-            {
-                var fallbackLangilea = new LangileaDto
-                {
-                    Id = 1,
-                    Erabiltzailea = erabiltzailea,
-                    Izena = char.ToUpper(erabiltzailea[0]) + (erabiltzailea.Length > 1 ? erabiltzailea.Substring(1) : ""),
-                    Rola = "Zerbitzaria",
-                    Aktibo = true
-                };
-                return (true, "Saioa ondo hasi da (Demo modua).", fallbackLangilea);
-            }
-
-            return (false, "PIN okerra (Demo PIN lehenetsia: 1234).", null);
+            System.Diagnostics.Debug.WriteLine($"LoginAsync konexio errorea: {ex.Message}");
+            return (false, "Ezin izan da API zerbitzariarekin konektatu (http://localhost:5000). Ziurtatu martxan dagoela.", null);
         }
     }
 
@@ -253,14 +240,12 @@ public class ApiService
                 return (true, "Platerak sukaldera bidali dira eta martxan daude.");
             }
 
-            // Fallback: egoera zuzenean eguneratu
-            bool ok = await EguneratuEskaerarenEgoeraAsync(eskaeraId, "Sukaldean");
-            return (ok, ok ? "Eskaera sukaldera bidali da." : "Ezin izan da sukaldera bidali.");
+            return (false, "Ezin izan da sukaldera bidali.");
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"BidaliSukalderaAsync errorea: {ex.Message}");
-            return (true, "Simulazio moduan sukaldera bidalita.");
+            return (false, "Ezin izan da sukaldera bidali: API zerbitzaria ez dago eskuragarri.");
         }
     }
 

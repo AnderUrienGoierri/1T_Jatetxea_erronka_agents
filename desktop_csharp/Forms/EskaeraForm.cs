@@ -131,44 +131,12 @@ public partial class EskaeraForm : Form
             _platerak = new List<PlateraDto>();
         }
 
-        // Fallback demo platerak (zirriborroko produktuak beti eskuragarri egoteko)
-        if (_platerak.Count == 0)
+        foreach (var p in _platerak)
         {
-            _platerak = new List<PlateraDto>
+            if (_stockMap.TryGetValue(p.Id, out int ahalmena))
             {
-                new() { Id = 1, Izena = "Txakolina", Kategoria = "Edariak", Prezioa = 14.00m, StockAhalmena = 15, Deskribapena = "Getariako Txakolina" },
-                new() { Id = 2, Izena = "Sagardoa", Kategoria = "Edariak", Prezioa = 5.00m, StockAhalmena = 20, Deskribapena = "Gipuzkoako Sagardo Naturala" },
-                new() { Id = 3, Izena = "Zerbeza", Kategoria = "Edariak", Prezioa = 4.00m, StockAhalmena = 25, Deskribapena = "Kaña artisaua" },
-                new() { Id = 4, Izena = "Ura 1L", Kategoria = "Edariak", Prezioa = 2.00m, StockAhalmena = 40, Deskribapena = "Ura naturala" },
-                new() { Id = 5, Izena = "Ardoa", Kategoria = "Edariak", Prezioa = 16.00m, StockAhalmena = 12, Deskribapena = "Errioxako Ardo Beltza" },
-                new() { Id = 6, Izena = "Koka-Kola", Kategoria = "Edariak", Prezioa = 3.00m, StockAhalmena = 30, Deskribapena = "Freskagarria" },
-                new() { Id = 7, Izena = "Kafeak", Kategoria = "Edariak", Prezioa = 1.80m, StockAhalmena = 50, Deskribapena = "Espresso edo ebakia" },
-                new() { Id = 8, Izena = "Zukuak", Kategoria = "Edariak", Prezioa = 2.50m, StockAhalmena = 20, Deskribapena = "Laranja zuku naturala" },
-                new() { Id = 9, Izena = "Entsalada Mistoa", Kategoria = "Hastekoak", Prezioa = 8.00m, StockAhalmena = 10, Deskribapena = "Uraza, tomatea, hegaluzea" },
-                new() { Id = 10, Izena = "Txuleta 1kg", Kategoria = "Haragiak", Prezioa = 38.00m, StockAhalmena = 8, Deskribapena = "Idiazabalgo txuleta zaharra" },
-                new() { Id = 11, Izena = "Bakailaoa", Kategoria = "Arrainak", Prezioa = 18.00m, StockAhalmena = 10, Deskribapena = "Pil-pil erara" },
-                new() { Id = 12, Izena = "Gazta Tarta", Kategoria = "Postreak", Prezioa = 6.00m, StockAhalmena = 12, Deskribapena = "Etxeko gazta tarta labean" }
-            };
-        }
-        else
-        {
-            foreach (var p in _platerak)
-            {
-                if (_stockMap.TryGetValue(p.Id, out int ahalmena))
-                {
-                    p.StockAhalmena = ahalmena;
-                }
+                p.StockAhalmena = ahalmena;
             }
-        }
-
-        // Demo hasierako karritoa erakutsi (zirriborroko adibidea bistaratzeko: Txakolina [1] eta Entsalada [2])
-        if (_karritoa.Count == 0)
-        {
-            var txakolina = _platerak.FirstOrDefault(p => p.Izena.Contains("Txakolina"));
-            if (txakolina != null) _karritoa.Add(new CartItem(txakolina, 1));
-
-            var entsalada = _platerak.FirstOrDefault(p => p.Izena.Contains("Entsalada"));
-            if (entsalada != null) _karritoa.Add(new CartItem(entsalada, 2, "Tipularik gabe"));
         }
 
         AldatuKategoria("Edariak");
@@ -527,10 +495,9 @@ public partial class EskaeraForm : Form
             var (arrakastaSortu, mezuaSortu, eskaeraSortua) = await _api.SortuEskaeraAsync(_mahaia.Id, _langilea.Id, _pertsonaKopurua);
             if (!arrakastaSortu || eskaeraSortua == null)
             {
-                // Fallback demo modua konexiorik ez badago
-                MessageBox.Show($"Komanda arrakastaz sortu da Mahaia {_mahaia.Zenbakia}-rentzat!\n\n(Simulazio modua aktibatuta)", "Eskaera Bidalita", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                MessageBox.Show($"Ezin izan da komanda sortu: {mezuaSortu}\n\nEgiaztatu API zerbitzaria (http://localhost:5000) martxan dagoela.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnBidali.Enabled = true;
+                btnBidali.Text = "ESKAERA BIDALI";
                 return;
             }
             eskaeraId = eskaeraSortua.Id;

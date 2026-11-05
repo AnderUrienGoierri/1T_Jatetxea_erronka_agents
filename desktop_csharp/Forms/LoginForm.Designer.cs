@@ -155,6 +155,7 @@ partial class LoginForm
         pnlAvatar1.Name = "pnlAvatar1";
         pnlAvatar1.Size = new Size(78, 88);
         pnlAvatar1.TabIndex = 0;
+        pnlAvatar1.Visible = false;
         // 
         // lblCircle1
         // 
@@ -165,7 +166,7 @@ partial class LoginForm
         lblCircle1.Name = "lblCircle1";
         lblCircle1.Size = new Size(46, 46);
         lblCircle1.TabIndex = 0;
-        lblCircle1.Text = "AB";
+        lblCircle1.Text = "";
         lblCircle1.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblName1
@@ -176,7 +177,7 @@ partial class LoginForm
         lblName1.Name = "lblName1";
         lblName1.Size = new Size(78, 34);
         lblName1.TabIndex = 1;
-        lblName1.Text = "Aitor B.";
+        lblName1.Text = "";
         lblName1.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlAvatar2
@@ -188,6 +189,7 @@ partial class LoginForm
         pnlAvatar2.Name = "pnlAvatar2";
         pnlAvatar2.Size = new Size(78, 88);
         pnlAvatar2.TabIndex = 1;
+        pnlAvatar2.Visible = false;
         // 
         // lblCircle2
         // 
@@ -198,7 +200,7 @@ partial class LoginForm
         lblCircle2.Name = "lblCircle2";
         lblCircle2.Size = new Size(46, 46);
         lblCircle2.TabIndex = 0;
-        lblCircle2.Text = "ML";
+        lblCircle2.Text = "";
         lblCircle2.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblName2
@@ -209,7 +211,7 @@ partial class LoginForm
         lblName2.Name = "lblName2";
         lblName2.Size = new Size(78, 34);
         lblName2.TabIndex = 1;
-        lblName2.Text = "Maite L.";
+        lblName2.Text = "";
         lblName2.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlAvatar3
@@ -221,6 +223,7 @@ partial class LoginForm
         pnlAvatar3.Name = "pnlAvatar3";
         pnlAvatar3.Size = new Size(78, 88);
         pnlAvatar3.TabIndex = 2;
+        pnlAvatar3.Visible = false;
         // 
         // lblCircle3
         // 
@@ -231,7 +234,7 @@ partial class LoginForm
         lblCircle3.Name = "lblCircle3";
         lblCircle3.Size = new Size(46, 46);
         lblCircle3.TabIndex = 0;
-        lblCircle3.Text = "MA";
+        lblCircle3.Text = "";
         lblCircle3.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblName3
@@ -242,7 +245,7 @@ partial class LoginForm
         lblName3.Name = "lblName3";
         lblName3.Size = new Size(78, 34);
         lblName3.TabIndex = 1;
-        lblName3.Text = "Mikel A.";
+        lblName3.Text = "";
         lblName3.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlAvatar4
@@ -254,6 +257,7 @@ partial class LoginForm
         pnlAvatar4.Name = "pnlAvatar4";
         pnlAvatar4.Size = new Size(78, 88);
         pnlAvatar4.TabIndex = 3;
+        pnlAvatar4.Visible = false;
         // 
         // lblCircle4
         // 
@@ -264,7 +268,7 @@ partial class LoginForm
         lblCircle4.Name = "lblCircle4";
         lblCircle4.Size = new Size(46, 46);
         lblCircle4.TabIndex = 0;
-        lblCircle4.Text = "AG";
+        lblCircle4.Text = "";
         lblCircle4.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblName4
@@ -275,7 +279,7 @@ partial class LoginForm
         lblName4.Name = "lblName4";
         lblName4.Size = new Size(78, 34);
         lblName4.TabIndex = 1;
-        lblName4.Text = "Ane G.";
+        lblName4.Text = "";
         lblName4.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlAvatar5
@@ -287,6 +291,7 @@ partial class LoginForm
         pnlAvatar5.Name = "pnlAvatar5";
         pnlAvatar5.Size = new Size(78, 88);
         pnlAvatar5.TabIndex = 4;
+        pnlAvatar5.Visible = false;
         // 
         // lblCircle5
         // 
@@ -297,7 +302,7 @@ partial class LoginForm
         lblCircle5.Name = "lblCircle5";
         lblCircle5.Size = new Size(46, 46);
         lblCircle5.TabIndex = 0;
-        lblCircle5.Text = "IM";
+        lblCircle5.Text = "";
         lblCircle5.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblName5
@@ -308,7 +313,7 @@ partial class LoginForm
         lblName5.Name = "lblName5";
         lblName5.Size = new Size(78, 34);
         lblName5.TabIndex = 1;
-        lblName5.Text = "Iker M.";
+        lblName5.Text = "";
         lblName5.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlDivider
@@ -322,12 +327,12 @@ partial class LoginForm
         // lblPinTitle
         // 
         lblPinTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-        lblPinTitle.ForeColor = Color.FromArgb(30, 41, 59);
+        lblPinTitle.ForeColor = Color.FromArgb(220, 38, 38);
         lblPinTitle.Location = new Point(20, 136);
         lblPinTitle.Name = "lblPinTitle";
         lblPinTitle.Size = new Size(480, 42);
         lblPinTitle.TabIndex = 2;
-        lblPinTitle.Text = "SARTU PIN ZENBAKIA";
+        lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";
         lblPinTitle.TextAlign = ContentAlignment.MiddleCenter;
         lblPinTitle.UseCompatibleTextRendering = true;
         // 
@@ -604,18 +609,20 @@ partial class LoginForm
         // 
         // lblStatus
         // 
-        lblStatus.Font = new Font("Segoe UI", 10F);
+        lblStatus.Font = new Font("Segoe UI", 9.5F);
         lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
-        lblStatus.Location = new Point(35, 520);
+        lblStatus.Location = new Point(20, 506);
         lblStatus.Name = "lblStatus";
-        lblStatus.Size = new Size(450, 34);
+        lblStatus.Size = new Size(480, 50);
         lblStatus.TabIndex = 5;
+        lblStatus.Text = "API zerbitzaria deskonektatuta dago!\nEgiaztatu martxan dagoela (http://localhost:5000)";
         lblStatus.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // btnLogin
         // 
-        btnLogin.BackColor = Color.FromArgb(136, 19, 55);
+        btnLogin.BackColor = Color.FromArgb(148, 163, 184);
         btnLogin.Cursor = Cursors.Hand;
+        btnLogin.Enabled = false;
         btnLogin.FlatAppearance.BorderSize = 0;
         btnLogin.FlatStyle = FlatStyle.Flat;
         btnLogin.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
@@ -624,7 +631,7 @@ partial class LoginForm
         btnLogin.Name = "btnLogin";
         btnLogin.Size = new Size(450, 66);
         btnLogin.TabIndex = 6;
-        btnLogin.Text = "HASI SAIOA";
+        btnLogin.Text = "API-A DESKONEKTATUTA";
         btnLogin.UseVisualStyleBackColor = false;
         // 
         // LoginForm

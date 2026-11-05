@@ -11,11 +11,23 @@ public partial class LoginForm : Form
     private List<LangileaDto> _langileak = new();
     private LangileaDto? _aukeratutakoLangilea;
     private string _pin = string.Empty;
+    private readonly Label _lblOfflineNotice;
 
     public LoginForm()
     {
         InitializeComponent();
         _api = new ApiService();
+
+        _lblOfflineNotice = new Label
+        {
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            ForeColor = Color.FromArgb(220, 38, 38),
+            Text = "API konexioa falta da!\n(http://localhost:5000 deskonektatuta)",
+            Visible = true
+        };
+        pnlAvatars.Controls.Add(_lblOfflineNotice);
 
         // Zentratu goiburuko "Zerbitzariak" testua automatikoki
         pnlTopBar.Resize += (s, e) =>
@@ -54,6 +66,9 @@ public partial class LoginForm : Form
         PrestatuAvatarrak();
 
         btnLogin.Click += async (s, e) => await LoginExekutatuAsync();
+
+        lblStatus.Cursor = Cursors.Hand;
+        lblStatus.Click += async (s, e) => await KargatuLangileakAsync();
 
         Load += async (s, e) =>
         {
@@ -171,29 +186,6 @@ public partial class LoginForm : Form
 
     private async Task KargatuLangileakAsync()
     {
-        var (apiOk, dbOk, healthMsg) = await _api.CheckHealthAsync();
-        if (!dbOk)
-        {
-            lblStatus.Text = apiOk 
-                ? "Datu-basea deskonektatuta (Demo PINa: 1234)" 
-                : "Lineaz kanpoko modua (Demo PINa: 1234)";
-            lblStatus.ForeColor = Color.FromArgb(194, 65, 12); // Laranja/Ohar kolorea
-        }
-
-        _langileak = await _api.GetLangileakAsync();
-
-        if (_langileak.Count == 0)
-        {
-            _langileak = new List<LangileaDto>
-            {
-                new() { Id = 1, Erabiltzailea = "aitor", Izena = "Aitor B.", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 2, Erabiltzailea = "maite", Izena = "Maite L.", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 3, Erabiltzailea = "mikel", Izena = "Mikel A.", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 4, Erabiltzailea = "ane", Izena = "Ane G.", Rola = "Zerbitzaria", Aktibo = true },
-                new() { Id = 5, Erabiltzailea = "iker", Izena = "Iker M.", Rola = "Zerbitzaria", Aktibo = true }
-            };
-        }
-
         (Panel Panel, Label Circle, Label Name)[] items = {
             (pnlAvatar1, lblCircle1, lblName1),
             (pnlAvatar2, lblCircle2, lblName2),
@@ -201,6 +193,99 @@ public partial class LoginForm : Form
             (pnlAvatar4, lblCircle4, lblName4),
             (pnlAvatar5, lblCircle5, lblName5)
         };
+
+        var (apiOk, dbOk, healthMsg) = await _api.CheckHealthAsync();
+
+        if (!apiOk)
+        {
+            // APIa deskonektatuta: EZ erakutsi datu faltsurik!
+            _langileak = new List<LangileaDto>();
+            _aukeratutakoLangilea = null;
+
+            foreach (var item in items)
+            {
+                item.Panel.Visible = false;
+            }
+
+            _lblOfflineNotice.Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5000)";
+            _lblOfflineNotice.ForeColor = Color.FromArgb(220, 38, 38);
+            _lblOfflineNotice.Visible = true;
+
+            lblStatus.Text = "API konexioa falta da!\nEgiaztatu martxan dagoela (http://localhost:5000)";
+            lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
+
+            lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";
+            lblPinTitle.ForeColor = Color.FromArgb(220, 38, 38);
+
+            btnLogin.Enabled = false;
+            btnLogin.Text = "API-A DESKONEKTATUTA";
+            btnLogin.BackColor = Color.FromArgb(148, 163, 184);
+            return;
+        }
+
+        if (!dbOk)
+        {
+            // Datu-basea deskonektatuta
+            _langileak = new List<LangileaDto>();
+            _aukeratutakoLangilea = null;
+
+            foreach (var item in items)
+            {
+                item.Panel.Visible = false;
+            }
+
+            _lblOfflineNotice.Text = "MySQL datu-basea deskonektatuta dago\n(3308 portua)";
+            _lblOfflineNotice.ForeColor = Color.FromArgb(220, 38, 38);
+            _lblOfflineNotice.Visible = true;
+
+            lblStatus.Text = "MySQL datu-basea deskonektatuta dago (3308 portua).\nEgiaztatu Docker edukiontzia martxan dagoela.";
+            lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
+
+            lblPinTitle.Text = "DATU-BASEA FALTA DA";
+            lblPinTitle.ForeColor = Color.FromArgb(220, 38, 38);
+
+            btnLogin.Enabled = false;
+            btnLogin.Text = "DATU-BASEA FALTA DA";
+            btnLogin.BackColor = Color.FromArgb(148, 163, 184);
+            return;
+        }
+
+        // APIa eta DBa martxan: Datu errealak kargatu API bidez
+        _langileak = await _api.GetLangileakAsync();
+
+        if (_langileak.Count == 0)
+        {
+            _aukeratutakoLangilea = null;
+            foreach (var item in items)
+            {
+                item.Panel.Visible = false;
+            }
+
+            _lblOfflineNotice.Text = "Ez da zerbitzaririk aurkitu datu-basean";
+            _lblOfflineNotice.ForeColor = Color.FromArgb(194, 65, 12);
+            _lblOfflineNotice.Visible = true;
+
+            lblStatus.Text = "Ez da zerbitzaririk aurkitu datu-basean.";
+            lblStatus.ForeColor = Color.FromArgb(194, 65, 12);
+
+            lblPinTitle.Text = "EZ DAGO ZERBITZARIRIK";
+            lblPinTitle.ForeColor = Color.FromArgb(194, 65, 12);
+
+            btnLogin.Enabled = false;
+            btnLogin.Text = "EZ DAGO ZERBITZARIRIK";
+            btnLogin.BackColor = Color.FromArgb(148, 163, 184);
+            return;
+        }
+
+        // Langile errealak bistaratu
+        _lblOfflineNotice.Visible = false;
+        lblStatus.Text = "";
+        lblPinTitle.Text = "SARTU PIN ZENBAKIA";
+        lblPinTitle.ForeColor = Color.FromArgb(30, 41, 59);
+
+        btnLogin.Enabled = true;
+        btnLogin.Text = "HASI SAIOA";
+        btnLogin.BackColor = Color.FromArgb(136, 19, 55);
 
         int count = Math.Min(_langileak.Count, 5);
         int avatarWidth = count <= 3 ? 120 : (count == 4 ? 104 : 90);
@@ -242,10 +327,7 @@ public partial class LoginForm : Form
             }
         }
 
-        if (_langileak.Count > 0)
-        {
-            HautatuLangilea(_langileak[0]);
-        }
+        HautatuLangilea(_langileak[0]);
     }
 
     private void HautatuLangilea(LangileaDto langilea)
@@ -274,6 +356,13 @@ public partial class LoginForm : Form
 
     private void KeypadBotoiaKlikatua(string txt)
     {
+        if (_langileak.Count == 0 || _aukeratutakoLangilea == null)
+        {
+            lblStatus.Text = "APIa deskonektatuta dago. Ezin da PINik sartu.";
+            lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
+            return;
+        }
+
         lblStatus.Text = "";
 
         if (txt.Contains("Clear") || txt == "X" || txt == "C")

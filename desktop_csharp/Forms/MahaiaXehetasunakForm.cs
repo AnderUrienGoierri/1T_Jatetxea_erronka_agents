@@ -83,48 +83,6 @@ public partial class MahaiaXehetasunakForm : Form
             _eskaerak = new List<EskaeraDto>();
         }
 
-        // Demo / fallback eskaerak mahai honentzat
-        if (_eskaerak.Count == 0)
-        {
-            var demoE1 = new EskaeraDto
-            {
-                Id = 101,
-                MahaiaId = _mahaia.Id,
-                MahaiZenbakia = _mahaia.Zenbakia,
-                LangileaId = _langilea.Id,
-                LangileIzena = _langilea.Izena,
-                Egoera = "Sukaldean",
-                Guztira = 70.00m,
-                SortzeData = DateTime.Now.AddMinutes(-25).ToString("yyyy-MM-dd HH:mm:ss"),
-                Lerroak = new List<EskaeraLerroaDto>
-                {
-                    new() { Id = 1, PlateraId = 1, PlaterIzena = "Getariako Txakolina", Kantitatea = 2, UnitatePrezioa = 14.00m, Egoera = "Martxan", Oharrak = "Ondo hotza" },
-                    new() { Id = 2, PlateraId = 7, PlaterIzena = "Txuleta 1kg", Kantitatea = 1, UnitatePrezioa = 38.00m, Egoera = "Zai", Oharrak = "Puntuan, patatekin" },
-                    new() { Id = 3, PlateraId = 9, PlaterIzena = "Entsalada Mistoa", Kantitatea = 1, UnitatePrezioa = 4.00m, Egoera = "Martxan", Oharrak = "Tipularik gabe" }
-                }
-            };
-
-            var demoE2 = new EskaeraDto
-            {
-                Id = 102,
-                MahaiaId = _mahaia.Id,
-                MahaiZenbakia = _mahaia.Zenbakia,
-                LangileaId = _langilea.Id,
-                LangileIzena = _langilea.Izena,
-                Egoera = "Irekia",
-                Guztira = 11.50m,
-                SortzeData = DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"),
-                Lerroak = new List<EskaeraLerroaDto>
-                {
-                    new() { Id = 4, PlateraId = 2, PlaterIzena = "Sagardo Naturala", Kantitatea = 1, UnitatePrezioa = 5.00m, Egoera = "Eginda" },
-                    new() { Id = 5, PlateraId = 6, PlaterIzena = "Gazta Tarta", Kantitatea = 1, UnitatePrezioa = 6.50m, Egoera = "Zai", Oharrak = "Marrubi marmeladarekin" }
-                }
-            };
-
-            _eskaerak.Add(demoE1);
-            _eskaerak.Add(demoE2);
-        }
-
         if (_hautatutakoEskaeraIndex >= _eskaerak.Count)
         {
             _hautatutakoEskaeraIndex = 0;
@@ -178,10 +136,25 @@ public partial class MahaiaXehetasunakForm : Form
         if (_eskaerak.Count == 0 || _hautatutakoEskaeraIndex >= _eskaerak.Count)
         {
             pnlTicketLines.Controls.Clear();
+            var lblHutsik = new Label
+            {
+                Text = "Ez dago eskaera aktiborik mahai honetan.\nSakatu beheko '+ ESKAERA GEHITU' botoia.",
+                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlTicketLines.Controls.Add(lblHutsik);
+            lblEskaeraInfo.Text = "Ez dago eskaera aktiborik";
+            lblLerroLaburpena.Text = "0 plater";
             lblGuztira.Text = "GUZTIRA: 0,00 €";
             lblAzpitotala.Text = "Azpitotala: 0,00 €";
             lblBez.Text = "BEZ (%10 barne): 0,00 €";
-            lblEgoeraOrokorra.Text = "Ez dago eskaerarik";
+            lblEgoeraOrokorra.Text = "Eskaerarik gabe";
+            lblEgoeraOrokorra.ForeColor = Color.FromArgb(100, 116, 139);
+            btnSukalderaBidali.Text = "EZ DAGO ESKAERARIK";
+            btnSukalderaBidali.BackColor = Color.FromArgb(71, 85, 105);
+            btnSukalderaBidali.Enabled = false;
             return;
         }
 
@@ -434,20 +407,12 @@ public partial class MahaiaXehetasunakForm : Form
         var (arrakasta, mezua, berria) = await _api.SortuEskaeraAsync(_mahaia.Id, _langilea.Id, 2);
         if (!arrakasta || berria == null)
         {
-            // Fallback: tokiko eskaera berria sortu
-            int newId = _eskaerak.Count > 0 ? _eskaerak.Max(e => e.Id) + 1 : 101;
-            berria = new EskaeraDto
-            {
-                Id = newId,
-                MahaiaId = _mahaia.Id,
-                MahaiZenbakia = _mahaia.Zenbakia,
-                LangileaId = _langilea.Id,
-                LangileIzena = _langilea.Izena,
-                Egoera = "Irekia",
-                Guztira = 0.00m,
-                SortzeData = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Lerroak = new List<EskaeraLerroaDto>()
-            };
+            MessageBox.Show(
+                $"Ezin izan da kontu/eskaera berririk sortu APIan:\n{mezua}",
+                "Errorea",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            return;
         }
 
         _eskaerak.Add(berria);

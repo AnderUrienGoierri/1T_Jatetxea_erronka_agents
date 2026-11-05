@@ -13,14 +13,7 @@ public partial class MahaiakForm : Form
     private string _aukeratutakoEremua = "Jangela Nagusia";
     private readonly System.Windows.Forms.Timer _tenporizadorea;
 
-    // Erabilitako denborak gordetzeko map simulazioa (zirriborroko 1:12h, 0:45h bistaratzeko)
-    private static readonly Dictionary<int, string> DemoIraupenak = new()
-    {
-        { 2, "1:12h" },
-        { 3, "0:45h" },
-        { 4, "0:30h" },
-        { 9, "0:15h" }
-    };
+
 
     /// <summary>
     /// Visual Studio WinForms Designer-erako eraikitzailea
@@ -171,26 +164,7 @@ public partial class MahaiakForm : Form
         }
 
         var datuak = await _api.GetMahaiakAsync();
-        if (datuak.Count > 0)
-        {
-            _mahaiak = datuak;
-        }
-        else if (_mahaiak.Count == 0)
-        {
-            // Demo mahaiak fallback moduan
-            _mahaiak = new List<MahaiaDto>
-            {
-                new() { Id = 1, Zenbakia = 1, Edukiera = 3, Kokapena = "Jantoki Nagusia", Egoera = "Libre" },
-                new() { Id = 2, Zenbakia = 2, Edukiera = 4, Kokapena = "Jantoki Nagusia", Egoera = "Okupatuta" },
-                new() { Id = 3, Zenbakia = 3, Edukiera = 2, Kokapena = "Jantoki Nagusia", Egoera = "Okupatuta" },
-                new() { Id = 4, Zenbakia = 4, Edukiera = 3, Kokapena = "Jantoki Nagusia", Egoera = "Eskaera bidean" },
-                new() { Id = 5, Zenbakia = 5, Edukiera = 3, Kokapena = "Jantoki Nagusia", Egoera = "Libre" },
-                new() { Id = 6, Zenbakia = 6, Edukiera = 3, Kokapena = "Jantoki Nagusia", Egoera = "Libre" },
-                new() { Id = 7, Zenbakia = 7, Edukiera = 4, Kokapena = "Terraza", Egoera = "Libre" },
-                new() { Id = 8, Zenbakia = 8, Edukiera = 6, Kokapena = "Terraza", Egoera = "Okupatuta" },
-                new() { Id = 9, Zenbakia = 9, Edukiera = 2, Kokapena = "Barra", Egoera = "Libre" }
-            };
-        }
+        _mahaiak = datuak;
 
         EguneratuLaburpena();
         BistaratuMahaiak();
@@ -222,6 +196,23 @@ public partial class MahaiakForm : Form
     {
         pnlMahaiak.SuspendLayout();
         pnlMahaiak.Controls.Clear();
+
+        if (_mahaiak.Count == 0)
+        {
+            var lblError = new Label
+            {
+                Text = "Ez da mahairik aurkitu datu-basean edo API konexioa falta da.\nMesedez, egiaztatu backend zerbitzaria (http://localhost:5000) martxan dagoela.",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(220, 38, 38),
+                AutoSize = false,
+                Size = new Size(pnlMahaiak.Width - 40, 80),
+                Location = new Point(20, 40),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlMahaiak.Controls.Add(lblError);
+            pnlMahaiak.ResumeLayout(true);
+            return;
+        }
 
         var iragaziak = _mahaiak.Where(m => KokapenaBatDator(m.Kokapena, _aukeratutakoEremua)).ToList();
 
@@ -272,16 +263,15 @@ public partial class MahaiakForm : Form
         };
         card.Controls.Add(lblSeats);
 
-        // 3. Behe-ezkerra: Okupatutako denbora (adib. 1:12h edo 0:45h)
+        // 3. Behe-ezkerra: Okupatutako denbora (APIak bidaltzen badu)
         bool isOkupatua = mahaia.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase);
         bool isEskaeraBidean = mahaia.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase);
 
-        if (isOkupatua || isEskaeraBidean)
+        if ((isOkupatua || isEskaeraBidean) && !string.IsNullOrWhiteSpace(mahaia.Iraupena))
         {
-            string denbora = DemoIraupenak.TryGetValue(mahaia.Zenbakia, out var d) ? d : "0:25h";
             var lblTime = new Label
             {
-                Text = denbora,
+                Text = mahaia.Iraupena,
                 Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(51, 65, 85),
                 Location = new Point(20, 140),
