@@ -188,3 +188,4 @@ partial class MahaiaXehetasunakModal
     private Button btnAldatuMahaiaz;
     private Button btnItxi;
 }
+

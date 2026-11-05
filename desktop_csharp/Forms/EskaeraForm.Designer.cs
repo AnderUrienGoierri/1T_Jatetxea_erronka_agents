@@ -386,3 +386,4 @@ partial class EskaeraForm
     private Label lblGuztira;
     private Button btnBidali;
 }
+

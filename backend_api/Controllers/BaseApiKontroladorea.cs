@@ -21,27 +21,13 @@ public abstract class BaseApiKontroladorea : ControllerBase
     protected async Task<MySqlConnection> SortuKonexioaAsync()
     {
         string? envConn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-        if (!string.IsNullOrWhiteSpace(envConn))
-        {
-            var envKon = new MySqlConnection(envConn);
-            await envKon.OpenAsync();
-            return envKon;
-        }
+        string katea = !string.IsNullOrWhiteSpace(envConn)
+            ? envConn
+            : (_config.GetConnectionString("Jatetxea") ?? _config.GetConnectionString("JatetxeaRoot") ?? "");
 
-        string? katea = _config.GetConnectionString("Jatetxea");
-        try
-        {
-            var kon = new MySqlConnection(katea);
-            await kon.OpenAsync();
-            return kon;
-        }
-        catch
-        {
-            string? rootKatea = _config.GetConnectionString("JatetxeaRoot");
-            var kon = new MySqlConnection(rootKatea);
-            await kon.OpenAsync();
-            return kon;
-        }
+        var kon = new MySqlConnection(katea);
+        await kon.OpenAsync();
+        return kon;
     }
 
     // =========================================================================

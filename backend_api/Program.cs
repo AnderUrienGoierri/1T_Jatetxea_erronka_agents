@@ -1,4 +1,5 @@
 using Microsoft.Extensions.FileProviders;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,29 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+// Datu-baseko salbuespenen kudeaketa globala (503 Service Unavailable JSON garbian)
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (MySqlException ex)
+    {
+        context.Response.StatusCode = 503;
+        context.Response.ContentType = "application/json";
+        var errorea = new
+        {
+            status = "error",
+            code = 503,
+            message = "Datu-basea ez dago erabilgarri une honetan.",
+            xehetasuna = ex.Message,
+            soluzioa = "Egiaztatu Docker edukiontzia ('jatetxea_mysql') 3308 portuan martxan dagoela ('docker compose up -d')."
+        };
+        await context.Response.WriteAsJsonAsync(errorea);
+    }
+});
 
 // Web aplikazioaren fitxategiak zerbitzatu /app bidean
 var webAppPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "web_php"));
@@ -115,6 +139,73 @@ app.MapGet("/", () => Results.Ok(new
     }
 }));
 
+// Health Check endpoint-ak: APIa eta Datu-basea martxan dauden egiaztatzeko
+async Task<IResult> HealthCheckHandler(IConfiguration config)
+{
+    string connStr = config.GetConnectionString("Jatetxea") ?? "";
+    try
+    {
+        await using var conn = new MySqlConnection(connStr);
+        await conn.OpenAsync();
+        return Results.Ok(new
+        {
+            status = "Healthy",
+            database = "Connected",
+            engine = "MySQL 8.0 InnoDB",
+            port = 3308,
+            timestamp = DateTime.UtcNow
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new
+        {
+            status = "Unhealthy",
+            database = "Disconnected",
+            error = ex.Message,
+            solution = "Egiaztatu Docker Desktop-eko 'jatetxea_mysql' edukiontzia martxan dagoela ('docker compose up -d').",
+            timestamp = DateTime.UtcNow
+        }, statusCode: 503);
+    }
+}
+
+app.MapGet("/health", (IConfiguration config) => HealthCheckHandler(config));
+app.MapGet("/api/v1/health", (IConfiguration config) => HealthCheckHandler(config));
+
 app.MapControllers();
 
+// Abiaraztean Datu-basearen konexioa egiaztatu eta kontsolan argi inprimatu
+EgiaztatuDatuBasea(app.Configuration);
+
 app.Run();
+
+static void EgiaztatuDatuBasea(IConfiguration config)
+{
+    string connStr = config.GetConnectionString("Jatetxea") ?? "";
+    try
+    {
+        using var conn = new MySqlConnection(connStr);
+        conn.Open();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine();
+        Console.WriteLine("==================================================================");
+        Console.WriteLine("[DATU-BASEA OK] MySQL konexioa ondo ezarri da!");
+        Console.WriteLine("   -> Zerbitzaria: localhost:3308 | Datu-basea: jatetxea_db");
+        Console.WriteLine("==================================================================");
+        Console.WriteLine();
+        Console.ResetColor();
+    }
+    catch (Exception ex)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine();
+        Console.WriteLine("==================================================================");
+        Console.WriteLine("[ABISUA: DATU-BASEA EZ DAGO ERABILGARRI]");
+        Console.WriteLine($"   -> Errorea: {ex.Message}");
+        Console.WriteLine("   -> Kausa: 'jatetxea_mysql' edukiontzia (3308) itzalita egon daiteke.");
+        Console.WriteLine("   -> Konponbidea: Exekutatu 'docker compose up -d' terminalean.");
+        Console.WriteLine("==================================================================");
+        Console.WriteLine();
+        Console.ResetColor();
+    }
+}

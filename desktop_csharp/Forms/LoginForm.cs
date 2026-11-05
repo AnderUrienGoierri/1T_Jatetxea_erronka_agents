@@ -169,6 +169,15 @@ public partial class LoginForm : Form
 
     private async Task KargatuLangileakAsync()
     {
+        var (apiOk, dbOk, healthMsg) = await _api.CheckHealthAsync();
+        if (!dbOk)
+        {
+            lblStatus.Text = apiOk 
+                ? "Datu-basea deskonektatuta (Demo PINa: 1234)" 
+                : "Lineaz kanpoko modua (Demo PINa: 1234)";
+            lblStatus.ForeColor = Color.FromArgb(194, 65, 12); // Laranja/Ohar kolorea
+        }
+
         _langileak = await _api.GetLangileakAsync();
 
         if (_langileak.Count == 0)

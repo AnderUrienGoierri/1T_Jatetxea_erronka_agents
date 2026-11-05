@@ -25,6 +25,30 @@ public class ApiService
     }
 
     /// <summary>
+    /// API eta MySQL datu-basearen osasuna egiaztatzen du /health endpoint bidez.
+    /// </summary>
+    public async Task<(bool ApiMartxan, bool DatuBaseaMartxan, string Mezua)> CheckHealthAsync()
+    {
+        try
+        {
+            var res = await _http.GetAsync("/health");
+            if (res.IsSuccessStatusCode)
+            {
+                return (true, true, "Datu-basea konektatuta dago.");
+            }
+            if ((int)res.StatusCode == 503)
+            {
+                return (true, false, "MySQL datu-basea DESKONEKTATUTA dago (jatetxea_mysql).");
+            }
+            return (false, false, $"API egoera: {res.StatusCode}");
+        }
+        catch
+        {
+            return (false, false, "APIa deskonektatuta dago (Offline demo modua).");
+        }
+    }
+
+    /// <summary>
     /// API zerbitzaria martxan dagoen egiaztatzen du.
     /// </summary>
     public async Task<bool> IsApiReachableAsync()

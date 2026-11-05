@@ -354,3 +354,4 @@ partial class MahaikideakModal
     private Button btnUtzi;
     private Button btnJarraitu;
 }
+
