@@ -69,7 +69,7 @@ static class Program
             };
             var demoLangilea = new Models.LangileaDto { Id = 2, Izena = "Ane G.", Rola = "Zerbitzaria" };
             var api = new Services.ApiService();
-            var form = new Forms.MahaiaXehetasunakModal(demoMahaia, demoLangilea, api);
+            var form = new Forms.MahaiaXehetasunakForm(demoMahaia, demoLangilea, api);
             form.Shown += async (s, e) =>
             {
                 await Task.Delay(1500);

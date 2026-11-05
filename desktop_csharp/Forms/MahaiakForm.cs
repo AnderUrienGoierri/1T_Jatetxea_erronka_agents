@@ -393,7 +393,7 @@ public partial class MahaiakForm : Form
         {
             // Okupatuta, Garbitzen edo Erreserbatuta: Mahaiaren xehetasunak (pantaila osoan)
             Hide();
-            var formXehetasunak = new MahaiaXehetasunakModal(mahaia, _langilea, _api);
+            var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
             formXehetasunak.FormClosed += async (s, e) =>
             {
                 Show();

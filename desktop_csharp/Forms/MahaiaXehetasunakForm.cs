@@ -4,7 +4,7 @@ using Jatetxea.Desktop.Services;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class MahaiaXehetasunakModal : Form
+public partial class MahaiaXehetasunakForm : Form
 {
     private readonly MahaiaDto _mahaia;
     private readonly LangileaDto _langilea;
@@ -15,7 +15,7 @@ public partial class MahaiaXehetasunakModal : Form
     /// <summary>
     /// Visual Studio WinForms Designer-erako eraikitzailea
     /// </summary>
-    public MahaiaXehetasunakModal()
+    public MahaiaXehetasunakForm()
     {
         InitializeComponent();
         _mahaia = new MahaiaDto { Id = 4, Zenbakia = 4, Edukiera = 4, Egoera = "Okupatuta" };
@@ -24,7 +24,7 @@ public partial class MahaiaXehetasunakModal : Form
         KonfiguratuInterfazea();
     }
 
-    public MahaiaXehetasunakModal(MahaiaDto mahaia, LangileaDto langilea, ApiService api)
+    public MahaiaXehetasunakForm(MahaiaDto mahaia, LangileaDto langilea, ApiService api)
     {
         InitializeComponent();
         _mahaia = mahaia;

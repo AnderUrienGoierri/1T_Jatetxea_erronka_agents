@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "7e1f056f-2e21-4c8c-be1a-944e5944394c",
+    "_postman_id": "b57a7f13-1883-49e1-9591-42a1bf2cfa36",
     "name": "T1 Jatetxea REST API",
     "description": "T1 Jatetxea Kudeaketa Sistemako REST API osoa (MySQL 8.0 InnoDB, Transakzio pesimistak, Soft/Hard Delete eta KDS sukaldea). Deialdi guztiak 9 karpetatan antolatuta daude probak erraz egiteko.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -184,11 +184,7 @@
             "description": "Mahai berria gehitzen du jantokian.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"zenbakia\": 12,
-  \"edukiera\": 4,
-  \"kokapena\": \"Terraza\"
-}",
+              "raw": "{\n  \"zenbakia\": 12,\n  \"edukiera\": 4,\n  \"kokapena\": \"Terraza\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -230,9 +226,7 @@
             "description": "Mahaiaren egoera aldatzen du ('Libre', 'Okupatuta', 'Erreserbatuta', 'Garbitzen').",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"egoera\": \"Okupatuta\"
-}",
+              "raw": "{\n  \"egoera\": \"Okupatuta\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -446,14 +440,7 @@
             "description": "Lehengai berria gehitzen du.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"izena\": \"Idiazabal Gazta Zaharra\",
-  \"unitatea\": \"kg\",
-  \"unekoStocka\": 8.5,
-  \"gutxienekoStocka\": 3.0,
-  \"kostuUnitarioa\": 19.50,
-  \"hornitzailea\": \"Goierri Gaztak Koop.\"
-}",
+              "raw": "{\n  \"izena\": \"Idiazabal Gazta Zaharra\",\n  \"unitatea\": \"kg\",\n  \"unekoStocka\": 8.5,\n  \"gutxienekoStocka\": 3.0,\n  \"kostuUnitarioa\": 19.50,\n  \"hornitzailea\": \"Goierri Gaztak Koop.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -494,12 +481,7 @@
             "description": "Hornitzaile baten sarrera erregistratzen du eta stocka gehitu transakzionalean.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"lehengaiaId\": 1,
-  \"kantitatea\": 5.0,
-  \"hornitzailea\": \"Harategia San Martin\",
-  \"oharrak\": \"Albarana #ALB-2026-99\"
-}",
+              "raw": "{\n  \"lehengaiaId\": 1,\n  \"kantitatea\": 5.0,\n  \"hornitzailea\": \"Harategia San Martin\",\n  \"oharrak\": \"Albarana #ALB-2026-99\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -740,20 +722,7 @@
             "description": "Plater berria sortzen du bere osagaiekin batera.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"izena\": \"Txuleta Brasan\",
-  \"deskribapena\": \"Idiazabalgo txuleta parrilan errea gatz larriarekin\",
-  \"kategoria\": \"Bigarrena\",
-  \"prezioa\": 38.00,
-  \"alergenoak\": \"Batere ez\",
-  \"osagaiak\": [
-    {
-      \"lehengaiaId\": 1,
-      \"kantitatea\": 0.8,
-      \"unitatea\": \"kg\"
-    }
-  ]
-}",
+              "raw": "{\n  \"izena\": \"Txuleta Brasan\",\n  \"deskribapena\": \"Idiazabalgo txuleta parrilan errea gatz larriarekin\",\n  \"kategoria\": \"Bigarrena\",\n  \"prezioa\": 38.00,\n  \"alergenoak\": \"Batere ez\",\n  \"osagaiak\": [\n    {\n      \"lehengaiaId\": 1,\n      \"kantitatea\": 0.8,\n      \"unitatea\": \"kg\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -939,11 +908,7 @@
             "description": "Komanda berria irekitzen du mahai batean.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"mahaiaId\": 1,
-  \"langileaId\": 2,
-  \"pertsonaKopurua\": 2
-}",
+              "raw": "{\n  \"mahaiaId\": 1,\n  \"langileaId\": 2,\n  \"pertsonaKopurua\": 2\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -985,11 +950,7 @@
             "description": "Platera gehitzen du eta transakzio pesimistan errezeta-osagaiak stocketik deskontatzen ditu.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"plateraId\": 1,
-  \"kantitatea\": 2,
-  \"oharrak\": \"Puntuan egina, gatza aparte\"
-}",
+              "raw": "{\n  \"plateraId\": 1,\n  \"kantitatea\": 2,\n  \"oharrak\": \"Puntuan egina, gatza aparte\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1059,9 +1020,7 @@
             "description": "Eskaera orokorraren egoera aldatzen du ('Irekia', 'Sukaldean', 'Zerbitzatua', 'Kobratua', 'Ezeztatua').",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"egoera\": \"Sukaldean\"
-}",
+              "raw": "{\n  \"egoera\": \"Sukaldean\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1104,9 +1063,7 @@
             "description": "KDS sukaldeko pantailarako lerro jakin baten egoera aldatzen du ('Eskatua', 'Sukaldean', 'Prestatua', 'Zerbitzatua').",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"egoera\": \"Prestatua\"
-}",
+              "raw": "{\n  \"egoera\": \"Prestatua\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1268,17 +1225,7 @@
             "description": "Erreserba berria sortzen du errenkada-blokeo pesimistarekin. Mahai bera txanda berean erreserbatuta badago, 409 Conflict itzultzen du.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"mahaiaId\": 3,
-  \"data\": \"2026-11-15\",
-  \"txanda\": \"Afaria_1\",
-  \"pertsonaKopurua\": 4,
-  \"bezeroIzena\": \"Unai\",
-  \"bezeroAbizena\": \"Etxebeste\",
-  \"bezeroEmaila\": \"unai.etxebeste@example.com\",
-  \"bezeroTelefonoa\": \"688112233\",
-  \"oharrak\": \"Leiho ondoan mesedez\"
-}",
+              "raw": "{\n  \"mahaiaId\": 3,\n  \"data\": \"2026-11-15\",\n  \"txanda\": \"Afaria_1\",\n  \"pertsonaKopurua\": 4,\n  \"bezeroIzena\": \"Unai\",\n  \"bezeroAbizena\": \"Etxebeste\",\n  \"bezeroEmaila\": \"unai.etxebeste@example.com\",\n  \"bezeroTelefonoa\": \"688112233\",\n  \"oharrak\": \"Leiho ondoan mesedez\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1433,10 +1380,7 @@
             "description": "TPV ukipen-pantailarako saio-hasiera azkarra PIN zenbaki bidez.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"erabiltzailea\": \"1234\",
-  \"pasahitza\": \"1234\"
-}",
+              "raw": "{\n  \"erabiltzailea\": \"1234\",\n  \"pasahitza\": \"1234\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1477,10 +1421,7 @@
             "description": "Saio-hasiera estandarra erabiltzaile-izenarekin.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"erabiltzailea\": \"aitor\",
-  \"pasahitza\": \"1234\"
-}",
+              "raw": "{\n  \"erabiltzailea\": \"aitor\",\n  \"pasahitza\": \"1234\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1520,12 +1461,7 @@
             "description": "Langile berria gehitzen du.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"izena\": \"Ander Urien\",
-  \"erabiltzailea\": \"ander_u\",
-  \"pasahitza\": \"1234\",
-  \"rola\": \"Kudeatzailea\"
-}",
+              "raw": "{\n  \"izena\": \"Ander Urien\",\n  \"erabiltzailea\": \"ander_u\",\n  \"pasahitza\": \"1234\",\n  \"rola\": \"Kudeatzailea\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1624,12 +1560,7 @@
             "description": "Bezero berria erregistratzen du.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"izena\": \"Miren\",
-  \"abizena\": \"Agirre\",
-  \"telefonoa\": \"699887766\",
-  \"emaila\": \"miren.agirre@example.com\"
-}",
+              "raw": "{\n  \"izena\": \"Miren\",\n  \"abizena\": \"Agirre\",\n  \"telefonoa\": \"699887766\",\n  \"emaila\": \"miren.agirre@example.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1670,12 +1601,7 @@
             "description": "Bezeroaren kontaktu-datuak eguneratzen ditu.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"izena\": \"Miren\",
-  \"abizena\": \"Agirre Lasa\",
-  \"telefonoa\": \"699887766\",
-  \"emaila\": \"miren.berria@example.com\"
-}",
+              "raw": "{\n  \"izena\": \"Miren\",\n  \"abizena\": \"Agirre Lasa\",\n  \"telefonoa\": \"699887766\",\n  \"emaila\": \"miren.berria@example.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1801,11 +1727,7 @@
             "description": "Bezeroaren balorazio berria gordetzen du.",
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"bezeroaId\": 1,
-  \"balorazioa\": 5,
-  \"testua\": \"Janari bikaina eta arreta ezin hobea! Seguru itzuliko garela.\"
-}",
+              "raw": "{\n  \"bezeroaId\": 1,\n  \"balorazioa\": 5,\n  \"testua\": \"Janari bikaina eta arreta ezin hobea! Seguru itzuliko garela.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1846,4 +1768,3 @@
     }
   ]
 }
-

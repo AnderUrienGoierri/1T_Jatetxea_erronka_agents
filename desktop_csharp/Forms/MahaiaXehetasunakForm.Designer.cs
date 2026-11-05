@@ -1,6 +1,6 @@
 namespace Jatetxea.Desktop.Forms;
 
-partial class MahaiaXehetasunakModal
+partial class MahaiaXehetasunakForm
 {
     private System.ComponentModel.IContainer components = null;
 
@@ -383,7 +383,7 @@ partial class MahaiaXehetasunakModal
         Controls.Add(pnlEskuina);
         Controls.Add(pnlTopBar);
         MinimumSize = new Size(1024, 720);
-        Name = "MahaiaXehetasunakModal";
+        Name = "MahaiaXehetasunakForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Mahaiaren Xehetasunak";
         pnlTopBar.ResumeLayout(false);
