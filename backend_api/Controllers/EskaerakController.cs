@@ -102,7 +102,7 @@ public class EskaerakController : BaseApiKontroladorea
 
         // 2. Eskaera lerroak
         const string sqlLerroak = @"
-            SELECT el.id, el.eskaera_id, el.platera_id, p.izena AS plater_izena,
+            SELECT el.id, el.eskaera_id, el.platera_id, p.izena AS plater_izena, p.kategoria,
                    el.kantitatea, el.unitate_prezioa, el.egoera, el.oharrak
             FROM eskaera_lerroak el
             JOIN platerak p ON el.platera_id = p.id
@@ -121,6 +121,7 @@ public class EskaerakController : BaseApiKontroladorea
                     EskaeraId = readerL.GetInt32("eskaera_id"),
                     PlateraId = readerL.GetInt32("platera_id"),
                     PlaterIzena = readerL.GetString("plater_izena"),
+                    Kategoria = readerL.GetString("kategoria"),
                     Kantitatea = readerL.GetInt32("kantitatea"),
                     UnitatePrezioa = readerL.GetDecimal("unitate_prezioa"),
                     Egoera = readerL.GetString("egoera"),
@@ -287,8 +288,9 @@ public class EskaerakController : BaseApiKontroladorea
             }
 
             // 2. Lortu plateraren prezio ofiziala datu-basetik (Segurtasuna: ez onartu frontendeko preziorik!)
-            const string sqlPlatera = "SELECT izena, prezioa, aktibo, ezabatua FROM platerak WHERE id = @plateraId;";
+            const string sqlPlatera = "SELECT izena, kategoria, prezioa, aktibo, ezabatua FROM platerak WHERE id = @plateraId;";
             string platerIzena;
+            string platerKategoria = "Bigarrena";
             decimal unitatePrezioa;
 
             await using (var cmdP = new MySqlCommand(sqlPlatera, kon, tx))
@@ -308,6 +310,7 @@ public class EskaerakController : BaseApiKontroladorea
                 }
 
                 platerIzena = readerP.GetString("izena");
+                platerKategoria = readerP.GetString("kategoria");
                 unitatePrezioa = readerP.GetDecimal("prezioa");
             }
 
@@ -405,6 +408,7 @@ public class EskaerakController : BaseApiKontroladorea
                 EskaeraId = id,
                 PlateraId = dto.PlateraId,
                 PlaterIzena = platerIzena,
+                Kategoria = platerKategoria,
                 Kantitatea = dto.Kantitatea,
                 UnitatePrezioa = unitatePrezioa,
                 Egoera = "Eskatua",

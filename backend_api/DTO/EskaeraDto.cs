@@ -22,6 +22,7 @@ public class EskaeraLerroaDTO
     public int EskaeraId { get; set; }
     public int PlateraId { get; set; }
     public string PlaterIzena { get; set; } = string.Empty;
+    public string Kategoria { get; set; } = string.Empty;
     public int Kantitatea { get; set; }
     public decimal UnitatePrezioa { get; set; }
     public decimal Azpitotala => Kantitatea * UnitatePrezioa;

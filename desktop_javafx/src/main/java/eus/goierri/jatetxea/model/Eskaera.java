@@ -110,6 +110,46 @@ public class Eskaera {
         return bat;
     }
 
+    public List<EskaeraLerroa> getSukaldekoLerroak() {
+        List<EskaeraLerroa> emaitza = new ArrayList<>();
+        if (lerroak != null) {
+            for (EskaeraLerroa l : lerroak) {
+                if (!l.isEdaria()) {
+                    emaitza.add(l);
+                }
+            }
+        }
+        return emaitza;
+    }
+
+    public int getSukaldekoPlaterKopurua() {
+        int bat = 0;
+        for (EskaeraLerroa l : getSukaldekoLerroak()) {
+            bat += l.getKantitatea();
+        }
+        return bat;
+    }
+
+    public List<EskaeraLerroa> getBarrakoLerroak() {
+        List<EskaeraLerroa> emaitza = new ArrayList<>();
+        if (lerroak != null) {
+            for (EskaeraLerroa l : lerroak) {
+                if (l.isEdaria()) {
+                    emaitza.add(l);
+                }
+            }
+        }
+        return emaitza;
+    }
+
+    public int getBarrakoEdariKopurua() {
+        int bat = 0;
+        for (EskaeraLerroa l : getBarrakoLerroak()) {
+            bat += l.getKantitatea();
+        }
+        return bat;
+    }
+
     public String getMahaiaTestua() {
         return "Mahaia " + mahaiaZenbakia;
     }

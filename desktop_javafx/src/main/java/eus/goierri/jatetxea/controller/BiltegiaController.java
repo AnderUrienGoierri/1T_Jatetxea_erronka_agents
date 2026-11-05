@@ -245,6 +245,16 @@ public class BiltegiaController {
         }
     }
 
+    @FXML
+    private void onBarraClick(ActionEvent event) {
+        try {
+            Node iturria = (Node) event.getSource();
+            PantailaAldatzailea.aldatu(iturria, "barra-view.fxml");
+        } catch (IOException e) {
+            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Barra pantaila kargatu: " + e.getMessage());
+        }
+    }
+
     private void erakutsiAlerta(String izenburua, String mezua) {
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setTitle(izenburua);

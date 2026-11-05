@@ -8,6 +8,7 @@ public class EskaeraLerroa {
     private int eskaeraId;
     private int plateraId;
     private String platerIzena;
+    private String kategoria;
     private int kantitatea;
     private double unitatePrezioa;
     private String egoera;
@@ -16,10 +17,11 @@ public class EskaeraLerroa {
     public EskaeraLerroa() {
     }
 
-    public EskaeraLerroa(int id, int plateraId, String platerIzena, int kantitatea, double unitatePrezioa, String egoera, String oharrak) {
+    public EskaeraLerroa(int id, int plateraId, String platerIzena, String kategoria, int kantitatea, double unitatePrezioa, String egoera, String oharrak) {
         this.id = id;
         this.plateraId = plateraId;
         this.platerIzena = platerIzena;
+        this.kategoria = kategoria;
         this.kantitatea = kantitatea;
         this.unitatePrezioa = unitatePrezioa;
         this.egoera = egoera;
@@ -56,6 +58,31 @@ public class EskaeraLerroa {
 
     public void setPlaterIzena(String platerIzena) {
         this.platerIzena = platerIzena;
+    }
+
+    public String getKategoria() {
+        return kategoria != null ? kategoria : "";
+    }
+
+    public void setKategoria(String kategoria) {
+        this.kategoria = kategoria;
+    }
+
+    public boolean isEdaria() {
+        if (kategoria != null && !kategoria.isBlank()) {
+            String kat = kategoria.trim().toLowerCase();
+            return kat.contains("edari") || kat.contains("kafe") || kat.contains("ardo") || kat.contains("garagar");
+        }
+        if (platerIzena != null) {
+            String iz = platerIzena.toLowerCase();
+            return iz.contains("txakolin") || iz.contains("ardo") || iz.contains("garagardo") 
+                || iz.contains("sagardo") || iz.contains("kaña") || iz.contains("zurito") 
+                || iz.contains("kafe") || iz.contains("ebaki") || iz.contains("ura") 
+                || iz.contains("freskagarri") || iz.contains("kola") || iz.contains("cola")
+                || iz.contains("fanta") || iz.contains("kas") || iz.contains("likore")
+                || iz.contains("patxaran");
+        }
+        return false;
     }
 
     public int getKantitatea() {

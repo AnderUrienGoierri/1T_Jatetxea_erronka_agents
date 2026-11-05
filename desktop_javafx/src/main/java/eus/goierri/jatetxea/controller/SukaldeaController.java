@@ -57,7 +57,7 @@ public class SukaldeaController {
         colMahaia.setCellValueFactory(new PropertyValueFactory<>("mahaiaTestua"));
         colLangilea.setCellValueFactory(new PropertyValueFactory<>("langileIzena"));
         colEgoera.setCellValueFactory(new PropertyValueFactory<>("egoera"));
-        colPlaterak.setCellValueFactory(new PropertyValueFactory<>("platerKopurua"));
+        colPlaterak.setCellValueFactory(new PropertyValueFactory<>("sukaldekoPlaterKopurua"));
         colOrdua.setCellValueFactory(new PropertyValueFactory<>("sortzeData"));
 
         // 2. Plateren lerroen taularen zutabeak lotu
@@ -98,28 +98,35 @@ public class SukaldeaController {
 
             try {
                 List<Eskaera> eskaerak = api.lortuEskaeraAktiboak();
+                List<Eskaera> sukaldekoEskaerak = new java.util.ArrayList<>();
+                for (Eskaera e : eskaerak) {
+                    if (e.getSukaldekoPlaterKopurua() > 0) {
+                        sukaldekoEskaerak.add(e);
+                    }
+                }
+
                 Platform.runLater(() -> {
                     int aurrekoId = tblEskaerak.getSelectionModel().getSelectedItem() != null 
                             ? tblEskaerak.getSelectionModel().getSelectedItem().getId() 
                             : -1;
 
-                    tblEskaerak.setItems(FXCollections.observableArrayList(eskaerak));
-                    lblEskaeraKopurua.setText(eskaerak.size() + " eskaera");
+                    tblEskaerak.setItems(FXCollections.observableArrayList(sukaldekoEskaerak));
+                    lblEskaeraKopurua.setText(sukaldekoEskaerak.size() + " eskaera");
 
                     lblKonexioa.setText("API konexioa: KONEKTATUTA (http://localhost:5000)");
                     lblKonexioa.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
                     lblAzkenFreskatzea.setText("Azken freskatzea: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-                    lblEgoeraMezua.setText("Datuak eguneratuta.");
+                    lblEgoeraMezua.setText("Datuak eguneratuta (Sukaldeko platerak).");
 
                     // Hautapena mantendu
                     if (aurrekoId != -1) {
-                        for (Eskaera e : eskaerak) {
+                        for (Eskaera e : sukaldekoEskaerak) {
                             if (e.getId() == aurrekoId) {
                                 tblEskaerak.getSelectionModel().select(e);
                                 break;
                             }
                         }
-                    } else if (!eskaerak.isEmpty()) {
+                    } else if (!sukaldekoEskaerak.isEmpty()) {
                         tblEskaerak.getSelectionModel().selectFirst();
                     }
                 });
@@ -140,8 +147,8 @@ public class SukaldeaController {
         }
 
         lblHautatutakoEskaera.setText("Eskaera #" + eskaera.getId() + " - " + eskaera.getMahaiaTestua() + " (" + eskaera.getLangileIzena() + ")");
-        tblLerroak.setItems(FXCollections.observableArrayList(eskaera.getLerroak()));
-        lblPlaterKopurua.setText(eskaera.getPlaterKopurua() + " plater");
+        tblLerroak.setItems(FXCollections.observableArrayList(eskaera.getSukaldekoLerroak()));
+        lblPlaterKopurua.setText(eskaera.getSukaldekoPlaterKopurua() + " plater");
     }
 
     @FXML
@@ -199,19 +206,32 @@ public class SukaldeaController {
 
         new Thread(() -> {
             try {
-                boolean ok = api.eguneratuEskaeraEgoera(eskaera.getId(), "Prestatua");
+                for (EskaeraLerroa l : eskaera.getSukaldekoLerroak()) {
+                    api.eguneratuLerroEgoera(l.getId(), "Prestatua");
+                }
                 Platform.runLater(() -> {
-                    if (ok) {
-                        lblEgoeraMezua.setText("Eskaera #" + eskaera.getId() + " sukaldean prest markatu da.");
-                        kargatuDatuak();
-                    }
+                    lblEgoeraMezua.setText("Eskaera #" + eskaera.getId() + " sukaldeko plater guztiak prestatu dira.");
+                    kargatuDatuak();
                 });
             } catch (Exception ex) {
                 Platform.runLater(() -> {
-                    lblEgoeraMezua.setText("Errorea eskaera eguneratzean: " + ex.getMessage());
+                    lblEgoeraMezua.setText("Errorea platerak eguneratzean: " + ex.getMessage());
                 });
             }
         }).start();
+    }
+
+    @FXML
+    private void onBarraClick(ActionEvent event) {
+        try {
+            if (tenporizadorea != null) {
+                tenporizadorea.stop();
+            }
+            Node iturria = (Node) event.getSource();
+            PantailaAldatzailea.aldatu(iturria, "barra-view.fxml");
+        } catch (IOException e) {
+            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Barra pantaila kargatu: " + e.getMessage());
+        }
     }
 
     @FXML

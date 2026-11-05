@@ -158,6 +158,9 @@ public class EskaeraLerroaDto
     [JsonPropertyName("platerIzena")]
     public string PlaterIzena { get; set; } = string.Empty;
 
+    [JsonPropertyName("kategoria")]
+    public string Kategoria { get; set; } = string.Empty;
+
     [JsonPropertyName("kantitatea")]
     public int Kantitatea { get; set; }
 

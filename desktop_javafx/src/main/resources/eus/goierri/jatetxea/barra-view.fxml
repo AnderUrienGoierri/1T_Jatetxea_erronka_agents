@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="750.0" prefWidth="1180.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eus.goierri.jatetxea.controller.BarraController">
+    <!-- 1. GOIKO NABIGAZIO-BARRA -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-bar">
+            <Label styleClass="brand-label" text="T1 Jatetxea" />
+            <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 18px;" text="|" />
+            <Label styleClass="title-label" text="Barrako KDS Pantaila" />
+            
+            <Region HBox.hgrow="ALWAYS" />
+            
+            <HBox alignment="CENTER" spacing="8.0">
+                <Button mnemonicParsing="false" onAction="#onSukaldeaClick" styleClass="nav-button" text="Sukaldea (KDS)" />
+                <Button mnemonicParsing="false" styleClass="nav-button-active" text="Barra (KDS)" />
+                <Button mnemonicParsing="false" onAction="#onBiltegiaClick" styleClass="nav-button" text="Biltegia (Stocka)" />
+            </HBox>
+            
+            <Region prefWidth="16.0" />
+            
+            <CheckBox fx:id="chkAutoRefresh" mnemonicParsing="false" selected="true" text="Auto-Freskatu (10s)" />
+            <Button mnemonicParsing="false" onAction="#onFreskatuClick" styleClass="btn-secondary" text="Freskatu" />
+        </HBox>
+    </top>
+
+    <!-- 2. ERDIKO EDUKIA: ESKAERAK ETA EDARIEN KUDEAKETA -->
+    <center>
+        <SplitPane dividerPositions="0.45" orientation="HORIZONTAL" style="-fx-background-color: transparent; -fx-padding: 16;">
+            <!-- EZKERREKO PANELA: ESKAERA AKTIBOAK BARRAN -->
+            <VBox spacing="12.0" styleClass="card-panel">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="card-title" text="Eskaera Aktiboak (Barran)" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblEskaeraKopurua" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #881337;" text="0 eskaera" />
+                </HBox>
+                
+                <TableView fx:id="tblEskaerak" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colEskaeraId" prefWidth="65.0" text="# ID" />
+                        <TableColumn fx:id="colMahaia" prefWidth="95.0" text="Mahaia" />
+                        <TableColumn fx:id="colLangilea" prefWidth="120.0" text="Zerbitzaria" />
+                        <TableColumn fx:id="colEgoera" prefWidth="105.0" text="Egoera" />
+                        <TableColumn fx:id="colEdariak" prefWidth="75.0" text="Edariak" />
+                        <TableColumn fx:id="colOrdua" prefWidth="120.0" text="Ordua" />
+                    </columns>
+                    <placeholder>
+                        <Label text="Ez dago barrako eskaera aktiborik une honetan." />
+                    </placeholder>
+                </TableView>
+
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <Button mnemonicParsing="false" onAction="#onEskaeraEgindaClick" styleClass="btn-success" text="Barrako Edariak Zerbitzatuta Markatu" />
+                </HBox>
+            </VBox>
+
+            <!-- ESKUINEKO PANELA: HAUTATUTAKO ESKAERAREN EDARIAK ETA EKINTZAK -->
+            <VBox spacing="12.0" styleClass="card-panel">
+                <HBox alignment="CENTER_LEFT">
+                    <Label fx:id="lblHautatutakoEskaera" styleClass="card-title" text="Hautatutako Eskaeraren Edariak" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblEdariKopurua" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="0 edari" />
+                </HBox>
+
+                <TableView fx:id="tblLerroak" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colLerroPlatera" prefWidth="250.0" text="Edaria" />
+                        <TableColumn fx:id="colLerroKop" prefWidth="60.0" text="Kop" />
+                        <TableColumn fx:id="colLerroOharrak" prefWidth="180.0" text="Barrako Oharrak" />
+                        <TableColumn fx:id="colLerroEgoera" prefWidth="110.0" text="Egoera" />
+                    </columns>
+                    <placeholder>
+                        <Label text="Aukeratu eskaera bat ezkerreko taulan edariak ikusteko." />
+                    </placeholder>
+                </TableView>
+
+                <!-- BEHEKO BOTOIAK EGOERA ALDATZEKO -->
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <Button mnemonicParsing="false" onAction="#onEdariaZaiClick" styleClass="btn-secondary" text="Zai jarri" />
+                    <Button mnemonicParsing="false" onAction="#onEdariaMartxanClick" styleClass="btn-warning" text="Martxan jarri" />
+                    <Button mnemonicParsing="false" onAction="#onEdariaEgindaClick" styleClass="btn-success" text="Zerbitzatuta markatu" />
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- 3. BEHEKO EGOERA-BARRA -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="status-bar">
+            <Label fx:id="lblKonexioa" text="API konexioa egiaztatzen..." />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblEgoeraMezua" style="-fx-text-fill: #64748b;" text="Prest." />
+            <Label fx:id="lblAzkenFreskatzea" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;" text="Azken freskatzea: -" />
+        </HBox>
+    </bottom>
+</BorderPane>
