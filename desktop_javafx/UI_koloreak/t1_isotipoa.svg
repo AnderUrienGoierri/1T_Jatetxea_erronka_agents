@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="ardoGradIso" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9F1239" />
+      <stop offset="100%" stop-color="#881337" />
+    </linearGradient>
+    <linearGradient id="urreGradIso" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
+
+  <rect width="120" height="120" rx="24" fill="#FFFFFF" />
+  <circle cx="60" cy="60" r="48" fill="url(#ardoGradIso)" stroke="#FCD34D" stroke-width="2.5" />
+  <circle cx="60" cy="60" r="43" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="3,3" />
+
+  <text x="60" y="70" font-family="'Segoe UI', 'Cinzel', 'Georgia', serif" font-size="36" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">T1</text>
+  
+  <path d="M 40 86 Q 60 94 80 86" fill="none" stroke="url(#urreGradIso)" stroke-width="3" stroke-linecap="round" />
+  <circle cx="52" cy="89" r="3" fill="#15803D" />
+  <circle cx="68" cy="89" r="3" fill="#15803D" />
+</svg>
