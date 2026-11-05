@@ -408,7 +408,8 @@ public partial class MahaiaXehetasunakForm : Form
 
         if (konfirmatu != DialogResult.Yes) return;
 
-        var (arrakasta, mezua, berria) = await _api.SortuEskaeraAsync(_mahaia.Id, _langilea.Id, 2);
+        int pertsonaKop = _mahaia.Edukiera > 0 ? _mahaia.Edukiera : 1;
+        var (arrakasta, mezua, berria) = await _api.SortuEskaeraAsync(_mahaia.Id, _langilea.Id, pertsonaKop);
         if (!arrakasta || berria == null)
         {
             MessageBox.Show(

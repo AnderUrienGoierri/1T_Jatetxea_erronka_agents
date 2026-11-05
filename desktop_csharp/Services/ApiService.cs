@@ -296,8 +296,18 @@ public class ApiService
             
             if (!response.IsSuccessStatusCode)
             {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                    {
+                        return (false, apiErr.Message, null);
+                    }
+                }
+                catch { }
+
                 var err = await response.Content.ReadAsStringAsync();
-                return (false, "Ezin izan da eskaera sortu.", null);
+                return (false, !string.IsNullOrWhiteSpace(err) ? err : "Ezin izan da eskaera sortu.", null);
             }
 
             var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<EskaeraDto>>(JsonOptions);

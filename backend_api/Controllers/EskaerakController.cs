@@ -171,11 +171,11 @@ public class EskaerakController : BaseApiKontroladorea
                 unekoEgoera = readerM.GetString("egoera");
             }
 
-            // 1. Egoera balidatu: ezin da eskaera berria ireki mahaia okupatuta badago
-            if (unekoEgoera == "Okupatuta")
+            // 1. Egoera balidatu: garbitzen ari bada soilik blokeatu (mahai berean kontu bat baino gehiago egon daitezke)
+            if (unekoEgoera == "Garbitzen")
             {
                 await tx.RollbackAsync();
-                return ConflictError($"{mahaiZenbakia}. mahaia okupatuta dago dagoeneko.");
+                return ConflictError($"{mahaiZenbakia}. mahaia garbitzen ari da une honetan. Garbitu ondoren ireki daiteke.");
             }
 
             // 2. Aforoa balidatu: pertsona kopuruak ezin du mahaiaren edukiera gainditu
@@ -444,14 +444,21 @@ public class EskaerakController : BaseApiKontroladorea
         int rows = await cmd.ExecuteNonQueryAsync();
         if (rows == 0) return NotFoundError($"Ez da aurkitu {id} ID-a duen eskaera aktiborik.");
 
-        // Kobratua edo Ezeztatua bada, mahaia 'Garbitzen' edo 'Libre' jarri
+        // Kobratua bada, mahaia 'Garbitzen' jarri beste kontu aktiborik ez bada geratzen
         if (dto.Egoera == "Kobratua")
         {
             const string sqlMahaiaGarbitzen = @"
                 UPDATE mahaiak m
                 JOIN eskaerak e ON m.id = e.mahaia_id
                 SET m.egoera = 'Garbitzen'
-                WHERE e.id = @id;";
+                WHERE e.id = @id
+                  AND NOT EXISTS (
+                      SELECT 1 FROM eskaerak besteak
+                      WHERE besteak.mahaia_id = m.id
+                        AND besteak.id <> @id
+                        AND besteak.ezabatua = 0
+                        AND besteak.egoera NOT IN ('Kobratua', 'Ezeztatua')
+                  );";
             await using var cmdM = new MySqlCommand(sqlMahaiaGarbitzen, kon);
             cmdM.Parameters.AddWithValue("@id", id);
             await cmdM.ExecuteNonQueryAsync();
