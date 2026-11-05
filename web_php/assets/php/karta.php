@@ -12,7 +12,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
         <section id="karta">
             <div class="section-header">
                 <h2>Gure Karta</h2>
-                <p>Egunero bertako baserritar eta arraindegietatik jasotako lehengaiekin prestatua (Guztira: <?php echo count($platerak); ?> plater eta edari)</p>
+                <p>Bi munduetako lehengai gorenekin prestatua: euskal parrillako haragi eta arrainak, italiar pasta freskoak eta ardo hautatuak (Guztira: <?php echo count($platerak); ?> aukera)</p>
             </div>
 
             <!-- Kategoria-iragazkiak -->

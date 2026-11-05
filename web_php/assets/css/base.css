@@ -1,27 +1,72 @@
 /* ==========================================================================
    JATETXEA - Oinarrizko Estiloak eta Aldagaiak (base.css)
+   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
    ========================================================================== */
 
 :root {
-    --kolore-nagusia: #1e293b;
-    --kolore-bigarrena: #881337;
-    --kolore-bigarrena-hover: #9f1239;
-    --kolore-atzeko: #f8fafc;
-    --kolore-kutxa: #ffffff;
-    --kolore-testua: #334155;
-    --kolore-testua-argia: #64748b;
-    --kolore-ertza: #e2e8f0;
-    --kolore-arrakasta: #15803d;
-    --kolore-arrakasta-atzeko: #dcfce7;
-    --kolore-abisua: #b45309;
-    --kolore-abisua-atzeko: #fef3c7;
-    --kolore-errorea: #b91c1c;
-    --kolore-errorea-atzeko: #fee2e2;
-    --itzala-arina: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --itzala-ertaina: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-    --itzala-sakona: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-    --erradioa: 8px;
-    --trantsizioa: all 0.2s ease-in-out;
+    /* Brand Nagusiak (Chianti & Ardoa) */
+    --kolore-brand-primary: #881337;
+    --kolore-brand-hover: #9f1239;
+    --kolore-brand-dark: #4c0519;
+    --kolore-brand-light: #fff1f2;
+
+    /* Bigarren Mailakoak (Baso & Albahaka Berdea) */
+    --kolore-success: #15803d;
+    --kolore-success-bg: #dcfce7;
+    --kolore-success-border: #86efac;
+
+    /* Azentuak & Labea (Toskana Terrakota & Parmigiano Urrea) */
+    --kolore-gold: #fcd34d;
+    --kolore-gold-dark: #d97706;
+    --kolore-warning: #c2410c;
+    --kolore-warning-bg: #fef3c7;
+    --kolore-warning-border: #fcd34d;
+    --kolore-warning-text: #92400e;
+
+    /* Barra BDS & Info (Mediterraneo Urdina) */
+    --kolore-info: #0284c7;
+    --kolore-info-bg: #e0f2fe;
+    --kolore-info-border: #bae6fd;
+
+    /* Alerta Gorria */
+    --kolore-danger: #dc2626;
+    --kolore-danger-bg: #fee2e2;
+    --kolore-danger-border: #fecaca;
+
+    /* Neutroak (Irina, Marmola & Arbela) */
+    --kolore-bg-app: #f8fafc;
+    --kolore-bg-card: #ffffff;
+    --kolore-border: #e2e8f0;
+    --kolore-text-main: #1e293b;
+    --kolore-text-muted: #64748b;
+
+    /* Bateragarritasun Aliasak */
+    --kolore-nagusia: var(--kolore-brand-dark);
+    --kolore-bigarrena: var(--kolore-brand-primary);
+    --kolore-bigarrena-hover: var(--kolore-brand-hover);
+    --kolore-atzeko: var(--kolore-bg-app);
+    --kolore-kutxa: var(--kolore-bg-card);
+    --kolore-testua: var(--kolore-text-main);
+    --kolore-testua-argia: var(--kolore-text-muted);
+    --kolore-ertza: var(--kolore-border);
+    --kolore-arrakasta: var(--kolore-success);
+    --kolore-arrakasta-atzeko: var(--kolore-success-bg);
+    --kolore-abisua: var(--kolore-warning);
+    --kolore-abisua-atzeko: var(--kolore-warning-bg);
+    --kolore-errorea: var(--kolore-danger);
+    --kolore-errorea-atzeko: var(--kolore-danger-bg);
+
+    /* Tipografiak */
+    --font-title: 'Cinzel', 'Playfair Display', 'Georgia', serif;
+    --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Itzalak eta Formak */
+    --itzala-arina: 0 1px 3px rgba(30, 41, 59, 0.06);
+    --itzala-ertaina: 0 4px 12px -2px rgba(30, 41, 59, 0.08), 0 2px 6px -2px rgba(30, 41, 59, 0.04);
+    --itzala-sakona: 0 12px 24px -4px rgba(136, 19, 55, 0.12), 0 4px 10px -2px rgba(30, 41, 59, 0.06);
+    --erradioa: 10px;
+    --erradioa-lg: 14px;
+    --trantsizioa: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -30,84 +75,156 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--kolore-atzeko);
-    color: var(--kolore-testua);
+    font-family: var(--font-body);
+    background-color: var(--kolore-bg-app);
+    color: var(--kolore-text-main);
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
+    padding: 3.5rem 1.5rem;
 }
 
 section {
-    margin-bottom: 4rem;
+    margin-bottom: 4.5rem;
 }
 
+/* ==========================================================================
+   ATALEN GOIBURUAK (Section Headers)
+   ========================================================================== */
 .section-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.75rem;
 }
 
 .section-header h2 {
-    font-size: 1.85rem;
-    color: var(--kolore-nagusia);
-    margin-bottom: 0.5rem;
+    font-family: var(--font-title);
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: 0.75px;
+    color: var(--kolore-brand-primary);
+    margin-bottom: 0.4rem;
+}
+
+.section-header h2::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--kolore-gold), var(--kolore-success));
+    margin: 0.6rem auto 0;
+    border-radius: 2px;
 }
 
 .section-header p {
-    color: var(--kolore-testua-argia);
-    font-size: 1rem;
+    color: var(--kolore-text-muted);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* ==========================================================================
+   BOTOIAK (Buttons)
+   ========================================================================== */
 .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.75rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
     font-weight: 600;
+    letter-spacing: 0.2px;
     border-radius: var(--erradioa);
     text-decoration: none;
     border: none;
     cursor: pointer;
     transition: var(--trantsizioa);
+    gap: 0.5rem;
 }
 
 .btn-primary {
-    background-color: var(--kolore-bigarrena);
+    background-color: var(--kolore-brand-primary);
     color: #ffffff;
+    box-shadow: 0 4px 12px rgba(136, 19, 55, 0.25);
+    border: 1px solid var(--kolore-brand-hover);
 }
 
 .btn-primary:hover {
-    background-color: var(--kolore-bigarrena-hover);
+    background-color: var(--kolore-brand-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(136, 19, 55, 0.35);
+    color: #ffffff;
 }
 
 .btn-secondary {
     background-color: #ffffff;
-    color: var(--kolore-nagusia);
-    border: 1px solid var(--kolore-ertza);
+    color: var(--kolore-brand-primary);
+    border: 1.5px solid var(--kolore-brand-primary);
+    box-shadow: var(--itzala-arina);
 }
 
 .btn-secondary:hover {
-    background-color: #f1f5f9;
+    background-color: var(--kolore-brand-light);
+    color: var(--kolore-brand-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--itzala-ertaina);
 }
 
 .btn-block {
     width: 100%;
 }
 
+/* ==========================================================================
+   OINA (Footer)
+   ========================================================================== */
 footer {
-    background-color: var(--kolore-nagusia);
-    color: #94a3b8;
-    text-align: center;
-    padding: 2rem 1rem;
-    font-size: 0.9rem;
-    border-top: 1px solid #334155;
+    background-color: var(--kolore-brand-dark);
+    color: #cbd5e1;
+    border-top: 3px solid var(--kolore-gold);
+    padding: 3rem 1.5rem;
 }
 
-footer a {
-    color: #cbd5e1;
-    text-decoration: none;
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-brand {
+    margin-bottom: 1.25rem;
+}
+
+.footer-title {
+    font-family: var(--font-title);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--kolore-gold);
+    display: block;
+    letter-spacing: 1px;
+}
+
+.footer-slogan {
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    margin-top: 0.35rem;
+    font-style: italic;
+}
+
+.footer-copy {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.25rem;
+    margin-top: 1.25rem;
 }

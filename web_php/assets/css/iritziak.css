@@ -1,11 +1,12 @@
 /* ==========================================================================
    JATETXEA - Iritziak eta Balorazioak (iritziak.css)
+   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
    ========================================================================== */
 
 .iritziak-grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 2rem;
+    gap: 2.25rem;
     align-items: start;
 }
 
@@ -17,42 +18,55 @@
 
 /* Ezkerreko Estatistiken Kutxa */
 .estatistikak-kaxa {
-    background-color: var(--kolore-kutxa);
-    border: 1px solid var(--kolore-ertza);
-    border-radius: var(--erradioa);
-    padding: 2rem;
+    background-color: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa-lg);
+    padding: 2.25rem 2rem;
     text-align: center;
-    box-shadow: var(--itzala-arina);
+    box-shadow: var(--itzala-ertaina);
+    position: relative;
+    overflow: hidden;
+}
+
+.estatistikak-kaxa::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--kolore-brand-primary), var(--kolore-gold));
 }
 
 .estatistika-puntuazioa {
-    font-size: 3.25rem;
-    font-weight: 800;
-    color: var(--kolore-bigarrena);
+    font-family: var(--font-title);
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--kolore-brand-primary);
     line-height: 1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .estatistika-izarrak {
     font-size: 1.5rem;
-    color: #eab308;
+    color: #f59e0b;
     margin-bottom: 0.5rem;
     letter-spacing: 2px;
 }
 
 .estatistika-guztira {
     font-size: 0.9rem;
-    color: var(--kolore-testua-argia);
+    color: var(--kolore-text-muted);
     margin-bottom: 1.5rem;
 }
 
 .izar-distribuzioa {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.65rem;
     text-align: left;
-    border-top: 1px solid var(--kolore-ertza);
-    padding-top: 1.25rem;
+    border-top: 1px solid var(--kolore-border);
+    padding-top: 1.5rem;
 }
 
 .distribuzio-lerroa {
@@ -65,7 +79,7 @@
 .distribuzio-izarrak {
     min-width: 2.2rem;
     font-weight: 600;
-    color: var(--kolore-nagusia);
+    color: var(--kolore-brand-dark);
     white-space: nowrap;
 }
 
@@ -76,12 +90,12 @@
     border-radius: 999px;
     overflow: hidden;
     position: relative;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--kolore-border);
 }
 
 .barra-beteta {
     height: 100%;
-    background-color: #eab308;
+    background: linear-gradient(90deg, #fbbf24, #d97706);
     border-radius: 999px;
     transition: width 0.3s ease;
 }
@@ -90,32 +104,38 @@
     min-width: 1.5rem;
     text-align: right;
     font-weight: 600;
-    color: var(--kolore-testua-argia);
+    color: var(--kolore-text-muted);
     font-size: 0.85rem;
 }
 
 /* Eskuineko Iritzien Zerrenda */
 .iritziak-zerrenda-kaxa {
-    background-color: var(--kolore-kutxa);
-    border: 1px solid var(--kolore-ertza);
-    border-radius: var(--erradioa);
-    padding: 1.5rem;
-    box-shadow: var(--itzala-arina);
+    background-color: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa-lg);
+    padding: 1.75rem 2rem;
+    box-shadow: var(--itzala-ertaina);
 }
 
 .azken-iritziak-titulua {
-    margin-bottom: 1rem;
-    color: var(--kolore-nagusia);
-    font-size: 1.15rem;
+    margin-bottom: 1.25rem;
+    color: var(--kolore-brand-primary);
+    font-family: var(--font-title);
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--kolore-border);
+    padding-bottom: 0.75rem;
 }
 
 .iritzi-txartela {
     padding: 1.25rem 0;
-    border-bottom: 1px solid var(--kolore-ertza);
+    border-bottom: 1px solid var(--kolore-border);
+    transition: var(--trantsizioa);
 }
 
 .iritzi-txartela:last-child {
     border-bottom: none;
+    padding-bottom: 0.5rem;
 }
 
 .iritzi-goiburua {
@@ -126,48 +146,63 @@
 }
 
 .iritzi-izarrak {
-    color: #eab308;
-    font-size: 1rem;
-    margin-bottom: 0.4rem;
+    color: #f59e0b;
+    font-size: 1.05rem;
+    margin-bottom: 0.45rem;
     letter-spacing: 1px;
 }
 
 .iritzi-egilea {
-    font-weight: 600;
-    color: var(--kolore-nagusia);
+    font-weight: 700;
+    color: var(--kolore-text-main);
+    font-size: 1rem;
 }
 
 .iritzi-data {
     font-size: 0.8rem;
-    color: var(--kolore-testua-argia);
+    color: var(--kolore-text-muted);
 }
 
 .iritzi-testua {
     font-size: 0.95rem;
-    color: var(--kolore-testua);
-    line-height: 1.5;
+    color: var(--kolore-text-main);
+    line-height: 1.55;
 }
 
 /* Iritzia uzteko formularioaren kutxa */
 .iritzi-form-kaxa {
-    margin-top: 1.5rem;
-    padding: 1.75rem;
-    background: var(--kolore-kutxa);
-    border: 1px solid var(--kolore-ertza);
-    border-radius: var(--erradioa);
-    box-shadow: var(--itzala-arina);
+    margin-top: 2rem;
+    padding: 2rem;
+    background: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa-lg);
+    box-shadow: var(--itzala-ertaina);
+    position: relative;
+    overflow: hidden;
+}
+
+.iritzi-form-kaxa::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--kolore-brand-primary);
 }
 
 .iritzi-form-titulua {
     margin-bottom: 1.25rem;
-    color: var(--kolore-nagusia);
-    font-size: 1.15rem;
+    color: var(--kolore-brand-primary);
+    font-family: var(--font-title);
+    font-size: 1.25rem;
+    font-weight: 800;
 }
 
 .balorazio-select {
     font-size: 1rem;
-    font-weight: 500;
-    color: var(--kolore-nagusia);
+    font-weight: 600;
+    color: var(--kolore-text-main);
 }
 
 .balorazio-select option {

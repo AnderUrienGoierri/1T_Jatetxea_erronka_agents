@@ -1,28 +1,49 @@
 /* ==========================================================================
    JATETXEA - Kokapena eta Kontaktua (kontaktua.css)
+   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
    ========================================================================== */
 
 .kontaktua-kaxa {
-    background-color: var(--kolore-kutxa);
-    border: 1px solid var(--kolore-ertza);
-    border-radius: var(--erradioa);
-    padding: 2rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
+    gap: 1.75rem;
+}
+
+.kontaktua-txartela {
+    background-color: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-top: 3.5px solid var(--kolore-brand-primary);
+    border-radius: var(--erradioa);
+    padding: 2rem 1.5rem;
     text-align: center;
     box-shadow: var(--itzala-arina);
+    transition: var(--trantsizioa);
+}
+
+.kontaktua-txartela:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--itzala-sakona);
+    border-top-color: var(--kolore-gold);
 }
 
 .kontaktua-titulua {
-    color: var(--kolore-nagusia);
+    color: var(--kolore-brand-primary);
+    font-family: var(--font-title);
     margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .kontaktua-testua {
-    color: var(--kolore-testua-argia);
+    color: var(--kolore-text-muted);
     font-size: 0.95rem;
+    line-height: 1.5;
 }
 
+.kontaktua-testua small {
+    color: var(--kolore-text-muted);
+    font-size: 0.82rem;
+    display: inline-block;
+    margin-top: 0.25rem;
+}

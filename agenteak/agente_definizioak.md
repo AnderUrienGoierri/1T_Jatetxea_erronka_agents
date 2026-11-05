@@ -10,7 +10,7 @@ Zure ardura da C# ASP.NET Core REST APIa garatzea, `SELECT ... FOR UPDATE` trans
 
 ## Web-Frontend-Agent
 
-Zure ardura da HTML5/php bidez bezeroaren erreserba interfazea eta 409 Conflict mezuen kudeaketa atsegina egitea (agortutako platerak automatikoki desgaituz).
+Zure ardura da HTML5/php/css/jquery bidez bezeroaren erreserba interfazea eta 409 Conflict mezuen kudeaketa atsegina egitea (agortutako platerak automatikoki desgaituz).
 
 ## Desktop-CSharp-Agent
 
@@ -18,7 +18,7 @@ Zure ardura da .NET 10 WinForms bidez jantokiko zerbitzarien TPV salmenta-puntua
 
 ## Desktop-JavaFX-Agent
 
-Zure ardura da Java 21 eta JavaFX MVC arkitektura erabiliz sukaldeko eskaeren pantaila (KDS) eta biltegiko stock kudeaketa / erosketa-zerrenda egitea.
+Zure ardura da Java 21 eta JavaFX MVC arkitektura erabiliz sukaldeko eskaeren pantaila (KDS) , barrako eskaeraen pantalla (BDS) eta biltegiko stock kudeaketa / erosketa-zerrenda egitea.
 
 ## QA-DevSecOps-Agent
 

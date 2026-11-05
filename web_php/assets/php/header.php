@@ -17,8 +17,14 @@ $client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.in
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T1 Jatetxea - Euskal Gastronomia eta Erreserbak</title>
-    <link rel="icon" type="image/svg+xml" href="assets/img/t1_logo.svg">
+    <title>T1 Jatetxea · Osteria &amp; Parrilla | Italiar-Euskaldun Gastronomia</title>
+    <link rel="icon" type="image/svg+xml" href="assets/img/t1_isotipoa.svg">
+    
+    <!-- Google Fonts: Cinzel (Titulu artistikoak) eta Inter (UI garbia) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="assets/css/style.css">
     <script>
         // Bezeroaren JavaScript logikari API helbidea pasa (nabigatzailetik erabilgarria)
@@ -30,11 +36,14 @@ $client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.in
     <!-- GOIBURUA -->
     <header>
         <div class="header-container">
-            <!-- Ezkerrean: Jatetxearen Izena (klikatzean orria freskatu eta goran kokatu) -->
+            <!-- Ezkerrean: Jatetxearen Izena eta Nortasuna -->
             <div class="logo-area">
-                <a href="index.php" class="brand-title-link" title="T1 Jatetxea - Hasierara Itzuli">
-                    <h1>T1 JATETXEA</h1>
-                    <span>Euskal Sukaldaritza Tradizionala eta Garaikidea</span>
+                <a href="index.php" class="header-brand-wrap" title="T1 Jatetxea - Hasierara Itzuli">
+                    <img src="assets/img/t1_isotipoa.svg" alt="T1 Isotipoa" class="header-logo-icon">
+                    <div class="brand-text-block">
+                        <h1>T1 JATETXEA</h1>
+                        <span class="brand-subtitle">OSTERIA &amp; PARRILLA · ITALO-EUSKALDUNA</span>
+                    </div>
                 </a>
             </div>
 
@@ -48,20 +57,19 @@ $client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.in
                 </ul>
             </nav>
 
-            <!-- Eskuinaldean: API egoera eta T1 Logoa profesionalki kokatuta -->
+            <!-- Eskuinaldean: API egoera eta Laguntza -->
             <div class="header-right">
                 <div class="api-status-wrapper">
                     <?php if (!empty($api_online)): ?>
-                        <span id="api-status" class="api-status-badge online">API Linean</span>
+                        <span id="api-status" class="api-status-badge online">
+                            <span class="status-dot"></span> API Linean
+                        </span>
                     <?php else: ?>
-                        <span id="api-status" class="api-status-badge offline">API Deskonektatuta</span>
+                        <span id="api-status" class="api-status-badge offline">
+                            <span class="status-dot"></span> API Deskonektatuta
+                        </span>
                     <?php endif; ?>
                 </div>
-
-                <!-- T1 Logoa (klikatzean orria freskatu eta goran kokatu) -->
-                <a href="index.php" class="header-logo-link" title="T1 Jatetxea - Hasierara Itzuli">
-                    <img src="assets/img/t1_logo.svg" alt="T1 Jatetxea Logoa" class="header-logo-img">
-                </a>
             </div>
         </div>
     </header>

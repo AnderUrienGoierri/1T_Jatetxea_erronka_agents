@@ -137,6 +137,7 @@ php -S localhost:8000
 
 ---
 
+
 ## 3. Ohar Garrantzitsuak
 
 - **Datu-basearen konexioa:** C# APIak zein JavaFX bezeroak `localhost:3308` portura konektatzen dute. Ziurtatu Docker edukiontzia martxan dagoela (`docker ps`).

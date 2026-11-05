@@ -1,6 +1,12 @@
     <!-- OINA -->
     <footer>
-        <p>&copy; <?php echo date('Y'); ?> T1 Jatetxea - Goierri Eskola. 3-Mailako Arkitektura (Web PHP, Desktop C#, Desktop JavaFX, C# REST API, MySQL 8.0 InnoDB).</p>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-title">T1 Jatetxea · Osteria &amp; Parrilla</span>
+                <p class="footer-slogan">Bi tradizio, artisautza bakarra &mdash; Euskal Herria eta Italia sukalde berean.</p>
+            </div>
+            <p class="footer-copy">&copy; <?php echo date('Y'); ?> T1 Jatetxea · Goierri Eskola. 3-Mailako Arkitektura (Web PHP, Desktop C# TPV, JavaFX KDS/BDS/Stock, C# REST API, MySQL 8.0).</p>
+        </div>
     </footer>
 
     <!-- MODULARIZATUTAKO JAVASCRIPT FITXATEGIAK (Interaktibitate arina eta iragazkiak) -->
