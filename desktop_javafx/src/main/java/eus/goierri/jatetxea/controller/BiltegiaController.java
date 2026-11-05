@@ -67,17 +67,17 @@ public class BiltegiaController {
             @Override
             protected void updateItem(String egoera, boolean empty) {
                 super.updateItem(egoera, empty);
+                getStyleClass().removeAll("status-agortuta", "status-baxua", "status-egokia");
                 if (empty || egoera == null) {
                     setText(null);
-                    setStyle("");
                 } else {
                     setText(egoera);
                     if ("AGORTUTA".equals(egoera)) {
-                        setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
+                        getStyleClass().add("status-agortuta");
                     } else if ("STOCK BAXUA".equals(egoera)) {
-                        setStyle("-fx-text-fill: #b45309; -fx-font-weight: bold;");
+                        getStyleClass().add("status-baxua");
                     } else {
-                        setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
+                        getStyleClass().add("status-egokia");
                     }
                 }
             }

@@ -102,9 +102,51 @@
     -fx-background-color: #fcfcfd;
 }
 
-.table-row-cell:selected {
-    -fx-background-color: #fef2f2;
-    -fx-text-fill: #881337;
+.table-row-cell:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+/* Hautatutako lerroa (Kontraste handia: bordele hondoa eta letra txuri lodiak) */
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected:hover,
+.table-row-cell:filled:selected:focused,
+.table-row-cell:filled:selected:focused:hover {
+    -fx-background-color: #881337;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell:filled:selected .table-cell,
+.table-row-cell:filled:selected:focused .table-cell {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:filled:selected .table-cell .text,
+.table-row-cell:filled:selected:focused .table-cell .text {
+    -fx-fill: #ffffff;
+}
+
+/* Egoera pertsonalizatuen klaseak taulan */
+.status-agortuta {
+    -fx-text-fill: #dc2626;
+    -fx-font-weight: bold;
+}
+
+.status-baxua {
+    -fx-text-fill: #b45309;
+    -fx-font-weight: bold;
+}
+
+.status-egokia {
+    -fx-text-fill: #166534;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:filled:selected .status-agortuta,
+.table-row-cell:filled:selected .status-baxua,
+.table-row-cell:filled:selected .status-egokia {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
 }
 
 /* Ekintza Botoiak */
