@@ -22,6 +22,13 @@ public partial class MahaiakForm : Form
         { 9, "0:15h" }
     };
 
+    /// <summary>
+    /// Visual Studio WinForms Designer-erako eraikitzailea
+    /// </summary>
+    public MahaiakForm() : this(new LangileaDto { Id = 1, Izena = "Ane G.", Rola = "Zerbitzaria" }, new ApiService())
+    {
+    }
+
     public MahaiakForm(LangileaDto langilea, ApiService api)
     {
         InitializeComponent();
@@ -197,7 +204,7 @@ public partial class MahaiakForm : Form
         int eskaeraBidean = _mahaiak.Count(m => m.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase));
         int garbitzen = _mahaiak.Count(m => m.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase));
 
-        lblSummary.Text = $"Guztira: {guztira}  |  Libre: {libre}  |  Okupatuta: {okupatuta}  |  Eskaera bidean: {eskaeraBidean}  |  Garbitzen: {garbitzen}";
+        lblSummary.Text = $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Bidean: {eskaeraBidean} · Garbitzen: {garbitzen}";
     }
 
     private bool KokapenaBatDator(string mahaiaKokapena, string tabIzena)
@@ -302,11 +309,11 @@ public partial class MahaiakForm : Form
             _ => (Color.FromArgb(219, 234, 254), Color.FromArgb(30, 64, 175), Color.FromArgb(147, 197, 253))
         };
 
-        int badgeWidth = egoeraText.Length > 10 ? 140 : 110;
+        int badgeWidth = Math.Max(120, egoeraText.Length * 11 + 24);
         var pnlBadge = new Panel
         {
-            Location = new Point(card.Width - badgeWidth - 18, 92),
-            Size = new Size(badgeWidth, 32),
+            Location = new Point(card.Width - badgeWidth - 16, 90),
+            Size = new Size(badgeWidth, 34),
             BackColor = badgeBg
         };
         pnlBadge.Paint += (s, e) =>
@@ -320,7 +327,7 @@ public partial class MahaiakForm : Form
         {
             Dock = DockStyle.Fill,
             Text = egoeraText,
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             ForeColor = badgeFg,
             TextAlign = ContentAlignment.MiddleCenter
         };
@@ -335,7 +342,7 @@ public partial class MahaiakForm : Form
                 Text = $"{mahaia.Edukiera} PAX",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(71, 85, 105),
-                Location = new Point(card.Width - badgeWidth - 18, 130),
+                Location = new Point(card.Width - badgeWidth - 16, 128),
                 Size = new Size(badgeWidth, 26),
                 TextAlign = ContentAlignment.MiddleRight
             };

@@ -157,6 +157,7 @@ partial class EskaeraForm
         // 
         // pnlKategoriak (EDARIAK, HASTEKOAK, HARAGIAK, POSTREAK...)
         // 
+        pnlKategoriak.AutoScroll = true;
         pnlKategoriak.Controls.Add(btnKatEdariak);
         pnlKategoriak.Controls.Add(btnKatHastekoak);
         pnlKategoriak.Controls.Add(btnKatHaragiak);
@@ -167,18 +168,21 @@ partial class EskaeraForm
         pnlKategoriak.Name = "pnlKategoriak";
         pnlKategoriak.Size = new Size(758, 48);
         pnlKategoriak.TabIndex = 0;
+        pnlKategoriak.WrapContents = false;
         // 
         // btnKatEdariak
         // 
+        btnKatEdariak.AutoSize = true;
         btnKatEdariak.BackColor = Color.White;
         btnKatEdariak.Cursor = Cursors.Hand;
         btnKatEdariak.FlatAppearance.BorderSize = 0;
         btnKatEdariak.FlatStyle = FlatStyle.Flat;
-        btnKatEdariak.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+        btnKatEdariak.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         btnKatEdariak.ForeColor = Color.FromArgb(136, 19, 55);
         btnKatEdariak.Location = new Point(0, 0);
-        btnKatEdariak.Margin = new Padding(0, 0, 10, 0);
+        btnKatEdariak.Margin = new Padding(0, 0, 8, 0);
         btnKatEdariak.Name = "btnKatEdariak";
+        btnKatEdariak.Padding = new Padding(16, 0, 16, 0);
         btnKatEdariak.Size = new Size(120, 42);
         btnKatEdariak.TabIndex = 0;
         btnKatEdariak.Text = "EDARIAK";
@@ -186,15 +190,17 @@ partial class EskaeraForm
         // 
         // btnKatHastekoak
         // 
+        btnKatHastekoak.AutoSize = true;
         btnKatHastekoak.BackColor = Color.White;
         btnKatHastekoak.Cursor = Cursors.Hand;
         btnKatHastekoak.FlatAppearance.BorderSize = 0;
         btnKatHastekoak.FlatStyle = FlatStyle.Flat;
-        btnKatHastekoak.Font = new Font("Segoe UI", 10.5F);
+        btnKatHastekoak.Font = new Font("Segoe UI", 10F);
         btnKatHastekoak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatHastekoak.Location = new Point(130, 0);
-        btnKatHastekoak.Margin = new Padding(0, 0, 10, 0);
+        btnKatHastekoak.Location = new Point(128, 0);
+        btnKatHastekoak.Margin = new Padding(0, 0, 8, 0);
         btnKatHastekoak.Name = "btnKatHastekoak";
+        btnKatHastekoak.Padding = new Padding(16, 0, 16, 0);
         btnKatHastekoak.Size = new Size(130, 42);
         btnKatHastekoak.TabIndex = 1;
         btnKatHastekoak.Text = "HASTEKOAK";
@@ -202,15 +208,17 @@ partial class EskaeraForm
         // 
         // btnKatHaragiak
         // 
+        btnKatHaragiak.AutoSize = true;
         btnKatHaragiak.BackColor = Color.White;
         btnKatHaragiak.Cursor = Cursors.Hand;
         btnKatHaragiak.FlatAppearance.BorderSize = 0;
         btnKatHaragiak.FlatStyle = FlatStyle.Flat;
-        btnKatHaragiak.Font = new Font("Segoe UI", 10.5F);
+        btnKatHaragiak.Font = new Font("Segoe UI", 10F);
         btnKatHaragiak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatHaragiak.Location = new Point(270, 0);
-        btnKatHaragiak.Margin = new Padding(0, 0, 10, 0);
+        btnKatHaragiak.Location = new Point(266, 0);
+        btnKatHaragiak.Margin = new Padding(0, 0, 8, 0);
         btnKatHaragiak.Name = "btnKatHaragiak";
+        btnKatHaragiak.Padding = new Padding(16, 0, 16, 0);
         btnKatHaragiak.Size = new Size(120, 42);
         btnKatHaragiak.TabIndex = 2;
         btnKatHaragiak.Text = "HARAGIAK";
@@ -218,15 +226,17 @@ partial class EskaeraForm
         // 
         // btnKatPostreak
         // 
+        btnKatPostreak.AutoSize = true;
         btnKatPostreak.BackColor = Color.White;
         btnKatPostreak.Cursor = Cursors.Hand;
         btnKatPostreak.FlatAppearance.BorderSize = 0;
         btnKatPostreak.FlatStyle = FlatStyle.Flat;
-        btnKatPostreak.Font = new Font("Segoe UI", 10.5F);
+        btnKatPostreak.Font = new Font("Segoe UI", 10F);
         btnKatPostreak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatPostreak.Location = new Point(400, 0);
-        btnKatPostreak.Margin = new Padding(0, 0, 10, 0);
+        btnKatPostreak.Location = new Point(394, 0);
+        btnKatPostreak.Margin = new Padding(0, 0, 8, 0);
         btnKatPostreak.Name = "btnKatPostreak";
+        btnKatPostreak.Padding = new Padding(16, 0, 16, 0);
         btnKatPostreak.Size = new Size(120, 42);
         btnKatPostreak.TabIndex = 3;
         btnKatPostreak.Text = "POSTREAK";
@@ -234,15 +244,17 @@ partial class EskaeraForm
         // 
         // btnKatGuztiak
         // 
+        btnKatGuztiak.AutoSize = true;
         btnKatGuztiak.BackColor = Color.White;
         btnKatGuztiak.Cursor = Cursors.Hand;
         btnKatGuztiak.FlatAppearance.BorderSize = 0;
         btnKatGuztiak.FlatStyle = FlatStyle.Flat;
-        btnKatGuztiak.Font = new Font("Segoe UI", 10.5F);
+        btnKatGuztiak.Font = new Font("Segoe UI", 10F);
         btnKatGuztiak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnKatGuztiak.Location = new Point(530, 0);
-        btnKatGuztiak.Margin = new Padding(0, 0, 10, 0);
+        btnKatGuztiak.Location = new Point(522, 0);
+        btnKatGuztiak.Margin = new Padding(0, 0, 8, 0);
         btnKatGuztiak.Name = "btnKatGuztiak";
+        btnKatGuztiak.Padding = new Padding(16, 0, 16, 0);
         btnKatGuztiak.Size = new Size(110, 42);
         btnKatGuztiak.TabIndex = 4;
         btnKatGuztiak.Text = "Guztiak";

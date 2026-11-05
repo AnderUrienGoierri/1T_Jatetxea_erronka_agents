@@ -171,9 +171,7 @@ public partial class EskaeraForm : Form
         pnlPlaterak.SuspendLayout();
         pnlPlaterak.Controls.Clear();
 
-        var zerrenda = kategoria.Equals("Guztiak", StringComparison.OrdinalIgnoreCase)
-            ? _platerak
-            : _platerak.Where(p => p.Kategoria.Equals(kategoria, StringComparison.OrdinalIgnoreCase)).ToList();
+        var zerrenda = _platerak.Where(p => KategoriaBatDator(p.Kategoria, kategoria)).ToList();
 
         foreach (var p in zerrenda)
         {
@@ -184,6 +182,31 @@ public partial class EskaeraForm : Form
         pnlPlaterak.ResumeLayout(true);
     }
 
+    private static bool KategoriaBatDator(string platerKategoria, string aukeratutakoKat)
+    {
+        if (string.IsNullOrWhiteSpace(aukeratutakoKat) || aukeratutakoKat.Equals("Guztiak", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        string pKat = platerKategoria.Trim().ToLowerInvariant();
+        string aKat = aukeratutakoKat.Trim().ToLowerInvariant();
+
+        if (pKat.StartsWith("edari") && aKat.StartsWith("edari"))
+            return true;
+
+        if ((pKat.Contains("sarrera") || pKat.Contains("lehen") || pKat.Contains("hastek")) &&
+            (aKat.Contains("sarrera") || aKat.Contains("lehen") || aKat.Contains("hastek")))
+            return true;
+
+        if ((pKat.Contains("bigarren") || pKat.Contains("haragi") || pKat.Contains("arrain")) &&
+            (aKat.Contains("bigarren") || aKat.Contains("haragi") || aKat.Contains("arrain")))
+            return true;
+
+        if (pKat.StartsWith("postre") && aKat.StartsWith("postre"))
+            return true;
+
+        return pKat.Contains(aKat) || aKat.Contains(pKat);
+    }
+
     /// <summary>
     /// Zirriborroko produktuen txartela sortzen du (Ikonoa, Izena, Prezioa eta [+] botoia)
     /// </summary>
@@ -191,8 +214,8 @@ public partial class EskaeraForm : Form
     {
         var card = new Panel
         {
-            Width = 236,
-            Height = 98,
+            Width = 240,
+            Height = 105,
             Margin = new Padding(8),
             BackColor = Color.White,
             Cursor = Cursors.Hand
@@ -209,8 +232,8 @@ public partial class EskaeraForm : Form
         // Ikono kutxatxoa
         var lblIcon = new Label
         {
-            Location = new Point(12, 16),
-            Size = new Size(42, 64),
+            Location = new Point(10, 16),
+            Size = new Size(42, 68),
             Text = LortuPlaterIkonoa(platera),
             Font = new Font("Segoe UI Emoji", 20F),
             TextAlign = ContentAlignment.MiddleCenter,
@@ -218,14 +241,14 @@ public partial class EskaeraForm : Form
         };
         card.Controls.Add(lblIcon);
 
-        // Izena
+        // Izena (2 lerro har ditzake hitz luzeetan)
         var lblIzena = new Label
         {
             Text = platera.Izena,
-            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(58, 18),
-            Size = new Size(125, 26),
+            Location = new Point(54, 14),
+            Size = new Size(135, 48),
             AutoEllipsis = true,
             TextAlign = ContentAlignment.MiddleLeft
         };
@@ -235,10 +258,10 @@ public partial class EskaeraForm : Form
         var lblPrezioa = new Label
         {
             Text = $"{platera.Prezioa:F2} €",
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular),
-            ForeColor = Color.FromArgb(71, 85, 105),
-            Location = new Point(58, 48),
-            Size = new Size(125, 26),
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+            ForeColor = Color.FromArgb(136, 19, 55),
+            Location = new Point(54, 64),
+            Size = new Size(135, 26),
             TextAlign = ContentAlignment.MiddleLeft
         };
         card.Controls.Add(lblPrezioa);
@@ -250,7 +273,7 @@ public partial class EskaeraForm : Form
             Font = new Font("Segoe UI", 14F, FontStyle.Bold),
             ForeColor = Color.FromArgb(30, 41, 59),
             BackColor = Color.FromArgb(248, 250, 252),
-            Location = new Point(188, 30),
+            Location = new Point(192, 32),
             Size = new Size(38, 38),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand

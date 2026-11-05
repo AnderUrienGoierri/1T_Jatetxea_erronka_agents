@@ -24,7 +24,7 @@ partial class MahaiakForm
         lblServerStatus = new Label();
         lblServerName = new Label();
         lblAvatarCircle = new Label();
-        pnlTabStrip = new Panel();
+        pnlTabStrip = new FlowLayoutPanel();
         btnTabJangela = new Button();
         btnTabTerraza = new Button();
         btnTabBarra = new Button();
@@ -71,11 +71,11 @@ partial class MahaiakForm
         // 
         // lblBrand ("T1 Jatetxea - Mahaiak")
         // 
-        lblBrand.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblBrand.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         lblBrand.ForeColor = Color.FromArgb(136, 19, 55);
         lblBrand.Location = new Point(72, 16);
         lblBrand.Name = "lblBrand";
-        lblBrand.Size = new Size(340, 34);
+        lblBrand.Size = new Size(280, 34);
         lblBrand.TabIndex = 1;
         lblBrand.Text = "T1 Jatetxea - Mahaiak";
         lblBrand.TextAlign = ContentAlignment.MiddleLeft;
@@ -89,9 +89,9 @@ partial class MahaiakForm
         pnlProfile.Controls.Add(lblServerName);
         pnlProfile.Controls.Add(lblAvatarCircle);
         pnlProfile.Dock = DockStyle.Right;
-        pnlProfile.Location = new Point(544, 0);
+        pnlProfile.Location = new Point(774, 0);
         pnlProfile.Name = "pnlProfile";
-        pnlProfile.Size = new Size(640, 65);
+        pnlProfile.Size = new Size(410, 65);
         pnlProfile.TabIndex = 2;
 
         // 
@@ -103,9 +103,9 @@ partial class MahaiakForm
         btnLogout.FlatStyle = FlatStyle.Flat;
         btnLogout.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         btnLogout.ForeColor = Color.White;
-        btnLogout.Location = new Point(505, 12);
+        btnLogout.Location = new Point(295, 12);
         btnLogout.Name = "btnLogout";
-        btnLogout.Size = new Size(115, 40);
+        btnLogout.Size = new Size(105, 40);
         btnLogout.TabIndex = 4;
         btnLogout.Text = "Saioa Itxi";
         btnLogout.UseVisualStyleBackColor = false;
@@ -119,9 +119,9 @@ partial class MahaiakForm
         btnFreskatu.FlatStyle = FlatStyle.Flat;
         btnFreskatu.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         btnFreskatu.ForeColor = Color.FromArgb(51, 65, 85);
-        btnFreskatu.Location = new Point(375, 12);
+        btnFreskatu.Location = new Point(185, 12);
         btnFreskatu.Name = "btnFreskatu";
-        btnFreskatu.Size = new Size(115, 40);
+        btnFreskatu.Size = new Size(100, 40);
         btnFreskatu.TabIndex = 3;
         btnFreskatu.Text = "Freskatu";
         btnFreskatu.UseVisualStyleBackColor = false;
@@ -129,11 +129,11 @@ partial class MahaiakForm
         // 
         // lblServerStatus ("● Online")
         // 
-        lblServerStatus.Font = new Font("Segoe UI", 9F);
+        lblServerStatus.Font = new Font("Segoe UI", 8.5F);
         lblServerStatus.ForeColor = Color.FromArgb(22, 163, 74);
-        lblServerStatus.Location = new Point(205, 34);
+        lblServerStatus.Location = new Point(58, 34);
         lblServerStatus.Name = "lblServerStatus";
-        lblServerStatus.Size = new Size(100, 20);
+        lblServerStatus.Size = new Size(90, 20);
         lblServerStatus.TabIndex = 2;
         lblServerStatus.Text = "● Online";
         lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -141,11 +141,11 @@ partial class MahaiakForm
         // 
         // lblServerName (Zerbitzariaren izena)
         // 
-        lblServerName.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        lblServerName.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         lblServerName.ForeColor = Color.FromArgb(30, 41, 59);
-        lblServerName.Location = new Point(205, 12);
+        lblServerName.Location = new Point(58, 12);
         lblServerName.Name = "lblServerName";
-        lblServerName.Size = new Size(150, 22);
+        lblServerName.Size = new Size(120, 22);
         lblServerName.TabIndex = 1;
         lblServerName.Text = "Ane G.";
         lblServerName.TextAlign = ContentAlignment.MiddleLeft;
@@ -156,9 +156,9 @@ partial class MahaiakForm
         lblAvatarCircle.BackColor = Color.FromArgb(239, 246, 255);
         lblAvatarCircle.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         lblAvatarCircle.ForeColor = Color.FromArgb(37, 99, 235);
-        lblAvatarCircle.Location = new Point(150, 10);
+        lblAvatarCircle.Location = new Point(10, 11);
         lblAvatarCircle.Name = "lblAvatarCircle";
-        lblAvatarCircle.Size = new Size(44, 44);
+        lblAvatarCircle.Size = new Size(42, 42);
         lblAvatarCircle.TabIndex = 0;
         lblAvatarCircle.Text = "AG";
         lblAvatarCircle.TextAlign = ContentAlignment.MiddleCenter;
@@ -166,22 +166,26 @@ partial class MahaiakForm
         // 
         // pnlTabStrip (Guneen fitxak: Jangela Nagusia, Terraza, Barra, VIP, Guztiak)
         // 
+        pnlTabStrip.AutoScroll = true;
         pnlTabStrip.BackColor = Color.White;
-        pnlTabStrip.Controls.Add(btnTabGuztiak);
-        pnlTabStrip.Controls.Add(btnTabVIP);
-        pnlTabStrip.Controls.Add(btnTabBarra);
-        pnlTabStrip.Controls.Add(btnTabTerraza);
         pnlTabStrip.Controls.Add(btnTabJangela);
+        pnlTabStrip.Controls.Add(btnTabTerraza);
+        pnlTabStrip.Controls.Add(btnTabBarra);
+        pnlTabStrip.Controls.Add(btnTabVIP);
+        pnlTabStrip.Controls.Add(btnTabGuztiak);
         pnlTabStrip.Dock = DockStyle.Top;
+        pnlTabStrip.FlowDirection = FlowDirection.LeftToRight;
         pnlTabStrip.Location = new Point(0, 65);
         pnlTabStrip.Name = "pnlTabStrip";
         pnlTabStrip.Padding = new Padding(20, 4, 20, 0);
         pnlTabStrip.Size = new Size(1184, 52);
         pnlTabStrip.TabIndex = 1;
+        pnlTabStrip.WrapContents = false;
 
         // 
         // btnTabJangela
         // 
+        btnTabJangela.AutoSize = true;
         btnTabJangela.BackColor = Color.White;
         btnTabJangela.Cursor = Cursors.Hand;
         btnTabJangela.FlatAppearance.BorderSize = 0;
@@ -189,8 +193,10 @@ partial class MahaiakForm
         btnTabJangela.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         btnTabJangela.ForeColor = Color.FromArgb(136, 19, 55);
         btnTabJangela.Location = new Point(20, 4);
+        btnTabJangela.Margin = new Padding(0, 0, 10, 0);
         btnTabJangela.Name = "btnTabJangela";
-        btnTabJangela.Size = new Size(210, 44);
+        btnTabJangela.Padding = new Padding(16, 0, 16, 0);
+        btnTabJangela.Size = new Size(150, 44);
         btnTabJangela.TabIndex = 0;
         btnTabJangela.Text = "Jangela Nagusia";
         btnTabJangela.UseVisualStyleBackColor = false;
@@ -198,14 +204,17 @@ partial class MahaiakForm
         // 
         // btnTabTerraza
         // 
+        btnTabTerraza.AutoSize = true;
         btnTabTerraza.BackColor = Color.White;
         btnTabTerraza.Cursor = Cursors.Hand;
         btnTabTerraza.FlatAppearance.BorderSize = 0;
         btnTabTerraza.FlatStyle = FlatStyle.Flat;
         btnTabTerraza.Font = new Font("Segoe UI", 10F);
         btnTabTerraza.ForeColor = Color.FromArgb(100, 116, 139);
-        btnTabTerraza.Location = new Point(240, 4);
+        btnTabTerraza.Location = new Point(180, 4);
+        btnTabTerraza.Margin = new Padding(0, 0, 10, 0);
         btnTabTerraza.Name = "btnTabTerraza";
+        btnTabTerraza.Padding = new Padding(16, 0, 16, 0);
         btnTabTerraza.Size = new Size(120, 44);
         btnTabTerraza.TabIndex = 1;
         btnTabTerraza.Text = "Terraza";
@@ -214,14 +223,17 @@ partial class MahaiakForm
         // 
         // btnTabBarra
         // 
+        btnTabBarra.AutoSize = true;
         btnTabBarra.BackColor = Color.White;
         btnTabBarra.Cursor = Cursors.Hand;
         btnTabBarra.FlatAppearance.BorderSize = 0;
         btnTabBarra.FlatStyle = FlatStyle.Flat;
         btnTabBarra.Font = new Font("Segoe UI", 10F);
         btnTabBarra.ForeColor = Color.FromArgb(100, 116, 139);
-        btnTabBarra.Location = new Point(370, 4);
+        btnTabBarra.Location = new Point(310, 4);
+        btnTabBarra.Margin = new Padding(0, 0, 10, 0);
         btnTabBarra.Name = "btnTabBarra";
+        btnTabBarra.Padding = new Padding(16, 0, 16, 0);
         btnTabBarra.Size = new Size(110, 44);
         btnTabBarra.TabIndex = 2;
         btnTabBarra.Text = "Barra";
@@ -230,14 +242,17 @@ partial class MahaiakForm
         // 
         // btnTabVIP
         // 
+        btnTabVIP.AutoSize = true;
         btnTabVIP.BackColor = Color.White;
         btnTabVIP.Cursor = Cursors.Hand;
         btnTabVIP.FlatAppearance.BorderSize = 0;
         btnTabVIP.FlatStyle = FlatStyle.Flat;
         btnTabVIP.Font = new Font("Segoe UI", 10F);
         btnTabVIP.ForeColor = Color.FromArgb(100, 116, 139);
-        btnTabVIP.Location = new Point(490, 4);
+        btnTabVIP.Location = new Point(430, 4);
+        btnTabVIP.Margin = new Padding(0, 0, 10, 0);
         btnTabVIP.Name = "btnTabVIP";
+        btnTabVIP.Padding = new Padding(16, 0, 16, 0);
         btnTabVIP.Size = new Size(100, 44);
         btnTabVIP.TabIndex = 3;
         btnTabVIP.Text = "VIP";
@@ -246,14 +261,17 @@ partial class MahaiakForm
         // 
         // btnTabGuztiak
         // 
+        btnTabGuztiak.AutoSize = true;
         btnTabGuztiak.BackColor = Color.White;
         btnTabGuztiak.Cursor = Cursors.Hand;
         btnTabGuztiak.FlatAppearance.BorderSize = 0;
         btnTabGuztiak.FlatStyle = FlatStyle.Flat;
         btnTabGuztiak.Font = new Font("Segoe UI", 10F);
         btnTabGuztiak.ForeColor = Color.FromArgb(100, 116, 139);
-        btnTabGuztiak.Location = new Point(600, 4);
+        btnTabGuztiak.Location = new Point(540, 4);
+        btnTabGuztiak.Margin = new Padding(0, 0, 10, 0);
         btnTabGuztiak.Name = "btnTabGuztiak";
+        btnTabGuztiak.Padding = new Padding(16, 0, 16, 0);
         btnTabGuztiak.Size = new Size(110, 44);
         btnTabGuztiak.TabIndex = 4;
         btnTabGuztiak.Text = "Guztiak";
@@ -286,12 +304,13 @@ partial class MahaiakForm
         // 
         // lblSectionTitle ("JANGELA NAGUSIA")
         // 
+        lblSectionTitle.AutoSize = true;
         lblSectionTitle.Dock = DockStyle.Left;
         lblSectionTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         lblSectionTitle.ForeColor = Color.FromArgb(30, 41, 59);
         lblSectionTitle.Location = new Point(0, 0);
         lblSectionTitle.Name = "lblSectionTitle";
-        lblSectionTitle.Size = new Size(350, 48);
+        lblSectionTitle.Size = new Size(220, 48);
         lblSectionTitle.TabIndex = 0;
         lblSectionTitle.Text = "JANGELA NAGUSIA";
         lblSectionTitle.TextAlign = ContentAlignment.MiddleLeft;
@@ -299,14 +318,14 @@ partial class MahaiakForm
         // 
         // lblSummary (Mahaien egoera laburpena)
         // 
-        lblSummary.Dock = DockStyle.Right;
+        lblSummary.Dock = DockStyle.Fill;
         lblSummary.Font = new Font("Segoe UI", 9.5F);
         lblSummary.ForeColor = Color.FromArgb(100, 116, 139);
-        lblSummary.Location = new Point(536, 0);
+        lblSummary.Location = new Point(220, 0);
         lblSummary.Name = "lblSummary";
-        lblSummary.Size = new Size(600, 48);
+        lblSummary.Size = new Size(916, 48);
         lblSummary.TabIndex = 1;
-        lblSummary.Text = "Guztira: 6  |  Libre: 5  |  Okupatuta: 0  |  Garbitzen: 1";
+        lblSummary.Text = "Guztira: 6 · Libre: 5 · Okupatuta: 0 · Bidean: 0 · Garbitzen: 1";
         lblSummary.TextAlign = ContentAlignment.MiddleRight;
 
         // 
@@ -350,7 +369,7 @@ partial class MahaiakForm
     private Label lblServerStatus;
     private Button btnFreskatu;
     private Button btnLogout;
-    private Panel pnlTabStrip;
+    private FlowLayoutPanel pnlTabStrip;
     private Button btnTabJangela;
     private Button btnTabTerraza;
     private Button btnTabBarra;
