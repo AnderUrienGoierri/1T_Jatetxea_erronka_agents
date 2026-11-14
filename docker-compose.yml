@@ -32,6 +32,7 @@ services:
       dockerfile: ./../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
     container_name: jatetxea_api
     restart: unless-stopped
+    tty: true
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Production

@@ -85,42 +85,46 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         }
     }
 
+    private const string AnsiRed = "\u001b[91m";
+    private const string AnsiGreen = "\u001b[92m";
+    private const string AnsiReset = "\u001b[0m";
+
     private static void InprimatuKonektatuta(bool berreskuratua)
     {
-        Console.ForegroundColor = ConsoleColor.Green;
+        try { Console.ForegroundColor = ConsoleColor.Green; } catch { }
         Console.WriteLine();
-        Console.WriteLine("==================================================================");
+        Console.WriteLine($"{AnsiGreen}=================================================================={AnsiReset}");
         if (berreskuratua)
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] [DATU-BASEA BERRESKURATUA - KONEKTATUTA]");
-            Console.WriteLine("   -> MySQL konexioa berriz ondo ezarri da (localhost:3308).");
-            Console.WriteLine("   -> APIak eskaerak modu normalean prozesatuko ditu.");
+            Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA BERRESKURATUA - KONEKTATUTA]{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}   -> MySQL konexioa berriz ondo ezarri da (localhost:3308).{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}   -> APIak eskaerak modu normalean prozesatuko ditu.{AnsiReset}");
         }
         else
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!");
-            Console.WriteLine("   -> Zerbitzaria: localhost:3308 | Datu-basea: jatetxea_db");
+            Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}   -> Zerbitzaria: localhost:3308 | Datu-basea: jatetxea_db{AnsiReset}");
         }
-        Console.WriteLine("==================================================================");
+        Console.WriteLine($"{AnsiGreen}=================================================================={AnsiReset}");
         Console.WriteLine();
-        Console.ResetColor();
+        try { Console.ResetColor(); } catch { }
     }
 
     private static void InprimatuDeskonektatuta(string? errorea)
     {
-        Console.ForegroundColor = ConsoleColor.Red;
+        try { Console.ForegroundColor = ConsoleColor.Red; } catch { }
         Console.WriteLine();
-        Console.WriteLine("==================================================================");
-        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] [ADI! DATU-BASEA ITZALI DA / DESKONEKTATUTA]");
-        Console.WriteLine("   -> Kausa: Ezin izan da MySQL-ra konektatu (localhost:3308).");
+        Console.WriteLine($"{AnsiRed}=================================================================={AnsiReset}");
+        Console.WriteLine($"{AnsiRed}[{DateTime.Now:HH:mm:ss}] [ADI! DATU-BASEA ITZALI DA / DESKONEKTATUTA]{AnsiReset}");
+        Console.WriteLine($"{AnsiRed}   -> Kausa: Ezin izan da MySQL-ra konektatu (localhost:3308).{AnsiReset}");
         if (!string.IsNullOrWhiteSpace(errorea))
         {
-            Console.WriteLine($"   -> Errore mezua: {errorea}");
+            Console.WriteLine($"{AnsiRed}   -> Errore mezua: {errorea}{AnsiReset}");
         }
-        Console.WriteLine("   -> Konponbidea: 'docker compose up -d' exekutatu datu-basea berriz pizteko.");
-        Console.WriteLine("==================================================================");
+        Console.WriteLine($"{AnsiRed}   -> Konponbidea: 'docker compose up -d' exekutatu datu-basea berriz pizteko.{AnsiReset}");
+        Console.WriteLine($"{AnsiRed}=================================================================={AnsiReset}");
         Console.WriteLine();
-        Console.ResetColor();
+        try { Console.ResetColor(); } catch { }
     }
 }
 
