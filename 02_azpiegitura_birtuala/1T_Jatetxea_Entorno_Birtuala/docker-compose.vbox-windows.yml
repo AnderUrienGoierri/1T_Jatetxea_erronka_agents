@@ -1,0 +1,77 @@
+name: jatetxea-windows-server
+
+# Windows Server 2025 makina birtualerako Docker Stack-a (LAN Barne Sarea: 192.168.10.10)
+services:
+  # MySQL Datu-Basea
+  jatetxea-db:
+    image: mysql:8.0
+    container_name: jatetxea_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: jatetxea_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - jatetxea_db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+
+  # C# ASP.NET Core REST API
+  jatetxea-api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    container_name: jatetxea_api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;
+    ports:
+      - "5000:5000"
+    depends_on:
+      - jatetxea-db
+
+  # Jatetxearen Barne Txat Zerbitzaria
+  jatetxea-chat:
+    build:
+      context: .
+      dockerfile: docker/chat/Dockerfile
+    container_name: jatetxea_chat
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+
+  # Odoo ERP Datu-Basea
+  db-odoo:
+    image: postgres:15-alpine
+    container_name: jatetxea_odoo_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    volumes:
+      - odoo_postgres_data:/var/lib/postgresql/data
+
+  # Odoo ERP Kudeaketa
+  jatetxea-odoo:
+    image: odoo:17
+    container_name: jatetxea_odoo_erp
+    restart: unless-stopped
+    depends_on:
+      - db-odoo
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db-odoo
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - odoo_web_data:/var/lib/odoo
+
+volumes:
+  jatetxea_db_data:
+  odoo_postgres_data:
+  odoo_web_data:

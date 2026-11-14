@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Zuzendaritza (3 Zuzendari) -->
+        <record id="emp_ander_madinabeitia" model="hr.employee">
+            <field name="name">Ander Madinabeitia</field>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="work_email">ander.madinabeitia@jatetxea.eus</field>
+            <field name="work_phone">+34 633 11 22 33</field>
+            <field name="identification_id">72548913N</field>
+        </record>
+
+        <record id="emp_joseba_ramos" model="hr.employee">
+            <field name="name">Joseba Ramos</field>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="work_email">joseba.ramos@jatetxea.eus</field>
+            <field name="work_phone">+34 633 11 22 34</field>
+            <field name="identification_id">72548914P</field>
+        </record>
+
+        <record id="emp_estebe_ormazabal" model="hr.employee">
+            <field name="name">Estebe Ormazabal</field>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="work_email">estebe.ormazabal@jatetxea.eus</field>
+            <field name="work_phone">+34 633 11 22 35</field>
+            <field name="identification_id">72548915Q</field>
+        </record>
+
+        <!-- IT Administrazio Taldea -->
+        <record id="emp_ander_urien" model="hr.employee">
+            <field name="name">Ander Urien Telleria</field>
+            <field name="job_id" ref="job_it_lead"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="work_email">ander.urien@goierrieskola.eus</field>
+            <field name="work_phone">+34 688 11 22 33</field>
+            <field name="identification_id">72548901A</field>
+            <field name="parent_id" ref="emp_ander_madinabeitia"/>
+        </record>
+
+        <record id="emp_julen_aguado" model="hr.employee">
+            <field name="name">Julen Aguado Fernández</field>
+            <field name="job_id" ref="job_sare_ingeniaria"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="work_email">julen.aguado@goierrieskola.eus</field>
+            <field name="work_phone">+34 688 11 22 34</field>
+            <field name="identification_id">72548902B</field>
+            <field name="parent_id" ref="emp_ander_urien"/>
+        </record>
+
+        <record id="emp_iker_araujo" model="hr.employee">
+            <field name="name">Iker Araujo Dominguez</field>
+            <field name="job_id" ref="job_sistema_teknikaria"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="work_email">iker.araujo@goierrieskola.eus</field>
+            <field name="work_phone">+34 688 11 22 35</field>
+            <field name="identification_id">72548903C</field>
+            <field name="parent_id" ref="emp_ander_urien"/>
+        </record>
+
+        <record id="emp_aratz_huegun" model="hr.employee">
+            <field name="name">Aratz Huegun Flores</field>
+            <field name="job_id" ref="job_zibersegurtasun_burua"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="work_email">aratz.huegun@goierrieskola.eus</field>
+            <field name="work_phone">+34 688 11 22 36</field>
+            <field name="identification_id">72548904D</field>
+            <field name="parent_id" ref="emp_ander_urien"/>
+        </record>
+
+        <!-- Sukaldeko Taldea -->
+        <record id="emp_ainhoa_goikoetxea" model="hr.employee">
+            <field name="name">Ainhoa Goikoetxea</field>
+            <field name="job_id" ref="job_chef_burua"/>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="work_email">ainhoa.goikoetxea@jatetxea.eus</field>
+            <field name="work_phone">+34 677 11 22 33</field>
+            <field name="identification_id">72548905E</field>
+            <field name="parent_id" ref="emp_ander_madinabeitia"/>
+        </record>
+
+        <record id="emp_eneko_otegi" model="hr.employee">
+            <field name="name">Eneko Otegi</field>
+            <field name="job_id" ref="job_parrilleroa"/>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="work_email">eneko.otegi@jatetxea.eus</field>
+            <field name="work_phone">+34 677 11 22 34</field>
+            <field name="identification_id">72548906F</field>
+            <field name="parent_id" ref="emp_ainhoa_goikoetxea"/>
+        </record>
+
+        <!-- Jantokiko Taldea -->
+        <record id="emp_mikel_arregi" model="hr.employee">
+            <field name="name">Mikel Arregi</field>
+            <field name="job_id" ref="job_zerbitzari_burua"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="work_email">mikel.arregi@jatetxea.eus</field>
+            <field name="work_phone">+34 666 11 22 33</field>
+            <field name="identification_id">72548907G</field>
+            <field name="parent_id" ref="emp_ander_madinabeitia"/>
+        </record>
+
+        <record id="emp_maite_zabaleta" model="hr.employee">
+            <field name="name">Maite Zabaleta</field>
+            <field name="job_id" ref="job_zerbitzaria"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="work_email">maite.zabaleta@jatetxea.eus</field>
+            <field name="work_phone">+34 666 11 22 34</field>
+            <field name="identification_id">72548908H</field>
+            <field name="parent_id" ref="emp_mikel_arregi"/>
+        </record>
+
+        <record id="emp_unai_lasa" model="hr.employee">
+            <field name="name">Unai Lasa</field>
+            <field name="job_id" ref="job_zerbitzaria"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="work_email">unai.lasa@jatetxea.eus</field>
+            <field name="work_phone">+34 666 11 22 35</field>
+            <field name="identification_id">72548909J</field>
+            <field name="parent_id" ref="emp_mikel_arregi"/>
+        </record>
+
+        <!-- Barrako Taldea -->
+        <record id="emp_gorka_mendizabal" model="hr.employee">
+            <field name="name">Gorka Mendizabal</field>
+            <field name="job_id" ref="job_barman"/>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="work_email">gorka.mendizabal@jatetxea.eus</field>
+            <field name="work_phone">+34 655 11 22 33</field>
+            <field name="identification_id">72548910K</field>
+            <field name="parent_id" ref="emp_ander_madinabeitia"/>
+        </record>
+
+        <record id="emp_uxue_etxarri" model="hr.employee">
+            <field name="name">Uxue Etxarri</field>
+            <field name="job_id" ref="job_barrakoa"/>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="work_email">uxue.etxarri@jatetxea.eus</field>
+            <field name="work_phone">+34 655 11 22 34</field>
+            <field name="identification_id">72548911L</field>
+            <field name="parent_id" ref="emp_gorka_mendizabal"/>
+        </record>
+
+        <!-- Biltegiko Taldea -->
+        <record id="emp_kepa_aldasoro" model="hr.employee">
+            <field name="name">Kepa Aldasoro</field>
+            <field name="job_id" ref="job_biltegikoa"/>
+            <field name="department_id" ref="dept_biltegia"/>
+            <field name="work_email">kepa.aldasoro@jatetxea.eus</field>
+            <field name="work_phone">+34 644 11 22 33</field>
+            <field name="identification_id">72548912M</field>
+            <field name="parent_id" ref="emp_ander_madinabeitia"/>
+        </record>
+    </data>
+</odoo>

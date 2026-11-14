@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Lanpostuak / Job Positions -->
+        <record id="job_zuzendaria" model="hr.job">
+            <field name="name">Jatetxearen Zuzendari Orokorra</field>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <!-- IT Taldea -->
+        <record id="job_it_lead" model="hr.job">
+            <field name="name">IT Lead / FullStack Arkitektoa</field>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_sare_ingeniaria" model="hr.job">
+            <field name="name">Sare eta Suebaki Administratzailea</field>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_sistema_teknikaria" model="hr.job">
+            <field name="name">Sistemen eta Birtualizazio Ingeniaria</field>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_zibersegurtasun_burua" model="hr.job">
+            <field name="name">Zibersegurtasun eta Ebaluazio Teknikaria</field>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <!-- Sukaldea -->
+        <record id="job_chef_burua" model="hr.job">
+            <field name="name">Chef Burua / Sukaldari Nagusia</field>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_parrilleroa" model="hr.job">
+            <field name="name">Bigarren Sukaldaria / Parrilleroa</field>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <!-- Jantokia -->
+        <record id="job_zerbitzari_burua" model="hr.job">
+            <field name="name">Maître / Zerbitzari Burua</field>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_zerbitzaria" model="hr.job">
+            <field name="name">Jantokiko Zerbitzaria</field>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="no_of_recruitment">2</field>
+        </record>
+
+        <!-- Barra -->
+        <record id="job_barman" model="hr.job">
+            <field name="name">Barman / Barrako Arduraduna</field>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+
+        <record id="job_barrakoa" model="hr.job">
+            <field name="name">Barrako Zerbitzaria</field>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <!-- Biltegia -->
+        <record id="job_biltegikoa" model="hr.job">
+            <field name="name">Biltegi eta Stock Arduraduna</field>
+            <field name="department_id" ref="dept_biltegia"/>
+            <field name="no_of_recruitment">0</field>
+        </record>
+    </data>
+</odoo>

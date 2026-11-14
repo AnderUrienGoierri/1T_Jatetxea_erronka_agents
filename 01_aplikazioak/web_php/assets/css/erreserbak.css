@@ -1,0 +1,173 @@
+/* ==========================================================================
+   JATETXEA - Mahai Erreserbak eta Alertak (erreserbak.css)
+   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
+   ========================================================================== */
+
+.erreserba-wrapper {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2.5rem;
+    background-color: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa-lg);
+    padding: 2.75rem;
+    box-shadow: var(--itzala-ertaina);
+}
+
+@media (max-width: 850px) {
+    .erreserba-wrapper {
+        grid-template-columns: 1fr;
+        padding: 1.75rem;
+        gap: 2rem;
+    }
+}
+
+.erreserba-form-area h3, .erreserba-info-area h3 {
+    margin-bottom: 1.25rem;
+    color: var(--kolore-brand-primary);
+    font-family: var(--font-title);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+    color: var(--kolore-text-main);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 0.95rem;
+    border: 1.5px solid var(--kolore-border);
+    border-radius: var(--erradioa);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background-color: #ffffff;
+    color: var(--kolore-text-main);
+    transition: var(--trantsizioa);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--kolore-brand-primary);
+    box-shadow: 0 0 0 3.5px rgba(136, 19, 55, 0.12);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 550px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.erreserba-info-area {
+    background-color: #f8fafc;
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.arauak-azpititulua {
+    font-size: 0.9rem;
+    color: var(--kolore-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.txanden-ordutegiak {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+}
+
+.txanden-ordutegiak li {
+    padding: 0.65rem 0;
+    border-bottom: 1px dashed var(--kolore-border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    color: var(--kolore-text-main);
+}
+
+.txanden-ordutegiak li strong {
+    color: var(--kolore-brand-dark);
+}
+
+.oharra-kaxa {
+    background-color: var(--kolore-warning-bg);
+    border-left: 4px solid var(--kolore-warning);
+    color: var(--kolore-warning-text);
+    padding: 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-top: 1.25rem;
+    line-height: 1.5;
+}
+
+/* Alerta kaxak (Flash messages & feedback) */
+.alert-kaxa {
+    padding: 1rem 1.25rem;
+    border-radius: var(--erradioa);
+    margin-bottom: 1.5rem;
+    display: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+}
+
+.alert-kaxa.show,
+.alert-kaxa.alert-ikusgai {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.alert-arrakasta {
+    background-color: var(--kolore-success-bg);
+    border: 1px solid var(--kolore-success-border);
+    border-left: 4px solid var(--kolore-success);
+    color: var(--kolore-success);
+}
+
+.alert-errorea {
+    background-color: var(--kolore-danger-bg);
+    border: 1px solid var(--kolore-danger-border);
+    border-left: 4px solid var(--kolore-danger);
+    color: var(--kolore-danger);
+}
+
+.alert-gatazka {
+    display: block;
+    background-color: var(--kolore-danger-bg);
+    border: 1px solid var(--kolore-danger-border);
+    border-left: 4px solid var(--kolore-danger);
+    color: var(--kolore-danger);
+    animation: fadeIn 0.3s ease-in;
+}
+
+.alert-abisua {
+    background-color: var(--kolore-warning-bg);
+    border: 1px solid var(--kolore-warning-border);
+    border-left: 4px solid var(--kolore-warning);
+    color: var(--kolore-warning-text);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

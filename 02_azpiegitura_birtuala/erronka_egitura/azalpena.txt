@@ -1,0 +1,44 @@
+1T JATETXEA - ENTORNOA ETA ARKITEKTURA BERRIAREN LABURPENA
+===========================================================
+
+1. 3 MAKINA BIRTUALAK (VIRTUALBOX)
+----------------------------------
+- Erronka-OPNsense:
+  * Suhesia eta bideratzailea (WAN, DMZ eta LAN segmentazioa).
+  * Trafiko kontrola eta Zero-Trust segurtasuna.
+- Erronka-Ubuntu (DMZ - 192.168.20.10):
+  * Web zerbitzari publikoa (Apache 2.4 + PHP 8.2 / web_php).
+  * Ataka: 80.
+  * OPNsense bidez Windows Server-eko APIra konektatzen da (192.168.10.10:5000).
+- Erronka-WinServer2025 (LAN - 192.168.10.10):
+  * MySQL Datu-base nagusia (jatetxea_db) portu 3306.
+  * ASP.NET Core REST API (.NET 10 C#) portu 5000.
+  * TPV C# Desktop aplikazioa (Windows Forms).
+  * Odoo 17 ERP (Erabiltzaileak, baimenak, fitxaketak, bajak) portu 8069.
+  * Barne Txat Zerbitzaria (Socket.IO / WebSockets) portu 3001.
+  * Sukaldeko Android TV / KDS panela portu 8086.
+  * Active Directory (jatetxea.local), DNS eta DHCP.
+
+2. DOCKER EKOSISTEMA (1T_Jatetxea_Entornoa)
+-------------------------------------------
+Karpeta nagusia: C:\Dev\GoierriEskola\1T_Jatetxea_Entornoa
+- jatetxea_mysql (MySQL 8.0 - portu 3308:3306)
+- jatetxea_api (ASP.NET Core .NET 10 - portu 5000:5000)
+- jatetxea_web_php (PHP 8.2 Apache - portu 8085:80)
+- jatetxea_chat (Node.js / Socket.IO - portu 3001:3001)
+- jatetxea_kds_tv (Nginx Sukaldea KDS - portu 8086:80)
+- jatetxea_odoo_postgres (PostgreSQL 15 - portu 5432:5432)
+- jatetxea_odoo_erp (Odoo 17 Community - portu 8069:8069)
+
+3. SARE ZENTRALITA ETA WIFI ANITZAK (switch-env.ps1)
+----------------------------------------------------
+Kokapenaren arabera (eskola, etxean, tolosako_etxean edo localhost),
+klik bakarrean eguneratzen dira bezero guztiak:
+- Flutter Zerbitzaria (mobile_zerbitzaria)
+- Flutter Bezeroa (mobile_bezeroa)
+- JavaFX Sukaldea / Barra / Biltegia (desktop_javafx)
+- C# Desktop TPV (desktop_csharp)
+- Web PHP Frontend (web_php)
+
+Komandoa:
+powershell -ExecutionPolicy Bypass -File C:\Dev\GoierriEskola\1T_Jatetxea_Entornoa\scripts\switch-env.ps1

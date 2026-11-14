@@ -1,0 +1,46 @@
+name: 1T_Jatetxea_Erronka_Zentrala
+
+services:
+  # PostgreSQL Datu-Basea Odoo 17 ERP-rentzat
+  jatetxea-odoo-postgres:
+    image: postgres:15-alpine
+    container_name: jatetxea_odoo_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    ports:
+      - "5432:5432"
+    volumes:
+      - odoo_postgres_data:/var/lib/postgresql/data
+    networks:
+      - jatetxea_net
+
+  # Odoo 17 ERP Zerbitzaria (1T Jatetxea - Giza Baliabideak, Fitxaketak, Bajak eta Kontratuak)
+  jatetxea-odoo-erp:
+    image: odoo:17.0
+    container_name: jatetxea_odoo_erp
+    restart: unless-stopped
+    depends_on:
+      - jatetxea-odoo-postgres
+    ports:
+      - "8070:8069" # Host-eko 8070 portura bideratua, Windows Odoo zerbitzuarekin (8069) talkarik ez izateko
+    environment:
+      - HOST=jatetxea-odoo-postgres
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - odoo_web_data:/var/lib/odoo
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./addons:/mnt/extra-addons
+    networks:
+      - jatetxea_net
+
+volumes:
+  odoo_postgres_data:
+  odoo_web_data:
+
+networks:
+  jatetxea_net:
+    driver: bridge

@@ -1,0 +1,3 @@
+employee_id/id,holiday_status_id/id,date_from,date_to,number_of_days,name
+emp_maite_zabaleta,hr_holidays.holiday_status_cl,2026-11-10 00:00:00,2026-11-15 23:59:59,5,Urteko Oporrak
+emp_eneko_otegi,hr_holidays.holiday_status_sl,2026-11-02 00:00:00,2026-11-05 23:59:59,3,Gripe Arrunta (Mediku Baja)

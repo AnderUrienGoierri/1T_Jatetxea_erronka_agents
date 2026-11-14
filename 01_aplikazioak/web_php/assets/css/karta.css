@@ -1,0 +1,240 @@
+/* ==========================================================================
+   JATETXEA - Karta eta Plateren Diseinua (karta.css)
+   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
+   ========================================================================== */
+
+.kategoria-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 2.5rem;
+}
+
+.filter-btn {
+    padding: 0.6rem 1.25rem;
+    border: 1.5px solid var(--kolore-border);
+    background-color: var(--kolore-bg-card);
+    color: var(--kolore-text-muted);
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.92rem;
+    transition: var(--trantsizioa);
+    box-shadow: var(--itzala-arina);
+}
+
+.filter-btn:hover {
+    color: var(--kolore-brand-primary);
+    border-color: var(--kolore-brand-primary);
+    background-color: var(--kolore-brand-light);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background-color: var(--kolore-brand-primary);
+    color: #ffffff;
+    border-color: var(--kolore-brand-primary);
+    box-shadow: 0 4px 14px rgba(136, 19, 55, 0.28);
+}
+
+/* Plateren Sareta (Grid) */
+.platerak-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.75rem;
+}
+
+.plater-card {
+    background-color: var(--kolore-bg-card);
+    border: 1px solid var(--kolore-border);
+    border-radius: var(--erradioa-lg);
+    padding: 1.65rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--itzala-arina);
+    transition: var(--trantsizioa);
+    position: relative;
+    overflow: hidden;
+}
+
+.plater-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: var(--trantsizioa);
+}
+
+.plater-card:hover {
+    box-shadow: var(--itzala-sakona);
+    transform: translateY(-4px);
+    border-color: var(--kolore-gold);
+}
+
+.plater-card:hover::before {
+    background: linear-gradient(90deg, var(--kolore-brand-primary), var(--kolore-gold));
+}
+
+.plater-card.agortuta {
+    opacity: 0.7;
+    background-color: #fafafa;
+    border-style: dashed;
+}
+
+.plater-card.agortuta:hover {
+    transform: none;
+    box-shadow: var(--itzala-arina);
+    border-color: var(--kolore-border);
+}
+
+.plater-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.85rem;
+    gap: 0.75rem;
+}
+
+.plater-izena {
+    font-family: var(--font-title);
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--kolore-text-main);
+    line-height: 1.3;
+}
+
+.plater-prezioa {
+    font-family: var(--font-title);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--kolore-brand-primary);
+    white-space: nowrap;
+}
+
+.plater-deskribapena {
+    font-size: 0.92rem;
+    color: var(--kolore-text-muted);
+    margin-bottom: 0.85rem;
+    flex-grow: 1;
+    line-height: 1.55;
+}
+
+.plater-alergenoak {
+    font-size: 0.82rem;
+    color: var(--kolore-warning-text);
+    background-color: var(--kolore-warning-bg);
+    border-left: 3px solid var(--kolore-warning);
+    padding: 0.4rem 0.65rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+}
+
+.plater-osagaiak {
+    font-size: 0.82rem;
+    color: var(--kolore-text-muted);
+    margin-bottom: 0.85rem;
+}
+
+.plater-osagaiak ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+}
+
+.plater-osagaiak li {
+    background-color: #f1f5f9;
+    border: 1px solid var(--kolore-border);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.plater-meta {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--kolore-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.prestatze-denbora {
+    font-size: 0.82rem;
+    color: var(--kolore-text-muted);
+    font-weight: 500;
+}
+
+.kategoria-tag {
+    font-size: 0.76rem;
+    font-weight: 700;
+    background-color: #f1f5f9;
+    color: var(--kolore-text-main);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--kolore-border);
+    letter-spacing: 0.2px;
+}
+
+/* Kategoria espezifikoen koloreak */
+.plater-card[data-kategoria="Sarrerakoa"] .kategoria-tag {
+    background-color: var(--kolore-info-bg);
+    color: var(--kolore-info);
+    border-color: var(--kolore-info-border);
+}
+
+.plater-card[data-kategoria="Lehena"] .kategoria-tag {
+    background-color: var(--kolore-warning-bg);
+    color: var(--kolore-warning-text);
+    border-color: var(--kolore-gold);
+}
+
+.plater-card[data-kategoria="Bigarrena"] .kategoria-tag {
+    background-color: var(--kolore-brand-light);
+    color: var(--kolore-brand-primary);
+    border-color: #fecdd3;
+}
+
+.plater-card[data-kategoria="Postrea"] .kategoria-tag {
+    background-color: #fdf4ff;
+    color: #c026d3;
+    border-color: #f5d0fe;
+}
+
+.plater-card[data-kategoria="Edaria"] .kategoria-tag {
+    background-color: var(--kolore-success-bg);
+    color: var(--kolore-success);
+    border-color: var(--kolore-success-border);
+}
+
+.stock-tag {
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    letter-spacing: 0.2px;
+}
+
+.stock-tag.eskuragarri {
+    background-color: var(--kolore-success-bg);
+    color: var(--kolore-success);
+    border: 1px solid var(--kolore-success-border);
+}
+
+.stock-tag.agortuta {
+    background-color: var(--kolore-danger-bg);
+    color: var(--kolore-danger);
+    border: 1px solid var(--kolore-danger-border);
+}

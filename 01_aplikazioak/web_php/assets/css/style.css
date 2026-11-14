@@ -1,0 +1,11 @@
+/* ==========================================================================
+   JATETXEA - Euskal Gastronomia eta Erreserbak
+   Estilo-orri nagusia (Moduluka antolatuta)
+   ========================================================================== */
+
+@import url("base.css");
+@import url("nav.css");
+@import url("karta.css");
+@import url("erreserbak.css");
+@import url("iritziak.css");
+@import url("kontaktua.css");

@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1T Jatetxea - IT Kontrol Zentrala</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.35); }
+        .glow-amber { box-shadow: 0 0 15px rgba(245, 158, 11, 0.35); }
+        .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.35); }
+        .glow-indigo { box-shadow: 0 0 15px rgba(99, 102, 241, 0.35); }
+        .terminal-scroll::-webkit-scrollbar { width: 6px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .tree-line { width: 2px; background: #334155; margin: 0 auto; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col">
+
+    <!-- GOIBURUA ETA ADMIN IDENTIFIKAZIOA -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-rose-900/60 border border-rose-700 flex items-center justify-center font-bold text-rose-300">
+                    IT
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-wide">1T JATETXEA · IT KONTROL ZENTRALA</h1>
+                    <p class="text-xs text-slate-400">Goierri Eskola · Sistema, Docker eta Sare Kudeaketa Integrala</p>
+                </div>
+            </div>
+
+            <!-- ADMIN HAUTATZAILEA -->
+            <div class="flex items-center bg-slate-800/80 rounded-lg p-1.5 border border-slate-700 text-xs">
+                <span class="text-slate-400 px-2 font-medium">ADMIN:</span>
+                <select id="selAdmin" onchange="aldatuAdmina()" class="bg-slate-900 text-slate-200 font-semibold rounded px-2.5 py-1 border border-slate-600 focus:outline-none focus:border-rose-500">
+                    <option value="AnderU" selected>Ander Urien (Lead)</option>
+                    <option value="Julen">Julen (Sareak & Suebakia)</option>
+                    <option value="Iker">Iker (Sistemak & VMs)</option>
+                    <option value="Aratz">Aratz (Zibersegurtasuna)</option>
+                </select>
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 ml-2 animate-pulse" title="Konektatuta"></div>
+            </div>
+
+            <!-- EKINTZA AZKARRAK -->
+            <div class="flex items-center flex-wrap gap-2">
+                <button onclick="freskatuDena()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-semibold border border-slate-700 transition">
+                    Freskatu
+                </button>
+                <button onclick="hasiFluxuKoordinatua()" class="px-3 py-1.5 bg-indigo-700 hover:bg-indigo-600 text-white rounded text-xs font-semibold transition" title="DB -> Backend -> Frontend faseka">
+                    Fluxu Koordinatua (Hasi)
+                </button>
+                <button onclick="geldituFluxuKoordinatua()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-semibold border border-slate-700 transition" title="Frontend -> Backend -> DB ordenan">
+                    Gelditu Koordinatua
+                </button>
+                <button onclick="dockerAllAction('pause')" class="px-3 py-1.5 bg-amber-700/80 hover:bg-amber-600 text-white rounded text-xs font-semibold transition">
+                    Pausatu Dena
+                </button>
+                <button onclick="dockerAllAction('unpause')" class="px-3 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition">
+                    Berrekin Dena
+                </button>
+            </div>
+        </div>
+
+        <!-- LABURPEN METRIKAK ETA WIFI AUTO-DETEKZIOA -->
+        <div class="bg-slate-900/80 border-t border-slate-800/60 px-4 py-2">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs text-slate-400 gap-4">
+                <div class="flex items-center space-x-6">
+                    <div>Docker: <span id="txtDockerKop" class="font-bold text-emerald-400">0</span> martxan</div>
+                    <div>VirtualBox: <span id="txtVboxKop" class="font-bold text-amber-400">0</span> martxan</div>
+                    <div>Sare Portuak: <span id="txtPortuakKop" class="font-bold text-sky-400">0</span> online</div>
+                    <div id="txtDockerDaemonStatus" class="font-mono text-[11px] text-slate-400"></div>
+                </div>
+
+                <!-- WIFI / SARE PROFIL AKTIBOA ETA AUTO-DETEKTATUA -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-slate-400">Sare Profila:</span>
+                    <span id="badgeProfilAktiboa" class="px-2.5 py-0.5 rounded-full font-bold bg-rose-950 text-rose-300 border border-rose-800 font-mono">
+                        Kargatzen...
+                    </span>
+                    <span id="txtWifiDetektatua" class="text-slate-400 font-mono text-[11px]"></span>
+                    <button id="btnAutoSwitch" onclick="aplikatuAutoDetekzioa()" class="hidden px-2 py-0.5 bg-indigo-900 hover:bg-indigo-800 text-indigo-200 border border-indigo-700 rounded text-[11px] font-semibold transition">
+                        Gaitu Detektatua
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NABIGAZIO FITXAK (TABS) -->
+    <nav class="bg-slate-900/50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-1 overflow-x-auto text-sm font-medium">
+            <button onclick="irekiFitxa('tab-zerbitzuak')" id="btn-tab-zerbitzuak" class="tab-btn py-3 px-4 border-b-2 border-rose-500 text-rose-400 font-bold transition">
+                Zerbitzuak, Ubikazioa & Adarkadura
+            </button>
+            <button onclick="irekiFitxa('tab-docker')" id="btn-tab-docker" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                Docker Banaka & Taldeka
+            </button>
+            <button onclick="irekiFitxa('tab-vbox')" id="btn-tab-vbox" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                VirtualBox Makinak (3)
+            </button>
+            <button onclick="irekiFitxa('tab-sarea')" id="btn-tab-sarea" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                Sare Zentralita (WiFi & Profilak)
+            </button>
+            <button onclick="irekiFitxa('tab-fisikoa')" id="btn-tab-fisikoa" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                Laborategi Fisikoa & Cisco
+            </button>
+            <button onclick="irekiFitxa('tab-audit')" id="btn-tab-audit" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                Auditoretza & Log-ak
+            </button>
+        </div>
+    </nav>
+
+    <!-- EDUKI NAGUSIA -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+        <!-- 1. ZERBITZUEN FITXA (TAULA MODUA ETA ADARKADURA/ZUHATZ MODUA) -->
+        <div id="tab-zerbitzuak" class="tab-edukia space-y-6">
+            
+            <!-- MODU ALDATZAILEA (TAULA VS ADARKADURA) -->
+            <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-xl px-5 py-3.5">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+                        <span>Jatetxeko Zerbitzuen Arkitektura eta Osasuna</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Aukeratu ikuspegi modua: Taula zehatza edo 5 mailako Adarkadura / Topologia zuhaitza.</p>
+                </div>
+
+                <!-- BISTA BOTOIAK -->
+                <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+                    <button id="btnModuTaula" onclick="aldatuBistaModua('taula')" class="px-3.5 py-1.5 rounded font-bold bg-rose-900/80 text-white transition">
+                        Taula Modua
+                    </button>
+                    <button id="btnModuZuhaitza" onclick="aldatuBistaModua('zuhaitza')" class="px-3.5 py-1.5 rounded font-bold text-slate-400 hover:text-slate-200 transition">
+                        Adarkadura / Zuhaitz Modua
+                    </button>
+                </div>
+            </div>
+
+            <!-- APLIKAZIOEN ZUZENEKO ABIARAZLE AZKARRA (DESKTOP & WEB APPS) -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-900/60 rounded-xl p-4 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <div>
+                        <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Aplikazio Bezeroen Abiarazle Zentrala (Desktop, Web & TV)</h3>
+                        <p class="text-[11px] text-slate-400">Klik bakar batean exekutatu edo ireki jatetxearen mahaigaineko, webeko eta mugikorreko aplikazioak.</p>
+                    </div>
+                    <span class="text-[10px] font-mono text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">1-Klik Abiarazlea</span>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="launchApp('csharp')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
+                        <span>Exekutatu C# TPV Mahaigaina</span>
+                    </button>
+                    <button onclick="launchApp('javafx')" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
+                        <span>Exekutatu JavaFX Sukaldea KDS</span>
+                    </button>
+                    <button onclick="launchApp('web', 'http://localhost:8085')" class="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
+                        <span>Ireki Web PHP Karta Publikoa</span>
+                    </button>
+                    <button onclick="launchApp('odoo', 'http://localhost:8070')" class="px-3 py-1.5 bg-purple-700 hover:bg-purple-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
+                        <span>Ireki 1T Jatetxea Odoo 17 ERP</span>
+                    </button>
+                    <button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="px-3 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
+                        <span>Ireki Sukaldea KDS TV Pantaila</span>
+                    </button>
+                    <button onclick="launchApp('android_tv')" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5" title="Android Studio TV proiektuaren karpeta ireki">
+                        <span>Android TV KDS (Compose)</span>
+                    </button>
+                    <button onclick="launchApp('api', 'http://localhost:5050/')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-semibold border border-slate-700 transition flex items-center space-x-1.5">
+                        <span>Ireki REST API (5050)</span>
+                    </button>
+                    <button onclick="launchApp('opnsense', 'https://localhost:8443')" class="px-3 py-1.5 bg-rose-900/80 hover:bg-rose-800 text-rose-200 rounded font-semibold border border-rose-800 transition flex items-center space-x-1.5">
+                        <span>Ireki OPNsense WebGUI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- BISTA A: TAULA XEHEA (UBIKAZIOA ETA LATENTZIA) -->
+            <div id="bistaTaula" class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+                <div class="flex items-center justify-between mb-3 text-xs text-slate-400">
+                    <span>Egin klik edozein botoitan zerbitzua pizteko, itzaltzeko, pausatzeko edo app-a exekutatzeko.</span>
+                    <button onclick="kargatuPortuak()" class="text-sky-400 hover:text-sky-300 font-semibold underline">Egiaztatu Orain</button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="text-slate-400 uppercase bg-slate-950/80 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-3">Zerbitzua</th>
+                                <th class="py-3 px-3">Mota</th>
+                                <th class="py-3 px-3">Ubikazioa (Makina)</th>
+                                <th class="py-3 px-3">Gunea / VLAN</th>
+                                <th class="py-3 px-3">Ataka / Host</th>
+                                <th class="py-3 px-3">Latentzia</th>
+                                <th class="py-3 px-3">Egoera</th>
+                                <th class="py-3 px-3 text-right">Ekintzak (Piztu, Itzali, Pausatu, Exekutatu)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblZerbitzuak" class="divide-y divide-slate-800/80 font-sans">
+                            <tr><td colspan="8" class="py-4 px-3 text-slate-500 text-center">Kargatzen...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- BISTA B: ADARKADURA ETA TOPOLOGIA ZUHAITZA (TREE VIEW) -->
+            <div id="bistaZuhaitza" class="hidden space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Zerbitzuen Adarkadura Diagrama (5 Mailako Arkitektura Hierarkikoa)</h3>
+                            <p class="text-xs text-slate-400">Datu-baseetatik hasi eta bezeroetaraino transmisio-fluxua erakusten duen zuhaitz interaktiboa. Egin klik edozein nodotan.</p>
+                        </div>
+                        <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-800">Interaktiboa</span>
+                    </div>
+
+                    <!-- ZUHAITZA DINAMIKOKI SORTUKO DA HEMEN -->
+                    <div id="treeContainer" class="space-y-6">
+                        <div class="p-6 text-center text-slate-400 text-sm">Adarkadura diagrama kargatzen...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLUXU KOORDINATUAREN PANELA -->
+            <div class="bg-slate-900/90 border border-indigo-900/50 rounded-xl p-5">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+                    <div>
+                        <h3 class="text-sm font-bold text-indigo-300">Fluxu Koordinatua: Abiarazte eta Gelditze Sekuentzia</h3>
+                        <p class="text-xs text-slate-400">Zerbitzuak elkarren mendekoak direnez, faseka martxan jartzen ditu datu-baseetatik hasi eta bezeroetaraino.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="hasiFluxuKoordinatua()" class="px-3 py-1.5 bg-indigo-700 hover:bg-indigo-600 text-white rounded text-xs font-semibold">
+                            Abiarazi Faseka
+                        </button>
+                        <button onclick="geldituFluxuKoordinatua()" class="px-3 py-1.5 bg-rose-900/80 hover:bg-rose-800 text-rose-200 rounded text-xs font-semibold border border-rose-700">
+                            Gelditu Seguru
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
+                        <div class="font-bold text-sky-400 mb-1">1. FASEA: Datu-Baseak</div>
+                        <div class="text-slate-300 font-mono text-[11px] mb-1">jatetxea-db (MySQL), db-odoo (Postgres)</div>
+                        <p class="text-[11px] text-slate-400">Lehenengo altxatzen dira eta ataka irekita egon arte itxaroten da.</p>
+                    </div>
+                    <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
+                        <div class="font-bold text-amber-400 mb-1">2. FASEA: Backend & Logika</div>
+                        <div class="text-slate-300 font-mono text-[11px] mb-1">jatetxea-api (.NET 10), jatetxea-chat (Node)</div>
+                        <p class="text-[11px] text-slate-400">Datu-baseak prest daudenean, REST APIa eta Txat zerbitzaria abiarazten dira.</p>
+                    </div>
+                    <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
+                        <div class="font-bold text-emerald-400 mb-1">3. FASEA: Frontend & Pantailak</div>
+                        <div class="text-slate-300 font-mono text-[11px] mb-1">jatetxea-web, jatetxea-kds-tv, jatetxea-odoo</div>
+                        <p class="text-[11px] text-slate-400">Web publikoa, sukaldeko KDS pantaila eta Odoo ERP irekitzen dira.</p>
+                    </div>
+                </div>
+                <div id="txtFluxuStatus" class="mt-3 text-xs font-mono text-slate-400"></div>
+            </div>
+        </div>
+
+        <!-- 2. DOCKER FITXA (BANAKA KONTROLATZEKO TXARTELAK) -->
+        <div id="tab-docker" class="tab-edukia hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span>Docker Edukiontziak: Banakako Kontrol Totala</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Edukiontzi bakoitza banaka martxan jarri, gelditu, pausatu edo berrabiarazi daiteke.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="dockerAllAction('up')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded text-xs font-semibold">
+                        Altxatu Dena (up -d)
+                    </button>
+                    <button onclick="dockerAllAction('pause')" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded text-xs font-semibold">
+                        Pausatu Dena
+                    </button>
+                    <button onclick="dockerAllAction('unpause')" class="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded text-xs font-semibold">
+                        Berrekin Dena
+                    </button>
+                    <button onclick="dockerAllAction('down')" class="px-3 py-1.5 bg-rose-800 hover:bg-rose-700 text-white rounded text-xs font-semibold">
+                        Gelditu Dena (down)
+                    </button>
+                </div>
+            </div>
+
+            <div id="gridDocker" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="p-4 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 text-sm">Kargatzen...</div>
+            </div>
+        </div>
+
+        <!-- 3. VIRTUALBOX FITXA -->
+        <div id="tab-vbox" class="tab-edukia hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-white">VirtualBox 3 Makina Birtualak</h2>
+                        <p class="text-xs text-slate-400">Headless moduko birtualizazioa eta sare segmentatua</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="vboxStartAllGui()" class="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded text-xs font-semibold shadow transition">
+                            Abiarazi Hirurak GUI (Pantaila Ireki)
+                        </button>
+                        <button onclick="vboxStartAll()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded text-xs font-semibold shadow transition">
+                            Abiarazi Hirurak Headless (Atzean)
+                        </button>
+                        <button onclick="vboxStopAll()" class="px-3 py-1.5 bg-rose-800 hover:bg-rose-700 text-white rounded text-xs font-semibold shadow transition">
+                            Gelditu Seguru (ACPI)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="gridVbox" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-400 text-sm">Kargatzen...</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-lg">
+                    <h4 class="font-bold text-rose-300 mb-1">Erronka-OPNsense</h4>
+                    <p class="text-slate-400 mb-2">Suebakia, Router-on-a-stick, WAN/LAN/DMZ.</p>
+                    <div class="text-slate-300 space-y-0.5">
+                        <div>WebGUI: <a href="http://127.0.0.1:8443" target="_blank" class="text-sky-400 underline">127.0.0.1:8443</a></div>
+                        <div>SSH: <code class="text-slate-400">port 2231 (root)</code></div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-lg">
+                    <h4 class="font-bold text-rose-300 mb-1">Erronka-WinServer2025</h4>
+                    <p class="text-slate-400 mb-2">Active Directory, DNS, DHCP, MySQL, .NET API.</p>
+                    <div class="text-slate-300 space-y-0.5">
+                        <div>RDP: <code class="text-sky-400">127.0.0.1:3391</code></div>
+                        <div>SSH: <code class="text-slate-400">port 2232 (ander)</code></div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-lg">
+                    <h4 class="font-bold text-rose-300 mb-1">Erronka-Ubuntu</h4>
+                    <p class="text-slate-400 mb-2">DMZ Web zerbitzaria (Apache 2.4, PHP 8.2).</p>
+                    <div class="text-slate-300 space-y-0.5">
+                        <div>Web Publikoa: <a href="http://127.0.0.1:80" target="_blank" class="text-sky-400 underline">127.0.0.1:80</a></div>
+                        <div>SSH: <code class="text-slate-400">port 2230 (ander)</code></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SARE ZENTRALITA FITXA (WIFI SWITCH & PROFIL BERRIAK) -->
+        <div id="tab-sarea" class="tab-edukia hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-base font-bold text-white mb-1">Sare Zentralita Dinamikoa (WiFi switch-env)</h2>
+                        <p class="text-xs text-slate-400">
+                            Kokapenaren arabera, klik bakarrean bezero guztiak birbideratzen dira (Flutter, JavaFX, C# TPV, PHP).
+                        </p>
+                    </div>
+                    <button onclick="irekiModalSareBerria()" class="px-3.5 py-1.5 bg-rose-800 hover:bg-rose-700 text-white rounded text-xs font-semibold transition">
+                        + Gehitu WiFi / Sare Profil Berria
+                    </button>
+                </div>
+
+                <!-- DETEKTATUTAKO WIFI BANDA -->
+                <div id="bannerWifiDetektatua" class="p-4 bg-indigo-950/60 border border-indigo-800/80 rounded-xl mb-6 flex flex-wrap items-center justify-between gap-4 text-xs">
+                    <div>
+                        <span class="font-bold text-indigo-300 uppercase tracking-wider text-[11px]">Sare Fisikoa Detektatuta:</span>
+                        <div class="text-white font-semibold text-sm mt-0.5">
+                            WiFi SSID: <span id="lblDetectedSsid" class="font-mono text-emerald-400">...</span> · 
+                            IP Lokala: <span id="lblDetectedIp" class="font-mono text-sky-400">...</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="aplikatuAutoDetekzioa()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-semibold text-xs transition">
+                            Aktibatu Profil Hau
+                        </button>
+                        <button onclick="irekiModalSareBerria(true)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-semibold text-xs border border-slate-700 transition">
+                            Profil Berri Gisa Gorde
+                        </button>
+                    </div>
+                </div>
+
+                <div id="gridEnv" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-400 text-sm">Kargatzen...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. LABORATEGI FISIKOA & CISCO FITXA -->
+        <div id="tab-fisikoa" class="tab-edukia hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h2 class="text-base font-bold text-white mb-1">Goierri Eskola Laborategi Fisikoa (Cisco & OPNsense)</h2>
+                <p class="text-xs text-slate-400 mb-4">Sare segmentazio errealaren parametroak eta gailu fisikoak</p>
+
+                <div class="mb-6">
+                    <h3 class="text-xs font-bold text-slate-300 uppercase mb-2">VLAN eta Segmentazio Plana</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs bg-slate-950 rounded-lg border border-slate-800">
+                            <thead class="text-slate-400 bg-slate-900 border-b border-slate-800">
+                                <tr>
+                                    <th class="py-2 px-3">VLAN ID</th>
+                                    <th class="py-2 px-3">Izena</th>
+                                    <th class="py-2 px-3">Subnet</th>
+                                    <th class="py-2 px-3">Ekipoak</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-sky-400">VLAN 10</td>
+                                    <td class="py-2 px-3">LAN_JATETXEA</td>
+                                    <td class="py-2 px-3">192.168.10.0/24</td>
+                                    <td class="py-2 px-3">WinServer (10.10), TPV Kutxa (10.30), KDS Sukaldea (10.40), Inprimagailua (10.50)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-amber-400">VLAN 20</td>
+                                    <td class="py-2 px-3">DMZ_WEB</td>
+                                    <td class="py-2 px-3">192.168.20.0/24</td>
+                                    <td class="py-2 px-3">Ubuntu Apache Web zerbitzaria (20.10)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-emerald-400">VLAN 30</td>
+                                    <td class="py-2 px-3">WIFI_BEZEROAK</td>
+                                    <td class="py-2 px-3">192.168.30.0/24</td>
+                                    <td class="py-2 px-3">Bezeroen mugikorrak (Karta digitala, eskaerak, ordainketak)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-bold text-rose-400">VLAN 99</td>
+                                    <td class="py-2 px-3">KUDEAKETA</td>
+                                    <td class="py-2 px-3">192.168.99.0/24</td>
+                                    <td class="py-2 px-3">Cisco Switch SVI (99.2), OPNsense Gateway (99.1), Admin PC (99.10)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                    <h3 class="text-xs font-bold text-slate-300 uppercase mb-2">Sareko Ping Diagnostikoa (Laborategia)</h3>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <input id="iptPingHost" type="text" value="127.0.0.1" placeholder="IP helbidea (adib. 192.168.10.10)" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-white flex-1 min-w-[200px]">
+                        <button onclick="bidaliPing()" class="px-4 py-1.5 bg-rose-800 hover:bg-rose-700 text-white rounded font-semibold transition">
+                            Probatu Ping
+                        </button>
+                    </div>
+                    <div id="txtPingResult" class="mt-2 text-xs font-mono text-slate-400"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. AUDITORETZA & LOG-AK FITXA -->
+        <div id="tab-audit" class="tab-edukia hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h2 class="text-base font-bold text-white mb-1">Auditoretza Erregistroa (Nork zer egin duen)</h2>
+                <p class="text-xs text-slate-400 mb-4">AnderU, Julen, Iker eta Aratzen ekintzen segimendu segurua</p>
+
+                <div class="overflow-x-auto max-h-72 terminal-scroll bg-slate-950 rounded-lg border border-slate-800">
+                    <table class="w-full text-left text-xs">
+                        <thead class="text-slate-400 bg-slate-900/80 sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="py-2 px-3">Ordua</th>
+                                <th class="py-2 px-3">Administratzailea</th>
+                                <th class="py-2 px-3">Ekintza</th>
+                                <th class="py-2 px-3">Xehetasunak</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblAudit" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+                            <tr><td colspan="4" class="py-3 px-3 text-slate-500">Ez dago ekintzarik oraindik.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-slate-300 uppercase">Kontsola eta Log-ak (Real-time Console)</h3>
+                    <button onclick="garbituLogak()" class="text-xs text-slate-400 hover:text-slate-200">Garbitu</button>
+                </div>
+                <div id="txtConsoleLogs" class="w-full h-48 bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-400 overflow-y-auto terminal-scroll whitespace-pre-wrap">
+[SISTEMA]: 1T Jatetxea IT Kontrol Zentrala prest.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- XEHETASUN MODALA (ZERBITZUAN KLIKATZEAN IREKITZEN DA) -->
+    <div id="modalDetail" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto terminal-scroll p-6 shadow-2xl">
+            <div class="flex items-start justify-between border-b border-slate-800 pb-4 mb-4">
+                <div>
+                    <div class="flex items-center space-x-3 mb-1">
+                        <h3 id="mdlIzena" class="text-lg font-bold text-white">Zerbitzuaren Izena</h3>
+                        <span id="mdlStatusBadge" class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">ONLINE</span>
+                    </div>
+                    <p id="mdlMota" class="text-xs text-slate-400 font-medium">Backend Zentrala</p>
+                </div>
+                <button onclick="itxiModala()" class="text-slate-400 hover:text-white text-xl font-bold p-1">✕</button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800">
+                    <h4 class="font-bold text-rose-300 uppercase tracking-wider text-[11px] mb-2">1. Ubikazio Fisikoa eta Sare Eremua</h4>
+                    <div class="grid grid-cols-2 gap-2 text-slate-300">
+                        <div>Makina: <span id="mdlMakina" class="font-semibold text-white">Erronka-WinServer2025</span></div>
+                        <div>Gunea: <span id="mdlGunea" class="font-semibold text-white">LAN Barnea</span></div>
+                        <div>VLAN: <span id="mdlVlan" class="font-semibold text-sky-400">VLAN 10</span></div>
+                        <div>Ataka / Endpoint: <span id="mdlEndpoint" class="font-mono text-sky-400 font-semibold">127.0.0.1:5000</span></div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800">
+                    <h4 class="font-bold text-sky-300 uppercase tracking-wider text-[11px] mb-2">2. Datu Transmisio Fluxua eta Arkitektura</h4>
+                    <p id="mdlFluxua" class="text-slate-300 leading-relaxed mb-2">Fluxuaren deskribapena hemen.</p>
+                    <div class="text-[11px] text-slate-400 font-mono">
+                        Protokoloa: <span id="mdlProtokoloa" class="text-slate-200">HTTP REST / JSON</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800">
+                    <h4 class="font-bold text-amber-300 uppercase tracking-wider text-[11px] mb-2">3. Zibersegurtasun Neurriak eta Baimenak</h4>
+                    <p id="mdlSegurtasuna" class="text-slate-300 leading-relaxed mb-2">Segurtasun xehetasunak hemen.</p>
+                </div>
+
+                <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800">
+                    <h4 class="font-bold text-emerald-300 uppercase tracking-wider text-[11px] mb-2">4. Monitorizazioa eta Konexio Kalitatea</h4>
+                    <div class="grid grid-cols-2 gap-2 text-slate-300 font-mono text-[11px]">
+                        <div>Latentzia: <span id="mdlLatency" class="text-emerald-400 font-bold">2 ms</span></div>
+                        <div>Health Check: <span id="mdlHealthCheck" class="text-slate-400">GET /health</span></div>
+                    </div>
+                </div>
+
+                <div id="mdlAppLauncherBox" class="p-3 bg-indigo-950/40 rounded-lg border border-indigo-800/80 hidden">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-indigo-300 uppercase tracking-wider text-[11px] mb-0.5">Aplikazioaren Exekuzio Zuzena</h4>
+                            <p class="text-xs text-slate-300">Aplikazio hau nabigatzailean edo mahaigainean irekitzeko sakatu botoia.</p>
+                        </div>
+                        <button id="btnMdlLaunchApp" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold text-xs shadow-md transition">
+                            Exekutatu / Ireki Programa
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mdlDockerControls" class="p-3 bg-slate-950/80 rounded-lg border border-slate-800 hidden">
+                    <h4 class="font-bold text-purple-300 uppercase tracking-wider text-[11px] mb-2">5. Banakako Docker Kontrola (<span id="mdlDockerServiceName"></span>)</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="btnMdlStart" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-semibold text-xs">Start</button>
+                        <button id="btnMdlStop" class="px-3 py-1.5 bg-rose-800 hover:bg-rose-700 text-white rounded font-semibold text-xs">Stop</button>
+                        <button id="btnMdlPause" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded font-semibold text-xs">Pause</button>
+                        <button id="btnMdlUnpause" class="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded font-semibold text-xs">Resume</button>
+                        <button id="btnMdlRestart" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-semibold text-xs border border-slate-700">Restart</button>
+                        <button id="btnMdlLogs" class="px-3 py-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 rounded font-semibold text-xs border border-indigo-700">Ikusi Log-ak</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-3 border-t border-slate-800 flex justify-end">
+                <button onclick="itxiModala()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-semibold">
+                    Itxi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SARE BERRIA GEHITZEKO MODALA -->
+    <div id="modalSareBerria" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex items-start justify-between border-b border-slate-800 pb-3 mb-4">
+                <div>
+                    <h3 class="text-base font-bold text-white">Gehitu WiFi / Sare Profil Berria</h3>
+                    <p class="text-xs text-slate-400">Gorde uneko edo beste edozein WiFi sare, bezeroak bertara birbideratzeko.</p>
+                </div>
+                <button onclick="itxiModalSareBerria()" class="text-slate-400 hover:text-white text-xl font-bold p-1">✕</button>
+            </div>
+
+            <form id="formSareBerria" onsubmit="gordeSareBerria(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Profilaren Identifikatzailea (ID):</label>
+                    <input id="iptNewId" type="text" placeholder="adib. donostia_etxea, bulegoa" required class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-rose-500 font-mono">
+                    <span class="text-[10px] text-slate-500">Hitz bakarrean, espaziorik gabe (adib. tolosako_etxea).</span>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Deskribapena:</label>
+                    <input id="iptNewDesk" type="text" placeholder="adib. Donostiako Etxeko WiFi Sarea" required class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-rose-500">
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">WiFi SSID (Haririk gabeko sarea):</label>
+                    <input id="iptNewSsid" type="text" placeholder="adib. MIWIFI_dc7U" class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-rose-500 font-mono">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">API Ostalaria (IP helbidea):</label>
+                        <input id="iptNewHost" type="text" placeholder="192.168.1.166" required class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-rose-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">API Portua:</label>
+                        <input id="iptNewPort" type="number" value="5000" required class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-rose-500 font-mono">
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800 flex justify-end space-x-2">
+                    <button type="button" onclick="itxiModalSareBerria()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold">Utzi</button>
+                    <button type="submit" class="px-4 py-2 bg-rose-800 hover:bg-rose-700 text-white rounded font-semibold transition">Gorde Profila</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- OINEKOA -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        Goierri Eskola · 1T Jatetxea Erronka · IT Taldea: Ander Urien, Julen, Iker, Aratz
+    </footer>
+
+    <!-- JAVASCRIPT LOGIKA OSOA -->
+    <script>
+        const API_BASE = '';
+        let unekoAdmin = 'AnderU';
+        let zerbitzuGuztiak = [];
+        let detectedNetwork = null;
+        let unekoBistaModua = 'taula'; // 'taula' edo 'zuhaitza'
+
+        function aldatuAdmina() {
+            unekoAdmin = document.getElementById('selAdmin').value;
+            idatziLog(`[ADMIN]: Administratzaile aktiboa: ${unekoAdmin}`);
+            kargatuAudit();
+        }
+
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'X-Admin-User': unekoAdmin
+            };
+        }
+
+        function idatziLog(mezua) {
+            const consoleBox = document.getElementById('txtConsoleLogs');
+            const now = new Date().toLocaleTimeString();
+            consoleBox.textContent += `\n[${now}] ${mezua}`;
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        function garbituLogak() {
+            document.getElementById('txtConsoleLogs').textContent = '[SISTEMA]: Log-ak garbitu dira.';
+        }
+
+        function irekiFitxa(tabId) {
+            document.querySelectorAll('.tab-edukia').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-rose-500', 'text-rose-400', 'font-bold');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-slate-400');
+                activeBtn.classList.add('border-rose-500', 'text-rose-400', 'font-bold');
+            }
+        }
+
+        function aldatuBistaModua(modua) {
+            unekoBistaModua = modua;
+            const btnTaula = document.getElementById('btnModuTaula');
+            const btnZuhaitza = document.getElementById('btnModuZuhaitza');
+            const bistaTaula = document.getElementById('bistaTaula');
+            const bistaZuhaitza = document.getElementById('bistaZuhaitza');
+
+            if (modua === 'taula') {
+                btnTaula.className = 'px-3.5 py-1.5 rounded font-bold bg-rose-900/80 text-white transition';
+                btnZuhaitza.className = 'px-3.5 py-1.5 rounded font-bold text-slate-400 hover:text-slate-200 transition';
+                bistaTaula.classList.remove('hidden');
+                bistaZuhaitza.classList.add('hidden');
+            } else {
+                btnZuhaitza.className = 'px-3.5 py-1.5 rounded font-bold bg-rose-900/80 text-white transition';
+                btnTaula.className = 'px-3.5 py-1.5 rounded font-bold text-slate-400 hover:text-slate-200 transition';
+                bistaTaula.classList.add('hidden');
+                bistaZuhaitza.classList.remove('hidden');
+                kargatuZuhaitza();
+            }
+        }
+
+        // 1. ZERBITZUAK ETA UBIKAZIOA
+        async function kargatuPortuak() {
+            try {
+                const res = await fetch(`${API_BASE}/api/health/ports`);
+                const list = await res.json();
+                zerbitzuGuztiak = list;
+
+                const tbody = document.getElementById('tblZerbitzuak');
+                tbody.innerHTML = '';
+
+                let onlineKop = 0;
+                list.forEach(p => {
+                    if (p.online) onlineKop++;
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-900/80 cursor-pointer transition';
+                    tr.onclick = (e) => {
+                        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') irekiModala(p.id);
+                    };
+
+                    let botoiakHtml = '';
+
+                    // 1. App bada: Exekutatu botoia
+                    if (p.appLauncherId || p.appUrl) {
+                        const targetId = p.appLauncherId || p.id;
+                        const targetUrl = p.appUrl || '';
+                        botoiakHtml += `
+                            <button onclick="event.stopPropagation(); launchApp('${targetId}', '${targetUrl}')" class="px-2 py-1 bg-indigo-700 hover:bg-indigo-600 text-white rounded text-[11px] font-bold shadow transition" title="Exekutatu / Ireki programa">
+                                Exekutatu App
+                            </button>
+                        `;
+                    }
+
+                    // 2. Docker zerbitzua bada: Piztu, Itzali, Pausatu
+                    if (p.dockerService) {
+                        botoiakHtml += `
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'start')" class="px-1.5 py-1 bg-emerald-900/80 hover:bg-emerald-700 text-emerald-200 rounded text-[10px] font-semibold transition" title="Piztu edukiontzia">
+                                Piztu
+                            </button>
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'stop')" class="px-1.5 py-1 bg-rose-950 hover:bg-rose-900 text-rose-300 rounded text-[10px] font-semibold transition" title="Itzali edukiontzia">
+                                Itzali
+                            </button>
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'pause')" class="px-1.5 py-1 bg-amber-950 hover:bg-amber-900 text-amber-300 rounded text-[10px] font-semibold transition" title="Pausatu edukiontzia">
+                                Pausatu
+                            </button>
+                        `;
+                    }
+
+                    // 3. VirtualBox makina bada (makina zutabean 'Erronka-' badauka eta dockerService ez bada)
+                    if (!p.dockerService && p.makina && p.makina.startsWith('Erronka-')) {
+                        const vmIzena = p.makina.split(' ')[0].trim();
+                        botoiakHtml += `
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-gui')" class="px-1.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 rounded text-[10px] font-semibold transition" title="Ireki VM-aren pantaila interaktiboa">
+                                GUI
+                            </button>
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-headless')" class="px-1.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-semibold transition" title="Altxatu VM atzean">
+                                Headless
+                            </button>
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'stop')" class="px-1.5 py-1 bg-rose-950 hover:bg-rose-900 text-rose-300 rounded text-[10px] font-semibold transition" title="Gelditu VM (ACPI)">
+                                Itzali
+                            </button>
+                        `;
+                    }
+
+                    // 4. Beti: Xehetasunak modala
+                    botoiakHtml += `
+                        <button onclick="event.stopPropagation(); irekiModala('${p.id}')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-sky-300 hover:text-white rounded text-[11px] font-semibold border border-slate-700 transition" title="Ikusi xehetasun guztiak">
+                            Xehetasunak
+                        </button>
+                    `;
+
+                    tr.innerHTML = `
+                        <td class="py-2.5 px-3 font-semibold text-slate-100 flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full ${p.online ? 'bg-emerald-400' : 'bg-rose-500'}"></span>
+                            <span class="hover:underline text-rose-300 font-bold">${p.izena}</span>
+                        </td>
+                        <td class="py-2.5 px-3 text-slate-400">${p.mota}</td>
+                        <td class="py-2.5 px-3 font-medium text-slate-200">
+                            <span class="px-2 py-0.5 bg-slate-950 border border-slate-800 rounded text-[11px] text-slate-300">
+                                ${p.makina}
+                            </span>
+                        </td>
+                        <td class="py-2.5 px-3">
+                            <span class="font-bold ${p.vlan === 'VLAN 10' ? 'text-sky-400' : p.vlan === 'VLAN 20' ? 'text-amber-400' : 'text-rose-400'}">
+                                ${p.vlan}
+                            </span>
+                        </td>
+                        <td class="py-2.5 px-3 font-mono text-sky-400">${p.endpoint}</td>
+                        <td class="py-2.5 px-3 font-mono text-[11px] ${p.online ? 'text-emerald-400' : 'text-slate-500'}">
+                            ${p.online ? p.latencyMs + ' ms' : '-'}
+                        </td>
+                        <td class="py-2.5 px-3">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${p.online ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}">
+                                ${p.online ? 'ONLINE' : 'OFFLINE'}
+                            </span>
+                        </td>
+                        <td class="py-2.5 px-3 text-right">
+                            <div class="inline-flex items-center space-x-1 flex-nowrap justify-end">
+                                ${botoiakHtml}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('txtPortuakKop').textContent = onlineKop;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // 2. ADARKADURA ETA TOPOLOGIA ZUHAITZA (TREE VIEW)
+        async function kargatuZuhaitza() {
+            try {
+                const res = await fetch(`${API_BASE}/api/services/tree`);
+                const data = await res.json();
+                const container = document.getElementById('treeContainer');
+                container.innerHTML = '';
+
+                data.tiers.forEach((tier, idx) => {
+                    const tierBox = document.createElement('div');
+                    tierBox.className = 'relative';
+
+                    // Tier Titulua
+                    const header = document.createElement('div');
+                    header.className = 'flex items-center space-x-3 mb-3';
+                    header.innerHTML = `
+                        <div class="px-2.5 py-1 rounded bg-${tier.color}-950 text-${tier.color}-300 font-bold border border-${tier.color}-800 text-xs">
+                            ${tier.tierName}
+                        </div>
+                        <div class="text-xs text-slate-400">${tier.description}</div>
+                    `;
+                    tierBox.appendChild(header);
+
+                    // Nodoak
+                    const nodesGrid = document.createElement('div');
+                    nodesGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3';
+
+                    tier.nodes.forEach(node => {
+                        const isOnline = node.live && node.live.online;
+                        const latency = node.live && node.live.latencyMs ? `${node.live.latencyMs} ms` : '';
+
+                        const nodeCard = document.createElement('div');
+                        nodeCard.className = `p-3.5 bg-slate-950 border rounded-xl cursor-pointer hover:border-slate-600 transition flex flex-col justify-between ${isOnline ? 'border-emerald-800/80 glow-green' : 'border-slate-800'}`;
+                        nodeCard.onclick = () => {
+                            if (node.id) irekiModala(node.id);
+                        };
+
+                        nodeCard.innerHTML = `
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="font-bold text-white text-xs truncate" title="${node.name}">${node.name}</span>
+                                    <span class="w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-rose-500'}"></span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 font-mono mb-1">${node.host}</div>
+                                ${node.subServices ? `<div class="text-[10px] text-slate-400 mb-1 italic">${node.subServices}</div>` : ''}
+                                ${node.rules ? `<div class="text-[10px] text-rose-300/80 mb-1 font-mono truncate" title="${node.rules}">${node.rules}</div>` : ''}
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-900 text-[10px]">
+                                <span class="font-mono text-sky-400">Ataka: ${node.port}</span>
+                                <span class="font-bold ${isOnline ? 'text-emerald-400' : 'text-slate-500'} font-mono">${isOnline ? latency || 'ONLINE' : 'OFFLINE'}</span>
+                            </div>
+                        `;
+                        nodesGrid.appendChild(nodeCard);
+                    });
+
+                    tierBox.appendChild(nodesGrid);
+
+                    // Gezia beherantz hurrengo mailarantz (azkena ez bada)
+                    if (idx < data.tiers.length - 1) {
+                        const arrowDiv = document.createElement('div');
+                        arrowDiv.className = 'py-3 flex flex-col items-center justify-center text-slate-600';
+                        arrowDiv.innerHTML = `
+                            <div class="tree-line h-4"></div>
+                            <div class="text-xs font-mono text-slate-500 font-bold">| V |</div>
+                        `;
+                        tierBox.appendChild(arrowDiv);
+                    }
+
+                    container.appendChild(tierBox);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // 3. WIFI ETA SARE PROFILEN DETEKZIOA
+        async function kargatuInguruneaAktiboa() {
+            try {
+                const res = await fetch(`${API_BASE}/api/env/current`);
+                const data = await res.json();
+                detectedNetwork = data;
+
+                const badge = document.getElementById('badgeProfilAktiboa');
+                badge.textContent = (data.activeProfile || 'EZEZAGUNA').toUpperCase();
+
+                const wifiTxt = document.getElementById('txtWifiDetektatua');
+                wifiTxt.textContent = `(Detektatuta: ${data.detectedSsid} · ${data.detectedIp})`;
+
+                // Bannerrean datuak eguneratu
+                const lblSsid = document.getElementById('lblDetectedSsid');
+                const lblIp = document.getElementById('lblDetectedIp');
+                if (lblSsid) lblSsid.textContent = data.detectedSsid;
+                if (lblIp) lblIp.textContent = data.detectedIp;
+
+                // Desberdina bada, aktibatzeko botoia erakutsi
+                const btnAuto = document.getElementById('btnAutoSwitch');
+                if (data.matchedProfile && data.matchedProfile.toLowerCase() !== (data.activeProfile || '').toLowerCase()) {
+                    btnAuto.classList.remove('hidden');
+                    btnAuto.textContent = `Aktibatu: ${data.matchedProfile.toUpperCase()}`;
+                } else {
+                    btnAuto.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function aplikatuAutoDetekzioa() {
+            if (!detectedNetwork || !detectedNetwork.matchedProfile) return;
+            await aldatuIngurunea(detectedNetwork.matchedProfile);
+        }
+
+        // SARE PROFIL ZERRENDAK
+        async function kargatuInguruneak() {
+            try {
+                const res = await fetch(`${API_BASE}/api/env/list`);
+                const list = await res.json();
+                const grid = document.getElementById('gridEnv');
+                grid.innerHTML = '';
+
+                list.forEach(env => {
+                    const isAktiboa = detectedNetwork && detectedNetwork.activeProfile && detectedNetwork.activeProfile.toLowerCase() === env.id.toLowerCase();
+
+                    const card = document.createElement('div');
+                    card.className = `p-4 bg-slate-950 border rounded-xl flex flex-col justify-between transition ${isAktiboa ? 'border-rose-600 glow-red' : 'border-slate-800 hover:border-slate-700'}`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-white text-sm uppercase tracking-wide text-rose-300">${env.id}</span>
+                                ${isAktiboa ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950 text-rose-300 border border-rose-800">AKTIBOA</span>' : ''}
+                            </div>
+                            <div class="text-xs text-slate-300 mb-2">${env.deskribapena}</div>
+                            ${env.wifiSsid ? `<div class="text-[11px] text-emerald-400 font-mono mb-1">WiFi: ${env.wifiSsid}</div>` : ''}
+                            <div class="text-[11px] font-mono text-sky-400 mb-4 truncate">${env.apiUrl}</div>
+                        </div>
+                        <button onclick="aldatuIngurunea('${env.id}')" class="w-full py-1.5 ${isAktiboa ? 'bg-rose-900 text-white font-bold' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'} rounded text-xs font-semibold border border-slate-700 transition">
+                            ${isAktiboa ? 'Profil Hau Aktibo Dago' : 'Gaitu Profil Hau'}
+                        </button>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function aldatuIngurunea(envId) {
+            idatziLog(`[${unekoAdmin}]: Sare profila aldatzen: ${envId}...`);
+            const res = await fetch(`${API_BASE}/api/env/switch/${envId}`, { method: 'POST', headers: getHeaders() });
+            const data = await res.json();
+            idatziLog(data.output || `Profila ${envId}-ra aldatuta.`);
+            await kargatuInguruneaAktiboa();
+            await kargatuInguruneak();
+        }
+
+        // SARE BERRIA GEHITZEKO MODALA
+        function irekiModalSareBerria(autoFillCurrent = false) {
+            if (autoFillCurrent && detectedNetwork) {
+                document.getElementById('iptNewSsid').value = detectedNetwork.detectedSsid !== 'Kablez / Ezezaguna' ? detectedNetwork.detectedSsid : '';
+                document.getElementById('iptNewHost').value = detectedNetwork.detectedIp;
+                document.getElementById('iptNewDesk').value = `WiFi Sarea (${detectedNetwork.detectedSsid})`;
+                document.getElementById('iptNewId').value = (detectedNetwork.detectedSsid || 'wifi_berria').toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            } else {
+                document.getElementById('formSareBerria').reset();
+            }
+            document.getElementById('modalSareBerria').classList.remove('hidden');
+        }
+
+        function itxiModalSareBerria() {
+            document.getElementById('modalSareBerria').classList.add('hidden');
+        }
+
+        async function gordeSareBerria(e) {
+            e.preventDefault();
+            const id = document.getElementById('iptNewId').value.trim();
+            const deskribapena = document.getElementById('iptNewDesk').value.trim();
+            const wifi_ssid = document.getElementById('iptNewSsid').value.trim();
+            const api_host = document.getElementById('iptNewHost').value.trim();
+            const api_port = parseInt(document.getElementById('iptNewPort').value) || 5000;
+
+            idatziLog(`[${unekoAdmin}]: Profil berria gordetzen: ${id} (${api_host})...`);
+
+            try {
+                const res = await fetch(`${API_BASE}/api/env/add`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ id, deskribapena, wifi_ssid, api_host, api_port })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    idatziLog(data.message);
+                    itxiModalSareBerria();
+                    await aldatuIngurunea(id); // Zuzenean aktibatu berria
+                } else {
+                    alert(data.message || 'Errorea profila gordetzean.');
+                }
+            } catch (err) {
+                alert('Errorea: ' + err.message);
+            }
+        }
+
+        // MODAL XEHETASUNAK
+        function irekiModala(serviceId) {
+            const s = zerbitzuGuztiak.find(x => x.id === serviceId);
+            if (!s) return;
+
+            document.getElementById('mdlIzena').textContent = s.izena;
+            document.getElementById('mdlMota').textContent = `${s.mota} · ${s.gunea}`;
+
+            const badge = document.getElementById('mdlStatusBadge');
+            if (s.online) {
+                badge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800';
+                badge.textContent = `ONLINE (${s.latencyMs} ms)`;
+            } else {
+                badge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-rose-950 text-rose-400 border border-rose-800';
+                badge.textContent = 'OFFLINE';
+            }
+
+            document.getElementById('mdlMakina').textContent = s.makina;
+            document.getElementById('mdlGunea').textContent = s.gunea;
+            document.getElementById('mdlVlan').textContent = s.vlan;
+            document.getElementById('mdlEndpoint').textContent = s.endpoint;
+
+            document.getElementById('mdlFluxua').textContent = s.fluxua;
+            document.getElementById('mdlProtokoloa').textContent = s.protokoloa;
+            document.getElementById('mdlSegurtasuna').textContent = s.segurtasuna;
+            document.getElementById('mdlLatency').textContent = s.online ? `${s.latencyMs} ms` : 'Erantzunik ez';
+            document.getElementById('mdlHealthCheck').textContent = s.healthCheck;
+
+            // App Launcher
+            const appBox = document.getElementById('mdlAppLauncherBox');
+            if (s.appUrl || s.appLauncherId) {
+                appBox.classList.remove('hidden');
+                document.getElementById('btnMdlLaunchApp').onclick = () => launchApp(s.appLauncherId || s.id, s.appUrl || '');
+            } else {
+                appBox.classList.add('hidden');
+            }
+
+            const dockerBox = document.getElementById('mdlDockerControls');
+            if (s.dockerService) {
+                dockerBox.classList.remove('hidden');
+                document.getElementById('mdlDockerServiceName').textContent = s.dockerService;
+
+                document.getElementById('btnMdlStart').onclick = () => dockerSingleAction(s.dockerService, 'start');
+                document.getElementById('btnMdlStop').onclick = () => dockerSingleAction(s.dockerService, 'stop');
+                document.getElementById('btnMdlPause').onclick = () => dockerSingleAction(s.dockerService, 'pause');
+                document.getElementById('btnMdlUnpause').onclick = () => dockerSingleAction(s.dockerService, 'unpause');
+                document.getElementById('btnMdlRestart').onclick = () => dockerSingleAction(s.dockerService, 'restart');
+                document.getElementById('btnMdlLogs').onclick = () => ikusiDockerLogs(s.dockerService);
+            } else {
+                dockerBox.classList.add('hidden');
+            }
+
+            document.getElementById('modalDetail').classList.remove('hidden');
+        }
+
+        function itxiModala() {
+            document.getElementById('modalDetail').classList.add('hidden');
+        }
+
+        // FLUXU KOORDINATUA
+        async function hasiFluxuKoordinatua() {
+            const outBox = document.getElementById('txtFluxuStatus');
+            outBox.innerHTML = '<span class="text-indigo-400 font-bold">FLUXU KOORDINATUA:</span> Faseka martxan jartzen...';
+            idatziLog(`[${unekoAdmin}]: Fluxu koordinatua hasita: 1. DB -> 2. Backend -> 3. Frontend`);
+
+            try {
+                const res = await fetch(`${API_BASE}/api/docker/flow/start`, { method: 'POST', headers: getHeaders() });
+                const data = await res.json();
+                idatziLog(data.message || 'Fluxu koordinatua amaituta.');
+                outBox.innerHTML = '<span class="text-emerald-400 font-bold">FLUXU KOORDINATUA BUKATUTA:</span> Zerbitzu guztiak faseka altxatuta.';
+                setTimeout(freskatuDena, 3000);
+            } catch (err) {
+                outBox.innerHTML = `<span class="text-rose-400">Akatsa: ${err.message}</span>`;
+            }
+        }
+
+        async function geldituFluxuKoordinatua() {
+            if (!confirm("Ziur zaude zerbitzu guztiak fluxu koordinatuan gelditu nahi dituzula?")) return;
+            const outBox = document.getElementById('txtFluxuStatus');
+            outBox.innerHTML = '<span class="text-rose-400 font-bold">FLUXU KOORDINATUA:</span> Ordenan gelditzen (Frontend -> Backend -> DB)...';
+            idatziLog(`[${unekoAdmin}]: Gelditze koordinatua hasita.`);
+
+            try {
+                const res = await fetch(`${API_BASE}/api/docker/flow/stop`, { method: 'POST', headers: getHeaders() });
+                const data = await res.json();
+                idatziLog(data.message || 'Gelditze koordinatua amaituta.');
+                outBox.innerHTML = '<span class="text-slate-400">Zerbitzuak segurtasunez gelditu dira.</span>';
+                setTimeout(freskatuDena, 3000);
+            } catch (err) {
+                outBox.innerHTML = `<span class="text-rose-400">Akatsa: ${err.message}</span>`;
+            }
+        }
+
+        // DOCKER KONTROLA
+        async function dockerSingleAction(service, action) {
+            idatziLog(`[${unekoAdmin}]: Docker ekintza: ${service} -> ${action}...`);
+            try {
+                const res = await fetch(`${API_BASE}/api/docker/action/${service}/${action}`, { method: 'POST', headers: getHeaders() });
+                const data = await res.json();
+                idatziLog(data.output || `${service} -> ${action} eginda.`);
+                setTimeout(freskatuDena, 2000);
+            } catch (err) {
+                idatziLog(`[ERROREA]: ${err.message}`);
+            }
+        }
+
+        async function dockerAllAction(action) {
+            if (action === 'down' && !confirm("Ziur zaude Docker edukiontzi guztiak gelditu nahi dituzula?")) return;
+            idatziLog(`[${unekoAdmin}]: Docker ekintza orokorra: ${action.toUpperCase()}...`);
+            try {
+                const res = await fetch(`${API_BASE}/api/docker/all/${action}`, { method: 'POST', headers: getHeaders() });
+                const data = await res.json();
+                idatziLog(data.output || `Ekintza ${action} burututa.`);
+                setTimeout(freskatuDena, 3000);
+            } catch (err) {
+                idatziLog(`[ERROREA]: ${err.message}`);
+            }
+        }
+
+        // APLIKAZIOEN EXEKUZIOA (DESKTOP & WEB APPS)
+        async function launchApp(appId, url) {
+            idatziLog(`[${unekoAdmin}]: Aplikazioa abiarazten: ${appId}...`);
+            if (url && url.startsWith('http')) {
+                window.open(url, '_blank');
+            }
+            try {
+                const res = await fetch(`${API_BASE}/api/apps/launch/${encodeURIComponent(appId)}`, {
+                    method: 'POST',
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                idatziLog(data.message || `Aplikazioa martxan: ${appId}`);
+            } catch (err) {
+                idatziLog(`[ERROREA - ${appId}]: ${err.message}`);
+            }
+        }
+
+        async function kargatuDocker() {
+            try {
+                const res = await fetch(`${API_BASE}/api/docker/status`);
+                const data = await res.json();
+                const grid = document.getElementById('gridDocker');
+                const daemonBadge = document.getElementById('txtDockerDaemonStatus');
+
+                if (!data.dockerRunning) {
+                    daemonBadge.innerHTML = '<span class="text-rose-400 font-bold">Docker Desktop: ITZALITA</span>';
+                } else {
+                    daemonBadge.innerHTML = '<span class="text-emerald-400 font-bold">Docker Desktop: MARTXAN</span>';
+                }
+
+                grid.innerHTML = '';
+                let martxanKop = 0;
+                const containers = data.containers || [];
+
+                if (containers.length === 0) {
+                    grid.innerHTML = `
+                        <div class="col-span-full p-6 bg-slate-900 border border-slate-800 rounded-xl text-center text-slate-400 text-sm">
+                            Ez da jatetxearen Docker edukiontzirik aurkitu martxan. Sakatu "Fluxu Koordinatua (Hasi)" edo "Altxatu Dena".
+                        </div>`;
+                    document.getElementById('txtDockerKop').textContent = '0';
+                    return;
+                }
+
+                containers.forEach(c => {
+                    const isRunning = (c.state || '').toLowerCase().includes('running') || (c.status || '').toLowerCase().includes('up');
+                    const isPaused = (c.status || '').toLowerCase().includes('paused') || (c.state || '').toLowerCase().includes('paused');
+                    if (isRunning) martxanKop++;
+
+                    // Mapping for app launch
+                    let appLauncherHtml = '';
+                    const sLower = (c.service || c.name || '').toLowerCase();
+                    if (sLower.includes('web')) {
+                        appLauncherHtml = `<button onclick="launchApp('web', 'http://localhost:8085')" class="px-2 py-1 bg-indigo-700 hover:bg-indigo-600 text-white font-bold rounded text-[11px] shadow transition" title="Ireki Web PHP Karta">Exekutatu App</button>`;
+                    } else if (sLower.includes('odoo')) {
+                        appLauncherHtml = `<button onclick="launchApp('odoo', 'http://localhost:8070')" class="px-2 py-1 bg-purple-700 hover:bg-purple-600 text-white font-bold rounded text-[11px] shadow transition" title="Ireki Odoo ERP">Exekutatu App</button>`;
+                    } else if (sLower.includes('api')) {
+                        appLauncherHtml = `<button onclick="launchApp('api', 'http://localhost:5050/')" class="px-2 py-1 bg-indigo-700 hover:bg-indigo-600 text-white font-bold rounded text-[11px] shadow transition" title="Ireki REST API (5050)">Exekutatu App</button>`;
+                    } else if (sLower.includes('kds')) {
+                        appLauncherHtml = `<button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="px-2 py-1 bg-cyan-700 hover:bg-cyan-600 text-white font-bold rounded text-[11px] shadow transition" title="Ireki Sukaldea KDS">Exekutatu App</button>`;
+                    } else if (sLower.includes('chat')) {
+                        appLauncherHtml = `<button onclick="launchApp('chat', 'http://localhost:3001')" class="px-2 py-1 bg-indigo-700 hover:bg-indigo-600 text-white font-bold rounded text-[11px] shadow transition" title="Ireki Barne Txata">Exekutatu App</button>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = `p-4 bg-slate-900 border rounded-xl flex flex-col justify-between transition ${isPaused ? 'border-amber-700/80 glow-amber' : isRunning ? 'border-slate-800 glow-green' : 'border-slate-800/80 opacity-70'}`;
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-white text-sm truncate" title="${c.name}">${c.name || c.service}</span>
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${isPaused ? 'bg-amber-950 text-amber-400 border border-amber-800' : isRunning ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'}">
+                                    ${isPaused ? 'PAUSATUTA' : isRunning ? 'MARTXAN' : 'GELDITUTA'}
+                                </span>
+                            </div>
+                            <div class="text-xs text-slate-400 font-mono mb-2 truncate" title="${c.status}">${c.status}</div>
+                            <div class="text-[11px] text-slate-400 mb-3 truncate" title="${c.publishers || ''}">${c.publishers || 'Barne sarea'}</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex flex-wrap gap-1.5 text-xs items-center">
+                            ${appLauncherHtml}
+                            <button onclick="dockerSingleAction('${c.service}', 'start')" class="px-2 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 rounded text-[11px] font-semibold" title="Piztu edukiontzia">Piztu</button>
+                            <button onclick="dockerSingleAction('${c.service}', 'stop')" class="px-2 py-1 bg-rose-950 hover:bg-rose-900 text-rose-300 rounded text-[11px] font-semibold" title="Itzali edukiontzia">Itzali</button>
+                            <button onclick="dockerSingleAction('${c.service}', 'pause')" class="px-2 py-1 bg-amber-950 hover:bg-amber-900 text-amber-300 rounded text-[11px] font-semibold" title="Pausatu edukiontzia">Pausatu</button>
+                            <button onclick="dockerSingleAction('${c.service}', 'unpause')" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 text-sky-300 rounded text-[11px] font-semibold" title="Berrekin edukiontzia">Berrekin</button>
+                            <button onclick="dockerSingleAction('${c.service}', 'restart')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px]" title="Berrabiarazi edukiontzia">Berrabiarazi</button>
+                            <button onclick="ikusiDockerLogs('${c.service}')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded text-[11px] underline">Log-ak</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                document.getElementById('txtDockerKop').textContent = martxanKop;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function ikusiDockerLogs(service) {
+            irekiFitxa('tab-audit');
+            idatziLog(`[LOGS - ${service}]: Azken lerroak irakurtzen...`);
+            const res = await fetch(`${API_BASE}/api/docker/logs/${service}`);
+            const data = await res.json();
+            idatziLog(`=== ${service} LOG-AK ===\n${data.logs || 'Ez dago logik'}`);
+        }
+
+        // VIRTUALBOX
+        async function kargatuVbox() {
+            try {
+                const res = await fetch(`${API_BASE}/api/vbox/status`);
+                const data = await res.json();
+                const grid = document.getElementById('gridVbox');
+                grid.innerHTML = '';
+
+                let martxanKop = 0;
+                (data.vms || []).forEach(vm => {
+                    if (vm.running) martxanKop++;
+                    const isPaused = vm.status && vm.status.toLowerCase().includes('paused');
+                    const card = document.createElement('div');
+                    card.className = `p-4 bg-slate-950 border rounded-xl flex flex-col justify-between ${vm.running ? 'border-amber-700/60 glow-amber' : 'border-slate-800'}`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-white text-sm">${vm.name}</span>
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${vm.running ? 'bg-amber-950 text-amber-400 border border-amber-800' : 'bg-slate-800 text-slate-400'}">
+                                    ${vm.status}
+                                </span>
+                            </div>
+                            <div class="text-xs text-slate-400 mb-3">
+                                Egoera: <span class="font-mono text-slate-300 font-semibold">${vm.running ? 'Martxan' : 'Itzalita'}</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex flex-wrap gap-1.5 text-xs">
+                            <button onclick="vboxAction('${vm.name}', 'start-gui')" class="px-2.5 py-1 bg-sky-700 hover:bg-sky-600 text-white rounded text-[11px] font-bold shadow transition" title="Abiarazi eta ireki pantaila interaktiboa">
+                                Pantaila Ireki (GUI)
+                            </button>
+                            <button onclick="vboxAction('${vm.name}', 'start-headless')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[11px] font-semibold border border-slate-700 transition" title="Abiarazi atzean kontsolarik gabe">
+                                Headless
+                            </button>
+                            <button onclick="vboxAction('${vm.name}', 'stop')" class="px-2 py-1 bg-rose-950 hover:bg-rose-900 text-rose-300 rounded text-[11px] font-semibold transition" title="Gelditu VM (ACPI)">
+                                Gelditu (ACPI)
+                            </button>
+                            <button onclick="vboxAction('${vm.name}', '${isPaused ? 'resume' : 'pause'}')" class="px-2 py-1 bg-amber-950 hover:bg-amber-900 text-amber-300 rounded text-[11px] font-semibold transition">
+                                ${isPaused ? 'Berrekin' : 'Pausatu'}
+                            </button>
+                            <button onclick="vboxAction('${vm.name}', 'reset')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded text-[11px] border border-slate-700 transition">
+                                Reset
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                document.getElementById('txtVboxKop').textContent = martxanKop;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function vboxStartAllGui() {
+            idatziLog(`[${unekoAdmin}]: VirtualBox 3 makinak pantaila irekiarekin (GUI moduan) abiarazten...`);
+            try {
+                const res = await fetch(`${API_BASE}/api/vbox/start-all-gui`, { method: 'POST', headers: getHeaders() });
+                const data = await res.json();
+                idatziLog(data.message || 'Makinak GUI moduan abiarazteko agindua bidalita.');
+                setTimeout(kargatuVbox, 4000);
+            } catch (err) {
+                idatziLog(`[ERROREA]: ${err.message}`);
+            }
+        }
+
+        async function vboxAction(vm, action) {
+            idatziLog(`[${unekoAdmin}]: VirtualBox ${vm} -> ${action}...`);
+            try {
+                const res = await fetch(`${API_BASE}/api/vbox/action/${encodeURIComponent(vm)}/${encodeURIComponent(action)}`, {
+                    method: 'POST',
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                idatziLog(data.message || `${vm} ${action} eginda.`);
+                setTimeout(kargatuVbox, 3000);
+            } catch (err) {
+                idatziLog(`[ERROREA - ${vm}]: ${err.message}`);
+            }
+        }
+
+        async function vboxStartAll() {
+            idatziLog(`[${unekoAdmin}]: VirtualBox 3 makinak abiarazten (headless)...`);
+            const res = await fetch(`${API_BASE}/api/vbox/start-all`, { method: 'POST', headers: getHeaders() });
+            const data = await res.json();
+            idatziLog(data.message || 'Makinak abiarazteko agindua bidalita.');
+            setTimeout(kargatuVbox, 4000);
+        }
+
+        async function vboxStopAll() {
+            if (!confirm("Ziur zaude VirtualBox makina guztiak gelditu nahi dituzula?")) return;
+            idatziLog(`[${unekoAdmin}]: VirtualBox makinak gelditzen (ACPI)...`);
+            const res = await fetch(`${API_BASE}/api/vbox/stop-all`, { method: 'POST', headers: getHeaders() });
+            const data = await res.json();
+            idatziLog(data.message || 'Makinak itzaltzeko agindua bidalita.');
+            setTimeout(kargatuVbox, 4000);
+        }
+
+        // PING
+        async function bidaliPing() {
+            const host = document.getElementById('iptPingHost').value.trim();
+            const out = document.getElementById('txtPingResult');
+            out.textContent = `Ping bidaltzen: ${host}...`;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/lab/ping`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ host })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    out.innerHTML = `<span class="text-emerald-400 font-bold">ERANTZUNA (OK):</span> ${data.host} - ${data.roundtripTime} ms`;
+                    idatziLog(`[PING OK]: ${data.host} (${data.roundtripTime} ms)`);
+                } else {
+                    out.innerHTML = `<span class="text-rose-400 font-bold">ERROREA:</span> ${data.status || data.error || 'Timeout'}`;
+                    idatziLog(`[PING ERROREA]: ${data.host}`);
+                }
+            } catch (err) {
+                out.textContent = `Akatsa: ${err.message}`;
+            }
+        }
+
+        // AUDITORETZA
+        async function kargatuAudit() {
+            try {
+                const res = await fetch(`${API_BASE}/api/audit`);
+                const logs = await res.json();
+                const tbody = document.getElementById('tblAudit');
+
+                if (!logs || logs.length === 0) return;
+
+                tbody.innerHTML = '';
+                logs.forEach(l => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-900/50';
+                    tr.innerHTML = `
+                        <td class="py-1.5 px-3 text-slate-400">${l.time}</td>
+                        <td class="py-1.5 px-3 font-bold text-rose-300">${l.user}</td>
+                        <td class="py-1.5 px-3 font-semibold text-sky-300">${l.action}</td>
+                        <td class="py-1.5 px-3 text-slate-300">${l.details}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // FRESKATU DENA
+        async function freskatuDena() {
+            await Promise.all([kargatuInguruneaAktiboa(), kargatuPortuak(), kargatuDocker(), kargatuVbox(), kargatuInguruneak(), kargatuAudit()]);
+            if (unekoBistaModua === 'zuhaitza') {
+                kargatuZuhaitza();
+            }
+        }
+
+        // HASIERAKO KARGA
+        window.addEventListener('DOMContentLoaded', () => {
+            freskatuDena();
+            setInterval(freskatuDena, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+id,name,department_id/id
+job_zuzendaria,Jatetxearen Zuzendari Orokorra,dept_zuzendaritza
+job_it_lead,IT Lead / FullStack Arkitektoa,dept_sistemak_it
+job_sare_ingeniaria,Sare eta Suebaki Administratzailea,dept_sistemak_it
+job_sistema_teknikaria,Sistemen eta Birtualizazio Ingeniaria,dept_sistemak_it
+job_zibersegurtasun_burua,Zibersegurtasun eta Ebaluazio Teknikaria,dept_sistemak_it
+job_chef_burua,Chef Burua / Sukaldari Nagusia,dept_sukaldea
+job_parrilleroa,Bigarren Sukaldaria / Parrilleroa,dept_sukaldea
+job_zerbitzari_burua,Maître / Zerbitzari Burua,dept_jantokia
+job_zerbitzaria,Jantokiko Zerbitzaria,dept_jantokia
+job_barman,Barman / Barrako Arduraduna,dept_barra
+job_barrakoa,Barrako Zerbitzaria,dept_barra
+job_biltegikoa,Biltegi eta Stock Arduraduna,dept_biltegia

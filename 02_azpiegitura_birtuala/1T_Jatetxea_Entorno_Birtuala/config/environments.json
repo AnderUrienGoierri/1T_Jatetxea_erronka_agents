@@ -1,0 +1,60 @@
+{
+    "active_profile": "tolosako_etxea",
+    "profiles": {
+        "localhost": {
+            "deskribapena": "Tokiko probak garatzailearen ordenagailuan (Docker bakarra)",
+            "wifi_ssid": "",
+            "api_host": "127.0.0.1",
+            "api_port": 5000,
+            "api_base_url": "http://127.0.0.1:5000/api/v1",
+            "web_url": "http://127.0.0.1:8085",
+            "chat_url": "http://127.0.0.1:3001",
+            "odoo_url": "http://127.0.0.1:8069",
+            "tv_kds_url": "http://127.0.0.1:8086"
+        },
+        "tolosako_etxea": {
+            "deskribapena": "Tolosako etxeko WiFi sarea (Uneko kokapena - 192.168.1.166)",
+            "wifi_ssid": "MIWIFI_dc7U",
+            "api_host": "192.168.1.166",
+            "api_port": 5000,
+            "api_base_url": "http://192.168.1.166:5000/api/v1",
+            "web_url": "http://192.168.1.166:8085",
+            "chat_url": "http://192.168.1.166:3001",
+            "odoo_url": "http://192.168.1.166:8069",
+            "tv_kds_url": "http://192.168.1.166:8086"
+        },
+        "eskola": {
+            "deskribapena": "Goierri Eskolako laborategiko WiFi/LAN sarea",
+            "wifi_ssid": "Goierri_Ikasleak",
+            "api_host": "10.0.0.50",
+            "api_port": 5000,
+            "api_base_url": "http://10.0.0.50:5000/api/v1",
+            "web_url": "http://10.0.0.50:8085",
+            "chat_url": "http://10.0.0.50:3001",
+            "odoo_url": "http://10.0.0.50:8069",
+            "tv_kds_url": "http://10.0.0.50:8086"
+        },
+        "etxean": {
+            "deskribapena": "Etxeko WiFi sarea",
+            "wifi_ssid": "Etxeko_WIFI",
+            "api_host": "192.168.1.100",
+            "api_port": 5000,
+            "api_base_url": "http://192.168.1.100:5000/api/v1",
+            "web_url": "http://192.168.1.100:8085",
+            "chat_url": "http://192.168.1.100:3001",
+            "odoo_url": "http://192.168.1.100:8069",
+            "tv_kds_url": "http://192.168.1.100:8086"
+        },
+        "vbox_erronka": {
+            "deskribapena": "VirtualBox 3 Makina Birtualen Ingurunea (OPNsense + Ubuntu + Windows)",
+            "wifi_ssid": "",
+            "api_host": "192.168.10.10",
+            "api_port": 5000,
+            "api_base_url": "http://192.168.10.10:5000/api/v1",
+            "web_url": "http://192.168.20.10:80",
+            "chat_url": "http://192.168.10.10:3001",
+            "odoo_url": "http://192.168.10.10:8069",
+            "tv_kds_url": "http://192.168.10.10:8086"
+        }
+    }
+}

@@ -1,0 +1,16 @@
+id,name,employee_id/id,job_id/id,department_id/id,wage,date_start,state
+contract_ander_madinabeitia,KONT-2026-ZUZ01 Ander Madinabeitia,emp_ander_madinabeitia,job_zuzendaria,dept_zuzendaritza,3200.00,2024-10-01,open
+contract_joseba_ramos,KONT-2026-ZUZ02 Joseba Ramos,emp_joseba_ramos,job_zuzendaria,dept_zuzendaritza,3200.00,2024-10-01,open
+contract_estebe_ormazabal,KONT-2026-ZUZ03 Estebe Ormazabal,emp_estebe_ormazabal,job_zuzendaria,dept_zuzendaritza,3200.00,2024-10-01,open
+contract_ander_urien,KONT-2026-IT01 Ander Urien,emp_ander_urien,job_it_lead,dept_sistemak_it,2850.00,2026-09-01,open
+contract_julen_aguado,KONT-2026-IT02 Julen Aguado,emp_julen_aguado,job_sare_ingeniaria,dept_sistemak_it,2700.00,2026-09-01,open
+contract_iker_araujo,KONT-2026-IT03 Iker Araujo,emp_iker_araujo,job_sistema_teknikaria,dept_sistemak_it,2700.00,2026-09-01,open
+contract_aratz_huegun,KONT-2026-IT04 Aratz Huegun,emp_aratz_huegun,job_zibersegurtasun_burua,dept_sistemak_it,2750.00,2026-09-01,open
+contract_ainhoa_goikoetxea,KONT-2026-SUK01 Ainhoa Goikoetxea,emp_ainhoa_goikoetxea,job_chef_burua,dept_sukaldea,2500.00,2025-01-15,open
+contract_eneko_otegi,KONT-2026-SUK02 Eneko Otegi,emp_eneko_otegi,job_parrilleroa,dept_sukaldea,1950.00,2025-03-01,open
+contract_mikel_arregi,KONT-2026-JAN01 Mikel Arregi,emp_mikel_arregi,job_zerbitzari_burua,dept_jantokia,2100.00,2025-01-15,open
+contract_maite_zabaleta,KONT-2026-JAN02 Maite Zabaleta,emp_maite_zabaleta,job_zerbitzaria,dept_jantokia,1400.00,2026-06-01,open
+contract_unai_lasa,KONT-2026-JAN03 Unai Lasa,emp_unai_lasa,job_zerbitzaria,dept_jantokia,950.00,2026-06-01,open
+contract_gorka_mendizabal,KONT-2026-BAR01 Gorka Mendizabal,emp_gorka_mendizabal,job_barman,dept_barra,1850.00,2025-02-01,open
+contract_uxue_etxarri,KONT-2026-BAR02 Uxue Etxarri,emp_uxue_etxarri,job_barrakoa,dept_barra,1600.00,2025-05-10,open
+contract_kepa_aldasoro,KONT-2026-BIL01 Kepa Aldasoro,emp_kepa_aldasoro,job_biltegikoa,dept_biltegia,1800.00,2025-01-15,open

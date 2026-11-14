@@ -1,0 +1,286 @@
+/* ==========================================================================
+   T1 JATETXEA - ITALIAR-EUSKALDUN DISEINU SISTEMA (JAVAFX CSS)
+   KDS (Sukaldea), BDS (Barra) eta Biltegiko Stock Kudeaketa
+   ========================================================================== */
+
+/* 1. OINARRIZKO ERAIKUNTZA ETA VARIABleak */
+.root {
+    /* Kolore Paleta Ofiziala (Italo-Euskaldun) */
+    -fx-color-brand-primary: #881337;      /* Chianti & Euskal Ardo Gorria */
+    -fx-color-brand-hover: #9f1239;        /* Pomodoro Rustico */
+    -fx-color-brand-dark: #4c0519;         /* Erromatar Borgoina */
+    
+    -fx-color-success: #15803d;            /* Baso & Albahaka Berdea */
+    -fx-color-success-bg: #dcfce7;         /* Oliba / Salvia Argia */
+    -fx-color-success-border: #86efac;     /* Salvia Borda */
+
+    -fx-color-warning: #c2410c;            /* Toskana Terrakota / Labea */
+    -fx-color-warning-bg: #fef3c7;         /* Parmigiano Urreztatua */
+    -fx-color-warning-border: #fcd34d;     /* Urre Borda */
+
+    -fx-color-info: #0284c7;               /* Mediterraneo Urdina (BDS) */
+    -fx-color-info-bg: #e0f2fe;            /* Urdin Argia */
+    -fx-color-info-border: #bae6fd;        /* Urdin Borda */
+
+    -fx-color-danger: #dc2626;             /* Alerta Gorria */
+    -fx-color-danger-bg: #fee2e2;          /* Gorri Argia */
+    -fx-color-danger-border: #fca5a5;      /* Gorri Borda */
+
+    -fx-color-bg-app: #f8fafc;             /* Irina Txuria / Arbel Arina */
+    -fx-color-bg-card: #ffffff;            /* Marmol Zuria */
+    -fx-color-border-subtle: #e2e8f0;      /* Harri Borda */
+    -fx-color-text-main: #1e293b;          /* Arbel Iluna */
+    -fx-color-text-muted: #64748b;         /* Laino Grisa */
+
+    /* Tipografia Orokorra */
+    -fx-font-family: "Segoe UI", "Inter", -apple-system, sans-serif;
+    -fx-background-color: -fx-color-bg-app;
+}
+
+/* 2. GOIBURUA (TOP-BAR) */
+.top-bar {
+    -fx-background-color: -fx-color-bg-card;
+    -fx-border-color: -fx-color-border-subtle;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 12 24;
+}
+
+.brand-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-color-brand-primary;
+}
+
+.title-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-color-text-main;
+}
+
+/* 3. NABIGAZIO FITXAK (KDS, BDS, BILTEGIA) */
+.nav-button {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
+.nav-button:hover {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #0f172a;
+}
+
+.nav-button-active {
+    -fx-background-color: -fx-color-brand-primary;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-border-color: -fx-color-brand-primary;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
+/* 4. TXARTEL NAGUSIAK (CARD PANELS) */
+.card-panel {
+    -fx-background-color: -fx-color-bg-card;
+    -fx-border-color: -fx-color-border-subtle;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 4, 0, 0, 1);
+}
+
+.card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+}
+
+/* 5. TAULAK (TABLE VIEW & COLUMNS) */
+.table-view {
+    -fx-background-color: -fx-color-bg-card;
+    -fx-border-color: -fx-color-border-subtle;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f1f5f9;
+    -fx-border-color: -fx-color-border-subtle;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+    -fx-padding: 10 8;
+}
+
+.table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-font-size: 13px;
+    -fx-border-color: transparent transparent #f1f5f9 transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #ffffff;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #fafbfc;
+}
+
+/* Hautatutako errenkadaren kontraste osoa (Zuria gorri ardoaren gainean) */
+.table-row-cell:filled:selected {
+    -fx-background-color: -fx-color-brand-primary;
+    -fx-text-fill: #ffffff;
+}
+
+.table-row-cell:filled:selected .text {
+    -fx-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* 6. BOTOIAK (BUTTON VARIANTS) */
+.btn-primary {
+    -fx-background-color: -fx-color-brand-primary;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: -fx-color-brand-hover;
+}
+
+.btn-secondary {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #e2e8f0;
+}
+
+.btn-success {
+    -fx-background-color: -fx-color-success;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-success:hover {
+    -fx-background-color: #16a34a;
+}
+
+.btn-warning {
+    -fx-background-color: -fx-color-warning;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #ea580c;
+}
+
+.btn-danger {
+    -fx-background-color: -fx-color-danger-bg;
+    -fx-text-fill: -fx-color-danger;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-border-color: -fx-color-danger-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-cursor: hand;
+}
+
+/* 7. EGOERA TXAPAK (STATUS BADGES) */
+.badge-pending {
+    -fx-background-color: -fx-color-warning-bg;
+    -fx-text-fill: #92400e;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 4;
+    -fx-border-color: -fx-color-warning-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+.badge-cooking {
+    -fx-background-color: #ffedd5;
+    -fx-text-fill: -fx-color-warning;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 4;
+    -fx-border-color: #fdba74;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+.badge-ready {
+    -fx-background-color: -fx-color-success-bg;
+    -fx-text-fill: -fx-color-success;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 4;
+    -fx-border-color: -fx-color-success-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+.badge-served {
+    -fx-background-color: -fx-color-info-bg;
+    -fx-text-fill: -fx-color-info;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 8;
+    -fx-background-radius: 4;
+    -fx-border-color: -fx-color-info-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+/* 8. BEHEKO EGOERA-BARRA (STATUS BAR) */
+.status-bar {
+    -fx-background-color: -fx-color-bg-card;
+    -fx-border-color: -fx-color-border-subtle;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 8 24;
+    -fx-font-size: 12px;
+}
+

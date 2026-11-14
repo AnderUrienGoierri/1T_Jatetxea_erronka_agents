@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sukaldea KDS - Android TV Pantaila</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #e11d48;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --info: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 16px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .header-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      background: var(--accent);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 20px;
+      color: var(--text-muted);
+    }
+    .status-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .column {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .column-header {
+      padding: 12px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+    }
+    .col-zai .column-header { background: #374151; color: #f3f4f6; }
+    .col-martxan .column-header { background: #854d0e; color: #fef08a; }
+    .col-prest .column-header { background: #065f46; color: #a7f3d0; }
+    .card-list {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .card-table {
+      font-size: 22px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .card-time {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .dish-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dish-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .dish-qty {
+      background: #0284c7;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    .dish-notes {
+      font-size: 13px;
+      color: #facc15;
+      font-style: italic;
+      margin-top: 2px;
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <span>JATETXEA KDS</span>
+      <span class="badge">SUKALDEA TV</span>
+    </div>
+    <div class="header-info">
+      <div><span class="status-dot" id="statusDot"></span><span id="statusText">Konektatuta</span></div>
+      <div id="liveClock">00:00:00</div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <div class="column col-zai">
+      <div class="column-header">
+        <span>Zai daudenak</span>
+        <span id="countZai">0</span>
+      </div>
+      <div class="card-list" id="listZai"></div>
+    </div>
+
+    <div class="column col-martxan">
+      <div class="column-header">
+        <span>Sukaldean Martxan</span>
+        <span id="countMartxan">0</span>
+      </div>
+      <div class="card-list" id="listMartxan"></div>
+    </div>
+
+    <div class="column col-prest">
+      <div class="column-header">
+        <span>Prestatuta (Ateratzeko)</span>
+        <span id="countPrest">0</span>
+      </div>
+      <div class="card-list" id="listPrest"></div>
+    </div>
+  </main>
+
+  <footer>
+    <span>Android TV Pantaila Optimizatua (1080p / 4K) | Urruneko agintearekin nabigatzeko prest</span>
+    <span id="apiEndpointText">API: http://localhost:5000/api/v1</span>
+  </footer>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('eu-ES');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const sampleOrders = [
+      {
+        id: 101,
+        mahaia: "Mahaia 4",
+        egoera: "Zai",
+        denbora: "Duela 4 min",
+        platerak: [
+          { qty: 2, izena: "Tolosako Babarrunak", oharrak: "Sakramentu guztiekin" },
+          { qty: 1, izena: "Gildak eta Antxoak", oharrak: "Ozpina gutxi" }
+        ]
+      },
+      {
+        id: 102,
+        mahaia: "Mahaia 2",
+        egoera: "Martxan",
+        denbora: "Duela 11 min",
+        platerak: [
+          { qty: 2, izena: "Arkume Errea Labean", oharrak: "Patatak ondo txigortuta" },
+          { qty: 1, izena: "Bakailao Pil-Pilean", oharrak: null }
+        ]
+      },
+      {
+        id: 103,
+        mahaia: "Mahaia 7 (Terraza)",
+        egoera: "Prest",
+        denbora: "Duela 1 min",
+        platerak: [
+          { qty: 2, izena: "Idiazabal Tarta Gazta", oharrak: null }
+        ]
+      }
+    ];
+
+    function renderOrders(orders) {
+      const zai = orders.filter(o => o.egoera === "Zai");
+      const martxan = orders.filter(o => o.egoera === "Martxan");
+      const prest = orders.filter(o => o.egoera === "Prest");
+
+      document.getElementById('countZai').textContent = zai.length;
+      document.getElementById('countMartxan').textContent = martxan.length;
+      document.getElementById('countPrest').textContent = prest.length;
+
+      document.getElementById('listZai').innerHTML = zai.map(createCardHtml).join('');
+      document.getElementById('listMartxan').innerHTML = martxan.map(createCardHtml).join('');
+      document.getElementById('listPrest').innerHTML = prest.map(createCardHtml).join('');
+    }
+
+    function createCardHtml(order) {
+      return `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-table">${order.mahaia}</span>
+            <span class="card-time">${order.denbora}</span>
+          </div>
+          <ul class="dish-list">
+            ${order.platerak.map(p => `
+              <li>
+                <div class="dish-item">
+                  <span><span class="dish-qty">${p.qty}x</span> ${p.izena}</span>
+                </div>
+                ${p.oharrak ? `<div class="dish-notes">${p.oharrak}</div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    renderOrders(sampleOrders);
+
+    // Dynamic API polling
+    async function fetchFromApi() {
+      try {
+        const res = await fetch('http://' + window.location.hostname + ':5000/api/v1/eskaerak');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('statusDot').style.background = 'var(--success)';
+          document.getElementById('statusText').textContent = 'API Konektatuta';
+        }
+      } catch (e) {
+        // Fallback display
+        document.getElementById('statusDot').style.background = 'var(--warning)';
+        document.getElementById('statusText').textContent = 'Lineaz kanpo (Demo modua)';
+      }
+    }
+    setInterval(fetchFromApi, 10000);
+  </script>
+</body>
+</html>

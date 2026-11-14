@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sailak / Departments -->
+        <record id="dept_zuzendaritza" model="hr.department">
+            <field name="name">Zuzendaritza eta Administrazioa</field>
+        </record>
+
+        <record id="dept_sistemak_it" model="hr.department">
+            <field name="name">Sistemak, Sareak eta IT</field>
+        </record>
+
+        <record id="dept_sukaldea" model="hr.department">
+            <field name="name">Sukaldea</field>
+        </record>
+
+        <record id="dept_jantokia" model="hr.department">
+            <field name="name">Jantokia eta Zerbitzua</field>
+        </record>
+
+        <record id="dept_barra" model="hr.department">
+            <field name="name">Barra eta Kafe-Gunea</field>
+        </record>
+
+        <record id="dept_biltegia" model="hr.department">
+            <field name="name">Biltegia eta Hornidura</field>
+        </record>
+    </data>
+</odoo>

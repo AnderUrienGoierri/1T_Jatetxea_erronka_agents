@@ -1,0 +1,136 @@
+name: 1T_Jatetxea_Erronka_Zentrala
+
+services:
+  # 1. MySQL Datu-Base Nagusia (jatetxea_db)
+  jatetxea-db:
+    build:
+      context: ./../1T_Jatetxea_erronka_agents
+      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/db/Dockerfile
+    container_name: jatetxea_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: jatetxea_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - jatetxea_db_data:/var/lib/mysql
+      - ./../1T_Jatetxea_erronka_agents/espezifikazioak/datu_basea_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - jatetxea_net
+
+  # 2. C# ASP.NET Core REST API Nagusia (.NET 10)
+  jatetxea-api:
+    build:
+      context: ./../1T_Jatetxea_erronka_agents
+      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
+    container_name: jatetxea_api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DB_CONNECTION_STRING=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;AllowUserVariables=True;
+      - ConnectionStrings__Jatetxea=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;AllowUserVariables=True;
+      - ConnectionStrings__JatetxeaRoot=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;AllowUserVariables=True;
+    ports:
+      - "5050:5000"
+    depends_on:
+      jatetxea-db:
+        condition: service_healthy
+    networks:
+      - jatetxea_net
+
+  # 3. Apache PHP Bezero Publikoa (web_php)
+  jatetxea-web:
+    build:
+      context: ./../1T_Jatetxea_erronka_agents
+      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
+    container_name: jatetxea_web_php
+    restart: unless-stopped
+    ports:
+      - "8085:80"
+    volumes:
+      - ./../1T_Jatetxea_erronka_agents/web_php:/var/www/html
+    environment:
+      - API_BASE_URL=http://jatetxea-api:5000/api/v1
+    depends_on:
+      - jatetxea-api
+    networks:
+      - jatetxea_net
+
+  # 4. Jatetxearen Barne Txat Zerbitzaria (Socket.IO / WebSockets)
+  jatetxea-chat:
+    build:
+      context: .
+      dockerfile: docker/chat/Dockerfile
+    container_name: jatetxea_chat
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    networks:
+      - jatetxea_net
+
+  # 5. Sukaldeko Android TV / KDS Pantaila Zerbitzaria
+  jatetxea-kds-tv:
+    build:
+      context: .
+      dockerfile: docker/sukaldea_tv/Dockerfile
+    container_name: jatetxea_kds_tv
+    restart: unless-stopped
+    ports:
+      - "8086:80"
+    networks:
+      - jatetxea_net
+
+  # 6. Odoo Datu-Basea (PostgreSQL)
+  db-odoo:
+    image: postgres:15-alpine
+    container_name: jatetxea_odoo_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    ports:
+      - "5432:5432"
+    volumes:
+      - odoo_postgres_data:/var/lib/postgresql/data
+    networks:
+      - jatetxea_net
+
+  # 7. Odoo ERP Zerbitzaria (1T Jatetxea - Erabiltzaileak, Fitxaketak, Bajak eta Kontratuak)
+  jatetxea-odoo:
+    image: odoo:17.0
+    container_name: jatetxea_odoo_erp
+    restart: unless-stopped
+    depends_on:
+      - db-odoo
+    ports:
+      - "8070:8069" # 8070 atakan eskainia, Windows zerbitzu lokalarekin (8069) talkarik ez izateko
+    environment:
+      - HOST=db-odoo
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - odoo_web_data:/var/lib/odoo
+      - ./../1T_Jatetxea_ODOO/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./../1T_Jatetxea_ODOO/addons:/mnt/extra-addons
+    networks:
+      - jatetxea_net
+
+volumes:
+  jatetxea_db_data:
+  odoo_postgres_data:
+  odoo_web_data:
+
+networks:
+  jatetxea_net:
+    driver: bridge

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="750.0" prefWidth="1180.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eus.goierri.jatetxea.controller.BiltegiaController">
+    <!-- 1. GOIKO NABIGAZIO-BARRA -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-bar">
+            <Label styleClass="brand-label" text="T1 Jatetxea" />
+            <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 18px;" text="|" />
+            <Label styleClass="title-label" text="Biltegiko Stock Kudeaketa" />
+            
+            <Region HBox.hgrow="ALWAYS" />
+            
+            <HBox alignment="CENTER" spacing="8.0">
+                <Button mnemonicParsing="false" onAction="#onSukaldeaClick" styleClass="nav-button" text="Sukaldea (KDS)" />
+                <Button mnemonicParsing="false" onAction="#onBarraClick" styleClass="nav-button" text="Barra (BDS)" />
+                <Button mnemonicParsing="false" styleClass="nav-button-active" text="Biltegia (Stocka)" />
+            </HBox>
+            
+            <Region prefWidth="16.0" />
+            
+            <Button mnemonicParsing="false" onAction="#onKargatuDatuakClick" styleClass="btn-primary" text="Freskatu Datuak" />
+        </HBox>
+    </top>
+
+    <!-- 2. ERDIKO EDUKIA: KPI TXARTELAK, BILAKETA ETA TAULA -->
+    <center>
+        <VBox spacing="16.0" style="-fx-padding: 16;">
+            <!-- LABURPEN KPI TXARTELAK -->
+            <HBox spacing="16.0">
+                <VBox prefWidth="240.0" styleClass="card-panel">
+                    <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748b;" text="GUZTIRA LEHENGAIAK" />
+                    <Label fx:id="lblKpiGuztira" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="0" />
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" text="Erregistratutako produktuak" />
+                </VBox>
+
+                <VBox prefWidth="240.0" styleClass="card-panel">
+                    <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #b45309;" text="STOCK BAXUKO ALERTAK" />
+                    <Label fx:id="lblKpiAlertak" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #b45309;" text="0" />
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" text="Gutxieneko mailatik behera" />
+                </VBox>
+
+                <VBox prefWidth="240.0" styleClass="card-panel">
+                    <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #dc2626;" text="AGORTUTAKO PRODUKTUAK" />
+                    <Label fx:id="lblKpiAgortuta" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #dc2626;" text="0" />
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" text="Stocka = 0 dutenak" />
+                </VBox>
+                
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- DATU ITURRIAREN BOTOIAK (API edo DB zuzenean) -->
+                <VBox alignment="CENTER_RIGHT" spacing="6.0">
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #64748b;" text="Datu-iturria aukeratu:" />
+                    <HBox spacing="8.0">
+                        <Button mnemonicParsing="false" onAction="#onKargatuApiClick" styleClass="btn-secondary" text="APItik Kargatu" />
+                        <Button mnemonicParsing="false" onAction="#onKargatuDbClick" styleClass="btn-secondary" text="MySQL DBtik (JDBC)" />
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- BILAKETA ETA IRAGAZKIAK -->
+            <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="card-panel">
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #334155;" text="Bilatu:" />
+                <TextField fx:id="txtBilaketa" prefWidth="280.0" promptText="Idatzi lehengaiaren izena edo hornitzailea..." />
+                
+                <CheckBox fx:id="chkAlertakSoilik" mnemonicParsing="false" text="Stock baxuko alertak soilik erakutsi" />
+                
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblTaulaKopurua" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748b;" text="0 produktu" />
+            </HBox>
+
+            <!-- TAULA ETA SARRERA FORMA BANATUA -->
+            <SplitPane dividerPositions="0.70" orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
+                <!-- LEHENGAIEN ZERRENDA -->
+                <VBox spacing="10.0" styleClass="card-panel">
+                    <Label styleClass="card-title" text="Biltegiko Produktuak eta Stock Maila" />
+                    
+                    <TableView fx:id="tblLehengaiak" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colId" prefWidth="55.0" text="# ID" />
+                            <TableColumn fx:id="colIzena" prefWidth="170.0" text="Lehengaia / Produktua" />
+                            <TableColumn fx:id="colUnekoStocka" prefWidth="110.0" text="Uneko Stocka" />
+                            <TableColumn fx:id="colGutxienekoa" prefWidth="110.0" text="Gutxienekoa" />
+                            <TableColumn fx:id="colKostua" prefWidth="95.0" text="Kostu Unitar." />
+                            <TableColumn fx:id="colHornitzailea" prefWidth="150.0" text="Hornitzailea" />
+                            <TableColumn fx:id="colEgoera" prefWidth="120.0" text="Egoera" />
+                        </columns>
+                        <placeholder>
+                            <Label text="Ez da lehengairik aurkitu." />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- ESKUINEKO PANELA: HORNIDURA BERRIA SARTZEKO FORMA -->
+                <VBox spacing="14.0" styleClass="card-panel">
+                    <Label styleClass="card-title" text="Hornidura Berria Sartu" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #64748b;" text="Erregistratu hornitzailearen albarana stocka handitzeko." wrapText="true" />
+
+                    <VBox spacing="4.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Aukeratu Lehengaia:" />
+                        <ComboBox fx:id="cmbLehengaia" maxWidth="Infinity" promptText="Aukeratu lehengaia..." />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Gehitzeko Kantitatea:" />
+                        <TextField fx:id="txtKantitatea" promptText="Adib. 10.50" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Faktura / Albaran Zk.:" />
+                        <TextField fx:id="txtAlbarana" promptText="Adib. ALB-2026-089" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Oharrak:" />
+                        <TextField fx:id="txtOharrak" promptText="Hornitzailearen oharrak..." />
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS" />
+
+                    <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onSarreraErregistratuClick" styleClass="btn-success" text="+ Stock Sarrera Erregistratu" />
+                </VBox>
+            </SplitPane>
+        </VBox>
+    </center>
+
+    <!-- 3. BEHEKO EGOERA-BARRA -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="status-bar">
+            <Label fx:id="lblIturria" styleClass="status-ok" text="Iturria: API (http://localhost:5000/api/v1/lehengaiak)" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblEgoeraMezua" styleClass="status-text" text="Prest" />
+        </HBox>
+    </bottom>
+</BorderPane>

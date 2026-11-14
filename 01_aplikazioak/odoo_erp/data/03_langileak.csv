@@ -1,0 +1,16 @@
+id,name,job_id/id,department_id/id,work_email,work_phone,identification_id
+emp_ander_madinabeitia,Ander Madinabeitia,job_zuzendaria,dept_zuzendaritza,ander.madinabeitia@jatetxea.eus,+34 633 11 22 33,72548913N
+emp_joseba_ramos,Joseba Ramos,job_zuzendaria,dept_zuzendaritza,joseba.ramos@jatetxea.eus,+34 633 11 22 34,72548914P
+emp_estebe_ormazabal,Estebe Ormazabal,job_zuzendaria,dept_zuzendaritza,estebe.ormazabal@jatetxea.eus,+34 633 11 22 35,72548915Q
+emp_ander_urien,Ander Urien Telleria,job_it_lead,dept_sistemak_it,ander.urien@goierrieskola.eus,+34 688 11 22 33,72548901A
+emp_julen_aguado,Julen Aguado Fernández,job_sare_ingeniaria,dept_sistemak_it,julen.aguado@goierrieskola.eus,+34 688 11 22 34,72548902B
+emp_iker_araujo,Iker Araujo Dominguez,job_sistema_teknikaria,dept_sistemak_it,iker.araujo@goierrieskola.eus,+34 688 11 22 35,72548903C
+emp_aratz_huegun,Aratz Huegun Flores,job_zibersegurtasun_burua,dept_sistemak_it,aratz.huegun@goierrieskola.eus,+34 688 11 22 36,72548904D
+emp_ainhoa_goikoetxea,Ainhoa Goikoetxea,job_chef_burua,dept_sukaldea,ainhoa.goikoetxea@jatetxea.eus,+34 677 11 22 33,72548905E
+emp_eneko_otegi,Eneko Otegi,job_parrilleroa,dept_sukaldea,eneko.otegi@jatetxea.eus,+34 677 11 22 34,72548906F
+emp_mikel_arregi,Mikel Arregi,job_zerbitzari_burua,dept_jantokia,mikel.arregi@jatetxea.eus,+34 666 11 22 33,72548907G
+emp_maite_zabaleta,Maite Zabaleta,job_zerbitzaria,dept_jantokia,maite.zabaleta@jatetxea.eus,+34 666 11 22 34,72548908H
+emp_unai_lasa,Unai Lasa,job_zerbitzaria,dept_jantokia,unai.lasa@jatetxea.eus,+34 666 11 22 35,72548909J
+emp_gorka_mendizabal,Gorka Mendizabal,job_barman,dept_barra,gorka.mendizabal@jatetxea.eus,+34 655 11 22 33,72548910K
+emp_uxue_etxarri,Uxue Etxarri,job_barrakoa,dept_barra,uxue.etxarri@jatetxea.eus,+34 655 11 22 34,72548911L
+emp_kepa_aldasoro,Kepa Aldasoro,job_biltegikoa,dept_biltegia,kepa.aldasoro@jatetxea.eus,+34 644 11 22 33,72548912M

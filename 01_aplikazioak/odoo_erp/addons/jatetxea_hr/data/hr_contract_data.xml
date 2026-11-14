@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- IT Kontratuak -->
+        <record id="contract_ander_urien" model="hr.contract">
+            <field name="name">KONT-2026-IT01 Ander Urien</field>
+            <field name="employee_id" ref="emp_ander_urien"/>
+            <field name="job_id" ref="job_it_lead"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="wage">2850.00</field>
+            <field name="date_start">2026-09-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_julen_aguado" model="hr.contract">
+            <field name="name">KONT-2026-IT02 Julen Aguado</field>
+            <field name="employee_id" ref="emp_julen_aguado"/>
+            <field name="job_id" ref="job_sare_ingeniaria"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="wage">2700.00</field>
+            <field name="date_start">2026-09-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_iker_araujo" model="hr.contract">
+            <field name="name">KONT-2026-IT03 Iker Araujo</field>
+            <field name="employee_id" ref="emp_iker_araujo"/>
+            <field name="job_id" ref="job_sistema_teknikaria"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="wage">2700.00</field>
+            <field name="date_start">2026-09-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_aratz_huegun" model="hr.contract">
+            <field name="name">KONT-2026-IT04 Aratz Huegun</field>
+            <field name="employee_id" ref="emp_aratz_huegun"/>
+            <field name="job_id" ref="job_zibersegurtasun_burua"/>
+            <field name="department_id" ref="dept_sistemak_it"/>
+            <field name="wage">2750.00</field>
+            <field name="date_start">2026-09-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Sukaldeko Kontratuak -->
+        <record id="contract_ainhoa_goikoetxea" model="hr.contract">
+            <field name="name">KONT-2026-SUK01 Ainhoa Goikoetxea</field>
+            <field name="employee_id" ref="emp_ainhoa_goikoetxea"/>
+            <field name="job_id" ref="job_chef_burua"/>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="wage">2500.00</field>
+            <field name="date_start">2025-01-15</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_eneko_otegi" model="hr.contract">
+            <field name="name">KONT-2026-SUK02 Eneko Otegi</field>
+            <field name="employee_id" ref="emp_eneko_otegi"/>
+            <field name="job_id" ref="job_parrilleroa"/>
+            <field name="department_id" ref="dept_sukaldea"/>
+            <field name="wage">1950.00</field>
+            <field name="date_start">2025-03-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Jantokiko Kontratuak -->
+        <record id="contract_mikel_arregi" model="hr.contract">
+            <field name="name">KONT-2026-JAN01 Mikel Arregi</field>
+            <field name="employee_id" ref="emp_mikel_arregi"/>
+            <field name="job_id" ref="job_zerbitzari_burua"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="wage">2100.00</field>
+            <field name="date_start">2025-01-15</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_maite_zabaleta" model="hr.contract">
+            <field name="name">KONT-2026-JAN02 Maite Zabaleta</field>
+            <field name="employee_id" ref="emp_maite_zabaleta"/>
+            <field name="job_id" ref="job_zerbitzaria"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="wage">1400.00</field>
+            <field name="date_start">2026-06-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_unai_lasa" model="hr.contract">
+            <field name="name">KONT-2026-JAN03 Unai Lasa</field>
+            <field name="employee_id" ref="emp_unai_lasa"/>
+            <field name="job_id" ref="job_zerbitzaria"/>
+            <field name="department_id" ref="dept_jantokia"/>
+            <field name="wage">950.00</field>
+            <field name="date_start">2026-06-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Barrako Kontratuak -->
+        <record id="contract_gorka_mendizabal" model="hr.contract">
+            <field name="name">KONT-2026-BAR01 Gorka Mendizabal</field>
+            <field name="employee_id" ref="emp_gorka_mendizabal"/>
+            <field name="job_id" ref="job_barman"/>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="wage">1850.00</field>
+            <field name="date_start">2025-02-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_uxue_etxarri" model="hr.contract">
+            <field name="name">KONT-2026-BAR02 Uxue Etxarri</field>
+            <field name="employee_id" ref="emp_uxue_etxarri"/>
+            <field name="job_id" ref="job_barrakoa"/>
+            <field name="department_id" ref="dept_barra"/>
+            <field name="wage">1600.00</field>
+            <field name="date_start">2025-05-10</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Biltegiko Kontratua -->
+        <record id="contract_kepa_aldasoro" model="hr.contract">
+            <field name="name">KONT-2026-BIL01 Kepa Aldasoro</field>
+            <field name="employee_id" ref="emp_kepa_aldasoro"/>
+            <field name="job_id" ref="job_biltegikoa"/>
+            <field name="department_id" ref="dept_biltegia"/>
+            <field name="wage">1800.00</field>
+            <field name="date_start">2025-01-15</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Zuzendaritzako Kontratuak (3 Zuzendari) -->
+        <record id="contract_ander_madinabeitia" model="hr.contract">
+            <field name="name">KONT-2026-ZUZ01 Ander Madinabeitia</field>
+            <field name="employee_id" ref="emp_ander_madinabeitia"/>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="wage">3200.00</field>
+            <field name="date_start">2024-10-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_joseba_ramos" model="hr.contract">
+            <field name="name">KONT-2026-ZUZ02 Joseba Ramos</field>
+            <field name="employee_id" ref="emp_joseba_ramos"/>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="wage">3200.00</field>
+            <field name="date_start">2024-10-01</field>
+            <field name="state">open</field>
+        </record>
+
+        <record id="contract_estebe_ormazabal" model="hr.contract">
+            <field name="name">KONT-2026-ZUZ03 Estebe Ormazabal</field>
+            <field name="employee_id" ref="emp_estebe_ormazabal"/>
+            <field name="job_id" ref="job_zuzendaria"/>
+            <field name="department_id" ref="dept_zuzendaritza"/>
+            <field name="wage">3200.00</field>
+            <field name="date_start">2024-10-01</field>
+            <field name="state">open</field>
+        </record>
+    </data>
+</odoo>

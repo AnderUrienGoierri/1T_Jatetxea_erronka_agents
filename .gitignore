@@ -1,0 +1,89 @@
+# =============================================================================
+# 1T JATETXEA ERRORKA - GITIGNORE MASTER OROKORRA
+# Goierri Eskola - Zibersegurtasuna eta Sare Sistemak
+# =============================================================================
+
+# 1. Birtualizazioa eta Disko Handiak (VirtualBox, ISO, VDI)
+*.vdi
+*.vbox
+*.vbox-prev
+*.vmdk
+*.ova
+*.ovf
+*.iso
+*.img
+ISO/
+iso/
+
+# 2. Datu-Baseen Datuak eta Bolumenak (Docker)
+jatetxea_db_data/
+mysql_data/
+postgres_data/
+odoo_web_data/
+*.sql.gz
+*.dump
+
+# 3. .NET / C# / Visual Studio (API eta Desktop TPV)
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+publish/
+publish_linux/
+publish_win/
+
+# 4. Java / Maven (JavaFX Sukaldea / Barra / Stock)
+target/
+*.class
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+
+# 5. Flutter / Dart (Mobile Zerbitzaria eta Mobile Bezeroa)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.apk
+*.aab
+*.ipa
+flutter_*.png
+
+# 6. Web / PHP / Node.js
+vendor/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 7. Zibersegurtasuna: Pasahitzak, Ziurtagiriak eta Token Pribatuak
+*.pfx
+*.p12
+*.pem
+*.key
+*.csr
+kredentzialak_sekretuak.txt
+kredentzialak_zentrala.md
+kredentzialak_*.md
+*.env.local
+*.env.production
+
+# 8. Sistema Eragilea eta Aldi Baterako Fitxategiak
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.log
+~$*.xlsx
+~$*.docx
+
+# 9. Tokiko Instalazio Markatzaileak (Makina bakoitzak berea sortuko du morroiarekin)
+konfigurazioa_amaituta.json
+konfigurazioa*.json

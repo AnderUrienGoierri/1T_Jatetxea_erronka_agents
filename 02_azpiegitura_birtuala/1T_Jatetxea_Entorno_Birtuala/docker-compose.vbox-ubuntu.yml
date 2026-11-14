@@ -1,0 +1,15 @@
+name: jatetxea-ubuntu-dmz
+
+# Ubuntu DMZ makina birtualerako Docker Stack-a (DMZ Sarea: 192.168.20.10)
+services:
+  jatetxea-web:
+    image: php:8.2-apache
+    container_name: jatetxea_web_php
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./web_php:/var/www/html
+    environment:
+      # OPNsense bidez Windows Server LAN-eko APIra konektatzen da
+      - API_BASE_URL=http://192.168.10.10:5000/api/v1
