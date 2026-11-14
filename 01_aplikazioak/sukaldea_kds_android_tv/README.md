@@ -51,7 +51,7 @@ app/src/main/java/eus/goierri/jatetxea/sukaldea/
 
 1. Ireki **Android Studio**.
 2. **Open** aukeratu eta hautatu karpeta hau:
-   `C:\Dev\GoierriEskola\2_maila\1T_Jatxetxea_Erronka\1T_Jatetxea_erronka_agents\sukaldea_kds_android_tv`
+   `01_aplikazioak\sukaldea_kds_android_tv`
 3. Gradle sinkronizazioa amaitutakoan, sortu edo hautatu **Android TV** gailu birtual bat (AVD):
    - Adibidez: `Android TV (1080p) - API 34`.
 4. Sakatu **Run** (Play botoia berdea).

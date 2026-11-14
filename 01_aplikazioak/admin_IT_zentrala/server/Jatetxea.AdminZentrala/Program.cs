@@ -425,7 +425,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 
         case "android_tv":
         case "kds_android":
-            string androidPath = Path.Combine(projectRoot, "1T_Jatetxea_erronka_agents", "sukaldea_kds_android_tv");
+            string androidPath = Path.Combine(projectRoot, "01_aplikazioak", "sukaldea_kds_android_tv");
             Process.Start(new ProcessStartInfo
             {
                 FileName = "explorer.exe",
