@@ -251,7 +251,7 @@ app.MapPost("/api/docker/flow/start", async (HttpContext ctx) =>
     var step1 = await RunCommandAsync("docker", "compose up -d jatetxea-db db-odoo phpmyadmin adminer", dockerDir);
     steps.Add(new { Phase = 1, Name = "Datu-Baseak (MySQL 3308, PostgreSQL 5432, phpMyAdmin 8081, Adminer 8082)", Status = "Martxan jarrita", Output = step1 });
     OpenSystemBrowser("http://localhost:8081");
-    OpenSystemBrowser("http://localhost:8082");
+    OpenSystemBrowser("http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo");
     await Task.Delay(2500); // DB initializazio tartea
 
     // 2. URRATSA: Backend eta API Zentrala (.NET API + Chat)
@@ -463,9 +463,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             {
                 await RunCommandAsync("docker", "compose up -d db-odoo adminer", dockerDir);
                 await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8082");
+                OpenSystemBrowser("http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo");
             });
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082", Message = "Adminer PostgreSQL kudeatzailea abiarazten eta irekitzen (8082)..." });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo", Message = "Adminer PostgreSQL kudeatzailea abiarazten eta irekitzen (8082)..." });
 
         case "opnsense":
         case "opnsense_web":
@@ -633,7 +633,7 @@ var zerbitzuenKatalogoa = new[]
         Segurtasuna: "pg_hba.conf bidez Docker barneko sareari soilik baimendua. Kanpoko sarbide zuzena mugatua.",
         Protokoloa: "PostgreSQL Wire Protocol (TCP 5432)",
         HealthCheck: "TCP Port 5432",
-        AppUrl: "http://localhost:8082",
+        AppUrl: "http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo",
         AppLauncherId: "adminer"
     ),
     new ServiceDefinition(
