@@ -437,8 +437,46 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api":
         case "jatetxea-api":
         case "swagger":
-            OpenSystemBrowser("http://localhost:5050/");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "REST API nagusia irekita (5050)." });
+            // 1. MySQL datu-basea ziurtatu Dockerren
+            _ = RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin", dockerDir);
+
+            // 2. Dockerreko jatetxea_api gelditu, portu talkarik ez egoteko kontsolako aplikazioarekin
+            _ = RunCommandAsync("docker", "stop jatetxea_api", dockerDir);
+
+            // 3. Kontsolako leiho erreala abiarazi C# backend_api proiektuarekin
+            string apiDir = Path.Combine(projectRoot, "01_aplikazioak", "backend_api");
+            string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
+            string apiProj = Path.Combine(apiDir, "Jatetxea.Api.csproj");
+
+            if (File.Exists(batPath))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start \"1T Jatetxea - ASP.NET Core REST API\" \"{batPath}\"",
+                    WorkingDirectory = apiDir,
+                    UseShellExecute = true
+                });
+            }
+            else if (File.Exists(apiProj))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/k title 1T Jatetxea - ASP.NET Core REST API & cd /d \"{apiDir}\" & dotnet run --launch-profile http",
+                    WorkingDirectory = apiDir,
+                    UseShellExecute = true
+                });
+            }
+
+            // 4. Nabigatzailea ireki atzerapen txiki batekin zerbitzaria martxan egon dadin
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(1800);
+                OpenSystemBrowser("http://localhost:5050/");
+            });
+
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "ASP.NET Core REST API kontsolan eta nabigatzailean abiarazita." });
 
         case "chat":
         case "jatetxea-chat":

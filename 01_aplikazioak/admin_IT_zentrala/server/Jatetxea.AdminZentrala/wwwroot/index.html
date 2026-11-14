@@ -1120,7 +1120,7 @@
         // APLIKAZIOEN EXEKUZIOA (DESKTOP & WEB APPS)
         async function launchApp(appId, url) {
             idatziLog(`[${unekoAdmin}]: Aplikazioa abiarazten: ${appId}...`);
-            if (url && url.startsWith('http')) {
+            if (url && url.startsWith('http') && appId !== 'api') {
                 window.open(url, '_blank');
             }
             try {
