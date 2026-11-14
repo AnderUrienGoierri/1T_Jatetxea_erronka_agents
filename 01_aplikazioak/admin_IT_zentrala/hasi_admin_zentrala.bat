@@ -7,20 +7,20 @@ echo           Goierri Eskola - Zibersegurtasuna eta Sareak
 echo           Administratzaileak: AnderU, Julen, Iker, Aratz
 echo =====================================================================
 echo.
-echo [1/2] IT Kontrol Zerbitzaria prestatzen (Portua: 5050)...
+echo [1/2] IT Kontrol Zerbitzaria prestatzen (Portua: 5000)...
 cd /d "%~dp0server\Jatetxea.AdminZentrala"
 
-start "1T Jatetxea IT Server" dotnet run
+start "1T Jatetxea IT Server" dotnet run --urls "http://0.0.0.0:5000"
 
 echo [2/2] Web Panela irekitzen nabigatzailean...
 timeout /t 3 /nobreak > nul
-start http://localhost:5050
+start http://localhost:5000
 
 echo.
 echo =====================================================================
 echo IT KONTROL ZENTRALA MARTXAN DAGO!
-echo - Ordenagailu honetan:  http://localhost:5050
-echo - Mugikor edo Tabletatik (WiFi): http://[ZURE-IP-A]:5050
+echo - Ordenagailu honetan:  http://localhost:5000
+echo - Mugikor edo Tabletatik (WiFi): http://[ZURE-IP-A]:5000
 echo =====================================================================
 echo.
 pause

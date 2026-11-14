@@ -200,6 +200,19 @@ app.MapPost("/api/docker/action/{service}/{action}", async (string service, stri
         outText = await RunCommandAsync("docker", $"{action} {service}", dockerDir);
     }
 
+    // Datu-baseak abiaraztean kudeaketa web interfazeak ere ziurtatu
+    if (action == "start")
+    {
+        if (composeService == "jatetxea-db")
+        {
+            _ = RunCommandAsync("docker", "compose up -d phpmyadmin", dockerDir);
+        }
+        else if (composeService == "db-odoo")
+        {
+            _ = RunCommandAsync("docker", "compose up -d adminer", dockerDir);
+        }
+    }
+
     return Results.Ok(new { Success = true, Action = action, Service = service, Output = outText });
 });
 
@@ -435,14 +448,24 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "phpmyadmin":
         case "mysql_web":
         case "mysql":
-            OpenSystemBrowser("http://localhost:8081");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8081", Message = "phpMyAdmin MySQL kudeatzailea irekita (8081)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:8081");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8081", Message = "phpMyAdmin MySQL kudeatzailea abiarazten eta irekitzen (8081)..." });
 
         case "adminer":
         case "postgres_web":
         case "postgres":
-            OpenSystemBrowser("http://localhost:8082");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082", Message = "Adminer PostgreSQL kudeatzailea irekita (8082)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d db-odoo adminer", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:8082");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082", Message = "Adminer PostgreSQL kudeatzailea abiarazten eta irekitzen (8082)..." });
 
         case "opnsense":
         case "opnsense_web":
