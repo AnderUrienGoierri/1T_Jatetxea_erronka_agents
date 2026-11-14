@@ -94,6 +94,9 @@
             <button onclick="irekiFitxa('tab-zerbitzuak')" id="btn-tab-zerbitzuak" class="tab-btn py-3 px-4 border-b-2 border-rose-500 text-rose-400 font-bold transition">
                 Zerbitzuak, Ubikazioa & Adarkadura
             </button>
+            <button onclick="irekiFitxa('tab-aplikazioak')" id="btn-tab-aplikazioak" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                Aplikazioak & Bezeroak
+            </button>
             <button onclick="irekiFitxa('tab-docker')" id="btn-tab-docker" class="tab-btn py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
                 Docker Banaka & Taldeka
             </button>
@@ -146,7 +149,12 @@
                         <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Aplikazio Bezeroen Abiarazle Zentrala (Desktop, Web & TV)</h3>
                         <p class="text-[11px] text-slate-400">Klik bakar batean exekutatu edo ireki jatetxearen mahaigaineko, webeko eta mugikorreko aplikazioak.</p>
                     </div>
-                    <span class="text-[10px] font-mono text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">1-Klik Abiarazlea</span>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[10px] font-mono text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">1-Klik Abiarazlea</span>
+                        <button onclick="irekiFitxa('tab-aplikazioak')" class="px-2.5 py-1 bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 rounded text-[11px] font-bold transition">
+                            Ikusi Aplikazio Guztiak (13) &rarr;
+                        </button>
+                    </div>
                 </div>
                 <div class="flex flex-wrap gap-2 text-xs">
                     <button onclick="launchApp('csharp')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5">
@@ -263,6 +271,361 @@
                     </div>
                 </div>
                 <div id="txtFluxuStatus" class="mt-3 text-xs font-mono text-slate-400"></div>
+            </div>
+        </div>
+
+        <!-- 1.1 APLIKAZIOAK & EKOSISTEMA FITXA -->
+        <div id="tab-aplikazioak" class="tab-edukia hidden space-y-6">
+            <!-- GOIBURUA ETA LABURPENA -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                        <span>1T Jatetxea · Proiektuko Aplikazio Guztien Ekosistema</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">Bezero, zerbitzari, mahaigain, mugikor eta kudeaketa tresna guztiak. Klik bakar batean dagokion programa zuzen exekutatu edo proiektuaren karpeta ireki.</p>
+                </div>
+                <div class="flex items-center space-x-2 text-xs">
+                    <span class="px-2.5 py-1 bg-slate-800 text-slate-300 rounded font-semibold border border-slate-700">13 Aplikazio Guztira</span>
+                </div>
+            </div>
+
+            <!-- LABURPEN METRIKAK -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                    <div class="text-slate-400 font-medium">Mahaigaina (Desktop)</div>
+                    <div class="text-lg font-bold text-emerald-400">2 Aplikazio</div>
+                    <div class="text-[11px] text-slate-500 font-mono">C# TPV & JavaFX KDS</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                    <div class="text-slate-400 font-medium">Mugikorrak & TV</div>
+                    <div class="text-lg font-bold text-cyan-400">3 Aplikazio</div>
+                    <div class="text-[11px] text-slate-500 font-mono">Flutter Bezeroa, Zerbitzaria, Android TV</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                    <div class="text-slate-400 font-medium">Web Publikoa & ERP</div>
+                    <div class="text-lg font-bold text-sky-400">3 Aplikazio</div>
+                    <div class="text-[11px] text-slate-500 font-mono">Web PHP, Odoo 17, KDS TV</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                    <div class="text-slate-400 font-medium">Backend & Datu-Baseak</div>
+                    <div class="text-lg font-bold text-indigo-400">5 Zerbitzu</div>
+                    <div class="text-[11px] text-slate-500 font-mono">API, Txata, phpMyAdmin, Adminer, OPNsense</div>
+                </div>
+            </div>
+
+            <!-- IRAGAZKI BARRUA ETA BILAKETA -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-slate-400 mr-1 font-semibold">Iragazi:</span>
+                    <button onclick="aldatuAppKategoria('guztiak')" id="btn-kat-guztiak" class="btn-app-kat px-3 py-1.5 bg-rose-700 text-white rounded font-semibold border border-rose-600 transition">Guztiak (13)</button>
+                    <button onclick="aldatuAppKategoria('mahaigaina')" id="btn-kat-mahaigaina" class="btn-app-kat px-3 py-1.5 bg-slate-800 text-slate-300 rounded font-semibold border border-slate-700 transition">Mahaigaina (2)</button>
+                    <button onclick="aldatuAppKategoria('mugikorra')" id="btn-kat-mugikorra" class="btn-app-kat px-3 py-1.5 bg-slate-800 text-slate-300 rounded font-semibold border border-slate-700 transition">Mugikorrak & TV (3)</button>
+                    <button onclick="aldatuAppKategoria('web')" id="btn-kat-web" class="btn-app-kat px-3 py-1.5 bg-slate-800 text-slate-300 rounded font-semibold border border-slate-700 transition">Web & Kioskoak (3)</button>
+                    <button onclick="aldatuAppKategoria('backend')" id="btn-kat-backend" class="btn-app-kat px-3 py-1.5 bg-slate-800 text-slate-300 rounded font-semibold border border-slate-700 transition">Backend & DB (5)</button>
+                </div>
+                <div class="flex-1 max-w-xs">
+                    <input type="text" id="iptSearchApp" oninput="iragaziAplikazioak()" placeholder="Bilatu aplikazioa, teknologia edo rola..." class="w-full bg-slate-950 text-slate-200 px-3 py-1.5 rounded border border-slate-700 text-xs focus:outline-none focus:border-rose-500">
+                </div>
+            </div>
+
+            <!-- APLIKAZIOEN TXARTELEN GRIDA -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="gridAplikazioak">
+
+                <!-- 1. C# TPV -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-emerald-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="mahaigaina">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">Mahaigaina · TPV</span>
+                                <h3 class="text-sm font-bold text-white mt-1">C# TPV Areto & Kutxazaina</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">.NET 10</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Mahaien mapa interaktiboa, eskaerak sortu, produktuak gehitu, tiket fiskalak inprimatu eta kobrantzak erregistratzeko salmenta-puntu terminala.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Kutxazaina / Zerbitzari Burua</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> C# 13 / Windows Forms (.NET 10)</div>
+                            <div><span class="text-slate-500 font-semibold">Karpeta:</span> <span class="font-mono text-slate-300">01_aplikazioak/desktop_csharp</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('csharp')" class="flex-1 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-bold text-xs shadow transition text-center">Exekutatu C# TPV</button>
+                        <button onclick="openAppFolder('desktop_csharp')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 2. JavaFX Sukaldea KDS -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-amber-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="mahaigaina">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-amber-400 bg-amber-950 px-2 py-0.5 rounded border border-amber-800">Mahaigaina · KDS</span>
+                                <h3 class="text-sm font-bold text-white mt-1">JavaFX Sukaldea KDS Terminala</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Java 21</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Sukaldeko aginduen kudeaketa sistema natiboa (Kitchen Display System). Aginduak unean jaso, prestaketa denborak neurtu eta platerak bukatuta markatu.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Sukaldari Burua & Sukaldeko Taldea</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Java 21 / JavaFX 21 (Maven Wrapper)</div>
+                            <div><span class="text-slate-500 font-semibold">Karpeta:</span> <span class="font-mono text-slate-300">01_aplikazioak/desktop_javafx</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('javafx')" class="flex-1 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded font-bold text-xs shadow transition text-center">Exekutatu JavaFX KDS</button>
+                        <button onclick="openAppFolder('desktop_javafx')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 3. Web PHP Karta Publikoa -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-sky-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="web">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-sky-400 bg-sky-950 px-2 py-0.5 rounded border border-sky-800">Web Publikoa</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Web PHP Karta & Erreserbak</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8085</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Jatetxearen webgune publikoa. Gastronomia italiar-euskaldunaren karta, sasoiko platerak, alergenoen iragazkia, erreserbak eta bezeroen iritziak.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Bezero Orokorrak & Bisitariak</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> PHP 8.2 / Apache / Tailwind CSS</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8085 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('web', 'http://localhost:8085')" class="flex-1 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki Web Karta (8085)</button>
+                        <button onclick="openAppFolder('web_php')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 4. Flutter Bezeroa -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-cyan-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="mugikorra">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">Mugikorra · Flutter</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Flutter Bezero Aplikazioa</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Dart 3</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Mahaiko bezeroen smartphone aplikazioa. QR kodea eskaneatuz platerak aukeratu, auto-eskaera egin eta ordainketa digitala kudeatu.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Mahaiko Bezeroak (Smartphone)</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Flutter 3 / Dart (Android, iOS & Web)</div>
+                            <div><span class="text-slate-500 font-semibold">Karpeta:</span> <span class="font-mono text-slate-300">01_aplikazioak/mobile_bezeroa</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('mobile_bezeroa')" class="flex-1 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded font-bold text-xs shadow transition text-center">Exekutatu (Chrome Web)</button>
+                        <button onclick="openAppFolder('mobile_bezeroa')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 5. Flutter Zerbitzaria -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-cyan-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="mugikorra">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">Mugikorra · Flutter</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Flutter Zerbitzaria (Komandera)</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Dart 3</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Zerbitzarien eskuko komandera mugikorra. Mahaietan eskaerak azkar hartu, plateren ohar bereziak erantsi eta sukaldera zuzenean bidali.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Zerbitzariak & Areto-laguntzaileak</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Flutter 3 / Dart (Android, iOS & Web)</div>
+                            <div><span class="text-slate-500 font-semibold">Karpeta:</span> <span class="font-mono text-slate-300">01_aplikazioak/mobile_zerbitzaria</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('mobile_zerbitzaria')" class="flex-1 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded font-bold text-xs shadow transition text-center">Exekutatu (Chrome Web)</button>
+                        <button onclick="openAppFolder('mobile_zerbitzaria')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 6. Android TV Sukaldea KDS -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-rose-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="mugikorra">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-rose-400 bg-rose-950 px-2 py-0.5 rounded border border-rose-800">Telebista · KDS</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Android TV Sukaldea KDS</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Compose TV</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Sukaldeko telebistetarako eta pantaila handietarako Android TV interfaze natiboa. D-pad urruneko kontrolarekin nabigatzeko guztiz optimizatua.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Sukaldeko Telebista & Pantaila Nagusiak</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Kotlin / Jetpack Compose for Android TV</div>
+                            <div><span class="text-slate-500 font-semibold">Karpeta:</span> <span class="font-mono text-slate-300">01_aplikazioak/sukaldea_kds_android_tv</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="openAppFolder('sukaldea_kds_android_tv')" class="flex-1 py-1.5 bg-rose-700 hover:bg-rose-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki Android Proiektua</button>
+                        <button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki TV Web Kioskoa">TV Kiosk (8086)</button>
+                    </div>
+                </div>
+
+                <!-- 7. Sukaldea KDS TV Kioskoa -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-cyan-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="web">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">Web Kiosk · TV</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Sukaldea KDS TV Web Kiosk</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8086</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Sukaldeko pantaila nagusirako kiosk web bertsio arina. WebSocket bidez API zentralarekin sinkronizatuta, aginduak denbora errealean erakusten ditu soinu abisuekin.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Sukaldeko Pantaila Erraldoia</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> HTML5 / JavaScript / WebSocket / Nginx</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8086 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="w-full py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki KDS TV Kioskoa (8086)</button>
+                    </div>
+                </div>
+
+                <!-- 8. Odoo 17 ERP -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-purple-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="web">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-purple-400 bg-purple-950 px-2 py-0.5 rounded border border-purple-800">Enpresa Kudeaketa</span>
+                                <h3 class="text-sm font-bold text-white mt-1">1T Jatetxea Odoo 17 ERP</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8070</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Jatetxearen enpresa baliabideen planifikazio sistema integrala (ERP). Hornitzaileen albaranak, lehengaien stock inbentarioa, langileen nominak eta finantzak.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Zuzendaritza, Erosketak & Kontabilitatea</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Python 3 / Odoo 17 Community / PostgreSQL 15</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8070 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('odoo', 'http://localhost:8070')" class="flex-1 py-1.5 bg-purple-700 hover:bg-purple-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki Odoo ERP (8070)</button>
+                        <button onclick="openAppFolder('odoo_erp')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 9. ASP.NET Core REST API -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-indigo-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="backend">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">Backend Zentrala</span>
+                                <h3 class="text-sm font-bold text-white mt-1">ASP.NET Core REST API Zentrala</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 5050</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Ekosistemaren negozio logika zentrala (3-mailako arkitektura). 32 REST endpoint, SELECT ... FOR UPDATE transakzio pesimistak eta datu-base monitorizazioa.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Zerbitzari Orokorra (3-Mailako Arkitektura)</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> C# 13 / .NET 10 Minimal APIs</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:5050 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('api', 'http://localhost:5050/')" class="flex-1 py-1.5 bg-indigo-700 hover:bg-indigo-600 text-white rounded font-bold text-xs shadow transition text-center">Exekutatu API Kontsola</button>
+                        <button onclick="openAppFolder('backend_api')" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-semibold text-xs border border-slate-700 transition" title="Ireki iturburu-kodearen karpeta">Karpeta</button>
+                    </div>
+                </div>
+
+                <!-- 10. Barne Txata -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-violet-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="backend">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-800">Komunikazioa · Txata</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Jatetxearen Barne Txata</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 3001</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Sukaldearen, aretoaren eta kudeaketaren arteko denbora errealeko komunikazio txata, Socket.IO WebSockets bidez.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Sukaldea, Zerbitzariak & Aretoa</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> Node.js / Express / Socket.IO</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:3001 (HTTP / WS)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('chat', 'http://localhost:3001')" class="w-full py-1.5 bg-violet-700 hover:bg-violet-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki Barne Txata (3001)</button>
+                    </div>
+                </div>
+
+                <!-- 11. phpMyAdmin -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-orange-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="backend">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-orange-400 bg-orange-950 px-2 py-0.5 rounded border border-orange-800">Datu-Basea · MySQL</span>
+                                <h3 class="text-sm font-bold text-white mt-1">phpMyAdmin (MySQL 8.0)</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8081</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">MySQL datu-base nagusia (jatetxea_db) administratzeko web interfazea: taulak, SQL kontsultak, erabiltzaile baimenak eta inbentarioa.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Datu-Base Administratzaileak (DBA)</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> PHP / MySQL 8.0 InnoDB</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8081 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('phpmyadmin', 'http://localhost:8081')" class="w-full py-1.5 bg-orange-700 hover:bg-orange-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki phpMyAdmin (8081)</button>
+                    </div>
+                </div>
+
+                <!-- 12. Adminer -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-blue-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="backend">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-blue-400 bg-blue-950 px-2 py-0.5 rounded border border-blue-800">Datu-Basea · Postgres</span>
+                                <h3 class="text-sm font-bold text-white mt-1">Adminer (PostgreSQL 15)</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8082</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Odoo 17 ERP sistemaren PostgreSQL datu-basea (jatetxea_odoo) kudeatzeko web aplikazio arin eta eraginkorra.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> ERP Datu-Base Administratzaileak</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> PHP / PostgreSQL 15</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8082 (HTTP)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('adminer', 'http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo')" class="w-full py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded font-bold text-xs shadow transition text-center">Ireki Adminer (8082)</button>
+                    </div>
+                </div>
+
+                <!-- 13. OPNsense Suebakia -->
+                <div class="app-card-item bg-slate-900 border border-slate-800 hover:border-rose-600/50 rounded-xl p-4 flex flex-col justify-between transition shadow-md" data-category="backend">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-rose-400 bg-rose-950 px-2 py-0.5 rounded border border-rose-800">Sareak & Segurtasuna</span>
+                                <h3 class="text-sm font-bold text-white mt-1">OPNsense Suebakia & WebGUI</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Portua 8443</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Jatetxearen sare segmentazio osoa (VLAN 10 LAN, VLAN 20 DMZ, VLAN 99), suebaki erregelak, NAT eta Zero-Trust segurtasuna administratzeko kontrol-panela.</p>
+                        <div class="text-[11px] space-y-1 mb-4 text-slate-400">
+                            <div><span class="text-slate-500 font-semibold">Rola:</span> Sare Administratzailea & Segurtasuna</div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> FreeBSD / OPNsense WebGUI (HTTPS)</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8443 (HTTPS)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                        <button onclick="launchApp('opnsense', 'https://localhost:8443')" class="w-full py-1.5 bg-rose-900 hover:bg-rose-800 text-rose-200 rounded font-bold text-xs shadow transition text-center">Ireki OPNsense (8443)</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1130,6 +1493,53 @@
             } catch (err) {
                 idatziLog(`[ERROREA - ${appId}]: ${err.message}`);
             }
+        }
+
+        // APLIKAZIOEN KARPETA ESPLORATZAILEAN IREKITZEA
+        async function openAppFolder(appId) {
+            idatziLog(`[${unekoAdmin}]: Aplikazioaren karpeta irekitzen: ${appId}...`);
+            try {
+                const res = await fetch(`${API_BASE}/api/apps/open-folder/${encodeURIComponent(appId)}`, {
+                    method: 'POST',
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                idatziLog(data.message || `Karpeta irekita: ${appId}`);
+            } catch (err) {
+                idatziLog(`[ERROREA - Karpeta]: ${err.message}`);
+            }
+        }
+
+        let unekoAppKategoria = 'guztiak';
+
+        function aldatuAppKategoria(kat) {
+            unekoAppKategoria = kat;
+            document.querySelectorAll('.btn-app-kat').forEach(b => {
+                b.classList.remove('bg-rose-700', 'text-white', 'border-rose-600');
+                b.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-700');
+            });
+            const aktiboa = document.getElementById('btn-kat-' + kat);
+            if (aktiboa) {
+                aktiboa.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-700');
+                aktiboa.classList.add('bg-rose-700', 'text-white', 'border-rose-600');
+            }
+            iragaziAplikazioak();
+        }
+
+        function iragaziAplikazioak() {
+            const q = (document.getElementById('iptSearchApp')?.value || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.app-card-item');
+            cards.forEach(card => {
+                const kat = card.getAttribute('data-category') || '';
+                const testua = card.innerText.toLowerCase();
+                const katOK = (unekoAppKategoria === 'guztiak' || kat === unekoAppKategoria);
+                const searchOK = (!q || testua.includes(q));
+                if (katOK && searchOK) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
         }
 
         async function kargatuDocker() {

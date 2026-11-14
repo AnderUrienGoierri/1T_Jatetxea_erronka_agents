@@ -393,14 +393,14 @@ app.MapPost("/api/vbox/stop-all", async (HttpContext ctx) =>
 });
 
 // ---------------------------------------------------------------------------
-// 3.1 APLIKAZIOAK EXEKUTATZEKO / IREKITZEKO ENDPOINT-A (WEB & MAHAIGAINA)
+// 3.1 APLIKAZIOAK EXEKUTATZEKO / IREKITZEKO ENDPOINT-A (WEB & MAHAIGAINA & MUGIKORRAK)
 // ---------------------------------------------------------------------------
 app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 {
     string user = ctx.Request.Headers["X-Admin-User"].FirstOrDefault() ?? "Admin";
     LogAction(user, "APP_LAUNCH", $"Aplikazioa exekutatzen: {appId}");
 
-    string agentsDir = Path.Combine(projectRoot, "1T_Jatetxea_erronka_agents");
+    string appsDir = Path.Combine(projectRoot, "01_aplikazioak");
 
     switch (appId.ToLowerInvariant())
     {
@@ -418,33 +418,49 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "odoo":
         case "jatetxea-odoo":
         case "odoo_erp":
-            OpenSystemBrowser("http://localhost:8070");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8070", Message = "1T Jatetxea Odoo 17 ERP irekita (8070)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d db-odoo jatetxea-odoo", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:8070");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8070", Message = "1T Jatetxea Odoo 17 ERP irekitzen (8070)..." });
 
         case "kds_tv":
         case "jatetxea-kds-tv":
-            OpenSystemBrowser("http://localhost:8086");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8086", Message = "Sukaldeko KDS TV pantaila irekita (8086)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d jatetxea-kds-tv", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:8086");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8086", Message = "Sukaldeko KDS TV pantaila irekitzen (8086)..." });
 
         case "android_tv":
         case "kds_android":
-            string androidPath = Path.Combine(projectRoot, "01_aplikazioak", "sukaldea_kds_android_tv");
-            Process.Start(new ProcessStartInfo
+        case "sukaldea_kds_android_tv":
+            string androidPath = Path.Combine(appsDir, "sukaldea_kds_android_tv");
+            if (Directory.Exists(androidPath))
             {
-                FileName = "explorer.exe",
-                Arguments = androidPath,
-                UseShellExecute = true
-            });
-            return Results.Ok(new { Success = true, Message = "Sukaldea Android TV (Jetpack Compose) proiektua irekita." });
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = $"\"{androidPath}\"",
+                    UseShellExecute = true
+                });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektuaren karpeta irekita." });
+            }
+            return Results.Ok(new { Success = false, Message = "sukaldea_kds_android_tv karpeta ez da aurkitu." });
 
         case "api":
         case "jatetxea-api":
+        case "backend_api":
         case "swagger":
             // 1. MySQL datu-basea eta APIa ziurtatu Dockerren
             _ = RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin jatetxea-api", dockerDir);
 
             // 2. Kontsolako leiho erreala abiarazi zuzenean logak bistaratzeko
-            string apiDir = Path.Combine(projectRoot, "01_aplikazioak", "backend_api");
+            string apiDir = Path.Combine(appsDir, "backend_api");
             string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
 
             if (File.Exists(batPath))
@@ -465,8 +481,13 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 
         case "chat":
         case "jatetxea-chat":
-            OpenSystemBrowser("http://localhost:3001");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:3001", Message = "Barne Txat zerbitzaria irekita (3001)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d jatetxea-chat", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:3001");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:3001", Message = "Barne Txat zerbitzaria irekitzen (3001)." });
 
         case "phpmyadmin":
         case "mysql_web":
@@ -498,13 +519,13 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "csharp":
         case "desktop_csharp":
         case "tpv":
-            string csharpProject = Path.Combine(agentsDir, "desktop_csharp", "Jatetxea.Desktop.csproj");
+            string csharpProject = Path.Combine(appsDir, "desktop_csharp", "Jatetxea.Desktop.csproj");
             if (File.Exists(csharpProject))
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "dotnet",
-                    Arguments = $"run --project \"{csharpProject}\"",
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start \"1T Jatetxea - C# TPV Terminala\" dotnet run --project \"{csharpProject}\"",
                     WorkingDirectory = Path.GetDirectoryName(csharpProject),
                     UseShellExecute = true
                 });
@@ -515,14 +536,14 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "javafx":
         case "desktop_javafx":
         case "kds_javafx":
-            string javafxDir = Path.Combine(agentsDir, "desktop_javafx");
+            string javafxDir = Path.Combine(appsDir, "desktop_javafx");
             string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
             if (File.Exists(mvnwCmd))
             {
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/c mvnw.cmd javafx:run",
+                    Arguments = "/c start \"1T Jatetxea - JavaFX Sukaldea KDS\" mvnw.cmd javafx:run",
                     WorkingDirectory = javafxDir,
                     UseShellExecute = true
                 });
@@ -530,9 +551,78 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
 
+        case "mobile_bezeroa":
+        case "flutter_bezeroa":
+            string bezeroaDir = Path.Combine(appsDir, "mobile_bezeroa");
+            if (Directory.Exists(bezeroaDir))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c start \"1T Jatetxea - Flutter Bezeroa (Web)\" flutter run -d chrome",
+                    WorkingDirectory = bezeroaDir,
+                    UseShellExecute = true
+                });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "Flutter Bezero Mugikorra (Chrome Web moduan) abiarazten..." });
+            }
+            return Results.Ok(new { Success = false, Message = "mobile_bezeroa karpeta ez da aurkitu." });
+
+        case "mobile_zerbitzaria":
+        case "flutter_zerbitzaria":
+            string zerbitzariaDir = Path.Combine(appsDir, "mobile_zerbitzaria");
+            if (Directory.Exists(zerbitzariaDir))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c start \"1T Jatetxea - Flutter Zerbitzaria (Web)\" flutter run -d chrome",
+                    WorkingDirectory = zerbitzariaDir,
+                    UseShellExecute = true
+                });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "Flutter Zerbitzari Komandera (Chrome Web moduan) abiarazten..." });
+            }
+            return Results.Ok(new { Success = false, Message = "mobile_zerbitzaria karpeta ez da aurkitu." });
+
         default:
             return Results.BadRequest(new { Success = false, Message = $"Aplikazio ezezaguna: {appId}" });
     }
+});
+
+// ---------------------------------------------------------------------------
+// 3.2 PROIEKTUAREN KARPETA ESPLORATZAILEAN IREKITZEKO ENDPOINT-A
+// ---------------------------------------------------------------------------
+app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
+{
+    string user = ctx.Request.Headers["X-Admin-User"].FirstOrDefault() ?? "Admin";
+    LogAction(user, "APP_FOLDER_OPEN", $"Aplikazioaren karpeta irekitzen: {appId}");
+
+    string appsDir = Path.Combine(projectRoot, "01_aplikazioak");
+    string targetDir = appId.ToLowerInvariant() switch
+    {
+        "csharp" or "desktop_csharp" or "tpv" => Path.Combine(appsDir, "desktop_csharp"),
+        "javafx" or "desktop_javafx" or "kds_javafx" => Path.Combine(appsDir, "desktop_javafx"),
+        "mobile_bezeroa" or "flutter_bezeroa" => Path.Combine(appsDir, "mobile_bezeroa"),
+        "mobile_zerbitzaria" or "flutter_zerbitzaria" => Path.Combine(appsDir, "mobile_zerbitzaria"),
+        "android_tv" or "sukaldea_kds_android_tv" => Path.Combine(appsDir, "sukaldea_kds_android_tv"),
+        "web" or "web_php" => Path.Combine(appsDir, "web_php"),
+        "odoo" or "odoo_erp" => Path.Combine(appsDir, "odoo_erp"),
+        "api" or "backend_api" => Path.Combine(appsDir, "backend_api"),
+        "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin_IT_zentrala"),
+        _ => Path.Combine(appsDir, appId)
+    };
+
+    if (Directory.Exists(targetDir))
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "explorer.exe",
+            Arguments = $"\"{targetDir}\"",
+            UseShellExecute = true
+        });
+        return Results.Ok(new { Success = true, Path = targetDir, Message = $"Karpeta irekita: {Path.GetFileName(targetDir)}" });
+    }
+
+    return Results.BadRequest(new { Success = false, Message = $"Karpeta ez da aurkitu: {targetDir}" });
 });
 
 // ---------------------------------------------------------------------------
