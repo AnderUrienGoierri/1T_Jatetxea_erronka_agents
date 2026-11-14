@@ -234,9 +234,11 @@ app.MapPost("/api/docker/flow/start", async (HttpContext ctx) =>
 
     var steps = new List<object>();
 
-    // 1. URRATSA: Datu-Baseak (MySQL + PostgreSQL)
-    var step1 = await RunCommandAsync("docker", "compose up -d jatetxea-db db-odoo", dockerDir);
-    steps.Add(new { Phase = 1, Name = "Datu-Baseak (MySQL 3308 & PostgreSQL 5432)", Status = "Martxan jarrita", Output = step1 });
+    // 1. URRATSA: Datu-Baseak (MySQL + PostgreSQL + phpMyAdmin + Adminer)
+    var step1 = await RunCommandAsync("docker", "compose up -d jatetxea-db db-odoo phpmyadmin adminer", dockerDir);
+    steps.Add(new { Phase = 1, Name = "Datu-Baseak (MySQL 3308, PostgreSQL 5432, phpMyAdmin 8081, Adminer 8082)", Status = "Martxan jarrita", Output = step1 });
+    OpenSystemBrowser("http://localhost:8081");
+    OpenSystemBrowser("http://localhost:8082");
     await Task.Delay(2500); // DB initializazio tartea
 
     // 2. URRATSA: Backend eta API Zentrala (.NET API + Chat)
@@ -430,6 +432,18 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             OpenSystemBrowser("http://localhost:3001");
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:3001", Message = "Barne Txat zerbitzaria irekita (3001)." });
 
+        case "phpmyadmin":
+        case "mysql_web":
+        case "mysql":
+            OpenSystemBrowser("http://localhost:8081");
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8081", Message = "phpMyAdmin MySQL kudeatzailea irekita (8081)." });
+
+        case "adminer":
+        case "postgres_web":
+        case "postgres":
+            OpenSystemBrowser("http://localhost:8082");
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082", Message = "Adminer PostgreSQL kudeatzailea irekita (8082)." });
+
         case "opnsense":
         case "opnsense_web":
             OpenSystemBrowser("https://localhost:8443");
@@ -493,7 +507,9 @@ var zerbitzuenKatalogoa = new[]
         Fluxua: "ASP.NET Core APIak (portu 5000) eta Odoo sistemak kontsultatzen dute TCP/IP socket bidez (portu 3306 barnean, 3308 kanpoan). Bezeroek eta Web publikoak EZIN dute zuzenean DB kontsultatu.",
         Segurtasuna: "Erabiltzaile eta pasahitz zifratua. Zero-Trust printzipioa: DMZtik konexio zuzenak blokeatuta OPNsense suebakian. Soilik LANeko APIak du sarbidea.",
         Protokoloa: "MySQL Protocol (TCP / SSL gaitua)",
-        HealthCheck: "SELECT 1 / TCP Port 3308"
+        HealthCheck: "SELECT 1 / TCP Port 3308",
+        AppUrl: "http://localhost:8081",
+        AppLauncherId: "phpmyadmin"
     ),
     new ServiceDefinition(
         Id: "api",
@@ -593,7 +609,9 @@ var zerbitzuenKatalogoa = new[]
         Fluxua: "Odoo 17 ERP-aren transakzio eta taula guztiak gordetzen ditu (erabiltzaileak, HR, asistentziak).",
         Segurtasuna: "pg_hba.conf bidez Docker barneko sareari soilik baimendua. Kanpoko sarbide zuzena mugatua.",
         Protokoloa: "PostgreSQL Wire Protocol (TCP 5432)",
-        HealthCheck: "TCP Port 5432"
+        HealthCheck: "TCP Port 5432",
+        AppUrl: "http://localhost:8082",
+        AppLauncherId: "adminer"
     ),
     new ServiceDefinition(
         Id: "opnsense_web",
