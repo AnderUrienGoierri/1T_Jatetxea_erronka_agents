@@ -1193,12 +1193,30 @@ static async Task<(bool Online, long LatencyMs)> TestPortWithLatencyAsync(string
         var timeoutTask = Task.Delay(timeoutMs);
 
         var completed = await Task.WhenAny(connectTask, timeoutTask);
-        sw.Stop();
-
         if (completed == connectTask && client.Connected)
         {
+            sw.Stop();
             return (true, sw.ElapsedMilliseconds);
         }
+
+        // Loopback bada (127.0.0.1), probatu IPv6 Loopback ([::1]) ere talka/Docker relay kasuetarako
+        if (host == "127.0.0.1" || host == "localhost")
+        {
+            try
+            {
+                using var client6 = new TcpClient(System.Net.Sockets.AddressFamily.InterNetworkV6);
+                var task6 = client6.ConnectAsync(System.Net.IPAddress.IPv6Loopback, port);
+                var comp6 = await Task.WhenAny(task6, Task.Delay(timeoutMs));
+                if (comp6 == task6 && client6.Connected)
+                {
+                    sw.Stop();
+                    return (true, sw.ElapsedMilliseconds);
+                }
+            }
+            catch { }
+        }
+
+        sw.Stop();
         return (false, 0);
     }
     catch
