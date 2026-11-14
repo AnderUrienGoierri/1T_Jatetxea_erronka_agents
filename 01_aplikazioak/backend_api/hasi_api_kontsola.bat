@@ -5,7 +5,8 @@ cd /d "%~dp0"
 echo ============================================================
 echo   1T JATETXEA - ASP.NET CORE REST API (PORTUA: 5050)
 echo   MySQL Konexioa: localhost:3308 (jatetxea_db)
+echo   Logak eta Egoera Zuzenean
 echo ============================================================
 echo.
-dotnet run --launch-profile http
+docker logs -f --tail 50 jatetxea_api
 pause

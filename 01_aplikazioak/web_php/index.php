@@ -21,33 +21,41 @@ $platerak = ($resPlaterak['status'] === 200 && isset($resPlaterak['data']['dataL
 
 $api_online = ($resPlaterak['status'] === 200);
 
-$resAhalmena = call_api('GET', "$api_base_url/platerak/erabilgarritasuna");
 $ahalmenaMap = [];
-if ($resAhalmena['status'] === 200 && isset($resAhalmena['data']['dataList'])) {
-    foreach ($resAhalmena['data']['dataList'] as $item) {
-        $ahalmenaMap[$item['plateraId']] = (int)$item['eginDaitezkeenPlaterak'];
+$mahaiak = [];
+$iritziak = [];
+$estatistikak = [
+    'guztiraIritziak' => 0,
+    'batazBestekoBalorazioa' => 0.0,
+    'bostIzarrak' => 0, 'lauIzarrak' => 0, 'hiruIzarrak' => 0,
+    'biIzarrak' => 0, 'izarBat' => 0, 'zeroIzar' => 0
+];
+
+if ($api_online) {
+    $resAhalmena = call_api('GET', "$api_base_url/platerak/erabilgarritasuna");
+    if ($resAhalmena['status'] === 200 && isset($resAhalmena['data']['dataList'])) {
+        foreach ($resAhalmena['data']['dataList'] as $item) {
+            $ahalmenaMap[$item['plateraId']] = (int)$item['eginDaitezkeenPlaterak'];
+        }
+    }
+
+    $resMahaiak = call_api('GET', "$api_base_url/mahaiak");
+    if ($resMahaiak['status'] === 200 && isset($resMahaiak['data']['dataList'])) {
+        $mahaiak = $resMahaiak['data']['dataList'];
+    }
+
+    $resIritziak = call_api('GET', "$api_base_url/iritziak");
+    if ($resIritziak['status'] === 200 && isset($resIritziak['data']['dataList'])) {
+        $iritziak = $resIritziak['data']['dataList'];
+    }
+
+    $resEstatistikak = call_api('GET', "$api_base_url/iritziak/estatistikak");
+    if ($resEstatistikak['status'] === 200 && isset($resEstatistikak['data']['data'])) {
+        $estatistikak = $resEstatistikak['data']['data'];
+    } else {
+        $estatistikak['guztiraIritziak'] = count($iritziak);
     }
 }
-
-$resMahaiak = call_api('GET', "$api_base_url/mahaiak");
-$mahaiak = ($resMahaiak['status'] === 200 && isset($resMahaiak['data']['dataList']))
-    ? $resMahaiak['data']['dataList']
-    : [];
-
-$resIritziak = call_api('GET', "$api_base_url/iritziak");
-$iritziak = ($resIritziak['status'] === 200 && isset($resIritziak['data']['dataList']))
-    ? $resIritziak['data']['dataList']
-    : [];
-
-$resEstatistikak = call_api('GET', "$api_base_url/iritziak/estatistikak");
-$estatistikak = ($resEstatistikak['status'] === 200 && isset($resEstatistikak['data']['data']))
-    ? $resEstatistikak['data']['data']
-    : [
-        'guztiraIritziak' => count($iritziak),
-        'batazBestekoBalorazioa' => 0.0,
-        'bostIzarrak' => 0, 'lauIzarrak' => 0, 'hiruIzarrak' => 0,
-        'biIzarrak' => 0, 'izarBat' => 0, 'zeroIzar' => 0
-    ];
 
 // 3. FLASH MEZUAK BERRESKURATU ETA GARBITU
 $flash_success = $_SESSION['flash_success'] ?? null;

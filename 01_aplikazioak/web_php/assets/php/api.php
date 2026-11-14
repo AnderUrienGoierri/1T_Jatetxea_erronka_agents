@@ -22,11 +22,27 @@ if (!$api_base_url) {
  * @return array Erantzunaren kodea, datuak eta erroreak
  */
 function call_api($method, $url, $payload = null) {
+    $res = execute_http_request($method, $url, $payload);
+
+    // Docker sareko jatetxea-api:5000 erantzunik gabe badago, probatu ostalariaren portu lokala (host.docker.internal:5050)
+    if (($res['status'] === 0 || $res['status'] >= 500) && strpos($url, 'jatetxea-api:5000') !== false) {
+        $fallbackUrl = str_replace('jatetxea-api:5000', 'host.docker.internal:5050', $url);
+        $resFallback = execute_http_request($method, $fallbackUrl, $payload);
+        if ($resFallback['status'] > 0 && $resFallback['status'] < 500) {
+            return $resFallback;
+        }
+    }
+
+    return $res;
+}
+
+function execute_http_request($method, $url, $payload = null) {
     if (function_exists('curl_init')) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
         $headers = ['Accept: application/json'];
@@ -56,7 +72,7 @@ function call_api($method, $url, $payload = null) {
         $opts = [
             'http' => [
                 'method' => $method,
-                'timeout' => 6,
+                'timeout' => 2,
                 'ignore_errors' => true,
                 'header' => "Accept: application/json\r\n"
             ]

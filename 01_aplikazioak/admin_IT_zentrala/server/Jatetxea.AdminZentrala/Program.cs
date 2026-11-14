@@ -250,8 +250,6 @@ app.MapPost("/api/docker/flow/start", async (HttpContext ctx) =>
     // 1. URRATSA: Datu-Baseak (MySQL + PostgreSQL + phpMyAdmin + Adminer)
     var step1 = await RunCommandAsync("docker", "compose up -d jatetxea-db db-odoo phpmyadmin adminer", dockerDir);
     steps.Add(new { Phase = 1, Name = "Datu-Baseak (MySQL 3308, PostgreSQL 5432, phpMyAdmin 8081, Adminer 8082)", Status = "Martxan jarrita", Output = step1 });
-    OpenSystemBrowser("http://localhost:8081");
-    OpenSystemBrowser("http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo");
     await Task.Delay(2500); // DB initializazio tartea
 
     // 2. URRATSA: Backend eta API Zentrala (.NET API + Chat)
@@ -409,8 +407,13 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "web":
         case "jatetxea-web":
         case "web_php":
-            OpenSystemBrowser("http://localhost:8085");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8085", Message = "Web PHP bezeroa irekita (8085)." });
+            _ = Task.Run(async () =>
+            {
+                await RunCommandAsync("docker", "compose up -d jatetxea-db jatetxea-api jatetxea-web", dockerDir);
+                await Task.Delay(500);
+                OpenSystemBrowser("http://localhost:8085");
+            });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8085", Message = "Web PHP bezeroa abiarazten eta irekitzen (8085)..." });
 
         case "odoo":
         case "jatetxea-odoo":
@@ -437,16 +440,12 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api":
         case "jatetxea-api":
         case "swagger":
-            // 1. MySQL datu-basea ziurtatu Dockerren
-            _ = RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin", dockerDir);
+            // 1. MySQL datu-basea eta APIa ziurtatu Dockerren
+            _ = RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin jatetxea-api", dockerDir);
 
-            // 2. Dockerreko jatetxea_api gelditu, portu talkarik ez egoteko kontsolako aplikazioarekin
-            _ = RunCommandAsync("docker", "stop jatetxea_api", dockerDir);
-
-            // 3. Kontsolako leiho erreala abiarazi C# backend_api proiektuarekin
+            // 2. Kontsolako leiho erreala abiarazi zuzenean logak bistaratzeko
             string apiDir = Path.Combine(projectRoot, "01_aplikazioak", "backend_api");
             string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
-            string apiProj = Path.Combine(apiDir, "Jatetxea.Api.csproj");
 
             if (File.Exists(batPath))
             {
@@ -458,25 +457,11 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                     UseShellExecute = true
                 });
             }
-            else if (File.Exists(apiProj))
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/k title 1T Jatetxea - ASP.NET Core REST API & cd /d \"{apiDir}\" & dotnet run --launch-profile http",
-                    WorkingDirectory = apiDir,
-                    UseShellExecute = true
-                });
-            }
 
-            // 4. Nabigatzailea ireki atzerapen txiki batekin zerbitzaria martxan egon dadin
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(1800);
-                OpenSystemBrowser("http://localhost:5050/");
-            });
+            // 3. Nabigatzailea ireki 5050 atakan
+            OpenSystemBrowser("http://localhost:5050/");
 
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "ASP.NET Core REST API kontsolan eta nabigatzailean abiarazita." });
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "ASP.NET Core REST API eta kontsolako logak irekita." });
 
         case "chat":
         case "jatetxea-chat":
