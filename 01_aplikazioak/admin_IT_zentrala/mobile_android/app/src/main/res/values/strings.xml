@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">1T IT Kontrol</string>
+    <string name="server_url">http://localhost:5000</string>
+    <string name="title_activity_main">1T Jatetxea - IT Kontrol Zentrala</string>
+    <string name="connection_usb">USB Konexioa (localhost:5000)</string>
+    <string name="connection_wifi">WiFi Sarea (192.168.1.168:5000)</string>
+    <string name="connection_custom">IP Pertsonalizatua...</string>
+    <string name="connected">Linean</string>
+    <string name="disconnected">Deskonektatuta</string>
+    <string name="retry">Birkonektatu</string>
+    <string name="error_loading">Ezin izan da IT Kontrol Zentralarekin konektatu.\nZiurtatu zerbitzaria martxan dagoela ordenagailuan (portua 5000).</string>
+</resources>

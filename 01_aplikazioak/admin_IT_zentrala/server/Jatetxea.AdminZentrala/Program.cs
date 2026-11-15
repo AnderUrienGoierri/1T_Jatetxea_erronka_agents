@@ -687,6 +687,23 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             return Results.Ok(new { Success = false, Message = "mobile_zerbitzaria karpeta ez da aurkitu." });
 
+        case "admin_mobile":
+        case "mobile_admin":
+        case "admin_android":
+            _ = Task.Run(async () =>
+            {
+                string adbPath = @"D:\Android\Sdk\platform-tools\adb.exe";
+                if (!File.Exists(adbPath)) adbPath = "adb";
+
+                // 1. Port forwarding reverse ezarri mugikorrerako
+                await RunCommandAsync(adbPath, "reverse tcp:5000 tcp:5000", appsDir);
+                await RunCommandAsync(adbPath, "reverse tcp:5050 tcp:5050", appsDir);
+
+                // 2. Aplikazioa gailuan abiarazi
+                await RunCommandAsync(adbPath, "shell am start -n eus.goierri.jatetxea.adminzentrala/.MainActivity", appsDir);
+            });
+            return Results.Ok(new { Success = true, IsUrl = false, Message = "1T IT Kontrol Zentrala mugikorrean abiarazten (USB / WiFi)..." });
+
         default:
             return Results.BadRequest(new { Success = false, Message = $"Aplikazio ezezaguna: {appId}" });
     }
@@ -711,6 +728,7 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
         "web" or "web_php" => Path.Combine(appsDir, "web_php"),
         "odoo" or "odoo_erp" => Path.Combine(appsDir, "odoo_erp"),
         "api" or "backend_api" => Path.Combine(appsDir, "backend_api"),
+        "admin_mobile" or "mobile_admin" => Path.Combine(appsDir, "admin_IT_zentrala", "mobile_android"),
         "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin_IT_zentrala"),
         _ => Path.Combine(appsDir, appId)
     };
