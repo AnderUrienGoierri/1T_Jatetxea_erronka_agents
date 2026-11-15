@@ -43,7 +43,7 @@ public class ApiZerbitzua {
             }
         } catch (Exception ignored) {
         }
-        return "http://localhost:5000/api/v1";
+        return "http://localhost:5050/api/v1";
     }
 
     public ApiZerbitzua() {
@@ -58,6 +58,9 @@ public class ApiZerbitzua {
                 .uri(URI.create(BASE_URL + bidea))
                 .timeout(Duration.ofSeconds(5))
                 .header("Accept", "application/json")
+                .header("X-App-Id", "javafx_kds")
+                .header("X-App-Name", "JavaFX Sukaldea KDS")
+                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
                 .GET()
                 .build();
 
@@ -75,7 +78,10 @@ public class ApiZerbitzua {
                 .uri(URI.create(BASE_URL + bidea))
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
-                .header("Accept", "application/json");
+                .header("Accept", "application/json")
+                .header("X-App-Id", "javafx_kds")
+                .header("X-App-Name", "JavaFX Sukaldea KDS")
+                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)");
 
         if ("POST".equalsIgnoreCase(metodoa)) {
             builder.POST(HttpRequest.BodyPublishers.ofString(jsonGorputza));
@@ -117,6 +123,9 @@ public class ApiZerbitzua {
                         .uri(URI.create(u))
                         .timeout(Duration.ofSeconds(2))
                         .header("Accept", "application/json")
+                        .header("X-App-Id", "javafx_kds")
+                        .header("X-App-Name", "JavaFX Sukaldea KDS")
+                        .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
                         .GET()
                         .build();
                 HttpResponse<String> res = bezeroa.send(req, HttpResponse.BodyHandlers.ofString());

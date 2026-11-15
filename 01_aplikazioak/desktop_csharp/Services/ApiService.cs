@@ -26,6 +26,9 @@ public class ApiService
             BaseAddress = new Uri(_baseUrl + "/"),
             Timeout = TimeSpan.FromSeconds(2.5)
         };
+        _http.DefaultRequestHeaders.Add("X-App-Id", "csharp_tpv");
+        _http.DefaultRequestHeaders.Add("X-App-Name", "C# TPV Areto & Kutxazaina");
+        _http.DefaultRequestHeaders.UserAgent.ParseAdd("Jatetxea.Desktop/1.0 (WindowsForms .NET10)");
     }
 
     private static string LoadBaseUrlFromConfig()
@@ -47,7 +50,7 @@ public class ApiService
             }
         }
         catch { }
-        return "http://localhost:5000/api/v1";
+        return "http://localhost:5050/api/v1";
     }
 
     /// <summary>

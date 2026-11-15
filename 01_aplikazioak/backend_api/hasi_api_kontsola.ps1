@@ -9,6 +9,7 @@ $host.UI.RawUI.ForegroundColor = "White"
 
 $apiUrl = "http://localhost:5050/health"
 $apiBaseUrl = "http://localhost:5050/"
+$appsOnlineUrl = "http://localhost:5050/api/v1/aplikazioak-linean"
 $dbHost = "localhost:3308"
 $dbName = "jatetxea_db"
 
@@ -72,11 +73,11 @@ while ($true) {
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host "  1T JATETXEA - ASP.NET CORE REST API (PORTUA: 5050)                            " -ForegroundColor White
     Write-Host "  MySQL Zerbitzaria: $dbHost ($dbName) | REST API: $apiBaseUrl" -ForegroundColor Cyan
-    Write-Host "  Denbora Errealeko Konexioaren eta Log-en Monitorea                             " -ForegroundColor Gray
+    Write-Host "  Denbora Errealeko Konexioaren eta Aplikazioen Monitorea                       " -ForegroundColor Gray
     Write-Host "================================================================================" -ForegroundColor White
     Write-Host ""
 
-    # 3. Egoeraren arabera kolore bereizgarriak (Berdea / Gorria / Horia)
+    # 3. Datu-basearen egoeraren arabera kolore bereizgarriak (Berdea / Gorria / Horia)
     if ($isHealthy) {
         Write-Host "================================================================================" -ForegroundColor Green
         Write-Host "  [$nowStr] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!                      " -ForegroundColor Green
@@ -103,11 +104,59 @@ while ($true) {
         Write-Host "================================================================================" -ForegroundColor Yellow
     }
 
+    # 4. KONEKTATUTAKO APLIKAZIOAK (DENBORA ERREALEAN APIA ERABILTZEN)
+    Write-Host ""
+    Write-Host "Konektatutako Aplikazioak (Denbora Errealean APIa Erabiltzen):" -ForegroundColor Cyan
+    Write-Host "--------------------------------------------------------------------------------" -ForegroundColor DarkGray
+
+    try {
+        $appsReq = [System.Net.HttpWebRequest]::Create($appsOnlineUrl)
+        $appsReq.Timeout = 1200
+        $appsReq.Method = "GET"
+        $appsResp = $appsReq.GetResponse()
+        $appsStream = $appsResp.GetResponseStream()
+        $appsReader = New-Object System.IO.StreamReader($appsStream)
+        $appsJson = $appsReader.ReadToEnd()
+        $appsResp.Close()
+
+        $appsData = $appsJson | ConvertFrom-Json
+
+        if ($appsData -and $appsData.aplikazioak) {
+            foreach ($app in $appsData.aplikazioak) {
+                # Formatua: [EGOERA] Izena | IP | Azkena: ...
+                $izenaZabal = ($app.izena).PadRight(31)
+
+                if ($app.egoera -eq "AKTIBO") {
+                    Write-Host "  [AKTIBO]     " -ForegroundColor Green -NoNewline
+                    Write-Host "$izenaZabal " -ForegroundColor White -NoNewline
+                    Write-Host "| IP: $($app.ip) | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor Green
+                }
+                elseif ($app.egoera -eq "ISILIK") {
+                    Write-Host "  [ISILIK]     " -ForegroundColor Yellow -NoNewline
+                    Write-Host "$izenaZabal " -ForegroundColor Gray -NoNewline
+                    Write-Host "| IP: $($app.ip) | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkYellow
+                }
+                else {
+                    Write-Host "  [DESKONEKT.] " -ForegroundColor DarkGray -NoNewline
+                    Write-Host "$izenaZabal " -ForegroundColor DarkGray -NoNewline
+                    Write-Host "| Ez da oraindik konektatu" -ForegroundColor DarkGray
+                }
+            }
+        } else {
+            Write-Host "  (Ez dago aplikaziorik erregistratuta)" -ForegroundColor DarkGray
+        }
+    }
+    catch {
+        Write-Host "  (Ezin izan da aplikazioen egoera lortu - REST APIa ez dago erabilgarri)" -ForegroundColor DarkGray
+    }
+
+    Write-Host "--------------------------------------------------------------------------------" -ForegroundColor DarkGray
+
+    # 5. Azken API Logak eta Bezeroen Eskaerak (docker logs)
     Write-Host ""
     Write-Host "Azken API Logak eta Bezeroen Eskaerak (docker logs):" -ForegroundColor Gray
     Write-Host "--------------------------------------------------------------------------------" -ForegroundColor DarkGray
 
-    # Docker-eko azken log erabilgarriak lortu, mezu zahar errepikakorrak iragaziz
     try {
         $rawLogs = docker logs --tail 30 jatetxea_api 2>$null
         $filtered = $rawLogs | Where-Object {

@@ -35,6 +35,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
+// Konektatutako bezeroak eta aplikazioak denbora errealean erregistratzeko middleware-a
+app.Use(async (context, next) =>
+{
+    string path = context.Request.Path.Value ?? "";
+
+    // Monitorearen polling bera ez erregistratu aplikazio arrunt gisa
+    if (!path.Equals("/api/v1/aplikazioak-linean", StringComparison.OrdinalIgnoreCase) &&
+        !path.Equals("/favicon.ico", StringComparison.OrdinalIgnoreCase))
+    {
+        string appId = AplikazioMonitoreZerbitzua.IdentifikatuAplikazioa(context);
+        string ip = context.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
+        AplikazioMonitoreZerbitzua.ErregistratuEskaera(appId, ip, $"{context.Request.Method} {path}");
+    }
+
+    await next();
+});
+
 // Datu-baseko salbuespenen kudeaketa globala (503 Service Unavailable JSON garbian)
 app.Use(async (context, next) =>
 {
@@ -202,6 +219,9 @@ app.MapGet("/health", () =>
 });
 
 app.MapGet("/api/v1/health", () => Results.Redirect("/health"));
+
+// Denbora errealean konektatutako aplikazioen zerrenda
+app.MapGet("/api/v1/aplikazioak-linean", () => Results.Ok(AplikazioMonitoreZerbitzua.LortuEgoeraLaburpena()));
 
 app.MapControllers();
 

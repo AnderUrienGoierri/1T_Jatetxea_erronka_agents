@@ -995,6 +995,9 @@ app.MapGet("/api/health/ports", async () =>
             try
             {
                 using var http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(800) };
+                http.DefaultRequestHeaders.Add("X-App-Id", "admin_it");
+                http.DefaultRequestHeaders.Add("X-App-Name", "Admin IT Zentrala (Portu 5000)");
+                http.DefaultRequestHeaders.UserAgent.ParseAdd("Jatetxea.AdminZentrala/1.0");
                 var healthRes = await http.GetAsync($"http://{s.Host}:{s.Port}/health");
                 dbConnected = healthRes.IsSuccessStatusCode;
             }

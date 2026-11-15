@@ -45,7 +45,12 @@ function execute_http_request($method, $url, $payload = null) {
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
-        $headers = ['Accept: application/json'];
+        $headers = [
+            'Accept: application/json',
+            'X-App-Id: web_php',
+            'X-App-Name: Web PHP Frontend Publikoa'
+        ];
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Jatetxea-Web-PHP/1.0 (Apache PHP 8.2)');
 
         if ($payload !== null) {
             $jsonData = json_encode($payload);
