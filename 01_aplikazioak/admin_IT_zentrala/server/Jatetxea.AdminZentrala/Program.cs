@@ -623,35 +623,68 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "csharp":
         case "desktop_csharp":
         case "tpv":
-            string csharpProject = Path.Combine(appsDir, "desktop_csharp", "Jatetxea.Desktop.csproj");
-            if (File.Exists(csharpProject))
+            string csharpDir = Path.Combine(appsDir, "desktop_csharp");
+            string[] csharpExeCandidates = new[]
+            {
+                Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "Jatetxea.Desktop.exe"),
+                Path.Combine(csharpDir, "bin", "Debug", "net10.0-windows", "Jatetxea.Desktop.exe"),
+                Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "win-x64", "Jatetxea.Desktop.exe"),
+                Path.Combine(csharpDir, "bin", "Debug", "net10.0-windows", "win-x64", "Jatetxea.Desktop.exe")
+            };
+            string? csharpExe = csharpExeCandidates.FirstOrDefault(File.Exists);
+
+            if (csharpExe == null)
+            {
+                string csharpProject = Path.Combine(csharpDir, "Jatetxea.Desktop.csproj");
+                if (File.Exists(csharpProject))
+                {
+                    await RunCommandAsync("dotnet", $"build \"{csharpProject}\" -c Release", csharpDir);
+                    csharpExe = csharpExeCandidates.FirstOrDefault(File.Exists);
+                }
+            }
+
+            if (csharpExe != null && File.Exists(csharpExe))
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c start \"1T Jatetxea - C# TPV Terminala\" dotnet run --project \"{csharpProject}\"",
-                    WorkingDirectory = Path.GetDirectoryName(csharpProject),
+                    FileName = csharpExe,
+                    WorkingDirectory = Path.GetDirectoryName(csharpExe),
                     UseShellExecute = true
                 });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Mahaigaineko aplikazioa abiarazten..." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Mahaigaineko aplikazioa natiboki exekutatuta (Visual Studio exekutablea, terminalik gabe)." });
             }
-            return Results.Ok(new { Success = false, Message = "Jatetxea.Desktop.csproj ez da aurkitu." });
+            return Results.Ok(new { Success = false, Message = "Ez da Jatetxea.Desktop.exe exekutablea aurkitu edo ezin izan da konpilatu." });
 
         case "javafx":
         case "desktop_javafx":
         case "kds_javafx":
             string javafxDir = Path.Combine(appsDir, "desktop_javafx");
+            string vbsLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.vbs");
             string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
-            if (File.Exists(mvnwCmd))
+
+            if (File.Exists(vbsLauncher))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "wscript.exe",
+                    Arguments = $"\"{vbsLauncher}\"",
+                    WorkingDirectory = javafxDir,
+                    UseShellExecute = true
+                });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS Mahaigaineko aplikazioa natiboki exekutatuta (terminalik gabe)." });
+            }
+            else if (File.Exists(mvnwCmd))
             {
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/c start \"1T Jatetxea - JavaFX Sukaldea KDS\" mvnw.cmd javafx:run",
+                    Arguments = "/c mvnw.cmd javafx:run",
                     WorkingDirectory = javafxDir,
-                    UseShellExecute = true
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false
                 });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX KDS Sukaldea aplikazioa abiarazten..." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS aplikazioa atzeko planoan abiarazten (terminalik gabe)..." });
             }
             return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
 
