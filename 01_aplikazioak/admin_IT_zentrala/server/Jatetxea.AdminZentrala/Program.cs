@@ -167,6 +167,106 @@ app.MapGet("/api/docker/status", async () =>
     }
 });
 
+// Docker Daemon atzeko planoan piztu (minimizatuta / RAM aurreztuz)
+app.MapPost("/api/docker/daemon/start", async (HttpContext ctx) =>
+{
+    string user = ctx.Request.Headers["X-Admin-User"].FirstOrDefault() ?? "Admin";
+
+    // 1. Egiaztatu Docker martxan dagoen jada
+    try
+    {
+        var checkOut = await RunCommandAsync("docker", "info --format \"{{.ServerVersion}}\"", dockerDir);
+        if (!string.IsNullOrWhiteSpace(checkOut) && !checkOut.Contains("error") && !checkOut.Contains("failed to connect"))
+        {
+            LogAction(user, "DOCKER_DAEMON_CHECK", "Docker martxan dago jada.");
+            return Results.Ok(new { Success = true, Message = "Docker martxan dago jada." });
+        }
+    }
+    catch { }
+
+    LogAction(user, "DOCKER_DAEMON_START", "Docker Desktop atzeko planoan (minimizatuta) pizten...");
+
+    // 2. Docker Desktop bidea bilatu
+    string[] posizioak = new[]
+    {
+        @"C:\Program Files\Docker\Docker\Docker Desktop.exe",
+        Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Docker\Docker\Docker Desktop.exe"),
+        Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\Programs\Docker\Docker\Docker Desktop.exe")
+    };
+
+    string? dockerExe = posizioak.FirstOrDefault(File.Exists);
+
+    if (dockerExe == null)
+    {
+        return Results.Ok(new { Success = false, Message = "Ez da 'Docker Desktop.exe' aurkitu sistema eragilean." });
+    }
+
+    try
+    {
+        // Docker Desktop abiarazi leiho nagusia ireki gabe (minimizatuta / atzean, RAM aurreztuz)
+        var psi = new ProcessStartInfo
+        {
+            FileName = dockerExe,
+            Arguments = "--unattended --minimized",
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Minimized
+        };
+        Process.Start(psi);
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { Success = false, Message = $"Errorea Docker Desktop abiaraztean: {ex.Message}" });
+    }
+
+    // 3. Itxaron Docker Daemon erantzuteko prest egon arte (gehienez 36 segundo)
+    bool konektatuta = false;
+    for (int i = 0; i < 18; i++)
+    {
+        await Task.Delay(2000);
+        try
+        {
+            var infoOut = await RunCommandAsync("docker", "info --format \"{{.ServerVersion}}\"", dockerDir);
+            if (!string.IsNullOrWhiteSpace(infoOut) && !infoOut.Contains("error") && !infoOut.Contains("failed to connect"))
+            {
+                konektatuta = true;
+                break;
+            }
+        }
+        catch { }
+    }
+
+    if (konektatuta)
+    {
+        LogAction(user, "DOCKER_DAEMON_OK", "Docker Desktop atzeko planoan arrakastaz konektatu da.");
+        return Results.Ok(new { Success = true, Message = "Docker Desktop arrakastaz piztu da atzeko planoan (minimizatuta)!" });
+    }
+
+    return Results.Ok(new { Success = false, Message = "Docker Desktop abiarazteko agindua bidali da, baina oraindik kargatzen ari da. Eguneratu segundo batzuk barru." });
+});
+
+// Docker Desktop prozesuak itzali (RAM memoria askatzeko)
+app.MapPost("/api/docker/daemon/stop", async (HttpContext ctx) =>
+{
+    string user = ctx.Request.Headers["X-Admin-User"].FirstOrDefault() ?? "Admin";
+    LogAction(user, "DOCKER_DAEMON_STOP", "Docker Desktop itzaltzen eta memoria askatzen...");
+
+    try
+    {
+        // Docker edukiontziak lehenengo gelditu modu ordenatuan
+        await RunCommandAsync("docker", "compose stop", dockerDir);
+
+        // Docker Desktop prozesuak gelditu
+        await RunCommandAsync("powershell", "-NoProfile -Command \"Get-Process 'Docker Desktop','com.docker.backend','com.docker.build','docker-agent' -ErrorAction SilentlyContinue | Stop-Process -Force\"", dockerDir);
+
+        LogAction(user, "DOCKER_DAEMON_STOP_OK", "Docker Desktop arrakastaz itzali da eta RAM memoria askatu da.");
+        return Results.Ok(new { Success = true, Message = "Docker Desktop itzali da eta RAM memoria askatu da." });
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { Success = false, Message = $"Errorea Docker itzaltzean: {ex.Message}" });
+    }
+});
+
 // Banakako ekintzak (start, stop, pause, unpause, restart)
 app.MapPost("/api/docker/action/{service}/{action}", async (string service, string action, HttpContext ctx) =>
 {

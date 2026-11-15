@@ -75,7 +75,11 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
     {
         try
         {
-            await using var conn = new MySqlConnection(_connStr);
+            var builder = new MySqlConnectionStringBuilder(_connStr)
+            {
+                ConnectionTimeout = 2 // 2 segundoko muga azkar detektatzeko
+            };
+            await using var conn = new MySqlConnection(builder.ConnectionString);
             await conn.OpenAsync(ct);
             return (true, null);
         }
