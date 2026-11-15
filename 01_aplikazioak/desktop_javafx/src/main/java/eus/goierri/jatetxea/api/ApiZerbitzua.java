@@ -92,18 +92,47 @@ public class ApiZerbitzua {
         return erantzuna.body();
     }
 
-    public boolean isApiMartxan() {
-        try {
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:5000/health"))
-                    .timeout(Duration.ofSeconds(2))
-                    .GET()
-                    .build();
-            HttpResponse<String> res = bezeroa.send(req, HttpResponse.BodyHandlers.ofString());
-            return res.statusCode() == 200;
-        } catch (Exception e) {
-            return false;
+    public static class HealthResult {
+        public final boolean apiMartxan;
+        public final boolean dbMartxan;
+        public final String mezua;
+
+        public HealthResult(boolean apiMartxan, boolean dbMartxan, String mezua) {
+            this.apiMartxan = apiMartxan;
+            this.dbMartxan = dbMartxan;
+            this.mezua = mezua;
         }
+    }
+
+    public HealthResult egiaztatuOsasuna() {
+        String[] urls = new String[] {
+            BASE_URL.replaceAll("/api/v1/?$", "/health"),
+            "http://localhost:5050/health",
+            "http://localhost:5000/health"
+        };
+
+        for (String u : urls) {
+            try {
+                HttpRequest req = HttpRequest.newBuilder()
+                        .uri(URI.create(u))
+                        .timeout(Duration.ofSeconds(2))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+                HttpResponse<String> res = bezeroa.send(req, HttpResponse.BodyHandlers.ofString());
+                if (res.statusCode() == 200) {
+                    return new HealthResult(true, true, "API eta Datu-basea konektatuta daude.");
+                } else if (res.statusCode() == 503) {
+                    return new HealthResult(true, false, "APIra konektatuta dago, baina MySQL datu-basearekin ezin izan da konexioa lortu.");
+                }
+            } catch (Exception ignored) { }
+        }
+
+        return new HealthResult(false, false, "Ezin izan da REST APIarekin konektatu.");
+    }
+
+    public boolean isApiMartxan() {
+        return egiaztatuOsasuna().apiMartxan;
     }
 
     // ==========================================

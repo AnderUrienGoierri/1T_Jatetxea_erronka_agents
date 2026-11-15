@@ -166,12 +166,21 @@ public class SukaldeaController {
 
     public void kargatuDatuak() {
         new Thread(() -> {
-            boolean apiOk = api.isApiMartxan();
-            if (!apiOk) {
+            ApiZerbitzua.HealthResult health = api.egiaztatuOsasuna();
+            if (!health.apiMartxan) {
                 Platform.runLater(() -> {
-                    lblKonexioa.setText("API konexioa: DESKONEKTATUTA (http://localhost:5000)");
+                    lblKonexioa.setText("API konexioa: DESKONEKTATUTA (http://localhost:5050)");
                     lblKonexioa.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
                     lblEgoeraMezua.setText("Ezin izan da backend zerbitzariarekin konektatu.");
+                });
+                return;
+            }
+
+            if (!health.dbMartxan) {
+                Platform.runLater(() -> {
+                    lblKonexioa.setText("API KONEKTATUTA | Datu-basea DESKONEKTATUTA!");
+                    lblKonexioa.setStyle("-fx-text-fill: #ea580c; -fx-font-weight: bold;");
+                    lblEgoeraMezua.setText("APIra konektatu da, baina MySQL datu-basearekin ezin izan da konexioa lortu.");
                 });
                 return;
             }

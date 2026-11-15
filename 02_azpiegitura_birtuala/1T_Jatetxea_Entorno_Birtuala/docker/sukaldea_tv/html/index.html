@@ -173,10 +173,12 @@
       <span class="badge">SUKALDEA TV</span>
     </div>
     <div class="header-info">
-      <div><span class="status-dot" id="statusDot"></span><span id="statusText">Konektatuta</span></div>
+      <div><span class="status-dot" id="statusDot"></span><span id="statusText">Konektatzen...</span></div>
       <div id="liveClock">00:00:00</div>
     </div>
   </header>
+
+  <div id="dbAlertBanner" style="display:none; background:#991b1b; color:#ffffff; padding:10px 16px; border-radius:8px; margin-bottom:14px; font-weight:700; font-size:15px; text-align:center; border:1px solid #ef4444;"></div>
 
   <main class="grid">
     <div class="column col-zai">
@@ -288,20 +290,44 @@
 
     // Dynamic API polling
     async function fetchFromApi() {
-      try {
-        const res = await fetch('http://' + window.location.hostname + ':5000/api/v1/eskaerak');
-        if (res.ok) {
-          const data = await res.json();
-          document.getElementById('statusDot').style.background = 'var(--success)';
-          document.getElementById('statusText').textContent = 'API Konektatuta';
-        }
-      } catch (e) {
-        // Fallback display
-        document.getElementById('statusDot').style.background = 'var(--warning)';
-        document.getElementById('statusText').textContent = 'Lineaz kanpo (Demo modua)';
+      const banner = document.getElementById('dbAlertBanner');
+      const dot = document.getElementById('statusDot');
+      const txt = document.getElementById('statusText');
+      const apiHost = window.location.hostname || 'localhost';
+      const endpoints = [
+        'http://' + apiHost + ':5050/health',
+        'http://' + apiHost + ':5000/health'
+      ];
+
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.status === 200) {
+            dot.style.background = 'var(--success)';
+            txt.textContent = 'API & DB Linean';
+            if (banner) banner.style.display = 'none';
+            return;
+          } else if (res.status === 503) {
+            dot.style.background = 'var(--warning)';
+            txt.textContent = 'API Konektatuta | DB Deskonektatuta';
+            if (banner) {
+              banner.style.display = 'block';
+              banner.textContent = 'ADI: REST APIra ondo konektatu da (Portua 5050), baina MySQL datu-basearekin ezin izan da konexioa lortu!';
+            }
+            return;
+          }
+        } catch (e) { }
+      }
+
+      dot.style.background = 'var(--accent)';
+      txt.textContent = 'API Deskonektatuta';
+      if (banner) {
+        banner.style.display = 'block';
+        banner.textContent = 'OHARRA: REST API zerbitzariarekin ezin izan da konektatu.';
       }
     }
-    setInterval(fetchFromApi, 10000);
+    fetchFromApi();
+    setInterval(fetchFromApi, 6000);
   </script>
 </body>
 </html>

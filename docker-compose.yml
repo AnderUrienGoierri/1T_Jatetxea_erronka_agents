@@ -41,9 +41,6 @@ services:
       - ConnectionStrings__JatetxeaRoot=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;AllowUserVariables=True;
     ports:
       - "5050:5000"
-    depends_on:
-      jatetxea-db:
-        condition: service_healthy
     networks:
       - jatetxea_net
 
@@ -155,6 +152,8 @@ services:
       - "8082:8080"
     environment:
       ADMINER_DEFAULT_SERVER: db-odoo
+    volumes:
+      - ./02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/adminer/plugins-enabled:/var/www/html/plugins-enabled
     networks:
       - jatetxea_net
 

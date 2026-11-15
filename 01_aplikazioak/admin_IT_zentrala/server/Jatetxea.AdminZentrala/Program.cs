@@ -294,7 +294,11 @@ app.MapPost("/api/docker/action/{service}/{action}", async (string service, stri
         _ => service
     };
 
-    var outText = await RunCommandAsync("docker", $"compose {action} {composeService}", dockerDir);
+    string cmdArgs = (action == "start" && composeService == "jatetxea-api")
+        ? "compose up -d --no-deps jatetxea-api"
+        : $"compose {action} {composeService}";
+
+    var outText = await RunCommandAsync("docker", cmdArgs, dockerDir);
     if (outText.Contains("no such service") || outText.Contains("No such container"))
     {
         outText = await RunCommandAsync("docker", $"{action} {service}", dockerDir);
@@ -556,8 +560,8 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "jatetxea-api":
         case "backend_api":
         case "swagger":
-            // 1. MySQL datu-basea eta APIa ziurtatu Dockerren
-            _ = RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin jatetxea-api", dockerDir);
+            // 1. REST APIa bakarrik abiarazi Dockerren (datu-basea itzalita badago ere martxan jartzeko)
+            _ = RunCommandAsync("docker", "compose up -d --no-deps jatetxea-api", dockerDir);
 
             // 2. Kontsolako leiho erreala abiarazi zuzenean logak bistaratzeko
             string apiDir = Path.Combine(appsDir, "backend_api");
@@ -613,8 +617,8 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 
         case "opnsense":
         case "opnsense_web":
-            OpenSystemBrowser("https://localhost:8443");
-            return Results.Ok(new { Success = true, IsUrl = true, Url = "https://localhost:8443", Message = "OPNsense WebGUI irekita (8443)." });
+            OpenSystemBrowser("http://127.0.0.1:8443/");
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://127.0.0.1:8443/", Message = "OPNsense WebGUI irekita (http://127.0.0.1:8443/)." });
 
         case "csharp":
         case "desktop_csharp":
@@ -862,8 +866,8 @@ var zerbitzuenKatalogoa = new[]
         Fluxua: "Suebakiaren arauak, VLAN trunking-a, NAT bideraketak eta Zero-Trust trafikoa kudeatzeko interfaze administratiboa.",
         Segurtasuna: "HTTPS enkriptatua (TLS 1.3). Bi faktoreko autentifikazioa (2FA) eta brute-force blokeoa.",
         Protokoloa: "HTTPS (Lighttpd / PHP)",
-        HealthCheck: "GET https://127.0.0.1:8443",
-        AppUrl: "https://localhost:8443",
+        HealthCheck: "TCP Port 8443",
+        AppUrl: "http://127.0.0.1:8443/",
         AppLauncherId: "opnsense_web"
     ),
     new ServiceDefinition(
@@ -933,6 +937,26 @@ app.MapGet("/api/health/ports", async () =>
     var tasks = zerbitzuenKatalogoa.Select(async s =>
     {
         var (online, latency) = await TestPortWithLatencyAsync(s.Host, s.Port, 1000);
+        bool? dbConnected = null;
+
+        if (s.Id == "api" && online)
+        {
+            try
+            {
+                using var http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(800) };
+                var healthRes = await http.GetAsync($"http://{s.Host}:{s.Port}/health");
+                dbConnected = healthRes.IsSuccessStatusCode;
+            }
+            catch
+            {
+                dbConnected = false;
+            }
+        }
+
+        string egoeraMezua = online
+            ? ((s.Id == "api" && dbConnected == false) ? "API Martxan (DB Itzalita)" : "Martxan (ONLINE)")
+            : "Itzalita / Ez dago erantzunik";
+
         return new
         {
             s.Id,
@@ -951,8 +975,9 @@ app.MapGet("/api/health/ports", async () =>
             s.Protokoloa,
             s.HealthCheck,
             Online = online,
+            DbConnected = dbConnected,
             LatencyMs = latency,
-            Egoera = online ? "Martxan (ONLINE)" : "Itzalita / Ez dago erantzunik"
+            Egoera = egoeraMezua
         };
     });
 

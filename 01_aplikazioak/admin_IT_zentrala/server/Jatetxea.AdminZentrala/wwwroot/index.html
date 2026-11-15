@@ -191,7 +191,7 @@
                     <button onclick="launchApp('adminer', 'http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo')" class="px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded font-semibold shadow transition flex items-center space-x-1.5" title="PostgreSQL Datu-Basearen Web Kudeatzailea">
                         <span>Ireki Adminer (Postgres Web)</span>
                     </button>
-                    <button onclick="launchApp('opnsense', 'https://localhost:8443')" class="px-3 py-1.5 bg-rose-900/80 hover:bg-rose-800 text-rose-200 rounded font-semibold border border-rose-800 transition flex items-center space-x-1.5">
+                    <button onclick="launchApp('opnsense', 'http://127.0.0.1:8443/')" class="px-3 py-1.5 bg-rose-900/80 hover:bg-rose-800 text-rose-200 rounded font-semibold border border-rose-800 transition flex items-center space-x-1.5">
                         <span>Ireki OPNsense WebGUI</span>
                     </button>
                 </div>
@@ -624,12 +624,12 @@
                         <p class="text-xs text-slate-300 mb-3">Jatetxearen sare segmentazio osoa (VLAN 10 LAN, VLAN 20 DMZ, VLAN 99), suebaki erregelak, NAT eta Zero-Trust segurtasuna administratzeko kontrol-panela.</p>
                         <div class="text-[11px] space-y-1 mb-4 text-slate-400">
                             <div><span class="text-slate-500 font-semibold">Rola:</span> Sare Administratzailea & Segurtasuna</div>
-                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> FreeBSD / OPNsense WebGUI (HTTPS)</div>
-                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8443 (HTTPS)</span></div>
+                            <div><span class="text-slate-500 font-semibold">Teknologia:</span> FreeBSD / OPNsense WebGUI (HTTP/S)</div>
+                            <div><span class="text-slate-500 font-semibold">Ataka:</span> <span class="font-mono text-slate-300">127.0.0.1:8443</span></div>
                         </div>
                     </div>
                     <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
-                        <button onclick="launchApp('opnsense', 'https://localhost:8443')" class="w-full py-1.5 bg-rose-900 hover:bg-rose-800 text-rose-200 rounded font-bold text-xs shadow transition text-center">Ireki OPNsense (8443)</button>
+                        <button onclick="launchApp('opnsense', 'http://127.0.0.1:8443/')" class="w-full py-1.5 bg-rose-900 hover:bg-rose-800 text-rose-200 rounded font-bold text-xs shadow transition text-center">Ireki OPNsense (8443)</button>
                     </div>
                 </div>
 
@@ -1127,9 +1127,22 @@
                         </button>
                     `;
 
+                    let statusDotClass = 'bg-rose-500';
+                    let statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-rose-950 text-rose-400 border border-rose-800">OFFLINE</span>`;
+
+                    if (p.online) {
+                        if (p.id === 'api' && p.dbConnected === false) {
+                            statusDotClass = 'bg-amber-400 animate-pulse';
+                            statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-950 text-amber-300 border border-amber-700 animate-pulse" title="REST API martxan dago, baina MySQL datu-basearekin ezin izan da konexioa lortu!">ONLINE (DB ITZALITA)</span>`;
+                        } else {
+                            statusDotClass = 'bg-emerald-400';
+                            statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">ONLINE</span>`;
+                        }
+                    }
+
                     tr.innerHTML = `
                         <td class="py-2.5 px-3 font-semibold text-slate-100 flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full ${p.online ? 'bg-emerald-400' : 'bg-rose-500'}"></span>
+                            <span class="w-2 h-2 rounded-full ${statusDotClass}"></span>
                             <span class="hover:underline text-rose-300 font-bold">${p.izena}</span>
                         </td>
                         <td class="py-2.5 px-3 text-slate-400">${p.mota}</td>
@@ -1148,9 +1161,7 @@
                             ${p.online ? p.latencyMs + ' ms' : '-'}
                         </td>
                         <td class="py-2.5 px-3">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${p.online ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}">
-                                ${p.online ? 'ONLINE' : 'OFFLINE'}
-                            </span>
+                            ${statusBadgeHtml}
                         </td>
                         <td class="py-2.5 px-3 text-right">
                             <div class="inline-flex items-center space-x-1 flex-nowrap justify-end">

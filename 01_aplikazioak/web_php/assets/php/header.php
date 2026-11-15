@@ -60,12 +60,16 @@ $client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.in
             <!-- Eskuinaldean: API egoera eta Laguntza -->
             <div class="header-right">
                 <div class="api-status-wrapper">
-                    <?php if (!empty($api_online)): ?>
-                        <span id="api-status" class="api-status-badge online">
-                            <span class="status-dot"></span> API Linean
+                    <?php if (!empty($api_online) && !empty($db_online)): ?>
+                        <span id="api-status" class="api-status-badge online" title="REST API eta MySQL Datu-basea konektatuta daude">
+                            <span class="status-dot"></span> API &amp; DB Linean
+                        </span>
+                    <?php elseif (!empty($api_online) && empty($db_online)): ?>
+                        <span id="api-status" class="api-status-badge warning" style="background:#451a03; color:#fde047; border:1px solid #ca8a04; display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;" title="API-ra konektatuta dago, baina MySQL datu-basearekin ezin izan da konexioa lortu">
+                            <span class="status-dot" style="background:#eab308;"></span> API Konektatuta | DB Deskonektatuta
                         </span>
                     <?php else: ?>
-                        <span id="api-status" class="api-status-badge offline">
+                        <span id="api-status" class="api-status-badge offline" title="Ezin izan da REST APIarekin konektatu">
                             <span class="status-dot"></span> API Deskonektatuta
                         </span>
                     <?php endif; ?>
@@ -73,3 +77,13 @@ $client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.in
             </div>
         </div>
     </header>
+
+    <?php if (!empty($api_online) && empty($db_online)): ?>
+    <div id="db-alert-banner" style="background:#991b1b; color:#ffffff; font-weight:700; text-align:center; padding:10px 16px; font-size:13px; border-bottom:2px solid #7f1d1d; letter-spacing:0.3px;">
+        ADI: REST API zerbitzariarekin konexioa ondo lortu da (Portua 5050), baina MySQL datu-basearekin ezin izan da konexioa ezarri! (Datu-basea itzalita dago)
+    </div>
+    <?php elseif (empty($api_online)): ?>
+    <div id="api-alert-banner" style="background:#7f1d1d; color:#fee2e2; font-weight:600; text-align:center; padding:8px 16px; font-size:13px; border-bottom:1px solid #991b1b;">
+        OHARRA: REST API nagusia deskonektatuta dago (http://localhost:5050). Datu estatikoak erakusten ari dira.
+    </div>
+    <?php endif; ?>

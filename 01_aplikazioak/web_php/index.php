@@ -14,12 +14,37 @@ require_once __DIR__ . '/assets/php/api.php';
 require_once __DIR__ . '/assets/php/post_handlers.php';
 
 // 2. ZERBITZARI-MAILAN DATUAK KARGATU (C# REST API)
-$resPlaterak = call_api('GET', "$api_base_url/platerak");
+$health_url = str_replace('/api/v1', '/health', $api_base_url);
+$resHealth = call_api('GET', $health_url);
+
+$api_online = false;
+$db_online = false;
+
+if ($resHealth['status'] === 200) {
+    $api_online = true;
+    $db_online = true;
+} elseif ($resHealth['status'] === 503) {
+    $api_online = true;
+    $db_online = false;
+} elseif ($resHealth['status'] > 0) {
+    $api_online = true;
+    $db_online = false;
+} else {
+    // Proba egin platerak deialdiarekin
+    $resPlaterakTest = call_api('GET', "$api_base_url/platerak");
+    if ($resPlaterakTest['status'] === 200) {
+        $api_online = true;
+        $db_online = true;
+    } elseif ($resPlaterakTest['status'] === 503) {
+        $api_online = true;
+        $db_online = false;
+    }
+}
+
+$resPlaterak = ($db_online) ? call_api('GET', "$api_base_url/platerak") : ['status' => 503, 'data' => null];
 $platerak = ($resPlaterak['status'] === 200 && isset($resPlaterak['data']['dataList']))
     ? $resPlaterak['data']['dataList']
     : [];
-
-$api_online = ($resPlaterak['status'] === 200);
 
 $ahalmenaMap = [];
 $mahaiak = [];

@@ -465,23 +465,23 @@ public partial class LoginForm : Form
                     item.Panel.Visible = false;
                 }
 
-                _lblOfflineTitle.Text = "MySQL datu-basea deskonektatuta dago!\n(3308 portua)";
-                _lblOfflineTitle.ForeColor = Color.FromArgb(220, 38, 38);
-                _lblOfflineSubtitle.Text = "APIa martxan dago, baina MySQL edukiontzia falta da.";
+                _lblOfflineTitle.Text = "API-ra konektatuta | Datu-basea DESKONEKTATUTA!\n(3308 portua)";
+                _lblOfflineTitle.ForeColor = Color.FromArgb(234, 88, 12);
+                _lblOfflineSubtitle.Text = "API zerbitzariarekin konexioa ondo lortu da, baina MySQL datu-basearekin ezin izan da konexioa lortu.";
                 _pnlOfflineNotice.Visible = true;
 
-                lblStatus.Text = $"MySQL datu-basea deskonektatuta dago ({DateTime.Now:HH:mm:ss}).\nEgiaztatu Docker edukiontzia martxan dagoela (3308 portua).";
-                lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
+                lblStatus.Text = $"APIra konektatuta dago, baina MySQL datu-basearekin ezin izan da konexioa lortu ({DateTime.Now:HH:mm:ss}).\nEgiaztatu Docker edukiontzia (3308 portua).";
+                lblStatus.ForeColor = Color.FromArgb(234, 88, 12);
 
-                lblPinTitle.Text = "DATU-BASEA FALTA DA";
-                lblPinTitle.ForeColor = Color.FromArgb(220, 38, 38);
+                lblPinTitle.Text = "DATU-BASEAREKIN EZIN IZAN DA KONEXIOA LORTU";
+                lblPinTitle.ForeColor = Color.FromArgb(234, 88, 12);
 
                 btnLogin.Enabled = true;
                 btnLogin.Text = "BERRIZ SAIATU (Konektatu)";
                 btnLogin.BackColor = Color.FromArgb(37, 99, 235);
 
-                _lblApiStatusText.Text = "DB: Deskonektatuta";
-                _lblApiStatusText.ForeColor = Color.FromArgb(220, 38, 38);
+                _lblApiStatusText.Text = "API Konektatuta | DB Deskonektatuta";
+                _lblApiStatusText.ForeColor = Color.FromArgb(234, 88, 12);
                 _lblApiStatusDot.Invalidate();
                 return;
             }
