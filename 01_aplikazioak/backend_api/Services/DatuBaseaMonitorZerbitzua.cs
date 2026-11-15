@@ -19,6 +19,7 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
     public static bool IsKonektatuta { get; private set; } = false;
     public static string AzkenEgoeraMezua { get; private set; } = "Konexioa hasieratzen...";
     public static DateTime AzkenEgiaztapena { get; private set; } = DateTime.MinValue;
+    public static string ZerbitzariaOharra { get; private set; } = "jatetxea_mysql:3308";
 
     public DatuBaseaMonitorZerbitzua(IConfiguration config, ILogger<DatuBaseaMonitorZerbitzua> logger)
     {
@@ -32,6 +33,13 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         _connStr = !string.IsNullOrWhiteSpace(envConn)
             ? envConn
             : (_config.GetConnectionString("Jatetxea") ?? _config.GetConnectionString("JatetxeaRoot") ?? "");
+
+        try
+        {
+            var csb = new MySqlConnectionStringBuilder(_connStr);
+            ZerbitzariaOharra = $"{csb.Server}:{csb.Port}";
+        }
+        catch { }
 
         bool? aurrekoEgoera = null;
 
@@ -48,12 +56,12 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
             {
                 if (konektatuta)
                 {
-                    AzkenEgoeraMezua = "MySQL datu-basea KONEKTATUTA dago.";
+                    AzkenEgoeraMezua = $"MySQL datu-basea KONEKTATUTA dago ({ZerbitzariaOharra}).";
                     InprimatuKonektatuta(aurrekoEgoera != null);
                 }
                 else
                 {
-                    AzkenEgoeraMezua = $"MySQL datu-basea DESKONEKTATUTA dago: {errorea}";
+                    AzkenEgoeraMezua = $"MySQL datu-basea DESKONEKTATUTA dago ({ZerbitzariaOharra}): {errorea}";
                     InprimatuDeskonektatuta(errorea);
                 }
 
@@ -101,13 +109,13 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         if (berreskuratua)
         {
             Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA BERRESKURATUA - KONEKTATUTA]{AnsiReset}");
-            Console.WriteLine($"{AnsiGreen}   -> MySQL konexioa berriz ondo ezarri da (localhost:3308).{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}   -> MySQL konexioa berriz ondo ezarri da ({ZerbitzariaOharra}).{AnsiReset}");
             Console.WriteLine($"{AnsiGreen}   -> APIak eskaerak modu normalean prozesatuko ditu.{AnsiReset}");
         }
         else
         {
             Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!{AnsiReset}");
-            Console.WriteLine($"{AnsiGreen}   -> Zerbitzaria: localhost:3308 | Datu-basea: jatetxea_db{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}   -> Zerbitzaria: {ZerbitzariaOharra} | Datu-basea: jatetxea_db{AnsiReset}");
         }
         Console.WriteLine($"{AnsiGreen}=================================================================={AnsiReset}");
         Console.WriteLine();
@@ -120,12 +128,12 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         Console.WriteLine();
         Console.WriteLine($"{AnsiRed}=================================================================={AnsiReset}");
         Console.WriteLine($"{AnsiRed}[{DateTime.Now:HH:mm:ss}] [ADI! DATU-BASEA ITZALI DA / DESKONEKTATUTA]{AnsiReset}");
-        Console.WriteLine($"{AnsiRed}   -> Kausa: Ezin izan da MySQL-ra konektatu (localhost:3308).{AnsiReset}");
+        Console.WriteLine($"{AnsiRed}   -> Kausa: Ezin izan da MySQL-ra konektatu ({ZerbitzariaOharra}).{AnsiReset}");
         if (!string.IsNullOrWhiteSpace(errorea))
         {
             Console.WriteLine($"{AnsiRed}   -> Errore mezua: {errorea}{AnsiReset}");
         }
-        Console.WriteLine($"{AnsiRed}   -> Konponbidea: 'docker compose up -d' exekutatu datu-basea berriz pizteko.{AnsiReset}");
+        Console.WriteLine($"{AnsiRed}   -> Konponbidea: 'docker compose up -d jatetxea-db' exekutatu datu-basea berriz pizteko.{AnsiReset}");
         Console.WriteLine($"{AnsiRed}=================================================================={AnsiReset}");
         Console.WriteLine();
         try { Console.ResetColor(); } catch { }
