@@ -73,9 +73,23 @@ app.MapGet("/", async (HttpContext context) =>
 });
 
 // Oinarrizko bideak kalkulatu
-string dockerDir = Path.Combine(projectRoot, "1T_Jatetxea_Entorno_Birtuala");
-string vmDir = Path.Combine(projectRoot, "erronka_egitura");
-string labDir = Path.Combine(projectRoot, "laborategi_fisikoa");
+string dockerDir = Path.Combine(projectRoot, "02_azpiegitura_birtuala", "1T_Jatetxea_Entorno_Birtuala");
+if (!Directory.Exists(dockerDir))
+{
+    dockerDir = Path.Combine(projectRoot, "1T_Jatetxea_Entorno_Birtuala");
+}
+
+string vmDir = Path.Combine(projectRoot, "02_azpiegitura_birtuala", "erronka_egitura");
+if (!Directory.Exists(vmDir))
+{
+    vmDir = Path.Combine(projectRoot, "erronka_egitura");
+}
+
+string labDir = Path.Combine(projectRoot, "03_laborategi_fisikoa");
+if (!Directory.Exists(labDir))
+{
+    labDir = Path.Combine(projectRoot, "laborategi_fisikoa");
+}
 string vboxPath = @"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe";
 
 // Auditoretza log-a
@@ -1074,11 +1088,15 @@ app.MapGet("/api/services/{id}", async (string id) =>
 // 5. SARE PROFILAK (WIFI ZENTRALITA - SWITCH-ENV ETA AUTO-DETEKZIOA)
 // ---------------------------------------------------------------------------
 string envJsonPath = Path.Combine(dockerDir, "config", "environments.json");
+if (!File.Exists(envJsonPath))
+{
+    envJsonPath = Path.Combine(projectRoot, "02_azpiegitura_birtuala", "1T_Jatetxea_Entorno_Birtuala", "config", "environments.json");
+}
 
 app.MapGet("/api/env/current", async () =>
 {
     var (ssid, ip) = await DetectCurrentNetworkAsync();
-    string activeProfile = "tolosako_etxea";
+    string activeProfile = "etxean";
     var profilesDict = new Dictionary<string, object>();
 
     if (File.Exists(envJsonPath))
@@ -1089,7 +1107,7 @@ app.MapGet("/api/env/current", async () =>
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.TryGetProperty("active_profile", out var ap))
             {
-                activeProfile = ap.GetString() ?? "tolosako_etxea";
+                activeProfile = ap.GetString() ?? "etxean";
             }
             if (doc.RootElement.TryGetProperty("profiles", out var prfs))
             {
@@ -1102,20 +1120,131 @@ app.MapGet("/api/env/current", async () =>
         catch { }
     }
 
-    // Auto-detekzioa: bilatu profil bat SSID edo IParen arabera
+    // Auto-detekzio dinamikoa: bilatu profil bat SSID edo IParen arabera
     string? matchedProfile = null;
     if (!string.IsNullOrEmpty(ssid))
     {
-        if (ssid.Contains("MIWIFI", StringComparison.OrdinalIgnoreCase)) matchedProfile = "tolosako_etxea";
-        else if (ssid.Contains("Goierri", StringComparison.OrdinalIgnoreCase)) matchedProfile = "eskola";
-        else if (ssid.Contains("Etxeko", StringComparison.OrdinalIgnoreCase)) matchedProfile = "etxean";
+        foreach (var kvp in profilesDict)
+        {
+            try
+            {
+                using var pdoc = JsonDocument.Parse(JsonSerializer.Serialize(kvp.Value));
+                if (pdoc.RootElement.TryGetProperty("wifi_ssid", out var w))
+                {
+                    var wStr = w.GetString();
+                    if (!string.IsNullOrEmpty(wStr) && (string.Equals(wStr, ssid, StringComparison.OrdinalIgnoreCase) || ssid.Contains(wStr, StringComparison.OrdinalIgnoreCase) || wStr.Contains(ssid, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        matchedProfile = kvp.Key;
+                        break;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        if (matchedProfile == null)
+        {
+            if (ssid.Contains("euskaltel", StringComparison.OrdinalIgnoreCase) ||
+                ssid.Contains("urite", StringComparison.OrdinalIgnoreCase) ||
+                ssid.Contains("etxeko", StringComparison.OrdinalIgnoreCase))
+            {
+                matchedProfile = "etxean";
+            }
+            else if (ssid.Contains("MIWIFI", StringComparison.OrdinalIgnoreCase))
+            {
+                matchedProfile = "tolosako_etxea";
+            }
+            else if (ssid.Contains("Goierri", StringComparison.OrdinalIgnoreCase))
+            {
+                matchedProfile = "eskola";
+            }
+        }
     }
 
     if (matchedProfile == null && !string.IsNullOrEmpty(ip))
     {
-        if (ip.StartsWith("192.168.1.")) matchedProfile = "tolosako_etxea";
+        if (ip.StartsWith("192.168.1.")) matchedProfile = "etxean";
         else if (ip.StartsWith("10.0.") || ip.StartsWith("172.")) matchedProfile = "eskola";
         else if (ip.StartsWith("192.168.10.")) matchedProfile = "vbox_erronka";
+        else if (ip == "127.0.0.1") matchedProfile = "localhost";
+    }
+
+    matchedProfile ??= activeProfile;
+
+    // Eguneratu etxean/matchedProfile-ren IP helbidea eta SSID automatikoki
+    if (!string.IsNullOrEmpty(matchedProfile) && !string.IsNullOrEmpty(ip) && ip != "127.0.0.1")
+    {
+        try
+        {
+            if (File.Exists(envJsonPath))
+            {
+                var curJson = await File.ReadAllTextAsync(envJsonPath);
+                using var doc = JsonDocument.Parse(curJson);
+                var root = doc.RootElement;
+                if (root.TryGetProperty("profiles", out var prfs) && prfs.TryGetProperty(matchedProfile, out var profObj))
+                {
+                    var currentHost = profObj.TryGetProperty("api_host", out var h) ? h.GetString() : "";
+                    if (currentHost != ip)
+                    {
+                        var dict = new Dictionary<string, object>();
+                        dict["active_profile"] = matchedProfile;
+                        var prfsCopy = new Dictionary<string, object>();
+                        foreach (var prop in prfs.EnumerateObject())
+                        {
+                            if (prop.Name == matchedProfile)
+                            {
+                                var pMap = JsonSerializer.Deserialize<Dictionary<string, object>>(prop.Value.GetRawText()) ?? new();
+                                pMap["api_host"] = ip;
+                                pMap["api_port"] = 5050;
+                                pMap["api_base_url"] = $"http://{ip}:5050/api/v1";
+                                pMap["web_url"] = $"http://{ip}:8085";
+                                pMap["chat_url"] = $"http://{ip}:3001";
+                                pMap["odoo_url"] = $"http://{ip}:8070";
+                                pMap["tv_kds_url"] = $"http://{ip}:8086";
+                                if (!string.IsNullOrEmpty(ssid)) pMap["wifi_ssid"] = ssid;
+                                prfsCopy[prop.Name] = pMap;
+                            }
+                            else
+                            {
+                                prfsCopy[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText())!;
+                            }
+                        }
+                        dict["profiles"] = prfsCopy;
+                        await File.WriteAllTextAsync(envJsonPath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
+                        profilesDict = prfsCopy;
+                    }
+                }
+            }
+        }
+        catch { }
+    }
+
+    // Auto-detekzioak automatikoki aktibatu behar du profila
+    if (!string.IsNullOrEmpty(matchedProfile) && matchedProfile != activeProfile)
+    {
+        activeProfile = matchedProfile;
+        try
+        {
+            if (File.Exists(envJsonPath))
+            {
+                var curJson = await File.ReadAllTextAsync(envJsonPath);
+                using var doc = JsonDocument.Parse(curJson);
+                var root = doc.RootElement;
+                var dict = new Dictionary<string, object>();
+                dict["active_profile"] = activeProfile;
+                if (root.TryGetProperty("profiles", out var prfs))
+                {
+                    dict["profiles"] = JsonSerializer.Deserialize<object>(prfs.GetRawText())!;
+                }
+                await File.WriteAllTextAsync(envJsonPath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            string scriptPath = Path.Combine(dockerDir, "scripts", "switch-env.ps1");
+            if (File.Exists(scriptPath))
+            {
+                _ = Task.Run(() => RunCommandAsync("powershell", $"-ExecutionPolicy Bypass -File \"{scriptPath}\" -Profile {activeProfile}", dockerDir));
+            }
+        }
+        catch { }
     }
 
     return Results.Ok(new
@@ -1123,8 +1252,8 @@ app.MapGet("/api/env/current", async () =>
         ActiveProfile = activeProfile,
         DetectedSsid = string.IsNullOrEmpty(ssid) ? "Kablez / Ezezaguna" : ssid,
         DetectedIp = string.IsNullOrEmpty(ip) ? "127.0.0.1" : ip,
-        MatchedProfile = matchedProfile ?? activeProfile,
-        AutoDetected = matchedProfile != null,
+        MatchedProfile = matchedProfile,
+        AutoDetected = true,
         Profiles = profilesDict
     });
 });
@@ -1149,7 +1278,7 @@ app.MapGet("/api/env/list", async () =>
                         Deskribapena = val.TryGetProperty("deskribapena", out var d) ? d.GetString() : prop.Name,
                         WifiSsid = val.TryGetProperty("wifi_ssid", out var w) ? w.GetString() : "",
                         ApiHost = val.TryGetProperty("api_host", out var h) ? h.GetString() : "127.0.0.1",
-                        ApiUrl = val.TryGetProperty("api_base_url", out var u) ? u.GetString() : $"http://{h}:5000/api/v1"
+                        ApiUrl = val.TryGetProperty("api_base_url", out var u) ? u.GetString() : $"http://{h}:5050/api/v1"
                     });
                 }
             }
@@ -1160,11 +1289,11 @@ app.MapGet("/api/env/list", async () =>
 
     return Results.Ok(new[]
     {
-        new { Id = "localhost",       Deskribapena = "Tokiko Garapena (127.0.0.1)",     WifiSsid = "",              ApiHost = "127.0.0.1",     ApiUrl = "http://localhost:5000/api/v1" },
-        new { Id = "tolosako_etxea",  Deskribapena = "Tolosako Etxeko WiFi Sarea",     WifiSsid = "MIWIFI_dc7U",   ApiHost = "192.168.1.166", ApiUrl = "http://192.168.1.166:5000/api/v1" },
-        new { Id = "eskola",          Deskribapena = "Goierri Eskolako Laborategia",   WifiSsid = "Goierri_Ikasleak", ApiHost = "10.0.0.50",   ApiUrl = "http://10.0.0.50:5000/api/v1" },
-        new { Id = "etxean",          Deskribapena = "Etxeko WiFi Lokala",              WifiSsid = "Etxeko_WIFI",   ApiHost = "192.168.1.100", ApiUrl = "http://192.168.1.100:5000/api/v1" },
-        new { Id = "vbox_erronka",    Deskribapena = "VirtualBox DMZ/LAN Barnea",       WifiSsid = "",              ApiHost = "192.168.10.10", ApiUrl = "http://192.168.10.10:5000/api/v1" }
+        new { Id = "localhost",       Deskribapena = "Tokiko Garapena (127.0.0.1)",     WifiSsid = "",              ApiHost = "127.0.0.1",     ApiUrl = "http://localhost:5050/api/v1" },
+        new { Id = "etxean",          Deskribapena = "Etxeko WiFi Lokala (euskaltel_urite)", WifiSsid = "euskaltel_urite", ApiHost = "192.168.1.129", ApiUrl = "http://192.168.1.129:5050/api/v1" },
+        new { Id = "tolosako_etxea",  Deskribapena = "Tolosako Etxeko WiFi Sarea",     WifiSsid = "MIWIFI_dc7U",   ApiHost = "192.168.1.166", ApiUrl = "http://192.168.1.166:5050/api/v1" },
+        new { Id = "eskola",          Deskribapena = "Goierri Eskolako Laborategia",   WifiSsid = "Goierri_Ikasleak", ApiHost = "10.0.0.50",   ApiUrl = "http://10.0.0.50:5050/api/v1" },
+        new { Id = "vbox_erronka",    Deskribapena = "VirtualBox DMZ/LAN Barnea",       WifiSsid = "",              ApiHost = "192.168.10.10", ApiUrl = "http://192.168.10.10:5050/api/v1" }
     });
 });
 
@@ -1196,7 +1325,7 @@ app.MapPost("/api/env/switch/{envId}", async (string envId, HttpContext ctx) =>
     string scriptPath = Path.Combine(dockerDir, "scripts", "switch-env.ps1");
     if (File.Exists(scriptPath))
     {
-        var outText = await RunCommandAsync("powershell", $"-ExecutionPolicy Bypass -File \"{scriptPath}\" -Environment {envId}", dockerDir);
+        var outText = await RunCommandAsync("powershell", $"-ExecutionPolicy Bypass -File \"{scriptPath}\" -Profile {envId}", dockerDir);
         return Results.Ok(new { Success = true, Output = outText, Environment = envId });
     }
 
