@@ -1,44 +1,85 @@
-1T JATETXEA - ENTORNOA ETA ARKITEKTURA BERRIAREN LABURPENA
-===========================================================
+1T JATETXEA - ENTORNOA ETA ARKITEKTURA BERRIAREN LABURPENA (MONOREPO)
+========================================================================
 
-1. 3 MAKINA BIRTUALAK (VIRTUALBOX)
+1. PROIEKTUAREN KARPETA ESTRUKTURA BERRIA
+----------------------------------------
+Erroa: C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\
+
+01_aplikazioak/
+  ├── admin_IT_zentrala/         -> IT Kontrol Zentroa (Web Panela: port 5000 / Android: Jetpack Compose)
+  ├── backend_api/               -> ASP.NET Core REST API (.NET 10 C#): port 5050 (kontenedorean 5000)
+  ├── chat_zerbitzaria/          -> Socket.IO / WebSockets barne komunikazioa: port 3001
+  ├── desktop_csharp/            -> C# 13 Windows Forms TPV Areto & Kutxazaina (.NET 10)
+  ├── desktop_javafx/            -> Java 17 / JavaFX 21 (Sukaldea KDS, Barra BDS eta Biltegia Stock)
+  ├── mobile_bezeroa/            -> Flutter / Dart bezero mugikorra (erreserbak, karta, iritziak)
+  ├── mobile_zerbitzaria/        -> Flutter / Dart zerbitzari komandera (eskaerak hartzeko)
+  ├── odoo_erp/                  -> Odoo 17 Community ERP (HR, baimenak, fitxaketak): port 8070
+  ├── sukaldea_kds_android_tv/   -> Sukaldeko Android TV / KDS Web Kioskoa: port 8086
+  └── web_php/                   -> Apache + PHP 8.4 Frontend Publikoa (Karta, Erreserbak): port 8085
+
+02_azpiegitura_birtuala/
+  ├── 1T_Jatetxea_Entorno_Birtuala/
+  │     ├── docker/              -> Dockerfile eta zerbitzuen irudiak (api, db, web, chat, odoo, tv)
+  │     ├── scripts/             -> switch-env.ps1, hasi-guztia.bat, itzali-guztia.bat
+  │     ├── doc/                 -> Dokumentazio teknikoa (01, 02, 03, 04 md gidak)
+  │     └── docker-compose.yml   -> Zerbitzu guztien orkestrazio zentrala
+  └── erronka_egitura/           -> Egituraren azalpenak eta laburpenak (azalpena.txt)
+
+03_laborategi_fisikoa/
+  ├── 01_hardware_inbentarioa/   -> Ekipo fisikoen inbentarioa
+  ├── 02_cisco_packet_tracer/    -> Sare simulazioak eta topologiak
+  ├── 03_kableatu_eta_rack/      -> Kableatu egituratua eta rack diseinua
+  └── 04_ip_eta_vlan_plana/      -> VLAN (10, 20, 30) eta IP planifikazioa
+
+04_dokumentazioa/
+  └── espezifikazioak/           -> Proiektuaren baldintza-orriak eta eskakizunak
+
+.github/
+  └── workflows/ci.yml           -> CI/CD DevSecOps kontrolak (6/6 lan arrakastatsuak)
+
+
+2. 3 MAKINA BIRTUALAK (VIRTUALBOX)
 ----------------------------------
 - Erronka-OPNsense:
   * Suhesia eta bideratzailea (WAN, DMZ eta LAN segmentazioa).
-  * Trafiko kontrola eta Zero-Trust segurtasuna.
+  * Trafiko kontrola, NAT arauak eta Zero-Trust segurtasuna.
 - Erronka-Ubuntu (DMZ - 192.168.20.10):
-  * Web zerbitzari publikoa (Apache 2.4 + PHP 8.2 / web_php).
-  * Ataka: 80.
-  * OPNsense bidez Windows Server-eko APIra konektatzen da (192.168.10.10:5000).
+  * Web zerbitzari publikoa (Apache 2.4 + PHP 8.4 / web_php).
+  * Ataka: 80 (ostalarian 8085).
+  * OPNsense bidez Windows Server-eko APIra konektatzen da (192.168.10.10:5000 / host 5050).
 - Erronka-WinServer2025 (LAN - 192.168.10.10):
-  * MySQL Datu-base nagusia (jatetxea_db) portu 3306.
-  * ASP.NET Core REST API (.NET 10 C#) portu 5000.
-  * TPV C# Desktop aplikazioa (Windows Forms).
-  * Odoo 17 ERP (Erabiltzaileak, baimenak, fitxaketak, bajak) portu 8069.
+  * MySQL Datu-base nagusia (jatetxea_db) portu 3306 (ostalarian 3308).
+  * ASP.NET Core REST API (.NET 10 C#) portu 5000 (ostalarian 5050).
+  * TPV C# Desktop aplikazioa (Windows Forms .NET 10).
+  * Odoo 17 ERP (Erabiltzaileak, baimenak, fitxaketak, bajak) portu 8069 (ostalarian 8070).
   * Barne Txat Zerbitzaria (Socket.IO / WebSockets) portu 3001.
   * Sukaldeko Android TV / KDS panela portu 8086.
   * Active Directory (jatetxea.local), DNS eta DHCP.
 
-2. DOCKER EKOSISTEMA (1T_Jatetxea_Entornoa)
--------------------------------------------
-Karpeta nagusia: C:\Dev\GoierriEskola\1T_Jatetxea_Entornoa
-- jatetxea_mysql (MySQL 8.0 - portu 3308:3306)
-- jatetxea_api (ASP.NET Core .NET 10 - portu 5000:5000)
-- jatetxea_web_php (PHP 8.2 Apache - portu 8085:80)
-- jatetxea_chat (Node.js / Socket.IO - portu 3001:3001)
-- jatetxea_kds_tv (Nginx Sukaldea KDS - portu 8086:80)
-- jatetxea_odoo_postgres (PostgreSQL 15 - portu 5432:5432)
-- jatetxea_odoo_erp (Odoo 17 Community - portu 8069:8069)
 
-3. SARE ZENTRALITA ETA WIFI ANITZAK (switch-env.ps1)
-----------------------------------------------------
+3. DOCKER EKOSISTEMA ETA ATAKAK
+-------------------------------
+Karpeta nagusia: 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\
+- jatetxea_mysql (MySQL 8.0 - portu 3308:3306)
+- jatetxea_api (ASP.NET Core .NET 10 - portu 5050:5000)
+- jatetxea_web_php (PHP 8.4 Apache - portu 8085:80)
+- jatetxea_chat (Node.js 20 / Socket.IO - portu 3001:3001)
+- jatetxea_kds_tv (Nginx / Android TV KDS - portu 8086:80)
+- jatetxea_odoo_postgres (PostgreSQL 15 - portu 5432:5432)
+- jatetxea_odoo_erp (Odoo 17 Community - portu 8070:8069)
+- jatetxea_phpmyadmin (phpMyAdmin - portu 8081:80)
+- jatetxea_adminer (Adminer DB kudeatzailea - portu 8082:8080)
+
+
+4. SARE ZENTRALITA ETA PROFILAK (switch-env.ps1)
+------------------------------------------------
 Kokapenaren arabera (eskola, etxean, tolosako_etxean edo localhost),
 klik bakarrean eguneratzen dira bezero guztiak:
-- Flutter Zerbitzaria (mobile_zerbitzaria)
-- Flutter Bezeroa (mobile_bezeroa)
-- JavaFX Sukaldea / Barra / Biltegia (desktop_javafx)
-- C# Desktop TPV (desktop_csharp)
-- Web PHP Frontend (web_php)
+- Flutter Zerbitzaria (01_aplikazioak\mobile_zerbitzaria)
+- Flutter Bezeroa (01_aplikazioak\mobile_bezeroa)
+- JavaFX Sukaldea / Barra / Biltegia (01_aplikazioak\desktop_javafx)
+- C# Desktop TPV (01_aplikazioak\desktop_csharp)
+- Web PHP Frontend (01_aplikazioak\web_php)
 
 Komandoa:
-powershell -ExecutionPolicy Bypass -File C:\Dev\GoierriEskola\1T_Jatetxea_Entornoa\scripts\switch-env.ps1
+powershell -ExecutionPolicy Bypass -File 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\scripts\switch-env.ps1

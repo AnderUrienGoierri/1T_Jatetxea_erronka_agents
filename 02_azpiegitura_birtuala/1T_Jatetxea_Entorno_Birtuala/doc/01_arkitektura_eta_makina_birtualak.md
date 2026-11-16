@@ -1,14 +1,14 @@
 # 01. Sare Arkitektura eta 3 Makina Birtualen Eredua
 
-Dokumentu honek erronkan zehaztutako 3 makina birtualen eta aplikazioen banaketa arkitektonikoa azaltzen du, zibersegurtasuneko eta sistema-ingeniaritzako irizpide profesionalak jarraituz.
+Dokumentu honek erronkan zehaztutako 3 makina birtualen eta aplikazioen banaketa arkitektonikoa azaltzen du, zibersegurtasuneko eta sistema-ingeniaritzako irizpide profesionalak jarraituz. Proiektua monorepo egituran antolatuta dago (`01_aplikazioak`, `02_azpiegitura_birtuala`, `03_laborategi_fisikoa`, `04_dokumentazioa`).
 
 ---
 
 ## 1. Helburua eta Testuingurua
 
 Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea da:
-1. Kanpoko bezeroek Internetetik jatetxearen webgunera sartu eta platerak ikusi edo mahaiak erreserbatu ahal izatea.
-2. Barneko langileek (zerbitzariak, sukaldariak, barrakoak, administratzaileak) beren aplikazio espezifikoak erabiltzea (TPV, tabletak, sukaldeko KDS pantaila, Odoo ERP kudeaketa).
+1. Kanpoko bezeroek Internetetik jatetxearen webgunera sartu eta platerak ikusi edo mahaiak erreserbatu ahal izatea (`01_aplikazioak/web_php`, Apache + PHP 8.4).
+2. Barneko langileek (zerbitzariak, sukaldariak, barrakoak, administratzaileak) beren aplikazio espezifikoak erabiltzea (TPV, tabletak, sukaldeko KDS pantaila, Odoo ERP kudeaketa, IT Kontrol Zentrala).
 3. Segurtasuna bermatzea: kanpoko webgunea DMZ gune batean kokatzea eta barneko datu-basea, APIa eta kudeaketa-tresnak sare seguru batean babestea.
 
 ---
@@ -34,9 +34,11 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
   |         (DMZ SAREA)            |     |            (LAN SAREA)            |
   |       IP: 192.168.20.10        |     |         IP: 192.168.10.10         |
   +--------------------------------+     +-----------------------------------+
-  | - Apache 2.4 / PHP 8.2         |     | - MySQL 8.0/8.4 (jatetxea_db)     |
+  | - Apache 2.4 / PHP 8.4         |     | - MySQL 8.0/8.4 (jatetxea_db)     |
   | - Web Bezero Publikoa (web_php)|     | - ASP.NET Core REST API (.NET 10) |
-  | - Ataka: 80                    |     | - TPV C# Desktop aplikazioa       |
+  | - Ataka: 80 (Host: 8085)       |     | - Admin IT Zentrala (Port 5000)   |
+  |                                |     | - TPV C# Desktop aplikazioa       |
+  |                                |     | - JavaFX KDS, BDS eta Stocka      |
   |                                |     | - Odoo 17/18 ERP (HR & Baimenak)  |
   |                                |     | - Jatetxearen Barne Txat Zerb.    |
   |                                |     | - Sukaldeko Android TV Zerbitzua  |
@@ -57,19 +59,21 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
 
 ### 2. Makina: Erronka-Ubuntu (DMZ Web Zerbitzaria)
 * **IP Helbidea:** `192.168.20.10`
-* **Eginkizuna:** Jatetxearen webgune publikoa (`web_php`) ostatu ematea.
-* **Teknologia:** Apache 2.4 eta PHP 8.2.
-* **Komunikazio Bidea:** Webgune honek ez du datu-baserik lokalean; bezero batek erreserba bat egiten duenean, PHPak HTTP deia egiten dio Windows Server-eko APIari (`http://192.168.10.10:5000/api/v1`).
+* **Eginkizuna:** Jatetxearen webgune publikoa ostatu ematea (`01_aplikazioak/web_php`).
+* **Teknologia:** Apache 2.4 eta PHP 8.4.
+* **Komunikazio Bidea:** Webgune honek ez du datu-baserik lokalean; bezero batek erreserba bat egiten duenean, PHPak HTTP deia egiten dio Windows Server-eko APIari (`http://192.168.10.10:5000/api/v1` edo lokalean `http://localhost:5050/api/v1`).
 
 ### 3. Makina: Erronka-WinServer2025 (LAN Zerbitzari Integratua)
 * **IP Helbidea:** `192.168.10.10`
 * **Eginkizuna:** Jatetxearen datu, logika eta kudeaketa-aplikazio guztiak zentralizatzea:
   * **MySQL Zerbitzaria:** `jatetxea_db` datu-basea 11 taulekin, InnoDB transakzio pesimistekin.
-  * **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia.
-  * **TPV C# Desktop:** Zerbitzariek eta barrakoek erabiltzeko Windows Forms mahaigaineko programa.
-  * **Odoo ERP:** Langileen alta/bajak, txandak, fitxaketak eta baimenak administratzeko.
-  * **Barne Txat Zerbitzaria:** Sukaldea, barra eta zerbitzarien arteko denbora errealeko komunikazioa.
-  * **Android TV Sukaldea Zerbitzua:** Sukaldean pantaila handi batean eskaerak bistaratzeko KDS sistema.
+  * **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia (`01_aplikazioak/backend_api`, portu 5050).
+  * **Admin IT Zentrala:** Sarearen, zerbitzuen eta Docker edukiontzien kudeaketa integrala (`01_aplikazioak/admin_IT_zentrala`, portu 5000).
+  * **TPV C# Desktop:** Zerbitzariek eta kutxazainek erabiltzeko Windows Forms mahaigaineko programa (`01_aplikazioak/desktop_csharp`).
+  * **JavaFX Sukaldea, Barra & Biltegia:** KDS, BDS eta lehengaien stock kudeaketa bateratua (`01_aplikazioak/desktop_javafx`).
+  * **Odoo ERP:** Langileen alta/bajak, txandak, fitxaketak eta baimenak administratzeko (`01_aplikazioak/odoo_erp`, portu 8070).
+  * **Barne Txat Zerbitzaria:** Sukaldea, barra eta zerbitzarien arteko denbora errealeko komunikazioa (`01_aplikazioak/chat_zerbitzaria`, portu 3001).
+  * **Android TV Sukaldea Zerbitzua:** Sukaldean pantaila handi batean eskaerak bistaratzeko KDS sistema (`01_aplikazioak/sukaldea_kds_android_tv`, portu 8086).
   * **Sare Zerbitzuak:** Active Directory (`jatetxea.local`), DNS eta DHCP.
 
 ---
