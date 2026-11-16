@@ -45,6 +45,7 @@ import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldDark
 import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldLight
 import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldSuccess
 import eus.goierri.jatetxea.sukaldea.ui.theme.RoseDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.RoseLight
 import eus.goierri.jatetxea.sukaldea.ui.theme.RosePrimary
 import eus.goierri.jatetxea.sukaldea.ui.theme.SkyInfo
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextMuted

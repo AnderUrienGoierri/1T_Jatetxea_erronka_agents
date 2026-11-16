@@ -1,3 +1,5 @@
+)
+
 # 1T Jatetxea - Zerbitzaria Komandera (Android Jetpack Compose)
 
 Android aplikazio natibo txiki, moderno eta osoa, **Kotlin** eta **Jetpack Compose (Material 3)** bidez garatua, 1T Jatetxeko zerbitzariek aretoko mahaiak kudeatu eta sukalderako komandak azkar sortzeko.
@@ -5,6 +7,8 @@ Android aplikazio natibo txiki, moderno eta osoa, **Kotlin** eta **Jetpack Compo
 Mugikor eta tablet formatuetara guztiz egokitua (**Responsive** diseinua `LazyVerticalGrid`-ekin).
 
 ---
+
+## Pantailak eta Funtzionalitateak
 
 ## 1. Pantailak eta Funtzionalitateak
 
@@ -17,7 +21,7 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 
 2. **Mahaien Mapa eta Egoerak (`MahaiakScreen`):**
    - Mahaien zerrenda/sarea egoera-kode bisualekin (Berdea = Libre, Gorria = Okupatuta, Urdina = Eskaeran, Horia = Fakturatua).
-   - Eremuen araberako iragazkia (*Areto Nagusia*, *Terraza*, *VIP Gunea*).
+   - Eremuen araberako iragazkia (_Areto Nagusia_, _Terraza_, _VIP Gunea_).
    - Diseinu moldagarria (Mugikorrean 2 zutabe, Tabletan 4 zutabe).
    - `@Preview` barne.
 
@@ -29,12 +33,16 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 
 ---
 
+## Aukerazko Erronka: Komunikazioa (REST API)
+
 ## 2. Aukerazko Erronka: Komunikazioa (REST API)
 
 - **Aukeratutako Erronka:** Web zerbitzu bati dei egin (**REST API Komunikazioa** Retrofit bidez).
 - Aplikazioak komanda sortzean `POST /api/v1/eskaerak` deia egiten dio jatetxeko backend zentralari (`backend_api` 5050 atakan). Sare konexiorik ez badago, tokiko modu seguruan erregistratzen da.
 
 ---
+
+## Teknologia eta Egitura
 
 ## 3. Teknologia eta Egitura
 
@@ -46,6 +54,8 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 - **Sarea:** Retrofit 2.11.0 + OkHttp + Gson
 
 ---
+
+## Nola exekutatu Android Studion
 
 ## 4. Nola exekutatu Android Studion
 

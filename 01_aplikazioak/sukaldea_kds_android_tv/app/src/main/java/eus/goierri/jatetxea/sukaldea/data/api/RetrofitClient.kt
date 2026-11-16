@@ -8,8 +8,9 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    // Lehenetsia: 10.0.2.2 emuladoretik PC ostalariaren (port 5000) atzitzeko
-    var serverBaseUrl: String = "http://10.0.2.2:5000/api/v1/"
+    // Lehenetsia: 10.0.2.2 emuladoretik, localhost edo 172.16.243.145 (LAN gailuetarako)
+    // Portua 5050 (Docker API) edo 5000 (Zuzeneko API)
+    var serverBaseUrl: String = "http://10.0.2.2:5050/api/v1/"
         set(value) {
             val normalized = if (value.endsWith("/")) value else "$value/"
             field = normalized
