@@ -3073,10 +3073,17 @@
         idatziLog(`[${unekoAdmin}]: Aplikazioa abiarazten: ${appId}...`);
         erakutsiJakinarazpena(`Aplikazioa abiarazten: ${appId}...`, "info");
 
+        // Dinamikoki host-a egokitu (localhost ordez uneko IP helbidea erabili mugikorrean edo beste ekipo batean bagaude)
+        let resolvedUrl = url;
+        const currentHost = window.location.hostname;
+        if (resolvedUrl && typeof resolvedUrl === "string" && currentHost && currentHost !== "localhost" && currentHost !== "127.0.0.1") {
+          resolvedUrl = resolvedUrl.replace(/localhost|127\.0\.0\.1/g, currentHost);
+        }
+
         // Web esteka bada, ireki berehala nabigatzaileko beste leiho/fitxa batean popup-blokeatzailea ekiditeko
         let targetWindow = null;
-        if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
-          targetWindow = window.open(url, "_blank");
+        if (resolvedUrl && (resolvedUrl.startsWith("http://") || resolvedUrl.startsWith("https://"))) {
+          targetWindow = window.open(resolvedUrl, "_blank");
         }
 
         try {
@@ -3093,11 +3100,15 @@
 
           // Zerbitzariak URL bat itzultzen badu eta oraindik ireki ez bada:
           if (data && data.isUrl && data.url) {
+            let serverUrl = data.url;
+            if (currentHost && currentHost !== "localhost" && currentHost !== "127.0.0.1") {
+              serverUrl = serverUrl.replace(/localhost|127\.0\.0\.1/g, currentHost);
+            }
             if (!targetWindow || targetWindow.closed) {
-              window.open(data.url, "_blank");
+              window.open(serverUrl, "_blank");
             } else {
               try {
-                targetWindow.location.href = data.url;
+                targetWindow.location.href = serverUrl;
               } catch (e) {}
             }
           }

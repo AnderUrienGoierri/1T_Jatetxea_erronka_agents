@@ -565,8 +565,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = studioExe,
-                        Arguments = $"\"{androidPath}\"",
+                        FileName = "cmd.exe",
+                        Arguments = $"/c start \"Android Studio - Sukaldea KDS\" \"{studioExe}\" \"{androidPath}\"",
+                        WorkingDirectory = androidPath,
                         UseShellExecute = true
                     });
                     return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektua Android Studion irekita." });
@@ -575,8 +576,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = "explorer.exe",
-                        Arguments = $"\"{androidPath}\"",
+                        FileName = "cmd.exe",
+                        Arguments = $"/c start explorer.exe \"{androidPath}\"",
+                        WorkingDirectory = androidPath,
                         UseShellExecute = true
                     });
                     return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektuaren karpeta irekita." });
@@ -682,13 +684,15 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 
             if (csharpExe != null && File.Exists(csharpExe))
             {
+                string csharpBinDir = Path.GetDirectoryName(csharpExe)!;
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = csharpExe,
-                    WorkingDirectory = Path.GetDirectoryName(csharpExe),
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start \"1T Jatetxea - C# TPV\" /d \"{csharpBinDir}\" \"{csharpExe}\"",
+                    WorkingDirectory = csharpBinDir,
                     UseShellExecute = true
                 });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Mahaigaineko aplikazioa natiboki exekutatuta (Visual Studio exekutablea, terminalik gabe)." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Mahaigaineko aplikazioa natiboki abiarazita (interaktiboki)." });
             }
             return Results.Ok(new { Success = false, Message = "Ez da Jatetxea.Desktop.exe exekutablea aurkitu edo ezin izan da konpilatu." });
 
@@ -696,32 +700,30 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "desktop_javafx":
         case "kds_javafx":
             string javafxDir = Path.Combine(appsDir, "desktop_javafx");
-            string vbsLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.vbs");
+            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
             string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
 
-            if (File.Exists(vbsLauncher))
+            if (File.Exists(batLauncher))
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "wscript.exe",
-                    Arguments = $"\"{vbsLauncher}\"",
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start \"1T Jatetxea - JavaFX Sukaldea KDS\" /d \"{javafxDir}\" \"{batLauncher}\"",
                     WorkingDirectory = javafxDir,
                     UseShellExecute = true
                 });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS Mahaigaineko aplikazioa natiboki exekutatuta (terminalik gabe)." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS Mahaigaineko aplikazioa abiarazita (kontsolarekin)." });
             }
             else if (File.Exists(mvnwCmd))
             {
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/c mvnw.cmd javafx:run",
+                    Arguments = $"/c start \"1T Jatetxea - JavaFX Sukaldea KDS\" /d \"{javafxDir}\" cmd /c \"mvnw.cmd javafx:run\"",
                     WorkingDirectory = javafxDir,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    UseShellExecute = false
+                    UseShellExecute = true
                 });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS aplikazioa atzeko planoan abiarazten (terminalik gabe)..." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea KDS aplikazioa abiarazita." });
             }
             return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
 
@@ -733,7 +735,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/c start \"1T Jatetxea - Flutter Bezeroa (Web)\" flutter run -d chrome",
+                    Arguments = "/c start \"1T Jatetxea - Flutter Bezeroa (Web)\" cmd /c \"flutter run -d chrome\"",
                     WorkingDirectory = bezeroaDir,
                     UseShellExecute = true
                 });
@@ -749,7 +751,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/c start \"1T Jatetxea - Flutter Zerbitzaria (Web)\" flutter run -d chrome",
+                    Arguments = "/c start \"1T Jatetxea - Flutter Zerbitzaria (Web)\" cmd /c \"flutter run -d chrome\"",
                     WorkingDirectory = zerbitzariaDir,
                     UseShellExecute = true
                 });
@@ -807,8 +809,9 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
     {
         Process.Start(new ProcessStartInfo
         {
-            FileName = "explorer.exe",
-            Arguments = $"\"{targetDir}\"",
+            FileName = "cmd.exe",
+            Arguments = $"/c start explorer.exe \"{targetDir}\"",
+            WorkingDirectory = targetDir,
             UseShellExecute = true
         });
         return Results.Ok(new { Success = true, Path = targetDir, Message = $"Karpeta irekita: {Path.GetFileName(targetDir)}" });
@@ -1586,11 +1589,24 @@ static void OpenSystemBrowser(string url)
     {
         Process.Start(new ProcessStartInfo
         {
-            FileName = url,
+            FileName = "cmd.exe",
+            Arguments = $"/c start \"\" \"{url}\"",
+            CreateNoWindow = true,
             UseShellExecute = true
         });
     }
-    catch { }
+    catch
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch { }
+    }
 }
 
 static async Task<string> RunCommandAsync(string fileName, string args, string workingDir)
