@@ -67,8 +67,8 @@ Karpeta nagusia: 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\
 - jatetxea_kds_tv (Nginx / Android TV KDS - portu 8086:80)
 - jatetxea_odoo_postgres (PostgreSQL 15 - portu 5432:5432)
 - jatetxea_odoo_erp (Odoo 17 Community - portu 8070:8069)
-- jatetxea_phpmyadmin (phpMyAdmin - portu 8081:80)
-- jatetxea_adminer (Adminer DB kudeatzailea - portu 8082:8080)
+- jatetxea_phpmyadmin (phpMyAdmin DB Kudeatzailea - portu 8081:80)
+- jatetxea_postgreSQL_adminer (Adminer DB kudeatzailea - portu 8082:8080)
 
 
 4. SARE ZENTRALITA ETA PROFILAK (switch-env.ps1)

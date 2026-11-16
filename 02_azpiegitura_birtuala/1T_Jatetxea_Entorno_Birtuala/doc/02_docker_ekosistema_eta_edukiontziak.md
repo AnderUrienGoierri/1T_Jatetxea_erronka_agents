@@ -16,7 +16,7 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 | **jatetxea_odoo_postgres** | `postgres:15-alpine` | `5432:5432` | Odoo ERParentzako PostgreSQL datu-basea | Windows Server (LAN) |
 | **jatetxea_odoo_erp** | `odoo:17` | `8070:8069` | Odoo ERP (Langileen baimenak, fitxaketak, bajak eta kudeaketa) | Windows Server (LAN) |
 | **jatetxea_phpmyadmin** | `phpmyadmin:5.2` | `8081:80` | MySQL kudeaketa-panela (phpMyAdmin) | Windows Server (LAN) |
-| **jatetxea_adminer** | `adminer:latest` | `8082:8080` | PostgreSQL eta MySQL kudeaketa arina (Adminer) | Windows Server (LAN) |
+| **jatetxea_postgreSQL_adminer** | `adminer:latest` | `8082:8080` | PostgreSQL eta MySQL kudeaketa arina (Adminer) | Windows Server (LAN) |
 
 ---
 
@@ -76,6 +76,8 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 ## 3. Banakako Kontrola eta Aginduak
 
 Docker Compose bidez zerbitzu guztiak batera zein banaka kudeatu daitezke:
+
+- Edukiontziak ez dira Docker Desktop abiaraztean automatikoki piztuko; eskuz abiarazi behar dira.
 
 - **Zerbitzu guztiak altxatzea:**
 

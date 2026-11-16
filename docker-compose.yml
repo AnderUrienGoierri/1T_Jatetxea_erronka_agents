@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: 02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/db/Dockerfile
     container_name: jatetxea_mysql
-    restart: unless-stopped
+    restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: jatetxea_db
@@ -31,7 +31,7 @@ services:
       context: 01_aplikazioak
       dockerfile: ./../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
     container_name: jatetxea_api
-    restart: unless-stopped
+    restart: "no"
     tty: true
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
@@ -50,7 +50,7 @@ services:
       context: 01_aplikazioak
       dockerfile: ./../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
     container_name: jatetxea_web_php
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8085:80"
     volumes:
@@ -68,7 +68,7 @@ services:
       context: 02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala
       dockerfile: docker/chat/Dockerfile
     container_name: jatetxea_chat
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "3001:3001"
     environment:
@@ -82,7 +82,7 @@ services:
       context: 02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala
       dockerfile: docker/sukaldea_tv/Dockerfile
     container_name: jatetxea_kds_tv
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8086:80"
     networks:
@@ -92,7 +92,7 @@ services:
   db-odoo:
     image: postgres:15-alpine
     container_name: jatetxea_odoo_postgres
-    restart: unless-stopped
+    restart: "no"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
@@ -108,7 +108,7 @@ services:
   jatetxea-odoo:
     image: odoo:17.0
     container_name: jatetxea_odoo_erp
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - db-odoo
     ports:
@@ -128,7 +128,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2
     container_name: jatetxea_phpmyadmin
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - jatetxea-db
     ports:
@@ -144,8 +144,8 @@ services:
   # 9. PostgreSQL Web Kudeatzailea (Adminer)
   adminer:
     image: adminer:latest
-    container_name: jatetxea_adminer
-    restart: unless-stopped
+    container_name: jatetxea_postgreSQL_adminer
+    restart: "no"
     depends_on:
       - db-odoo
     ports:

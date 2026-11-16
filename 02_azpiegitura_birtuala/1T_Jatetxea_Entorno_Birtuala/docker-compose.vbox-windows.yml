@@ -6,7 +6,7 @@ services:
   jatetxea-db:
     image: mysql:8.0
     container_name: jatetxea_mysql
-    restart: unless-stopped
+    restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: jatetxea_db
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: docker/api/Dockerfile
     container_name: jatetxea_api
-    restart: unless-stopped
+    restart: "no"
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Production
@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: docker/chat/Dockerfile
     container_name: jatetxea_chat
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "3001:3001"
 
@@ -47,7 +47,7 @@ services:
   db-odoo:
     image: postgres:15-alpine
     container_name: jatetxea_odoo_postgres
-    restart: unless-stopped
+    restart: "no"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
@@ -59,7 +59,7 @@ services:
   jatetxea-odoo:
     image: odoo:17
     container_name: jatetxea_odoo_erp
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - db-odoo
     ports:

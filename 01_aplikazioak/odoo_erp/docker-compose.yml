@@ -5,7 +5,7 @@ services:
   jatetxea-odoo-postgres:
     image: postgres:15-alpine
     container_name: jatetxea_odoo_postgres
-    restart: unless-stopped
+    restart: "no"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
@@ -21,7 +21,7 @@ services:
   jatetxea-odoo-erp:
     image: odoo:17.0
     container_name: jatetxea_odoo_erp
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - jatetxea-odoo-postgres
     ports:

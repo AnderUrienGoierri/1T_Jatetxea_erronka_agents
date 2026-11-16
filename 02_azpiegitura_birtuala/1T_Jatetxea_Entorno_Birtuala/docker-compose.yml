@@ -5,7 +5,7 @@ services:
   jatetxea-db:
     image: mysql:8.0
     container_name: jatetxea_mysql
-    restart: unless-stopped
+    restart: "no"
     environment:
       TZ: Europe/Madrid
       MYSQL_ROOT_PASSWORD: root
@@ -24,13 +24,31 @@ services:
     networks:
       - jatetxea_net
 
+  # MySQL Web Kudeatzailea (phpMyAdmin)
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: jatetxea_phpmyadmin
+    restart: "no"
+    depends_on:
+      jatetxea-db:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: jatetxea-db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    networks:
+      - jatetxea_net
+
   # 2. C# ASP.NET Core REST API Nagusia (.NET 10)
   jatetxea-api:
     build:
       context: ../../01_aplikazioak
       dockerfile: ../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
     container_name: jatetxea_api
-    restart: unless-stopped
+    restart: "no"
     environment:
       - TZ=Europe/Madrid
       - ASPNETCORE_URLS=http://0.0.0.0:5000
@@ -52,7 +70,7 @@ services:
       context: ../../01_aplikazioak
       dockerfile: ../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
     container_name: jatetxea_web_php
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8085:80"
     volumes:
@@ -71,7 +89,7 @@ services:
       context: .
       dockerfile: docker/chat/Dockerfile
     container_name: jatetxea_chat
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "3001:3001"
     environment:
@@ -86,7 +104,7 @@ services:
       context: .
       dockerfile: docker/sukaldea_tv/Dockerfile
     container_name: jatetxea_kds_tv
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8086:80"
     environment:
@@ -98,7 +116,7 @@ services:
   db-odoo:
     image: postgres:15-alpine
     container_name: jatetxea_odoo_postgres
-    restart: unless-stopped
+    restart: "no"
     environment:
       - TZ=Europe/Madrid
       - POSTGRES_DB=postgres
@@ -115,7 +133,7 @@ services:
   jatetxea-odoo:
     image: odoo:17.0
     container_name: jatetxea_odoo_erp
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - db-odoo
     ports:
