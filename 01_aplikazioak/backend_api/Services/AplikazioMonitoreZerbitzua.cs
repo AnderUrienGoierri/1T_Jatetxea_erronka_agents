@@ -34,7 +34,7 @@ public class KonektatutakoAppInfo
         get
         {
             if (AzkenKonexioa == DateTime.MinValue) return "Ez da konektatu";
-            return AzkenKonexioa.ToLocalTime().ToString("HH:mm:ss");
+            return Jatetxea.Api.Helpers.OrduHelper.ToEuskalHerriaOrdua(AzkenKonexioa);
         }
     }
 }
@@ -171,7 +171,7 @@ public static class AplikazioMonitoreZerbitzua
         }
 
         // Kontsolara mezua inprimatu
-        string ordua = DateTime.Now.ToString("HH:mm:ss");
+        string ordua = Jatetxea.Api.Helpers.OrduHelper.NowFormatted;
         Console.WriteLine($"[{ordua}] [APP KONEKTATUTA: {app.Izena}] -> {eskaeraBidea} (IP: {ipHelbidea})");
     }
 
@@ -213,7 +213,7 @@ public static class AplikazioMonitoreZerbitzua
         {
             aktiboakGuztira = aktiboak,
             aplikazioakGuztira = zerrenda.Count,
-            data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            data = Jatetxea.Api.Helpers.OrduHelper.EuskalHerriaNow.ToString("yyyy-MM-dd HH:mm:ss"),
             aplikazioak = zerrenda
         };
     }

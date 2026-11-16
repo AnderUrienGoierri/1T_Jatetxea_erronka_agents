@@ -7,6 +7,7 @@ services:
     container_name: jatetxea_mysql
     restart: unless-stopped
     environment:
+      TZ: Europe/Madrid
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: jatetxea_db
     ports:
@@ -31,6 +32,7 @@ services:
     container_name: jatetxea_api
     restart: unless-stopped
     environment:
+      - TZ=Europe/Madrid
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Production
       - DB_CONNECTION_STRING=Server=jatetxea-db;Port=3306;Database=jatetxea_db;Uid=root;Pwd=root;AllowUserVariables=True;
@@ -56,6 +58,7 @@ services:
     volumes:
       - ../../01_aplikazioak/web_php:/var/www/html
     environment:
+      - TZ=Europe/Madrid
       - API_BASE_URL=http://jatetxea-api:5000/api/v1
     depends_on:
       - jatetxea-api
@@ -72,6 +75,7 @@ services:
     ports:
       - "3001:3001"
     environment:
+      - TZ=Europe/Madrid
       - PORT=3001
     networks:
       - jatetxea_net
@@ -85,6 +89,8 @@ services:
     restart: unless-stopped
     ports:
       - "8086:80"
+    environment:
+      - TZ=Europe/Madrid
     networks:
       - jatetxea_net
 
@@ -94,6 +100,7 @@ services:
     container_name: jatetxea_odoo_postgres
     restart: unless-stopped
     environment:
+      - TZ=Europe/Madrid
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
@@ -114,6 +121,7 @@ services:
     ports:
       - "8070:8069" # 8070 atakan eskainia, Windows zerbitzu lokalarekin (8069) talkarik ez izateko
     environment:
+      - TZ=Europe/Madrid
       - HOST=db-odoo
       - USER=odoo
       - PASSWORD=odoo

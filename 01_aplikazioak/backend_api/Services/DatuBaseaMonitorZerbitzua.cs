@@ -108,13 +108,13 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         Console.WriteLine($"{AnsiGreen}=================================================================={AnsiReset}");
         if (berreskuratua)
         {
-            Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA BERRESKURATUA - KONEKTATUTA]{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}[{Jatetxea.Api.Helpers.OrduHelper.NowFormatted}] [DATU-BASEA BERRESKURATUA - KONEKTATUTA]{AnsiReset}");
             Console.WriteLine($"{AnsiGreen}   -> MySQL konexioa berriz ondo ezarri da ({ZerbitzariaOharra}).{AnsiReset}");
             Console.WriteLine($"{AnsiGreen}   -> APIak eskaerak modu normalean prozesatuko ditu.{AnsiReset}");
         }
         else
         {
-            Console.WriteLine($"{AnsiGreen}[{DateTime.Now:HH:mm:ss}] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!{AnsiReset}");
+            Console.WriteLine($"{AnsiGreen}[{Jatetxea.Api.Helpers.OrduHelper.NowFormatted}] [DATU-BASEA OK] MySQL konexioa ondo ezarri da!{AnsiReset}");
             Console.WriteLine($"{AnsiGreen}   -> Zerbitzaria: {ZerbitzariaOharra} | Datu-basea: jatetxea_db{AnsiReset}");
         }
         Console.WriteLine($"{AnsiGreen}=================================================================={AnsiReset}");
@@ -127,7 +127,7 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         try { Console.ForegroundColor = ConsoleColor.Red; } catch { }
         Console.WriteLine();
         Console.WriteLine($"{AnsiRed}=================================================================={AnsiReset}");
-        Console.WriteLine($"{AnsiRed}[{DateTime.Now:HH:mm:ss}] [ADI! DATU-BASEA ITZALI DA / DESKONEKTATUTA]{AnsiReset}");
+        Console.WriteLine($"{AnsiRed}[{Jatetxea.Api.Helpers.OrduHelper.NowFormatted}] [ADI! DATU-BASEA ITZALI DA / DESKONEKTATUTA]{AnsiReset}");
         Console.WriteLine($"{AnsiRed}   -> Kausa: Ezin izan da MySQL-ra konektatu ({ZerbitzariaOharra}).{AnsiReset}");
         if (!string.IsNullOrWhiteSpace(errorea))
         {
