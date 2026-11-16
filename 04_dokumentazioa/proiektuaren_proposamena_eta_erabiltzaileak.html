@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <title>Proiektuaren Proposamena eta Erabiltzaileak</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #222;
+      line-height: 1.55;
+      font-size: 13.5px;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      color: #0d47a1;
+      font-size: 22px;
+      border-bottom: 2px solid #0d47a1;
+      padding-bottom: 6px;
+      margin-top: 0;
+    }
+    h2 {
+      color: #1565c0;
+      font-size: 17px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 4px;
+      margin-top: 20px;
+    }
+    h3 {
+      color: #1e88e5;
+      font-size: 14.5px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #cfd8dc;
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 11.5px;
+      color: #0f172a;
+    }
+    ul, ol {
+      margin: 6px 0 12px 20px;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+    .mermaid {
+      text-align: center;
+      margin: 15px 0;
+    }
+    hr {
+      border: 0;
+      height: 1px;
+      background: #e2e8f0;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="content"></div>
+  <script>
+    const markdown = "# Jatetxearen Kudeaketa Integrala: Proiektuaren Proposamena eta Eragileak\n\n## 1. Proiektuaren Helburua eta Ikuspegi Orokorra\n\nDokumentu honek Jatetxearen Erronka Integraleko proposamen arkitektonikoa eta funtzionala laburbiltzen du. Soluzio honen helburua jatetxe baten eguneroko jardun osoa digitalizatzea eta automatizatzea da, bezeroak erreserba egiten duen unetik hasi eta hornitzaileen stocka kudeatu edota fakturazioa burutu arte.\n\nInformazio guztia zentralizatuta dago后端 API baten bidez (ASP.NET Core REST API), datu-base sendo baten gainean (PostgreSQL), eragiketa-fluxu bakoitzari dagokion interfaze espezifikoa eskainiz.\n\n---\n\n## 2. Eragileak (Rolak) eta Bakoitzaren Aplikazioak\n\nJatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:\n\n| Rola / Erabiltzailea | Erabilitako Aplikazioak | Plataforma / Teknologia | Funtzio Nagusiak |\n| :--- | :--- | :--- | :--- |\n| **Bezeroak** | Web-App (`web_php` / HTML-JS)<br/>Mugikorreko App-a (`mobile_bezeroa`) | Web (HTML5/JS/PHP)<br/>Android / iOS (Flutter) | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin, auto-eskaerak bideratu eta faktura ikusi. |\n| **Zerbitzariak (Jantokia)** | Komandera Mugikorra (`zerbitzaria_komandera_android`)<br/>Komandera Flutter (`mobile_zerbitzaria`) | Android Natiboa (Jetpack Compose)<br/>Multiplataforma (Flutter) | Mahaien mapa eta okupazioa kudeatu, komandak jaso mahai ondoan, eskaerak sukaldera bidali eta kobraketak bideratu. |\n| **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br/>KDS Mahaigainekoa (`desktop_javafx`) | Android TV (Leanback / Compose)<br/>Desktop (Java 21, JavaFX) | Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Prestatzen, Prest) eta lehengaiak gastatu. |\n| **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_csharp`) | Windows Desktop (.NET 10 WinForms/WPF) | Barran zuzeneko salmentak erregistratu, tiketak eta fakturak inprimatu, kontuak kobratu eta mahaien egoera globala ikusi. |\n| **Biltegikoak** | Biltegi Kudeatzailea (`desktop_javafx`)<br/>ERP Kudeaketa (`odoo_erp`) | Desktop (JavaFX MVC)<br/>Web ERP (Odoo) | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso eta erosketa-zerrendak sortu. |\n| **Admin TI / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br/>ERP / Finantzak (`odoo_erp`)<br/>Zentral API (`backend_api`) | Web Dashboard (Angular / React / HTML)<br/>Odoo ERP<br/>ASP.NET Core REST API | Langileen altak/bajak, baimenak (RBAC), azpiegitura birtualaren monitorizazioa, salmenta txostenak eta segurtasun-kopiak. |\n\n---\n\n## 3. Aplikazioen Deskribapen Zehatza\n\n```mermaid\ngraph TD\n    subgraph KANPOKOAK[\"Bezeroak\"]\n        BEZ_WEB[\"Web Karta & Erreserbak<br/>(web_php)\"]\n        BEZ_MOB[\"Bezeroaren Mugikorra<br/>(mobile_bezeroa - Flutter)\"]\n    end\n\n    subgraph JANTOKIA_BARRA[\"Zerbitzariak eta Barra\"]\n        ZERB_AND[\"Android Komandera<br/>(zerbitzaria_komandera_android - Jetpack Compose)\"]\n        BAR_TPV[\"TPV Kutxa Zentrala<br/>(desktop_csharp - .NET 10)\"]\n    end\n\n    subgraph SUKALDEA_BILTEGIA[\"Sukaldea eta Biltegia\"]\n        SUK_TV[\"Sukaldeko KDS Pantaila<br/>(sukaldea_kds_android_tv)\"]\n        BIL_JFX[\"KDS & Biltegi Kudeaketa<br/>(desktop_javafx - Java 21)\"]\n    end\n\n    subgraph ADMIN_ERP[\"Kudeaketa eta Administrazioa\"]\n        ADM_TI[\"Admin IT Panela<br/>(admin_IT_zentrala)\"]\n        ERP_OD[\"Odoo ERP<br/>(odoo_erp)\"]\n    end\n\n    API[\"REST API Zentrala<br/>(backend_api - ASP.NET Core)\"]\n    DB[(\"PostgreSQL Datu-Basea\")]\n\n    BEZ_WEB -->|HTTP/JSON| API\n    BEZ_MOB -->|HTTP/JSON| API\n    ZERB_AND -->|HTTP/JSON| API\n    BAR_TPV -->|HTTP/JSON| API\n    SUK_TV -->|HTTP/WebSockets| API\n    BIL_JFX -->|HTTP/JSON| API\n    ADM_TI -->|HTTP/JSON| API\n    ERP_OD <-->|Sinkronizazioa| API\n\n    API <--> DB\n```\n\n### 3.1. Bezeroen Interfazeak\n* **Web-App (`01_aplikazioak/web_php`):** Jatetxearen atari publikoa. Bezeroak mahai-erreserbak egiteko aukera du, eguneko menua eta karta ikusi eta alergenoen araberako iragazketa egiteko. Stockik ez duten platerak automatikoki agortu gisa agertzen dira.\n* **Mugikorreko Aplikazioa (`01_aplikazioak/mobile_bezeroa`):** Flutter bidez garatua, bezeroak bere gailutik mahai gaineko QR kodea eskaneatu eta eskaerak zuzenean bideratzeko aukera ematen du.\n\n### 3.2. Zerbitzarien eta Jantokiaren Interfazeak\n* **Komandera Android Natiboa (`01_aplikazioak/zerbitzaria_komandera_android`):** Jetpack Compose bidez sortua, telefono zein tablet tamainetara egokitzen den interfaze modernoa. Zerbitzariak mahaien egoera ikus dezake (Libre, Okupatua, Eskaerarekin), komandak platerka jaso, oharrak gehitu (adib. haragia puntuan) eta eskaera sukaldera igorri.\n* **Multiplataforma Komandera (`01_aplikazioak/mobile_zerbitzaria`):** Flutter bidez egindako komandera alternatiboa.\n\n### 3.3. Barrako eta Salmenta Puntuko Interfazea\n* **C# .NET 10 Desktop TPV (`01_aplikazioak/desktop_csharp`):** Barran kokatutako ukipen-pantailarako terminal sendoa. Mahai bakoitzeko kontua ixtea, faktura zatituak kudeatzea, txartel/eskudiruzko kobraketak egitea eta eguneko itxiera ekonomikoa (Z kaxa) burutzea ahalbidetzen du.\n\n### 3.4. Sukaldeko Interfazeak (KDS - Kitchen Display System)\n* **Android TV KDS (`01_aplikazioak/sukaldea_kds_android_tv`):** Sukaldeko horman kokatutako telebista edo pantaila handirako pentsatua. Sartzen diren komandak txartel moduan bistaratzen ditu, lehentasunaren arabera ordenatuta eta denbora-markekin.\n* **JavaFX KDS eta Biltegia (`01_aplikazioak/desktop_javafx`):** MVC arkitekturako mahaigaineko aplikazioa. Sukaldariek komandak ikusi eta \"Prestatzen\" edo \"Bukatua\" markatu ditzakete bertatik.\n\n### 3.5. Biltegiko Interfazea\n* **JavaFX Biltegi Modulua (`01_aplikazioak/desktop_javafx`):** Jatetxeko despentsa eta hozkailuetako stock errealaren jarraipena. Gutxieneko stocketik behera dauden lehengaiak gorriz nabarmentzen ditu eta hornitzaileentzako erosketa-proposamena automatikoki kalkulatzen du.\n* **Odoo ERP integrazioa (`01_aplikazioak/odoo_erp`):** Erosketa-eskaera ofizialak, albaranak eta hornitzaileen fakturen kontabilitatea kudeatzeko.\n\n### 3.6. Administrazioa eta TI Kudeaketa\n* **Admin IT Zentrala (`01_aplikazioak/admin_IT_zentrala`):** Sistemaren administratzailearentzako kontrol-panela. Langileen kudeaketa (rolak, baimenak, PINak), jatetxeko gailuen monitorizazioa eta azpiegitura-zerbitzuen ikuskaritza ahalbidetzen ditu.\n* **Backend REST API (`01_aplikazioak/backend_api`):** Aplikazio guztiei zerbitzua ematen dien nukleoa. Datu-basearekiko transakzio seguruak bermatzen ditu (stock deskontua, eskaera egoerak, balidazioak).\n\n---\n\n## 4. Azpiegitura Birtuala eta Segurtasuna\n\nProiektu honek bere azpiegitura birtual propioa du (`02_azpiegitura_birtuala/`), sare mailan isolamendu zorrotza bermatzen duena:\n* **OPNsense Firewall:** Sareak segmentatzen ditu (Bezeroen Wi-Fi publikoa, Langileen sarea, eta Zerbitzarien DMZ / IT kudeaketa).\n* **Docker Edukiontziak:** Sukaldeko zerbitzuak, APIa eta datu-basea modu arin eta errepikagarrian hedatzeko.\n* **Active Directory / LDAP / RBAC:** Erabiltzaile bakoitzak bere profilari dagozkion datuak bakarrik ikus ditzakeela ziurtatuz.\n";
+    document.getElementById('content').innerHTML = marked.parse(markdown);
+
+    // Convert code blocks with language mermaid
+    document.querySelectorAll('code.language-mermaid').forEach(el => {
+      const pre = el.parentElement;
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = el.textContent;
+      pre.replaceWith(div);
+    });
+
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>
