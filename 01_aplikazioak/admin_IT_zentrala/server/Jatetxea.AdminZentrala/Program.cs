@@ -1602,18 +1602,39 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia eta fidagarriena: Shell.Application COM bidez deitzea.
-    // Honek Windows mahaigaineko erabiltzailearen benetako Shell interaktiboan (explorer.exe-ren sesio grafikoan)
-    // sortzen ditu leihoak (MainWindowHandle erreala esleituz), atzeko planoko azpiprozesuen oinordetza saihestuz.
+    // 1. Modu nagusia eta fidagarriena: cmd.exe /c call bidez Start-Process exekutatzea PowerShell-etik.
+    // .bat fitxategietako "start" direktibak cmd.exe ingurunearen bidez deitzean bakarrik irekitzen
+    // du leiho grafikoa erabiltzailearen mahaigain interaktiboan (MainWindowHandle esleituz).
     try
     {
-        Type? shellType = Type.GetTypeFromProgID("Shell.Application");
-        if (shellType != null)
+        string psScript;
+        if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
+            executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
         {
-            dynamic shell = Activator.CreateInstance(shellType)!;
-            shell.ShellExecute(executableOrFile, arguments ?? "", workingDirectory ?? "", "open", 1);
-            return;
+            string cleanArgs = arguments ?? "";
+            string cmdArgs = "/c call \"" + executableOrFile + "\" " + cleanArgs;
+            psScript = "Start-Process -FilePath 'cmd.exe' -ArgumentList '" + cmdArgs.Trim().Replace("'", "''") + "' -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
         }
+        else
+        {
+            string argPart = string.IsNullOrWhiteSpace(arguments) ? "" : " -ArgumentList '" + arguments.Replace("'", "''") + "'";
+            psScript = "Start-Process -FilePath '" + executableOrFile.Replace("'", "''") + "'" + argPart + " -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
+        }
+
+        byte[] bytes = System.Text.Encoding.Unicode.GetBytes(psScript);
+        string encodedCmd = Convert.ToBase64String(bytes);
+
+        var psiPs = new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            Arguments = $"-NoProfile -NonInteractive -WindowStyle Hidden -EncodedCommand {encodedCmd}",
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        using var psProc = Process.Start(psiPs);
+        psProc?.WaitForExit(4000);
+        return;
     }
     catch { }
 
