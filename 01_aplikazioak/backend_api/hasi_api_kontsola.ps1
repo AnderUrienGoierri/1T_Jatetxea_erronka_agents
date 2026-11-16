@@ -18,7 +18,6 @@ while ($true) {
     $isHealthy = $false
     $apiRunning = $false
     $errDetail = ""
-    $dbStatusText = ""
 
     # 1. Health check kontsultatu APIari (2 segundoko muga)
     try {
@@ -27,12 +26,10 @@ while ($true) {
         $req.Method = "GET"
         $req.Headers.Add("X-App-Id", "admin_it")
         $resp = $req.GetResponse()
-        $statusCode = [int]$resp.StatusCode
 
-        if ($statusCode -eq 200) {
+        if ([int]$resp.StatusCode -eq 200) {
             $apiRunning = $true
             $isHealthy = $true
-            $dbStatusText = "KONEKTATUTA"
         }
         $resp.Close()
     }
@@ -41,7 +38,6 @@ while ($true) {
             $apiRunning = $true
             $isHealthy = $false
             $resp = $_.Exception.Response
-            $statusCode = [int]$resp.StatusCode
 
             try {
                 $stream = $resp.GetResponseStream()
