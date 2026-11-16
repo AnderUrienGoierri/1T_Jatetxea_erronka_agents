@@ -6,7 +6,7 @@ Mugikor eta tablet formatuetara guztiz egokitua (**Responsive** diseinua `LazyVe
 
 ---
 
-## 📱 Pantailak eta Funtzionalitateak
+## 1. Pantailak eta Funtzionalitateak
 
 Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost` nabigazio modernoarekin:
 
@@ -29,14 +29,14 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 
 ---
 
-## 🚀 Aukerazko Erronka: Komunikazioa (REST API)
+## 2. Aukerazko Erronka: Komunikazioa (REST API)
 
 - **Aukeratutako Erronka:** Web zerbitzu bati dei egin (**REST API Komunikazioa** Retrofit bidez).
 - Aplikazioak komanda sortzean `POST /api/v1/eskaerak` deia egiten dio jatetxeko backend zentralari (`backend_api` 5050 atakan). Sare konexiorik ez badago, tokiko modu seguruan erregistratzen da.
 
 ---
 
-## 🛠️ Teknologia eta Egitura
+## 3. Teknologia eta Egitura
 
 - **Hizkuntza:** Kotlin 1.9.24
 - **UI Framework:** Android Jetpack Compose + Material 3 (XML gabea)
@@ -47,7 +47,7 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 
 ---
 
-## 💻 Nola exekutatu Android Studion
+## 4. Nola exekutatu Android Studion
 
 1. Ireki Android Studio.
 2. Hautatu `Open` eta joan proiektuaren karpetara:
