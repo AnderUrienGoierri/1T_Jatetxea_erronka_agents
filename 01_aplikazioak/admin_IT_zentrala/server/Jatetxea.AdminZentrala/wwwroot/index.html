@@ -432,6 +432,13 @@
               <span>Ireki REST API (5050)</span>
             </button>
             <button
+              onclick="launchApp('api_terminal')"
+              class="px-2.5 py-1.5 bg-zinc-950 hover:bg-zinc-800 text-amber-300 hover:text-amber-200 rounded-md font-medium border border-zinc-800 hover:border-zinc-700 transition flex items-center space-x-1.5"
+              title="ASP.NET Core REST APIren terminaleko pantaila eta zuzeneko logak ireki"
+            >
+              <span>REST API Terminala</span>
+            </button>
+            <button
               onclick="launchApp('phpmyadmin', 'http://localhost:8081')"
               class="px-2.5 py-1.5 bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100 rounded-md font-medium border border-zinc-800 hover:border-zinc-700 transition flex items-center space-x-1.5"
               title="MySQL Datu-Basearen Web Kudeatzailea"
@@ -2523,6 +2530,15 @@
                                 ${btnLabel}
                             </button>
                         `;
+
+              // ASP.NET Core REST API zerbitzuan: Terminaleko log/kontsola pantaila irekitzeko botoia
+              if (p.id === "api" || targetId === "api") {
+                botoiakHtml += `
+                            <button onclick="event.stopPropagation(); launchApp('api_terminal', '')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-amber-300 hover:text-amber-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="ASP.NET Core REST API terminaleko kontsola eta logak zuzenean ireki">
+                                Terminala (5050)
+                            </button>
+                        `;
+              }
 
               // MySQL zerbitzuan: phpMyAdmin eta Socket/TCP ataka gordina (3308) aztertzeko botoia
               if (p.id === "mysql" || targetId === "phpmyadmin") {

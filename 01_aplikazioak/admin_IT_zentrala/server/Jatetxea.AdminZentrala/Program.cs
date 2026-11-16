@@ -587,22 +587,28 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             // 1. REST APIa bakarrik abiarazi Dockerren (datu-basea itzalita badago ere martxan jartzeko)
             _ = RunCommandAsync("docker", "compose up -d --no-deps jatetxea-api", dockerDir);
 
-            // 2. Kontsolako leiho erreala abiarazi zuzenean logak bistaratzeko
+            // 2. Kontsolako terminal-leiho erreala abiarazi zuzenean logak bistaratzeko
             string apiDir = Path.Combine(appsDir, "backend_api");
             string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
 
             if (File.Exists(batPath))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c start \"1T Jatetxea - ASP.NET Core REST API\" \"{batPath}\"",
-                    WorkingDirectory = apiDir,
-                    UseShellExecute = true
-                });
+                LaunchInteractiveProcess(batPath, "", apiDir);
             }
 
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "ASP.NET Core REST API eta kontsolako logak irekita." });
+
+        case "api_terminal":
+        case "api_logs":
+        case "api_console":
+            string apiDirTerm = Path.Combine(appsDir, "backend_api");
+            string batPathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.bat");
+            if (File.Exists(batPathTerm))
+            {
+                LaunchInteractiveProcess(batPathTerm, "", apiDirTerm);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "ASP.NET Core REST APIren terminaleko pantaila (kontsola eta logak) irekita." });
+            }
+            return Results.Ok(new { Success = false, Message = "hasi_api_kontsola.bat fitxategia ez da aurkitu." });
 
         case "chat":
         case "jatetxea-chat":
@@ -1602,9 +1608,9 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia eta fidagarriena: cmd.exe /c call bidez Start-Process exekutatzea PowerShell-etik.
-    // .bat fitxategietako "start" direktibak cmd.exe ingurunearen bidez deitzean bakarrik irekitzen
-    // du leiho grafikoa erabiltzailearen mahaigain interaktiboan (MainWindowHandle esleituz).
+    // 1. Modu nagusia eta bermatuena: conhost.exe bidez Start-Process exekutatzea PowerShell-etik.
+    // Windows 11n Windows Terminal lehenetsia denean, conhost.exe deitzeak bermatzen du
+    // kontsola/terminal leiho erreala (MainWindowHandle erreala) mahaigainean irekitzea.
     try
     {
         string psScript;
@@ -1612,8 +1618,8 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
             executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
         {
             string cleanArgs = arguments ?? "";
-            string cmdArgs = "/c call \"" + executableOrFile + "\" " + cleanArgs;
-            psScript = "Start-Process -FilePath 'cmd.exe' -ArgumentList '" + cmdArgs.Trim().Replace("'", "''") + "' -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
+            string cmdArgs = "cmd.exe /k \"\"" + executableOrFile + "\" " + cleanArgs + "\"";
+            psScript = "Start-Process -FilePath 'conhost.exe' -ArgumentList '" + cmdArgs.Trim().Replace("'", "''") + "' -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
         }
         else
         {
