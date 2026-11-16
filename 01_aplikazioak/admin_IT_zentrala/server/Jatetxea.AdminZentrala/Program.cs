@@ -1171,7 +1171,8 @@ app.MapGet("/api/env/current", async () =>
 
         if (matchedProfile == null)
         {
-            if (ssid.Contains("INN-WPRIVATE", StringComparison.OrdinalIgnoreCase) ||
+            if (ssid.Contains("ASUS", StringComparison.OrdinalIgnoreCase) ||
+                ssid.Contains("INN-WPRIVATE", StringComparison.OrdinalIgnoreCase) ||
                 ssid.Contains("innovatek", StringComparison.OrdinalIgnoreCase))
             {
                 matchedProfile = "innovatek";
@@ -1195,7 +1196,7 @@ app.MapGet("/api/env/current", async () =>
 
     if (matchedProfile == null && !string.IsNullOrEmpty(ip))
     {
-        if (ip.StartsWith("192.168.5.")) matchedProfile = "innovatek";
+        if (ip.StartsWith("192.168.5.") || (ip.StartsWith("192.168.1.") && !string.IsNullOrEmpty(ssid) && ssid.Contains("ASUS", StringComparison.OrdinalIgnoreCase))) matchedProfile = "innovatek";
         else if (ip.StartsWith("192.168.1.")) matchedProfile = "etxean";
         else if (ip.StartsWith("10.0.") || ip.StartsWith("172.")) matchedProfile = "eskola";
         else if (ip.StartsWith("192.168.10.")) matchedProfile = "vbox_erronka";
@@ -1204,52 +1205,61 @@ app.MapGet("/api/env/current", async () =>
 
     matchedProfile ??= activeProfile;
 
-    // Eguneratu matchedProfile-ren IP helbidea eta SSID automatikoki (salbu eta finkoa denean edo localhost)
+    // Eguneratu matchedProfile-ren IP helbidea eta SSID automatikoki (salbu eta finkoa denean edo localhost/etxean)
+    // GARRANTZITSUA: etxean profila ez zapaldu automatikoki, soilik bere SSID erreala (euskaltel_urite) denean
     if (!string.IsNullOrEmpty(matchedProfile) && !string.IsNullOrEmpty(ip) && ip != "127.0.0.1" && matchedProfile != "localhost" && matchedProfile != "vbox_erronka")
     {
-        try
+        if (matchedProfile == "etxean" && !string.IsNullOrEmpty(ssid) && !ssid.Contains("euskaltel", StringComparison.OrdinalIgnoreCase) && !ssid.Contains("urite", StringComparison.OrdinalIgnoreCase))
         {
-            if (File.Exists(envJsonPath))
+            // Ez eguneratu etxean profila beste wifi baten gaudenean
+        }
+        else
+        {
+            try
             {
-                var curJson = await File.ReadAllTextAsync(envJsonPath);
-                using var doc = JsonDocument.Parse(curJson);
-                var root = doc.RootElement;
-                if (root.TryGetProperty("profiles", out var prfs) && prfs.TryGetProperty(matchedProfile, out var profObj))
+                if (File.Exists(envJsonPath))
                 {
-                    var currentHost = profObj.TryGetProperty("api_host", out var h) ? h.GetString() : "";
-                    if (currentHost != ip)
+                    var curJson = await File.ReadAllTextAsync(envJsonPath);
+                    using var doc = JsonDocument.Parse(curJson);
+                    var root = doc.RootElement;
+                    if (root.TryGetProperty("profiles", out var prfs) && prfs.TryGetProperty(matchedProfile, out var profObj))
                     {
-                        var dict = new Dictionary<string, object>();
-                        dict["active_profile"] = matchedProfile;
-                        var prfsCopy = new Dictionary<string, object>();
-                        foreach (var prop in prfs.EnumerateObject())
+                        var currentHost = profObj.TryGetProperty("api_host", out var h) ? h.GetString() : "";
+                        var currentSsid = profObj.TryGetProperty("wifi_ssid", out var s) ? s.GetString() : "";
+                        if (currentHost != ip || (!string.IsNullOrEmpty(ssid) && currentSsid != ssid))
                         {
-                            if (prop.Name == matchedProfile)
+                            var dict = new Dictionary<string, object>();
+                            dict["active_profile"] = matchedProfile;
+                            var prfsCopy = new Dictionary<string, object>();
+                            foreach (var prop in prfs.EnumerateObject())
                             {
-                                var pMap = JsonSerializer.Deserialize<Dictionary<string, object>>(prop.Value.GetRawText()) ?? new();
-                                pMap["api_host"] = ip;
-                                pMap["api_port"] = 5050;
-                                pMap["api_base_url"] = $"http://{ip}:5050/api/v1";
-                                pMap["web_url"] = $"http://{ip}:8085";
-                                pMap["chat_url"] = $"http://{ip}:3001";
-                                pMap["odoo_url"] = $"http://{ip}:8070";
-                                pMap["tv_kds_url"] = $"http://{ip}:8086";
-                                if (!string.IsNullOrEmpty(ssid)) pMap["wifi_ssid"] = ssid;
-                                prfsCopy[prop.Name] = pMap;
+                                if (prop.Name == matchedProfile)
+                                {
+                                    var pMap = JsonSerializer.Deserialize<Dictionary<string, object>>(prop.Value.GetRawText()) ?? new();
+                                    pMap["api_host"] = ip;
+                                    pMap["api_port"] = 5050;
+                                    pMap["api_base_url"] = $"http://{ip}:5050/api/v1";
+                                    pMap["web_url"] = $"http://{ip}:8085";
+                                    pMap["chat_url"] = $"http://{ip}:3001";
+                                    pMap["odoo_url"] = $"http://{ip}:8070";
+                                    pMap["tv_kds_url"] = $"http://{ip}:8086";
+                                    if (!string.IsNullOrEmpty(ssid)) pMap["wifi_ssid"] = ssid;
+                                    prfsCopy[prop.Name] = pMap;
+                                }
+                                else
+                                {
+                                    prfsCopy[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText())!;
+                                }
                             }
-                            else
-                            {
-                                prfsCopy[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText())!;
-                            }
+                            dict["profiles"] = prfsCopy;
+                            await File.WriteAllTextAsync(envJsonPath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
+                            profilesDict = prfsCopy;
                         }
-                        dict["profiles"] = prfsCopy;
-                        await File.WriteAllTextAsync(envJsonPath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
-                        profilesDict = prfsCopy;
                     }
                 }
             }
+            catch { }
         }
-        catch { }
     }
 
     // Auto-detekzioak automatikoki aktibatu behar du profila
