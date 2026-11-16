@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PREFS_NAME = "admin_it_prefs"
         private const val KEY_SERVER_URL = "server_url"
+        private const val DEFAULT_WIFI_URL = "http://192.168.1.129:5000"
         private const val DEFAULT_USB_URL = "http://localhost:5000"
-        private const val DEFAULT_WIFI_URL = "http://192.168.1.168:5000"
     }
 
-    private var currentUrl: String = DEFAULT_USB_URL
+    private var currentUrl: String = DEFAULT_WIFI_URL
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        currentUrl = prefs.getString(KEY_SERVER_URL, DEFAULT_USB_URL) ?: DEFAULT_USB_URL
+        currentUrl = prefs.getString(KEY_SERVER_URL, DEFAULT_WIFI_URL) ?: DEFAULT_WIFI_URL
+        if (currentUrl.contains("192.168.1.168") || currentUrl.contains("localhost:5000")) {
+            currentUrl = DEFAULT_WIFI_URL
+            prefs.edit().putString(KEY_SERVER_URL, currentUrl).apply()
+        }
 
         initViews()
         setupWebView()
@@ -198,8 +202,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun showServerDialog() {
         val options = arrayOf(
+            "WiFi Sarea (http://192.168.1.129:5000)",
             "USB Kablea / ADB (http://localhost:5000)",
-            "WiFi Sarea (http://192.168.1.168:5000)",
             "Beste IP edo ataka pertsonalizatua..."
         )
 
@@ -207,8 +211,8 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Hautatu IT Kontrol Zerbitzaria")
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> switchServer(DEFAULT_USB_URL)
-                    1 -> switchServer(DEFAULT_WIFI_URL)
+                    0 -> switchServer(DEFAULT_WIFI_URL)
+                    1 -> switchServer(DEFAULT_USB_URL)
                     2 -> showCustomIpDialog()
                 }
             }
