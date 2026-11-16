@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun KomanderaTheme(
-    darkTheme: Boolean = true, // Lehenetsi tema iluna jatetxeko ingurunerako
+    @Suppress("UNUSED_PARAMETER") darkTheme: Boolean = true, // Lehenetsi tema iluna jatetxeko ingurunerako
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

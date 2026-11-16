@@ -8,11 +8,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -71,7 +71,7 @@ fun EskaeraScreen(
                 navigationIcon = {
                     IconButton(onClick = onAtzera) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Atzera",
                             tint = TextPrimary
                         )
@@ -120,7 +120,7 @@ fun EskaeraScreen(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Send,
+                            imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = null,
                             tint = if (lerroak.isNotEmpty()) DarkBackground else TextMuted
                         )
@@ -203,7 +203,7 @@ fun EskaeraScreen(
                 }
             }
 
-            Divider(color = DarkSurfaceVariant, modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(color = DarkSurfaceVariant, modifier = Modifier.padding(vertical = 8.dp))
 
             // Hautatutako lerroen zerrenda
             Text(
