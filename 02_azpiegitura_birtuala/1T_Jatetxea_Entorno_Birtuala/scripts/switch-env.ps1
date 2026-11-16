@@ -2,8 +2,8 @@
 # Jatetxearen Sare Zentralita: WiFi Sareak (Eskola, Etxean, Tolosa, Localhost, VBox) aldatzeko scripta
 
 param(
-    [Alias("Environment", "Env")]
-    [string]$Profile = ""
+    [Alias("Environment", "Env", "Profile")]
+    [string]$TargetProfile = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -45,7 +45,7 @@ foreach ($ip in $DetectedIPs) {
 }
 Write-Host ""
 
-if (-not $Profile) {
+if (-not $TargetProfile) {
     Write-Host "Aukeratu sare profila:" -ForegroundColor Green
     Write-Host "  1) localhost        -> 127.0.0.1 (Tokiko Docker bakarra)"
     Write-Host "  2) etxean           -> Etxeko WiFi Lokala (euskaltel_urite)"
@@ -56,25 +56,25 @@ if (-not $Profile) {
     Write-Host ""
     $opt = Read-Host "Aukeratu zenbaki bat (1-6) [Lehenetsia: 1]"
     switch ($opt) {
-        "2" { $Profile = "etxean" }
-        "3" { $Profile = "tolosako_etxea" }
-        "4" { $Profile = "eskola" }
-        "5" { $Profile = "vbox_erronka" }
-        "6" { $Profile = "custom" }
-        default { $Profile = "localhost" }
+        "2" { $TargetProfile = "etxean" }
+        "3" { $TargetProfile = "tolosako_etxea" }
+        "4" { $TargetProfile = "eskola" }
+        "5" { $TargetProfile = "vbox_erronka" }
+        "6" { $TargetProfile = "custom" }
+        default { $TargetProfile = "localhost" }
     }
 }
 
 $SelectedIp = ""
 $ApiBaseUrl = ""
 
-if ($Profile -eq "custom") {
+if ($TargetProfile -eq "custom") {
     $SelectedIp = Read-Host "Idatzi erabili nahi duzun zerbitzariaren IP helbidea (adibidez 192.168.1.129)"
     $ApiBaseUrl = "http://${SelectedIp}:5050/api/v1"
 } else {
-    $p = $Config.profiles.$Profile
+    $p = $Config.profiles.$TargetProfile
     if (-not $p) {
-        Write-Error "Profil ezezaguna: $Profile"
+        Write-Error "Profil ezezaguna: $TargetProfile"
         exit 1
     }
     $SelectedIp = $p.api_host
@@ -85,7 +85,7 @@ Write-Host ""
 Write-Host "Aplikazio guztiak helbide honetara sinkronizatzen: $ApiBaseUrl ..." -ForegroundColor Cyan
 
 # 1. Konfigurazio orokorra gorde
-$Config.active_profile = $Profile
+$Config.active_profile = $TargetProfile
 $Config | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile -Encoding utf8
 
 # 2. Flutter: mobile_zerbitzaria eguneratu
@@ -135,7 +135,7 @@ Write-Host "  [OK] Web PHP Frontend eguneratua: $WebEnvFile" -ForegroundColor Gr
 
 Write-Host ""
 Write-Host "Sinkronizazioa osatuta!" -ForegroundColor Green
-Write-Host "Uneko Profil Aktiboa: $Profile" -ForegroundColor Yellow
+Write-Host "Uneko Profil Aktiboa: $TargetProfile" -ForegroundColor Yellow
 Write-Host "REST API Helbidea:    $ApiBaseUrl" -ForegroundColor White
 Write-Host "Web PHP Helbidea:     http://${SelectedIp}:8085" -ForegroundColor White
 Write-Host "Chat Server Helbidea: http://${SelectedIp}:3001" -ForegroundColor White
