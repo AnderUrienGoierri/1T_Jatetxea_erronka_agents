@@ -529,57 +529,81 @@
         const apiHost = window.location.hostname || "localhost";
 
         // Posible API helbideak (5050 docker bidez, 5000 zuzenean)
-        const potentialBases = [
-          `http://${apiHost}:5050/api/v1`,
-          `http://${apiHost}:5000/api/v1`,
+        const candidates = [
+          { base: `http://${apiHost}:5050/api/v1`, health: `http://${apiHost}:5050/health` },
+          { base: `http://${apiHost}:5000/api/v1`, health: `http://${apiHost}:5000/health` }
         ];
 
-        for (const base of potentialBases) {
+        for (const cand of candidates) {
           try {
-            const res = await fetch(`${base}/eskaerak`, { cache: "no-store" });
-            if (res.ok) {
-              currentApiBase = base;
-              document.getElementById("apiEndpointText").textContent =
-                `API: ${base}`;
+            // 1. Health egiaztatu: APIa eta DB egoera banatuta detektatzeko
+            const healthRes = await fetch(cand.health, { cache: "no-store" });
+            const isApiAlive = healthRes.status === 200 || healthRes.status === 503;
+
+            if (isApiAlive) {
+              currentApiBase = cand.base;
+              document.getElementById("apiEndpointText").textContent = `API: ${cand.base}`;
+
+              if (healthRes.status === 503) {
+                // APIa piztuta dago, baina Datu-Basea deskonektatuta!
+                dot.style.background = "var(--warning)";
+                txt.textContent = "API martxan, datu basea deskonektatuta";
+                if (banner) {
+                  banner.style.display = "block";
+                  banner.style.background = "#b45309";
+                  banner.style.borderColor = "#f59e0b";
+                  banner.textContent = "ADI: REST APIa martxan dago, baina MySQL datu-basea deskonektatuta dago!";
+                }
+                renderOrders([]);
+                return;
+              }
+
+              // healthRes.status === 200 -> API eta DB biak martxan
               dot.style.background = "var(--success)";
-              txt.textContent = "Konektatuta (Datu-basea)";
+              txt.textContent = "Konektatuta";
               if (banner) banner.style.display = "none";
 
-              const json = await res.json();
-              const list = json.dataList || json.valueList || json.data || [];
+              // Eskaerak kargatu
+              const res = await fetch(`${cand.base}/eskaerak`, { cache: "no-store" });
+              if (res.ok) {
+                const json = await res.json();
+                const list = json.dataList || json.valueList || json.data || [];
 
-              // Xehetasunak (lerroak) kargatu eskaera bakoitzarentzat
-              const fullOrders = await Promise.all(
-                list.map(async (item) => {
-                  try {
-                    const detailRes = await fetch(
-                      `${base}/eskaerak/${item.id}`,
-                      { cache: "no-store" },
-                    );
-                    if (detailRes.ok) {
-                      const detailJson = await detailRes.json();
-                      return detailJson.data || item;
-                    }
-                  } catch (_) {}
-                  return item;
-                }),
-              );
+                // Xehetasunak (lerroak) kargatu eskaera bakoitzarentzat
+                const fullOrders = await Promise.all(
+                  list.map(async (item) => {
+                    try {
+                      const detailRes = await fetch(
+                        `${cand.base}/eskaerak/${item.id}`,
+                        { cache: "no-store" }
+                      );
+                      if (detailRes.ok) {
+                        const detailJson = await detailRes.json();
+                        return detailJson.data || item;
+                      }
+                    } catch (_) {}
+                    return item;
+                  })
+                );
 
-              renderOrders(fullOrders);
+                renderOrders(fullOrders);
+              }
               return;
             }
           } catch (e) {
-            // saiakerarekin jarraitu
+            // Saiatu hurrengo portuarekin
           }
         }
 
-        // Konexiorik ez badago
+        // APIra batere ezin bada konektatu
         dot.style.background = "var(--accent)";
-        txt.textContent = "Deskonektatuta";
+        txt.textContent = "API Deskonektatuta";
         if (banner) {
           banner.style.display = "block";
+          banner.style.background = "#991b1b";
+          banner.style.borderColor = "#ef4444";
           banner.textContent =
-            "ADI: REST API zerbitzariarekin ezin izan da konektatu (Portua 5050 / 5000). Egiaztatu martxan dagoela!";
+            "OHARRA: REST API zerbitzariarekin ezin izan da konektatu (Portua 5050 / 5000). Egiaztatu martxan dagoela!";
         }
       }
 
