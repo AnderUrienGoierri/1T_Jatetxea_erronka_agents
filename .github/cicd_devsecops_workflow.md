@@ -35,7 +35,7 @@ Commit / Pull Request
    │     ├── FXML fitxategien XML baliozkotzea
    │     └── Maven konpilazioa (mvn test-compile)
    │
-   └── 6. Lana: Web PHP Frontend (PHP 8.2, Linux)
+   └── 6. Lana: Web PHP Frontend (PHP 8.4, Linux)
          └── PHP sintaxiaren linting automatikoa (php -l)
 ```
 

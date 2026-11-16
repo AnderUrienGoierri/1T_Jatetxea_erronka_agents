@@ -128,7 +128,7 @@ jobs:
           mvn -B compile test-compile
 
   web-php-check:
-    name: Web PHP Frontend (PHP 8.2)
+    name: Web PHP Frontend (PHP 8.4)
     runs-on: ubuntu-latest
     steps:
       - name: Kodea Eskuratu
@@ -137,7 +137,7 @@ jobs:
       - name: Ezarri PHP Ingurunea
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
 
       - name: Lint PHP Fitxategiak
         run: |

@@ -869,7 +869,7 @@ var zerbitzuenKatalogoa = new[]
         Gunea: "DMZ Publikoa",
         Vlan: "VLAN 20",
         DockerService: "jatetxea-web",
-        Fluxua: "Kanpoko bezeroek Internetetik ikusten dute (Apache 2.4 + PHP 8.2). Karta, ordutegiak eta erreserbak kontsultatzen ditu. Barneko APIarekin komunikatzen da (DMZ -> LAN baimenduta portu 5000ra).",
+        Fluxua: "Kanpoko bezeroek Internetetik ikusten dute (Apache 2.4 + PHP 8.4). Karta, ordutegiak eta erreserbak kontsultatzen ditu. Barneko APIarekin komunikatzen da (DMZ -> LAN baimenduta portu 5000ra).",
         Segurtasuna: "DMZ gune isolatuan kokatua. Apache segurtasun moduluak (mod_security, headers). Ezin du LANeko beste zerbitzaririk ukitu, soilik APIaren 5000 ataka.",
         Protokoloa: "HTTP / HTTPS (Apache 2.4 MPM Event)",
         HealthCheck: "GET http://localhost:8085",
@@ -1491,7 +1491,7 @@ app.MapGet("/api/services/tree", async () =>
                 Nodes = new object[]
                 {
                     new { Id = "winserver", Name = "Erronka-WinServer2025 (LAN · 192.168.10.10)", Host = "LAN Gunea", Port = 3391, Live = (object?)liveServices.GetValueOrDefault("winserver_rdp"), SubServices = "AD, DNS, DHCP, MySQL, .NET API", ConnectsTo = Array.Empty<string>() },
-                    new { Id = "ubuntu", Name = "Erronka-Ubuntu (DMZ · 192.168.20.10)", Host = "DMZ Gunea", Port = 2230, Live = (object?)liveServices.GetValueOrDefault("ubuntu_ssh"), SubServices = "Apache 2.4, PHP 8.2", ConnectsTo = Array.Empty<string>() },
+                    new { Id = "ubuntu", Name = "Erronka-Ubuntu (DMZ · 192.168.20.10)", Host = "DMZ Gunea", Port = 2230, Live = (object?)liveServices.GetValueOrDefault("ubuntu_ssh"), SubServices = "Apache 2.4, PHP 8.4", ConnectsTo = Array.Empty<string>() },
                     new { Id = "odoo", Name = "1T Jatetxea Odoo 17 ERP (Portu 8070)", Host = "WinServer2025 (LAN)", Port = 8070, Live = (object?)liveServices.GetValueOrDefault("odoo"), SubServices = "HR, Fitxaketak, Bajak, Kontratuak", ConnectsTo = new[] { "postgres" } },
                     new { Id = "kds_tv", Name = "Sukaldeko KDS TV (Android TV Box)", Host = "Sukaldea (LAN)", Port = 8086, Live = (object?)liveServices.GetValueOrDefault("kds_tv"), SubServices = "Nginx HTML5 KDS", ConnectsTo = new[] { "api" } }
                 }
@@ -1516,7 +1516,7 @@ app.MapGet("/api/services/tree", async () =>
                 Color = "emerald",
                 Nodes = new object[]
                 {
-                    new { Id = "web_bezeroa", Name = "Web Publikoa / Karta (PHP 8.2)", Host = "DMZ (Port 8085)", Port = 8085, Live = (object?)liveServices.GetValueOrDefault("web"), ConnectsTo = new[] { "opnsense", "api" } },
+                    new { Id = "web_bezeroa", Name = "Web Publikoa / Karta (PHP 8.4)", Host = "DMZ (Port 8085)", Port = 8085, Live = (object?)liveServices.GetValueOrDefault("web"), ConnectsTo = new[] { "opnsense", "api" } },
                     new { Id = "tpv_csharp", Name = "Desktop TPV Kutxa (C# WinForms)", Host = "Barra (VLAN 10)", Port = 5000, Live = (object?)new { Online = true, LatencyMs = 1 }, ConnectsTo = new[] { "api" } },
                     new { Id = "javafx_kds", Name = "Sukaldea / Barra / Biltegia (JavaFX)", Host = "Sukaldea (VLAN 10)", Port = 5000, Live = (object?)new { Online = true, LatencyMs = 1 }, ConnectsTo = new[] { "api" } },
                     new { Id = "mobile_zerbitzaria", Name = "Mobile Zerbitzaria (Flutter PDA)", Host = "WiFi Langileak (VLAN 10)", Port = 5000, Live = (object?)new { Online = true, LatencyMs = 3 }, ConnectsTo = new[] { "api" } },
@@ -1540,7 +1540,7 @@ app.MapGet("/api/lab/overview", () =>
         Vlanak = new[]
         {
             new { Vlan = 10, Izena = "LAN_JATETXEA", Subnet = "192.168.10.0/24", Ekipoak = "WinServer2025 (10.10), TPV Kutxa (10.30), KDS Sukaldea (10.40), Inprimagailua (10.50)" },
-            new { Vlan = 20, Izena = "DMZ_WEB",      Subnet = "192.168.20.0/24", Ekipoak = "Ubuntu Apache 2.4 / PHP 8.2 (20.10)" },
+            new { Vlan = 20, Izena = "DMZ_WEB",      Subnet = "192.168.20.0/24", Ekipoak = "Ubuntu Apache 2.4 / PHP 8.4 (20.10)" },
             new { Vlan = 30, Izena = "WIFI_BEZEROAK",Subnet = "192.168.30.0/24", Ekipoak = "Bezeroen Mugikorrak (Erreserbak, Karta digitala, Ordainketak)" },
             new { Vlan = 99, Izena = "KUDEAKETA",    Subnet = "192.168.99.0/24", Ekipoak = "Switch SVI (99.2), OPNsense Gateway (99.1), Admin PC (99.10)" }
         },

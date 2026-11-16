@@ -50,7 +50,7 @@ function execute_http_request($method, $url, $payload = null) {
             'X-App-Id: web_php',
             'X-App-Name: Web PHP Frontend Publikoa'
         ];
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Jatetxea-Web-PHP/1.0 (Apache PHP 8.2)');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Jatetxea-Web-PHP/1.0 (Apache PHP 8.4)');
 
         if ($payload !== null) {
             $jsonData = json_encode($payload);

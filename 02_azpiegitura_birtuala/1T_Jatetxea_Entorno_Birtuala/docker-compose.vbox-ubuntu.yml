@@ -3,7 +3,7 @@ name: jatetxea-ubuntu-dmz
 # Ubuntu DMZ makina birtualerako Docker Stack-a (DMZ Sarea: 192.168.20.10)
 services:
   jatetxea-web:
-    image: php:8.2-apache
+    image: php:8.4-apache
     container_name: jatetxea_web_php
     restart: unless-stopped
     ports:

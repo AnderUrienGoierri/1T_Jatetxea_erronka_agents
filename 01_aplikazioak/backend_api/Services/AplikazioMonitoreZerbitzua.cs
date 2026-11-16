@@ -57,7 +57,7 @@ public static class AplikazioMonitoreZerbitzua
     {
         ErregistratuAplikazioEredua("csharp_tpv", "C# TPV Areto & Kutxazaina", "Desktop C# (Windows Forms)");
         ErregistratuAplikazioEredua("javafx_kds", "JavaFX Sukaldea KDS Terminala", "Desktop Java (JavaFX 21)");
-        ErregistratuAplikazioEredua("web_php", "Web PHP Frontend Publikoa", "Web Apache (PHP 8.2)");
+        ErregistratuAplikazioEredua("web_php", "Web PHP Frontend Publikoa", "Web Apache (PHP 8.4)");
         ErregistratuAplikazioEredua("mobile_zerbitzaria", "Flutter Zerbitzaria (Komandera)", "Mugikorra (Flutter / Dart)");
         ErregistratuAplikazioEredua("mobile_bezeroa", "Flutter Bezero Aplikazioa", "Mugikorra (Flutter / Dart)");
         ErregistratuAplikazioEredua("android_tv", "Android TV Sukaldea KDS", "Telebista (Compose TV)");
