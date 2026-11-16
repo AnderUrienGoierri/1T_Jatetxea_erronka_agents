@@ -323,7 +323,7 @@ app.MapPost("/api/docker/action/{service}/{action}", async (string service, stri
     {
         if (composeService == "jatetxea-db")
         {
-            _ = RunCommandAsync("docker", "compose up -d phpmyadmin", dockerDir);
+            _ = RunCommandAsync("docker", "compose up -d phpmyadmin adminer", dockerDir);
         }
         else if (composeService == "db-odoo")
         {
@@ -1167,7 +1167,12 @@ app.MapGet("/api/env/current", async () =>
 
         if (matchedProfile == null)
         {
-            if (ssid.Contains("euskaltel", StringComparison.OrdinalIgnoreCase) ||
+            if (ssid.Contains("INN-WPRIVATE", StringComparison.OrdinalIgnoreCase) ||
+                ssid.Contains("innovatek", StringComparison.OrdinalIgnoreCase))
+            {
+                matchedProfile = "innovatek";
+            }
+            else if (ssid.Contains("euskaltel", StringComparison.OrdinalIgnoreCase) ||
                 ssid.Contains("urite", StringComparison.OrdinalIgnoreCase) ||
                 ssid.Contains("etxeko", StringComparison.OrdinalIgnoreCase))
             {
@@ -1186,7 +1191,8 @@ app.MapGet("/api/env/current", async () =>
 
     if (matchedProfile == null && !string.IsNullOrEmpty(ip))
     {
-        if (ip.StartsWith("192.168.1.")) matchedProfile = "etxean";
+        if (ip.StartsWith("192.168.5.")) matchedProfile = "innovatek";
+        else if (ip.StartsWith("192.168.1.")) matchedProfile = "etxean";
         else if (ip.StartsWith("10.0.") || ip.StartsWith("172.")) matchedProfile = "eskola";
         else if (ip.StartsWith("192.168.10.")) matchedProfile = "vbox_erronka";
         else if (ip == "127.0.0.1") matchedProfile = "localhost";
@@ -1194,8 +1200,8 @@ app.MapGet("/api/env/current", async () =>
 
     matchedProfile ??= activeProfile;
 
-    // Eguneratu etxean/matchedProfile-ren IP helbidea eta SSID automatikoki
-    if (!string.IsNullOrEmpty(matchedProfile) && !string.IsNullOrEmpty(ip) && ip != "127.0.0.1")
+    // Eguneratu matchedProfile-ren IP helbidea eta SSID automatikoki (salbu eta finkoa denean edo localhost)
+    if (!string.IsNullOrEmpty(matchedProfile) && !string.IsNullOrEmpty(ip) && ip != "127.0.0.1" && matchedProfile != "localhost" && matchedProfile != "vbox_erronka")
     {
         try
         {
@@ -1773,8 +1779,15 @@ static async Task<(string Ssid, string Ip)> DetectCurrentNetworkAsync()
     {
         var nics = NetworkInterface.GetAllNetworkInterfaces()
             .Where(n => n.OperationalStatus == OperationalStatus.Up &&
-                        n.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-            .OrderByDescending(n => n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211);
+                        n.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                        !n.Description.Contains("VirtualBox", StringComparison.OrdinalIgnoreCase) &&
+                        !n.Description.Contains("Hyper-V", StringComparison.OrdinalIgnoreCase) &&
+                        !n.Description.Contains("WSL", StringComparison.OrdinalIgnoreCase) &&
+                        !n.Name.Contains("vEthernet", StringComparison.OrdinalIgnoreCase) &&
+                        !n.Name.Contains("Virtual", StringComparison.OrdinalIgnoreCase) &&
+                        !n.Name.Contains("Bluetooth", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(n => n.GetIPProperties().GatewayAddresses.Count > 0)
+            .ThenByDescending(n => n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || n.NetworkInterfaceType == NetworkInterfaceType.Ethernet);
 
         foreach (var nic in nics)
         {

@@ -49,18 +49,20 @@ if (-not $TargetProfile) {
     Write-Host "Aukeratu sare profila:" -ForegroundColor Green
     Write-Host "  1) localhost        -> 127.0.0.1 (Tokiko Docker bakarra)"
     Write-Host "  2) etxean           -> Etxeko WiFi Lokala (euskaltel_urite)"
-    Write-Host "  3) tolosako_etxea   -> Tolosako etxeko WiFi-a"
-    Write-Host "  4) eskola           -> Goierri Eskolako laborategia"
-    Write-Host "  5) vbox_erronka     -> VirtualBox 3 Makina (192.168.10.10)"
-    Write-Host "  6) Pertsonalizatua  -> Idatzi IP helbide bat eskuz"
+    Write-Host "  3) innovatek        -> Innovatek Sarea (Kablez / INN-WPRIVATE)"
+    Write-Host "  4) tolosako_etxea   -> Tolosako etxeko WiFi-a"
+    Write-Host "  5) eskola           -> Goierri Eskolako laborategia"
+    Write-Host "  6) vbox_erronka     -> VirtualBox 3 Makina (192.168.10.10)"
+    Write-Host "  7) Pertsonalizatua  -> Idatzi IP helbide bat eskuz"
     Write-Host ""
-    $opt = Read-Host "Aukeratu zenbaki bat (1-6) [Lehenetsia: 1]"
+    $opt = Read-Host "Aukeratu zenbaki bat (1-7) [Lehenetsia: 1]"
     switch ($opt) {
         "2" { $TargetProfile = "etxean" }
-        "3" { $TargetProfile = "tolosako_etxea" }
-        "4" { $TargetProfile = "eskola" }
-        "5" { $TargetProfile = "vbox_erronka" }
-        "6" { $TargetProfile = "custom" }
+        "3" { $TargetProfile = "innovatek" }
+        "4" { $TargetProfile = "tolosako_etxea" }
+        "5" { $TargetProfile = "eskola" }
+        "6" { $TargetProfile = "vbox_erronka" }
+        "7" { $TargetProfile = "custom" }
         default { $TargetProfile = "localhost" }
     }
 }

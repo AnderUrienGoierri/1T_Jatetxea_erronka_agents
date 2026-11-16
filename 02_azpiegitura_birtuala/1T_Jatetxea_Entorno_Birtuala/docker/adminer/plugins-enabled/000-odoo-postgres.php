@@ -1,6 +1,5 @@
 <?php
-// Adminer laguntzailea Odoo PostgreSQL datu-basera (db-odoo) konektatzeko
-// MySQL ordez PostgreSQL automatikoki ezartzen du
+// Adminer laguntzailea Odoo PostgreSQL eta 1T Jatetxea MySQL datu-baseetara automatikoki konektatzeko
 
 if (empty($_GET) && empty($_POST)) {
     header('Location: ./?pgsql=db-odoo&username=odoo&db=jatetxea_odoo');
@@ -27,6 +26,13 @@ return new class extends \Adminer\Plugin {
             $password = !empty($_POST['auth']['password']) ? $_POST['auth']['password'] : 'odoo';
             return array(\Adminer\SERVER, $_GET['username'] ?: 'odoo', $password);
         }
+        if ((\Adminer\DRIVER === 'server' || \Adminer\DRIVER === 'mysql') && (\Adminer\SERVER === 'jatetxea-db' || \Adminer\SERVER === 'localhost')) {
+            $password = !empty($_POST['auth']['password']) ? $_POST['auth']['password'] : 'root';
+            return array(\Adminer\SERVER, $_GET['username'] ?: 'root', $password);
+        }
         return null;
+    }
+    public function login($login, $password) {
+        return true;
     }
 };
