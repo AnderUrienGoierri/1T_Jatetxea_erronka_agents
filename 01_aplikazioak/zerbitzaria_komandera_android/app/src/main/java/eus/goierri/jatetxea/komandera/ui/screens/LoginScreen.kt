@@ -34,7 +34,17 @@ import eus.goierri.jatetxea.komandera.data.network.NetworkProfile
 import eus.goierri.jatetxea.komandera.data.network.NetworkProfiles
 import eus.goierri.jatetxea.komandera.data.model.LangileaDto
 import eus.goierri.jatetxea.komandera.data.model.LoginRequestDto
-import eus.goierri.jatetxea.komandera.ui.theme.*
+import eus.goierri.jatetxea.komandera.ui.theme.AmberPrimary
+import eus.goierri.jatetxea.komandera.ui.theme.DarkBackground
+import eus.goierri.jatetxea.komandera.ui.theme.DarkSurface
+import eus.goierri.jatetxea.komandera.ui.theme.DarkSurfaceVariant
+import eus.goierri.jatetxea.komandera.ui.theme.StatusBusy
+import eus.goierri.jatetxea.komandera.ui.theme.StatusCleaning
+import eus.goierri.jatetxea.komandera.ui.theme.StatusFree
+import eus.goierri.jatetxea.komandera.ui.theme.StatusReady
+import eus.goierri.jatetxea.komandera.ui.theme.TextMuted
+import eus.goierri.jatetxea.komandera.ui.theme.TextPrimary
+import eus.goierri.jatetxea.komandera.ui.theme.TextSecondary
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,7 +68,45 @@ fun LoginScreen(
     var apiUrlState by remember { mutableStateOf(ApiClient.baseUrl) }
     var unekoWifiSsid by remember { mutableStateOf(NetworkProfiles.lortuUnekoWifiIzena(context)) }
 
+    // API eta Datu-basearen konexio egoera
+    // "KONEKTATUTA", "DB_ERROREA", "API_DESKONEKTATUTA", "KARGATZEN"
+    var apiKonexioEgoera by remember { mutableStateOf("KARGATZEN") }
+    var egoeraAzalpena by remember { mutableStateOf("Egiaztatzen...") }
+
+    fun egiaztatuSareEgoera() {
+        scope.launch {
+            unekoWifiSsid = NetworkProfiles.lortuUnekoWifiIzena(context)
+            try {
+                val service = ApiClient.createService(apiUrlState)
+                val healthRes = service.getHealth()
+                if (healthRes.isSuccessful && healthRes.body() != null) {
+                    val body = healthRes.body()!!
+                    val dbStatus = body["database"]?.toString() ?: ""
+                    val apiStatus = body["status"]?.toString() ?: ""
+
+                    if (dbStatus.equals("Connected", ignoreCase = true) || apiStatus.equals("Healthy", ignoreCase = true)) {
+                        apiKonexioEgoera = "KONEKTATUTA"
+                        egoeraAzalpena = "API eta DB konektatuta"
+                    } else {
+                        apiKonexioEgoera = "DB_ERROREA"
+                        egoeraAzalpena = "API martxan, DB deskonektatuta"
+                    }
+                } else if (healthRes.code() == 503) {
+                    apiKonexioEgoera = "DB_ERROREA"
+                    egoeraAzalpena = "API martxan, DB errorea (503)"
+                } else {
+                    apiKonexioEgoera = "API_DESKONEKTATUTA"
+                    egoeraAzalpena = "Errorea: HTTP ${healthRes.code()}"
+                }
+            } catch (e: Exception) {
+                apiKonexioEgoera = "API_DESKONEKTATUTA"
+                egoeraAzalpena = "Ezin da APIra konektatu"
+            }
+        }
+    }
+
     fun kargatuLangileak() {
+        egiaztatuSareEgoera()
         scope.launch {
             kargatzen = true
             erroreMezua = null
@@ -302,32 +350,76 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
+        Spacer(modifier = Modifier.height(14.dp))
+
+        // FOOTER: Wi-Fi eta API / Datu-Basearen Egoera Argia
+        Surface(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            color = DarkSurfaceVariant.copy(alpha = 0.6f),
+            shape = RoundedCornerShape(10.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Wifi,
-                contentDescription = "Wi-Fi egoera",
-                tint = if (unekoWifiSsid != null) StatusReady else TextMuted,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = if (unekoWifiSsid != null) "Wi-Fi: $unekoWifiSsid" else "Ez da Wi-Fi sarerik hauteman",
-                fontSize = 12.sp,
-                color = if (unekoWifiSsid != null) StatusReady else TextMuted,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "·  API: ${ApiClient.baseUrl}",
-                fontSize = 11.sp,
-                color = TextSecondary,
-                maxLines = 1
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 1. Lerroa: Wi-Fi egoera
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Wifi,
+                        contentDescription = "Wi-Fi egoera",
+                        tint = if (unekoWifiSsid != null) StatusReady else TextMuted,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = if (unekoWifiSsid != null) "Wi-Fi: $unekoWifiSsid" else "Wi-Fi: Ez da sarerik hauteman",
+                        fontSize = 12.sp,
+                        color = if (unekoWifiSsid != null) StatusReady else TextMuted,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // 2. Lerroa: API eta Datu-basearen konexio egoera
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val (puntuaKolorea, testuaKolorea) = when (apiKonexioEgoera) {
+                        "KONEKTATUTA" -> StatusReady to StatusReady
+                        "DB_ERROREA" -> AmberPrimary to AmberPrimary
+                        "API_DESKONEKTATUTA" -> StatusBusy to StatusBusy
+                        else -> TextMuted to TextSecondary
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(puntuaKolorea)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = egoeraAzalpena,
+                        fontSize = 11.sp,
+                        color = testuaKolorea,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "(${ApiClient.baseUrl})",
+                        fontSize = 10.sp,
+                        color = TextMuted,
+                        maxLines = 1
+                    )
+                }
+            }
         }
     }
 
