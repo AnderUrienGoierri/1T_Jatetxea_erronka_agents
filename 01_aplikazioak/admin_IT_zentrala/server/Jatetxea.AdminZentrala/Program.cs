@@ -1615,44 +1615,62 @@ app.Run();
 
 static void LaunchPowerShellScript(string ps1File, string workingDirectory)
 {
-    // PowerShell 7 (pwsh.exe) edo Windows PowerShell (powershell.exe) zuzenean ireki erabiltzailearen terminalean
+    // PowerShell 7 (pwsh.exe) edo Windows PowerShell (powershell.exe) terminal leiho ikusgarrian ireki
+    // 1. Aurkitu pwsh edo powershell exekutable errealak
     string[] pwshCandidates = new[]
     {
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WindowsApps", "pwsh.exe"),
         @"C:\Program Files\PowerShell\7\pwsh.exe",
         @"C:\Program Files\PowerShell\7-preview\pwsh.exe",
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WindowsApps", "pwsh.exe"),
         "pwsh.exe",
         "powershell.exe"
     };
+    string pwshExe = pwshCandidates.FirstOrDefault(File.Exists) ?? "powershell.exe";
 
-    string exe = pwshCandidates.FirstOrDefault(File.Exists) ?? "pwsh.exe";
-
+    // 2. Windows 11n conhost bidez deitzeak kontsola-leiho independente bat sortzen du
     try
     {
-        var psi = new ProcessStartInfo
+        var psiConhost = new ProcessStartInfo
         {
-            FileName = exe,
-            Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
+            FileName = "conhost.exe",
+            Arguments = $"\"{pwshExe}\" -NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
             WorkingDirectory = workingDirectory,
             UseShellExecute = true,
             WindowStyle = ProcessWindowStyle.Normal
         };
-        Process.Start(psi);
+        Process.Start(psiConhost);
         return;
     }
     catch { }
 
+    // 3. Fallback: cmd.exe /c start bidez leiho berria ireki
     try
     {
-        var psiFallback = new ProcessStartInfo
+        var psiCmd = new ProcessStartInfo
         {
-            FileName = "powershell.exe",
-            Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
+            FileName = "cmd.exe",
+            Arguments = $"/c start \"1T Jatetxea - ASP.NET Core REST API\" \"{pwshExe}\" -NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
             WorkingDirectory = workingDirectory,
             UseShellExecute = true,
             WindowStyle = ProcessWindowStyle.Normal
         };
-        Process.Start(psiFallback);
+        Process.Start(psiCmd);
+        return;
+    }
+    catch { }
+
+    // 4. Azken fallback: powershell.exe konbentzionala conhost bidez
+    try
+    {
+        var psiConhostLegacy = new ProcessStartInfo
+        {
+            FileName = "conhost.exe",
+            Arguments = $"powershell.exe -NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal
+        };
+        Process.Start(psiConhostLegacy);
     }
     catch { }
 }
