@@ -99,14 +99,13 @@ public class LangileakController : BaseApiKontroladorea
 
         string pasahitzaGordea = reader.GetString("pasahitza_hash");
         
-        // Egiaztatu pasahitza (BCrypt hash edo garapenerako/tablet PIN zuzena)
-        bool pasahitzZuzena = pasahitzaGordea == dto.Pasahitza || 
-                              pasahitzaGordea.StartsWith("$2") || // Demo hash formatua
-                              dto.Pasahitza == "1234" || // Demo PIN lehenetsia
-                              dto.Pasahitza == dto.Erabiltzailea;
+        // Egiaztatu pasahitza / PIN propioa
+        // 1. PIN edo pasahitz zuzena berdina bada
+        // 2. Edo BCrypt bidez egiaztatuta (BCrypt.Net erabiliz etorkizunean edo konparaketa zuzena)
+        bool pasahitzZuzena = string.Equals(pasahitzaGordea, dto.Pasahitza?.Trim(), StringComparison.Ordinal);
 
         if (!pasahitzZuzena)
-            return Unauthorized(new { status = "error", message = "Pasahitza okerra da." });
+            return Unauthorized(new { status = "error", message = "PIN edo pasahitz okerra. Mesedez, idatzi zure 4 digituko PIN propioa." });
 
         var langileaDto = new LangileaDTO
         {
