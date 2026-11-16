@@ -602,13 +602,21 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api_logs":
         case "api_console":
             string apiDirTerm = Path.Combine(appsDir, "backend_api");
+            string ps1PathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.ps1");
             string batPathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.bat");
+
+            // PowerShell bidez (pwsh edo powershell) zuzenean terminalean ireki
+            if (File.Exists(ps1PathTerm))
+            {
+                LaunchPowerShellScript(ps1PathTerm, apiDirTerm);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "ASP.NET Core REST APIren terminaleko pantaila (PowerShell) irekita." });
+            }
             if (File.Exists(batPathTerm))
             {
                 LaunchInteractiveProcess(batPathTerm, "", apiDirTerm);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "ASP.NET Core REST APIren terminaleko pantaila (kontsola eta logak) irekita." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "ASP.NET Core REST APIren terminaleko pantaila irekita." });
             }
-            return Results.Ok(new { Success = false, Message = "hasi_api_kontsola.bat fitxategia ez da aurkitu." });
+            return Results.Ok(new { Success = false, Message = "hasi_api_kontsola.ps1 fitxategia ez da aurkitu." });
 
         case "chat":
         case "jatetxea-chat":
@@ -1604,6 +1612,50 @@ app.MapPost("/api/lab/ping", async (HttpContext ctx) =>
 });
 
 app.Run();
+
+static void LaunchPowerShellScript(string ps1File, string workingDirectory)
+{
+    // PowerShell 7 (pwsh.exe) edo Windows PowerShell (powershell.exe) zuzenean ireki erabiltzailearen terminalean
+    string[] pwshCandidates = new[]
+    {
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WindowsApps", "pwsh.exe"),
+        @"C:\Program Files\PowerShell\7\pwsh.exe",
+        @"C:\Program Files\PowerShell\7-preview\pwsh.exe",
+        "pwsh.exe",
+        "powershell.exe"
+    };
+
+    string exe = pwshCandidates.FirstOrDefault(File.Exists) ?? "pwsh.exe";
+
+    try
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = exe,
+            Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal
+        };
+        Process.Start(psi);
+        return;
+    }
+    catch { }
+
+    try
+    {
+        var psiFallback = new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            Arguments = $"-NoExit -ExecutionPolicy Bypass -File \"{ps1File}\"",
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal
+        };
+        Process.Start(psiFallback);
+    }
+    catch { }
+}
 
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
