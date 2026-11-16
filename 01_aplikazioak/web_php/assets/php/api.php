@@ -18,10 +18,10 @@ if (!$api_base_url) {
  *
  * @param string $method GET, POST, PUT, DELETE
  * @param string $url Eskaeraren helbide osoa
- * @param array|null $payload Bidali beharreko datuak (POST/PUT denean)
- * @return array Erantzunaren kodea, datuak eta erroreak
+ * @param array<string, mixed>|null $payload Bidali beharreko datuak (POST/PUT denean)
+ * @return array<string, mixed> Erantzunaren kodea, datuak eta erroreak
  */
-function call_api($method, $url, $payload = null) {
+function call_api(string $method, string $url, ?array $payload = null): array {
     $res = execute_http_request($method, $url, $payload);
 
     // Docker sareko jatetxea-api:5000 erantzunik gabe badago, probatu ostalariaren portu lokala (host.docker.internal:5050)
@@ -36,7 +36,15 @@ function call_api($method, $url, $payload = null) {
     return $res;
 }
 
-function execute_http_request($method, $url, $payload = null) {
+/**
+ * HTTP eskaera exekutatzen du cURL erabiliz (edo stream context bidez cURL ez badago).
+ *
+ * @param string $method HTTP metodoa (GET, POST, PUT, DELETE)
+ * @param string $url Eskaeraren helbide osoa
+ * @param array<string, mixed>|null $payload Bidali beharreko datuak
+ * @return array<string, mixed> Erantzunaren datuak, egoera kodea eta erroreak
+ */
+function execute_http_request(string $method, string $url, ?array $payload = null): array {
     if (function_exists('curl_init')) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -64,7 +72,7 @@ function execute_http_request($method, $url, $payload = null) {
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $err = curl_error($ch);
-        curl_close($ch);
+        unset($ch);
 
         return [
             'status' => $http_code,
