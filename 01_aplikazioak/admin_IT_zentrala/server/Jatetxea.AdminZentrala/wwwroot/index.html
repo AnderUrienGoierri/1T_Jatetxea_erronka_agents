@@ -2454,11 +2454,11 @@
                             </button>
                         `;
 
-              // MySQL zerbitzuan bi web kudeatzaileak eskuragarri jarri: phpMyAdmin (8081) eta Adminer (8082)
+              // MySQL zerbitzuan: phpMyAdmin eta Socket/TCP ataka gordina (3308) aztertzeko botoia
               if (p.id === "mysql" || targetId === "phpmyadmin") {
                 botoiakHtml += `
-                            <button onclick="event.stopPropagation(); launchApp('adminer', 'http://localhost:8082/?server=jatetxea-db&username=root&db=jatetxea_db')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki Adminer (8082) MySQLrako">
-                                Ireki Adminer (8082)
+                            <button onclick="event.stopPropagation(); launchApp('mysql_raw', 'http://localhost:3308')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Zerbitzariaren socket/TCP ataka gordina (3308) - Soilik martxan dagoela egiaztatzeko">
+                                TCP Socket (3308)
                             </button>
                         `;
               }

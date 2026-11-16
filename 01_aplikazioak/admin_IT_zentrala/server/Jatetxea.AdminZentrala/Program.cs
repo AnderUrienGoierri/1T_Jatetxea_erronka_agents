@@ -621,6 +621,10 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8081", Message = "phpMyAdmin MySQL kudeatzailea abiarazten eta irekitzen (8081)..." });
 
+        case "mysql_raw":
+        case "mysql_socket":
+            return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:3308", Message = "MySQL zerbitzariaren socket/TCP ataka gordina (3308) irekitzen (soilik zerbitzua martxan dagoela egiaztatzeko)..." });
+
         case "adminer":
         case "postgres_web":
         case "postgres":
