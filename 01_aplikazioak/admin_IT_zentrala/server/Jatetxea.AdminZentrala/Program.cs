@@ -701,15 +701,24 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "desktop_javafx":
         case "kds_javafx":
             string javafxDir = Path.Combine(appsDir, "desktop_javafx");
+            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
+
+            if (File.Exists(batLauncher))
+            {
+                LaunchInteractiveProcess(batLauncher, "", javafxDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
+            }
+
             string targetClasses = Path.Combine(javafxDir, "target", "classes");
             string targetLib = Path.Combine(javafxDir, "target", "lib");
-            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
 
             // Java exekutablea aurkitu (javaw.exe lehenetsia kontsolarik gabe GUI irekitzeko)
             string javaHome = Environment.GetEnvironmentVariable("JAVA_HOME") ?? "";
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string[] javaCandidates = new[]
             {
+                @"C:\Program Files\Eclipse Adoptium\jre-17.0.21.9-hotspot\bin\javaw.exe",
+                @"C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot\bin\javaw.exe",
                 Path.Combine(javaHome, "bin", "javaw.exe"),
                 Path.Combine(javaHome, "bin", "java.exe"),
                 Path.Combine(userProfile, ".jdks", "ms-17.0.21.0.2", "bin", "javaw.exe"),
@@ -721,18 +730,12 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             };
             string? javaExe = javaCandidates.FirstOrDefault(File.Exists) ?? "javaw.exe";
 
-            // target/classes eta target/lib badaude, berehala ireki GUI natiboa Shell.Application bidez
+            // target/classes eta target/lib badaude, berehala ireki GUI natiboa
             if (Directory.Exists(targetClasses) && Directory.Exists(targetLib) && File.Exists(javaExe))
             {
                 string jArgs = $"--module-path \"{targetClasses};{targetLib}\" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher";
                 LaunchInteractiveProcess(javaExe, jArgs, javafxDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
-            }
-
-            if (File.Exists(batLauncher))
-            {
-                LaunchInteractiveProcess(batLauncher, "", javafxDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia aplikazioa abiarazita (hasi_kds_mahaigaina.bat bidez)." });
             }
 
             string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
@@ -1595,53 +1598,55 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia eta fidagarriena: Windows Shell.Application COM objektua PowerShell STA bidez deitzea.
-    // Honek Explorer.exe (erabiltzailearen mahaigain interaktiboa) erabiltzen du aplikazioa exekutatzeko.
-    // Horrela, Admin Zentrala zerbitzari/atzeko planoan egon arren, GUI leihoa pantaila nagusian irekiko da
-    // Visual Studio edo IntelliJ IDEAtik irekiko balitz bezala.
+    // 1. Modu nagusia eta fidagarriena: Windows Explorer (explorer.exe) bidez irekitzea fitxategia existitzen denean.
+    // Windows Explorer erabiltzailearen mahaigain interaktibo nagusia da (Interactive Desktop Session).
+    // explorer.exe "path\fitxategia" deitzean, Windows-ek erabiltzaileak fitxategian klik bikoitza egin balu
+    // bezala abiarazten du, leiho grafiko erreala (UI) pantailan bistaratuz eta zentratuz.
     try
     {
-        string escExe = executableOrFile.Replace("'", "''");
-        string escArgs = arguments.Replace("'", "''");
-        string escDir = workingDirectory.Replace("'", "''");
+        if (File.Exists(executableOrFile) && string.IsNullOrEmpty(arguments))
+        {
+            var psiExplorer = new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"\"{executableOrFile}\"",
+                WorkingDirectory = workingDirectory,
+                UseShellExecute = false
+            };
+            Process.Start(psiExplorer);
+            return;
+        }
+    }
+    catch { }
 
+    // 2. Bigarren aukera: UseShellExecute = true bidezko abioa (ShellExecuteEx API zuzena)
+    try
+    {
         var psi = new ProcessStartInfo
-        {
-            FileName = "powershell.exe",
-            Arguments = $"-STA -NoProfile -ExecutionPolicy Bypass -Command \"(New-Object -ComObject Shell.Application).ShellExecute('{escExe}', '{escArgs}', '{escDir}', 'open', 1)\"",
-            CreateNoWindow = true,
-            UseShellExecute = false
-        };
-        using var proc = Process.Start(psi);
-        proc?.WaitForExit(3000);
-        return;
-    }
-    catch { }
-
-    // 2. Bigarren aukera: cmd.exe /c start
-    try
-    {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = "cmd.exe",
-            Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
-            WorkingDirectory = workingDirectory,
-            UseShellExecute = true
-        });
-        return;
-    }
-    catch { }
-
-    // 3. Hirugarren aukera: Process.Start zuzena
-    try
-    {
-        Process.Start(new ProcessStartInfo
         {
             FileName = executableOrFile,
             Arguments = arguments,
             WorkingDirectory = workingDirectory,
-            UseShellExecute = true
-        });
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal
+        };
+        Process.Start(psi);
+        return;
+    }
+    catch { }
+
+    // 3. Hirugarren aukera: cmd.exe /c start bidez
+    try
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal
+        };
+        Process.Start(psi);
     }
     catch { }
 }

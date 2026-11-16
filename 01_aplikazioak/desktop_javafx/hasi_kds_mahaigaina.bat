@@ -12,8 +12,10 @@ echo.
 
 :: 1. Java exekutablea detektatu
 set "JAVA_BIN=javaw"
-if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HOME%\bin\javaw.exe"
+if exist "C:\Program Files\Eclipse Adoptium\jre-17.0.21.9-hotspot\bin\javaw.exe" set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jre-17.0.21.9-hotspot\bin\javaw.exe"
+if exist "C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot\bin\javaw.exe" set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot\bin\javaw.exe"
 if exist "%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe" set "JAVA_BIN=%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe"
+if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HOME%\bin\javaw.exe"
 
 :: 2. Target lib eta classes daudenean zuzenean abiarazi (berehalako abioa)
 if exist "target\classes" if exist "target\lib\javafx-controls-21.0.2-win.jar" (
