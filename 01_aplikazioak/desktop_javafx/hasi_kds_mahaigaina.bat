@@ -10,7 +10,7 @@ echo Proiektua: %~dp0
 echo Moduluak: Sukaldea (KDS) + Barra (BDS) + Biltegia (Stock)
 echo.
 
-:: 1. Java exekutablea detektatu (javaw lehenetsia kontsolarik gabe irekitzeko)
+:: 1. Java exekutablea detektatu
 set "JAVA_BIN=javaw"
 if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HOME%\bin\javaw.exe"
 if exist "%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe" set "JAVA_BIN=%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe"

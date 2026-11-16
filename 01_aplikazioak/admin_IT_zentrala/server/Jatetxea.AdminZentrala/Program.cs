@@ -682,16 +682,18 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 }
             }
 
+            string csharpBat = Path.Combine(csharpDir, "hasi_csharp_tpv.bat");
+
             if (csharpExe != null && File.Exists(csharpExe))
             {
                 string csharpBinDir = Path.GetDirectoryName(csharpExe)!;
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = csharpExe,
-                    WorkingDirectory = csharpBinDir,
-                    UseShellExecute = true
-                });
+                LaunchInteractiveProcess(csharpExe, "", csharpBinDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina mahaigaineko aplikazioaren interfazea (UI) ireki da." });
+            }
+            else if (File.Exists(csharpBat))
+            {
+                LaunchInteractiveProcess(csharpBat, "", csharpDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina abiarazten (hasi_csharp_tpv.bat bidez)..." });
             }
             return Results.Ok(new { Success = false, Message = "Ez da Jatetxea.Desktop.exe exekutablea aurkitu edo ezin izan da konpilatu." });
 
@@ -701,6 +703,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             string javafxDir = Path.Combine(appsDir, "desktop_javafx");
             string targetClasses = Path.Combine(javafxDir, "target", "classes");
             string targetLib = Path.Combine(javafxDir, "target", "lib");
+            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
 
             // Java exekutablea aurkitu (javaw.exe lehenetsia kontsolarik gabe GUI irekitzeko)
             string javaHome = Environment.GetEnvironmentVariable("JAVA_HOME") ?? "";
@@ -718,42 +721,24 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             };
             string? javaExe = javaCandidates.FirstOrDefault(File.Exists) ?? "javaw.exe";
 
-            // target/classes eta target/lib badaude, berehala ireki GUI natiboa
-            if (Directory.Exists(targetClasses) && Directory.Exists(targetLib))
+            // target/classes eta target/lib badaude, berehala ireki GUI natiboa Shell.Application bidez
+            if (Directory.Exists(targetClasses) && Directory.Exists(targetLib) && File.Exists(javaExe))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = javaExe,
-                    Arguments = $"--module-path \"{targetClasses};{targetLib}\" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher",
-                    WorkingDirectory = javafxDir,
-                    UseShellExecute = true
-                });
+                string jArgs = $"--module-path \"{targetClasses};{targetLib}\" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher";
+                LaunchInteractiveProcess(javaExe, jArgs, javafxDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
             }
 
-            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
-            string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
-
             if (File.Exists(batLauncher))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c start \"1T Jatetxea - JavaFX Sukaldea, Barra eta Biltegia\" /d \"{javafxDir}\" \"{batLauncher}\"",
-                    WorkingDirectory = javafxDir,
-                    UseShellExecute = true
-                });
+                LaunchInteractiveProcess(batLauncher, "", javafxDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia aplikazioa abiarazita (hasi_kds_mahaigaina.bat bidez)." });
             }
-            else if (File.Exists(mvnwCmd))
+
+            string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
+            if (File.Exists(mvnwCmd))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c start \"1T Jatetxea - JavaFX Sukaldea, Barra eta Biltegia\" /d \"{javafxDir}\" cmd /c \"mvnw.cmd javafx:run\"",
-                    WorkingDirectory = javafxDir,
-                    UseShellExecute = true
-                });
+                LaunchInteractiveProcess("cmd.exe", $"/c start \"1T Jatetxea - JavaFX Sukaldea\" cmd /c \"mvnw.cmd javafx:run\"", javafxDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX aplikazioa abiarazita (mvnw bidez)." });
             }
             return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
@@ -838,13 +823,7 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
 
     if (Directory.Exists(targetDir))
     {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = "cmd.exe",
-            Arguments = $"/c start explorer.exe \"{targetDir}\"",
-            WorkingDirectory = targetDir,
-            UseShellExecute = true
-        });
+        LaunchInteractiveProcess("explorer.exe", $"\"{targetDir}\"", targetDir);
         return Results.Ok(new { Success = true, Path = targetDir, Message = $"Karpeta irekita: {Path.GetFileName(targetDir)}" });
     }
 
@@ -1614,8 +1593,73 @@ app.MapPost("/api/lab/ping", async (HttpContext ctx) =>
 app.Run();
 
 // Laguntza-funtzioak
+static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
+{
+    // 1. Modu nagusia eta fidagarriena: Windows Shell.Application COM objektua PowerShell STA bidez deitzea.
+    // Honek Explorer.exe (erabiltzailearen mahaigain interaktiboa) erabiltzen du aplikazioa exekutatzeko.
+    // Horrela, Admin Zentrala zerbitzari/atzeko planoan egon arren, GUI leihoa pantaila nagusian irekiko da
+    // Visual Studio edo IntelliJ IDEAtik irekiko balitz bezala.
+    try
+    {
+        string escExe = executableOrFile.Replace("'", "''");
+        string escArgs = arguments.Replace("'", "''");
+        string escDir = workingDirectory.Replace("'", "''");
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            Arguments = $"-STA -NoProfile -ExecutionPolicy Bypass -Command \"(New-Object -ComObject Shell.Application).ShellExecute('{escExe}', '{escArgs}', '{escDir}', 'open', 1)\"",
+            CreateNoWindow = true,
+            UseShellExecute = false
+        };
+        using var proc = Process.Start(psi);
+        proc?.WaitForExit(3000);
+        return;
+    }
+    catch { }
+
+    // 2. Bigarren aukera: cmd.exe /c start
+    try
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true
+        });
+        return;
+    }
+    catch { }
+
+    // 3. Hirugarren aukera: Process.Start zuzena
+    try
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = executableOrFile,
+            Arguments = arguments,
+            WorkingDirectory = workingDirectory,
+            UseShellExecute = true
+        });
+    }
+    catch { }
+}
+
 static void OpenSystemBrowser(string url)
 {
+    try
+    {
+        Type? shellType = Type.GetTypeFromProgID("Shell.Application");
+        if (shellType != null)
+        {
+            dynamic shell = Activator.CreateInstance(shellType)!;
+            shell.ShellExecute(url, "", "", "open", 1);
+            return;
+        }
+    }
+    catch { }
+
     try
     {
         Process.Start(new ProcessStartInfo
