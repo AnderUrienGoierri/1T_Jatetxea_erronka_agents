@@ -7,14 +7,16 @@ Agiri honek **1T Jatetxea Kudeaketa Sistema Integralerako** git komit-mezuak ida
 ## 1. Oinarrizko Arau Gidariak
 
 1. **Conventional Commits 1.0.0 Estandarra:**
-   - Komit-mezu bakoitzak formatu estandarra jarraitu behar du:
-     ```text
-     <mota>(<esparrua>): <deskribapen laburra aginte-moduan>
 
-     [aukerazko gorputza xehetasunekin]
+   Komit-mezu bakoitzak formatu estandarra jarraitu behar du:
 
-     [aukerazko oina: apurtze-aldaketak edo gai-zenbakiak]
-     ```
+   ```text
+   <mota>(<esparrua>): <deskribapen laburra aginte-moduan>
+
+   [aukerazko gorputza xehetasunekin]
+
+   [aukerazko oina: apurtze-aldaketak edo gai-zenbakiak]
+   ```
 
 2. **Zero Emoji Arau Zorrotza:**
    - Erabat debekatuta dago emojirik erabiltzea komit-mezuetan, adar-izenetan edo PR tituluetan.
@@ -66,6 +68,7 @@ Esparruak komitak eragiten dion azpisistema edo osagaia adierazten du:
 ## 4. Komit Onen eta Txarren Adibideak
 
 ### 4.1 Adibide Egokiak (Zuzenak)
+
 - `feat(api): inplementatu 5050 atakan datu-basearen egoera monitorea`
 - `fix(admin): ziurtatu 5000 portuan admin panela eta 5050 portuan apia mantentzea`
 - `style(kds-javafx): egokitu komanden txartelak zinc paletara eta egoera berde/gorrietara`
@@ -73,7 +76,8 @@ Esparruak komitak eragiten dion azpisistema edo osagaia adierazten du:
 - `refactor(web-php): garbitu POST parametroen saneatzea sql injection aurka`
 
 ### 4.2 Adibide Desegokiak (Debekatuak)
+
 - `aldaketak eginda` (motarik ez, esparrurik ez, azalpenik ez)
-- `feat: ikono berriak gehitu 🚀🎉` (debekatuta: emojien erabilera)
+- `feat: ikono berriak gehitu` (emojirik gabekoa)
 - `fix bug` (zehaztasunik ez, esparrurik ez)
 - `WIP` (ez da onartzen behin-behineko komit ilunik egitea)

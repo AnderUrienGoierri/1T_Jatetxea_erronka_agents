@@ -7,6 +7,7 @@ Dokumentu honek **1T Jatetxea Kudeaketa Sistema Integralerako** GitHub Actions b
 ## 1. Lan-Fluxuaren Arkitektura Orokorra
 
 CI pipeline-a `.github/workflows/ci.yml` fitxategian definituta dago eta automatikoki exekutatzen da:
+
 - `main` adarrera egindako `push` bakoitzean.
 - `main` adarrera bideratutako edozein `pull_request`-etan.
 
@@ -35,7 +36,7 @@ Commit / Pull Request
    │     ├── FXML fitxategien XML baliozkotzea
    │     └── Maven konpilazioa (mvn test-compile)
    │
-   └── 6. Lana: Web PHP Frontend (PHP 8.2, Linux)
+   └── 6. Lana: Web PHP Frontend (PHP 8.4, Linux)
          └── PHP sintaxiaren linting automatikoa (php -l)
 ```
 
@@ -44,6 +45,7 @@ Commit / Pull Request
 ## 2. DevSecOps eta Segurtasun Jarraibideak
 
 ### 2.1 Zero Secret Leakage (Isilpeko Datuen Isurketarik Ez)
+
 1. **Datu-baseko pasahitzak eta kredentzialak:**
    - Erabat debekatuta dago MySQL ekoizpeneko pasahitzak, OPNsense gakoak edo API tokenak git-era igotzea.
    - Ezarpen guztiak ingurune-aldagaien bidez (`ASPNETCORE_ENVIRONMENT`, `DB_PASSWORD`, `.env.example`) kudeatu behar dira.
@@ -51,12 +53,14 @@ Commit / Pull Request
    - CI-ak fitxategiak miatzen ditu RSA gako pribatuak, pasahitz gogorrak edo konexio-kate arriskutsuak detektatzeko.
 
 ### 2.2 Eraikuntza Deterministak (Deterministic Builds)
+
 - Proiektuko kudeatzaile guztiek mendekotasun-bertsio finkoak erabili behar dituzte:
   - .NET: `Directory.Build.props` edo `.csproj` bertsio esplizituekin.
   - Maven: `pom.xml` bertsio finkoekin, bertsio aldakorrak (`LATEST`, `RELEASE`) ekidinez.
   - PHP: `composer.lock` fitxategiaren bidez.
 
 ### 2.3 Sare eta Isolamendu Arkitektura (Least Privilege)
+
 - Aplikazio bakoitzak dagokion VLAN gunean jardun behar du:
   - **VLAN 10 (LAN Pribatua):** Backend REST API (5050), MySQL (3308), Desktop TPV, KDS JavaFX.
   - **VLAN 20 (DMZ Publikoa):** Web PHP Frontend (8085).
