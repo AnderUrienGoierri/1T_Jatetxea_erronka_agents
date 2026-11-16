@@ -1,5 +1,5 @@
 {
-  "active_profile": "innovatek",
+  "active_profile": "etxean",
   "profiles": {
     "localhost": {
       "deskribapena": "Tokiko probak garatzailearen ordenagailuan (127.0.0.1)",
@@ -14,14 +14,14 @@
     },
     "etxean": {
       "deskribapena": "Etxeko WiFi Lokala (euskaltel_urite)",
-      "wifi_ssid": "euskaltel_urite",
-      "api_host": "192.168.1.129",
+      "wifi_ssid": "ASUS",
+      "api_host": "192.168.1.43",
       "api_port": 5050,
-      "api_base_url": "http://192.168.1.129:5050/api/v1",
-      "web_url": "http://192.168.1.129:8085",
-      "chat_url": "http://192.168.1.129:3001",
-      "odoo_url": "http://192.168.1.129:8070",
-      "tv_kds_url": "http://192.168.1.129:8086"
+      "api_base_url": "http://192.168.1.43:5050/api/v1",
+      "web_url": "http://192.168.1.43:8085",
+      "chat_url": "http://192.168.1.43:3001",
+      "odoo_url": "http://192.168.1.43:8070",
+      "tv_kds_url": "http://192.168.1.43:8086"
     },
     "innovatek": {
       "deskribapena": "Innovatek Sarea (Kablez / INN-WPRIVATE)",

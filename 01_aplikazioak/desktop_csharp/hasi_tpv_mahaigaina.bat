@@ -9,28 +9,34 @@ echo ===============================================================
 echo Proiektua: %~dp0
 echo.
 
-if exist "bin\Release\net10.0-windows\Jatetxea.Desktop.exe" (
-    echo Aplikazioaren interfazea (Release) abiarazten...
-    start "" "bin\Release\net10.0-windows\Jatetxea.Desktop.exe"
-    exit /b 0
+set "EXE_RELEASE=%~dp0bin\Release\net10.0-windows\Jatetxea.Desktop.exe"
+set "EXE_DEBUG=%~dp0bin\Debug\net10.0-windows\Jatetxea.Desktop.exe"
+
+if exist "%EXE_RELEASE%" (
+    echo Aplikazioaren interfazea abiarazten: Release
+    start "" "%EXE_RELEASE%"
+    goto :amaitu
 )
 
-if exist "bin\Debug\net10.0-windows\Jatetxea.Desktop.exe" (
-    echo Aplikazioaren interfazea (Debug) abiarazten...
-    start "" "bin\Debug\net10.0-windows\Jatetxea.Desktop.exe"
-    exit /b 0
+if exist "%EXE_DEBUG%" (
+    echo Aplikazioaren interfazea abiarazten: Debug
+    start "" "%EXE_DEBUG%"
+    goto :amaitu
 )
 
 echo Dotnet bidez konpilatzen eta abiarazten...
-dotnet build -c Release
-if exist "bin\Release\net10.0-windows\Jatetxea.Desktop.exe" (
-    start "" "bin\Release\net10.0-windows\Jatetxea.Desktop.exe"
-    exit /b 0
+dotnet build "%~dp0Jatetxea.Desktop.csproj" -c Release
+if exist "%EXE_RELEASE%" (
+    start "" "%EXE_RELEASE%"
+    goto :amaitu
 )
 
-dotnet run -c Release
+dotnet run --project "%~dp0Jatetxea.Desktop.csproj" -c Release
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo [ERROREA] C# TPV exekuzioak huts egin du: kodea %ERRORLEVEL%
     pause
 )
+
+:amaitu
+exit /b 0

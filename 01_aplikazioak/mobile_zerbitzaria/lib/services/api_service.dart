@@ -8,7 +8,7 @@ import '../models/eskaera.dart';
 import '../models/ordainketa.dart';
 
 class ApiService {
-  static const String _defaultUrl = 'http://10.100.30.122:5050/api/v1';
+  static const String _defaultUrl = 'http://192.168.1.43:5050/api/v1';
   static const String _prefKey = 'api_base_url';
 
   static String _baseUrl = _defaultUrl;
@@ -323,6 +323,7 @@ class ApiService {
     }
   }
 }
+
 
 
 
