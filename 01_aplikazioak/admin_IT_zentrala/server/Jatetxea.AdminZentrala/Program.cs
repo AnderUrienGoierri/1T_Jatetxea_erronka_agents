@@ -1602,7 +1602,22 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // Batch fitxategia (.bat edo .cmd) bada, zuzenean cmd.exe /c start bidez exekutatu
+    // 1. Modu nagusia eta fidagarriena: Shell.Application COM bidez deitzea.
+    // Honek Windows mahaigaineko erabiltzailearen benetako Shell interaktiboan (explorer.exe-ren sesio grafikoan)
+    // sortzen ditu leihoak (MainWindowHandle erreala esleituz), atzeko planoko azpiprozesuen oinordetza saihestuz.
+    try
+    {
+        Type? shellType = Type.GetTypeFromProgID("Shell.Application");
+        if (shellType != null)
+        {
+            dynamic shell = Activator.CreateInstance(shellType)!;
+            shell.ShellExecute(executableOrFile, arguments ?? "", workingDirectory ?? "", "open", 1);
+            return;
+        }
+    }
+    catch { }
+
+    // 2. Bigarren aukera: Batch fitxategia (.bat edo .cmd) bada, cmd.exe /c start bidez exekutatu
     if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
         executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
     {
@@ -1623,25 +1638,7 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
         catch { }
     }
 
-    // 1. Modu nagusia eta fidagarriena: Windows Explorer (explorer.exe) bidez irekitzea fitxategia existitzen denean.
-    try
-    {
-        if (File.Exists(executableOrFile) && string.IsNullOrEmpty(arguments))
-        {
-            var psiExplorer = new ProcessStartInfo
-            {
-                FileName = "explorer.exe",
-                Arguments = $"\"{executableOrFile}\"",
-                WorkingDirectory = workingDirectory,
-                UseShellExecute = false
-            };
-            Process.Start(psiExplorer);
-            return;
-        }
-    }
-    catch { }
-
-    // 2. Bigarren aukera: UseShellExecute = true bidezko abioa (ShellExecuteEx API zuzena)
+    // 3. Hirugarren aukera: UseShellExecute = true bidezko abioa (ShellExecuteEx API zuzena)
     try
     {
         var psi = new ProcessStartInfo
@@ -1657,7 +1654,7 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
     }
     catch { }
 
-    // 3. Hirugarren aukera: cmd.exe /c start bidez
+    // 4. Laugarren aukera: cmd.exe /c start bidez
     try
     {
         var psi = new ProcessStartInfo
