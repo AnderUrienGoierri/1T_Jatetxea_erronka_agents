@@ -61,6 +61,7 @@ public static class AplikazioMonitoreZerbitzua
         ErregistratuAplikazioEredua("csharp_tpv", "C# TPV Areto & Kutxazaina", "Desktop C# (Windows Forms)");
         ErregistratuAplikazioEredua("javafx_kds", "JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock)", "Desktop Java (JavaFX 21)");
         ErregistratuAplikazioEredua("web_php", "Web PHP Frontend Publikoa", "Web Apache (PHP 8.4)");
+        ErregistratuAplikazioEredua("android_komandera", "Android Zerbitzaria (Komandera)", "Mugikorra (Jetpack Compose)");
         ErregistratuAplikazioEredua("mobile_zerbitzaria", "Flutter Zerbitzaria (Komandera)", "Mugikorra (Flutter / Dart)");
         ErregistratuAplikazioEredua("mobile_bezeroa", "Flutter Bezero Aplikazioa", "Mugikorra (Flutter / Dart)");
         ErregistratuAplikazioEredua("android_tv", "Android TV Sukaldea KDS", "Telebista (Compose TV)");
@@ -92,6 +93,7 @@ public static class AplikazioMonitoreZerbitzua
         if (headers.TryGetValue("X-App-Id", out var appIdVal) && !string.IsNullOrWhiteSpace(appIdVal))
         {
             string id = appIdVal.ToString().ToLowerInvariant().Trim();
+            if (id.Contains("android_komandera") || id.Contains("komandera_android") || id.Contains("android_zerbitzaria")) return "android_komandera";
             if (id.Contains("csharp") || id.Contains("tpv")) return "csharp_tpv";
             if (id.Contains("javafx") || id.Contains("kds")) return "javafx_kds";
             if (id.Contains("web") || id.Contains("php")) return "web_php";
@@ -106,6 +108,7 @@ public static class AplikazioMonitoreZerbitzua
         if (headers.TryGetValue("X-App-Name", out var appNameVal) && !string.IsNullOrWhiteSpace(appNameVal))
         {
             string name = appNameVal.ToString().ToLowerInvariant();
+            if (name.Contains("android") && (name.Contains("komandera") || name.Contains("zerbitzari"))) return "android_komandera";
             if (name.Contains("c#") || name.Contains("tpv") || name.Contains("kutxazain")) return "csharp_tpv";
             if (name.Contains("javafx") || name.Contains("kds")) return "javafx_kds";
             if (name.Contains("php") || name.Contains("web")) return "web_php";
@@ -117,6 +120,9 @@ public static class AplikazioMonitoreZerbitzua
 
         // 3. User-Agent bidezko detekzio automatikoa
         string userAgent = headers.UserAgent.ToString().ToLowerInvariant();
+
+        if (userAgent.Contains("android-komandera") || userAgent.Contains("jatetxea.komandera") || userAgent.Contains("android_komandera"))
+            return "android_komandera";
 
         if (userAgent.Contains("jatetxea.desktop") || userAgent.Contains("csharp") || userAgent.Contains("windowsforms"))
             return "csharp_tpv";
@@ -183,6 +189,7 @@ public static class AplikazioMonitoreZerbitzua
         "csharp_tpv" => "C# TPV Areto & Kutxazaina",
         "javafx_kds" => "JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock)",
         "web_php" => "Web PHP Frontend Publikoa",
+        "android_komandera" => "Android Zerbitzaria (Komandera)",
         "mobile_zerbitzaria" => "Flutter Zerbitzaria (Komandera)",
         "mobile_bezeroa" => "Flutter Bezero Aplikazioa",
         "android_tv" => "Android TV Sukaldea KDS",

@@ -74,6 +74,14 @@ object ApiClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("X-App-Id", "android_komandera")
+                .header("X-App-Name", "Android Zerbitzaria (Komandera)")
+                .header("User-Agent", "1T-Jatetxea-Android-Komandera/1.0 (Android; Jetpack Compose)")
+                .build()
+            chain.proceed(request)
+        }
         .addInterceptor(logging)
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
