@@ -1592,10 +1592,28 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
+    // Batch fitxategia (.bat edo .cmd) bada, zuzenean cmd.exe /c start bidez exekutatu
+    if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
+        executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
+    {
+        try
+        {
+            var psiBat = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
+                WorkingDirectory = workingDirectory,
+                UseShellExecute = true,
+                CreateNoWindow = false,
+                WindowStyle = ProcessWindowStyle.Normal
+            };
+            Process.Start(psiBat);
+            return;
+        }
+        catch { }
+    }
+
     // 1. Modu nagusia eta fidagarriena: Windows Explorer (explorer.exe) bidez irekitzea fitxategia existitzen denean.
-    // Windows Explorer erabiltzailearen mahaigain interaktibo nagusia da (Interactive Desktop Session).
-    // explorer.exe "path\fitxategia" deitzean, Windows-ek erabiltzaileak fitxategian klik bikoitza egin balu
-    // bezala abiarazten du, leiho grafiko erreala (UI) pantailan bistaratuz eta zentratuz.
     try
     {
         if (File.Exists(executableOrFile) && string.IsNullOrEmpty(arguments))
