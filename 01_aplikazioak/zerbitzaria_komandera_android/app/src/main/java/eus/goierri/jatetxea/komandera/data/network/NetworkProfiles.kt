@@ -1,0 +1,110 @@
+package eus.goierri.jatetxea.komandera.data.network
+
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
+import android.os.Build
+
+data class NetworkProfile(
+    val id: String,
+    val izena: String,
+    val wifiSsid: String?,
+    val baseUrl: String,
+    val kokapena: String,
+    val deskribapena: String
+)
+
+object NetworkProfiles {
+    val PROFILAK = listOf(
+        NetworkProfile(
+            id = "etxean",
+            izena = "Ikaztegieta Etxea",
+            wifiSsid = "euskaltel_urite",
+            baseUrl = "http://192.168.1.134:5050/api/v1/",
+            kokapena = "Ikaztegieta (Etxeko Wi-Fi)",
+            deskribapena = "192.168.1.134:5050 (euskaltel_urite)"
+        ),
+        NetworkProfile(
+            id = "eskola",
+            izena = "Goierri Eskola",
+            wifiSsid = "GOI_Ikasleak",
+            baseUrl = "http://172.16.243.145:5050/api/v1/",
+            kokapena = "Ordizia (Goierri Eskola)",
+            deskribapena = "172.16.243.145:5050 (GOI_Ikasleak)"
+        ),
+        NetworkProfile(
+            id = "tolosako_etxea",
+            izena = "Tolosa Etxea",
+            wifiSsid = "MIWIFI_dc7U",
+            baseUrl = "http://192.168.1.166:5050/api/v1/",
+            kokapena = "Tolosa (Etxeko Wi-Fi)",
+            deskribapena = "192.168.1.166:5050 (MIWIFI_dc7U)"
+        ),
+        NetworkProfile(
+            id = "innovatek",
+            izena = "Innovatek Beasain",
+            wifiSsid = "ASUS",
+            baseUrl = "http://192.168.5.166:5050/api/v1/",
+            kokapena = "Beasain (Innovatek)",
+            deskribapena = "192.168.5.166:5050 (Router ASUS)"
+        ),
+        NetworkProfile(
+            id = "usb_localhost",
+            izena = "USB Kablez / Localhost",
+            wifiSsid = null,
+            baseUrl = "http://127.0.0.1:5050/api/v1/",
+            kokapena = "ADB Reverse / Emuladorea",
+            deskribapena = "127.0.0.1:5050 (adb reverse tcp:5050)"
+        ),
+        NetworkProfile(
+            id = "emuladorea",
+            izena = "Android Emuladorea",
+            wifiSsid = null,
+            baseUrl = "http://10.0.2.2:5050/api/v1/",
+            kokapena = "Android Studio AVD",
+            deskribapena = "10.0.2.2:5050 (AVD Standard Host)"
+        )
+    )
+
+    fun lortuUnekoWifiIzena(context: Context): String? {
+        try {
+            val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+            if (wifiManager != null) {
+                val wifiInfo = wifiManager.connectionInfo
+                if (wifiInfo != null) {
+                    val ssid = wifiInfo.ssid
+                    if (!ssid.isNullOrBlank() && ssid != "<unknown ssid>" && ssid != "0x") {
+                        return ssid.replace("\"", "").trim()
+                    }
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                val activeNetwork = connMgr?.activeNetwork
+                val capabilities = connMgr?.getNetworkCapabilities(activeNetwork)
+                val transportInfo = capabilities?.transportInfo as? WifiInfo
+                val ssid = transportInfo?.ssid
+                if (!ssid.isNullOrBlank() && ssid != "<unknown ssid>" && ssid != "0x") {
+                    return ssid.replace("\"", "").trim()
+                }
+            }
+        } catch (_: Exception) {
+        }
+        return null
+    }
+
+    fun lortuGomendatutakoProfila(context: Context): NetworkProfile {
+        val unekoSsid = lortuUnekoWifiIzena(context)
+        if (!unekoSsid.isNullOrBlank()) {
+            val batDatorrena = PROFILAK.firstOrNull { profil ->
+                profil.wifiSsid != null && profil.wifiSsid.equals(unekoSsid, ignoreCase = true)
+            }
+            if (batDatorrena != null) return batDatorrena
+        }
+        // Lehenetsia: Ikaztegieta Etxea (gaur egungo garapen ingurunea)
+        return PROFILAK.first()
+    }
+}

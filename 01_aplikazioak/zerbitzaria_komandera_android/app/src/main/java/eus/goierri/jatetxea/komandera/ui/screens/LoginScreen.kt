@@ -26,7 +26,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.ui.platform.LocalContext
 import eus.goierri.jatetxea.komandera.data.api.ApiClient
+import eus.goierri.jatetxea.komandera.data.network.NetworkProfile
+import eus.goierri.jatetxea.komandera.data.network.NetworkProfiles
 import eus.goierri.jatetxea.komandera.data.model.LangileaDto
 import eus.goierri.jatetxea.komandera.data.model.LoginRequestDto
 import eus.goierri.jatetxea.komandera.ui.theme.*
@@ -37,6 +42,7 @@ fun LoginScreen(
     onLoginSuccess: (LangileaDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var langileak by remember { mutableStateOf<List<LangileaDto>>(emptyList()) }
     var kargatzen by remember { mutableStateOf(true) }
@@ -50,6 +56,7 @@ fun LoginScreen(
 
     var configDialogIrekita by remember { mutableStateOf(false) }
     var apiUrlState by remember { mutableStateOf(ApiClient.baseUrl) }
+    var unekoWifiSsid by remember { mutableStateOf(NetworkProfiles.lortuUnekoWifiIzena(context)) }
 
     fun kargatuLangileak() {
         scope.launch {
@@ -296,12 +303,32 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Konektatuta: ${ApiClient.baseUrl}",
-            fontSize = 11.sp,
-            color = TextMuted,
-            textAlign = TextAlign.Center
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Wifi,
+                contentDescription = "Wi-Fi egoera",
+                tint = if (unekoWifiSsid != null) StatusReady else TextMuted,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = if (unekoWifiSsid != null) "Wi-Fi: $unekoWifiSsid" else "Ez da Wi-Fi sarerik hauteman",
+                fontSize = 12.sp,
+                color = if (unekoWifiSsid != null) StatusReady else TextMuted,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "·  API: ${ApiClient.baseUrl}",
+                fontSize = 11.sp,
+                color = TextSecondary,
+                maxLines = 1
+            )
+        }
     }
 
     // 4 ZIFRAKO PIN SARRERA MODALA (C# TPV BEZALAKOA)
@@ -502,27 +529,150 @@ fun LoginScreen(
         }
     }
 
-    // API URL KONFIGURAZIO MODALA (Emuladore edo sare lokaleko IPerako)
+    // API URL ETA SARE PRESETAK KONFIGURATZEKO MODALA
     if (configDialogIrekita) {
         var behinBehinekoUrl by remember { mutableStateOf(ApiClient.baseUrl) }
+        var testEmaitza by remember { mutableStateOf<String?>(null) }
+        var testKargatzen by remember { mutableStateOf(false) }
 
         AlertDialog(
             onDismissRequest = { configDialogIrekita = false },
             title = {
-                Text("API Zerbitzariaren URLa", color = TextPrimary, fontWeight = FontWeight.Bold)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        tint = AmberPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Sare Ezarpenak & API Profilak", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                }
             },
             text = {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 480.dp)
+                ) {
+                    // Wi-Fi detektatua
+                    Surface(
+                        color = DarkSurfaceVariant,
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Wifi,
+                                contentDescription = null,
+                                tint = if (unekoWifiSsid != null) StatusReady else TextMuted,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = if (unekoWifiSsid != null) "Hautemandako Wi-Fi: $unekoWifiSsid" else "Ez da Wi-Fi sarerik hauteman",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if (unekoWifiSsid != null) StatusReady else TextSecondary
+                                )
+                                Text(
+                                    text = "Klikatu profil batean URL egokia automatikoki ezartzeko",
+                                    fontSize = 10.sp,
+                                    color = TextMuted
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "Android emuladorean 'http://10.0.2.2:5050/api/v1/' erabili behar da ostalari ordenagailuarekin komunikatzeko.",
-                        color = TextSecondary,
-                        fontSize = 13.sp
+                        text = "Aukeratu Ingurunea (Profil Azkarrak):",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextSecondary
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f, fill = false)
+                    ) {
+                        items(NetworkProfiles.PROFILAK) { profila ->
+                            val hautatuta = behinBehinekoUrl.trimEnd('/') == profila.baseUrl.trimEnd('/')
+                            val unekoWifiaBera = unekoWifiSsid != null && profila.wifiSsid.equals(unekoWifiSsid, ignoreCase = true)
+
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 3.dp)
+                                    .clickable {
+                                        behinBehinekoUrl = profila.baseUrl
+                                        testEmaitza = null
+                                    },
+                                color = if (hautatuta) AmberPrimary.copy(alpha = 0.15f) else DarkSurfaceVariant,
+                                shape = RoundedCornerShape(8.dp),
+                                border = if (hautatuta) androidx.compose.foundation.BorderStroke(1.dp, AmberPrimary) else null
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(
+                                                text = profila.izena,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 13.sp,
+                                                color = if (hautatuta) AmberPrimary else TextPrimary
+                                            )
+                                            if (unekoWifiaBera) {
+                                                Spacer(modifier = Modifier.width(6.dp))
+                                                Surface(
+                                                    color = StatusReady.copy(alpha = 0.2f),
+                                                    shape = RoundedCornerShape(4.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "Uneko Wi-Fi",
+                                                        fontSize = 9.sp,
+                                                        color = StatusReady,
+                                                        fontWeight = FontWeight.Bold,
+                                                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        Text(
+                                            text = profila.deskribapena,
+                                            fontSize = 11.sp,
+                                            color = TextSecondary
+                                        )
+                                    }
+                                    if (hautatuta) {
+                                        Icon(
+                                            imageVector = Icons.Default.CheckCircle,
+                                            contentDescription = "Hautatua",
+                                            tint = AmberPrimary,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
                         value = behinBehinekoUrl,
-                        onValueChange = { behinBehinekoUrl = it },
-                        label = { Text("Base URL") },
+                        onValueChange = {
+                            behinBehinekoUrl = it
+                            testEmaitza = null
+                        },
+                        label = { Text("API Base URL eskuz") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = AmberPrimary,
                             unfocusedBorderColor = TextMuted,
@@ -531,13 +681,61 @@ fun LoginScreen(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                scope.launch {
+                                    testKargatzen = true
+                                    testEmaitza = null
+                                    try {
+                                        val testSrv = ApiClient.createService(behinBehinekoUrl)
+                                        val res = testSrv.getHealth()
+                                        if (res.isSuccessful) {
+                                            testEmaitza = "OK: Zerbitzaria konektatuta!"
+                                        } else {
+                                            testEmaitza = "Errorea: HTTP ${res.code()}"
+                                        }
+                                    } catch (e: Exception) {
+                                        testEmaitza = "Errorea: ${e.localizedMessage ?: "Ezin izan da konektatu"}"
+                                    } finally {
+                                        testKargatzen = false
+                                    }
+                                }
+                            },
+                            enabled = !testKargatzen,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = AmberPrimary)
+                        ) {
+                            if (testKargatzen) {
+                                CircularProgressIndicator(modifier = Modifier.size(16.dp), color = AmberPrimary, strokeWidth = 2.dp)
+                            } else {
+                                Text("Proba Konexioa", fontSize = 12.sp)
+                            }
+                        }
+
+                        if (testEmaitza != null) {
+                            Text(
+                                text = testEmaitza!!,
+                                fontSize = 11.sp,
+                                color = if (testEmaitza!!.startsWith("OK")) StatusReady else StatusBusy,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.weight(1f).padding(start = 8.dp)
+                            )
+                        }
+                    }
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        ApiClient.baseUrl = behinBehinekoUrl.trim()
+                        ApiClient.saveBaseUrl(context, behinBehinekoUrl)
                         apiUrlState = ApiClient.baseUrl
+                        unekoWifiSsid = NetworkProfiles.lortuUnekoWifiIzena(context)
                         configDialogIrekita = false
                         kargatuLangileak()
                     },

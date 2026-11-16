@@ -11,6 +11,7 @@ val DarkSurface = Color(0xFF1E293B)    // Slate 800
 val DarkSurfaceVariant = Color(0xFF334155) // Slate 700
 
 val StatusFree = Color(0xFF10B981)     // Emerald (Libre)
+val StatusReady = Color(0xFF10B981)    // Emerald (Prest / Konektatuta)
 val StatusOccupied = Color(0xFFEF4444) // Rose/Red (Okupatuta)
 val StatusBusy = Color(0xFFEF4444)     // Alias for StatusOccupied
 val StatusPending = Color(0xFFF59E0B)  // Amber (Erreserbatuta / Zain)

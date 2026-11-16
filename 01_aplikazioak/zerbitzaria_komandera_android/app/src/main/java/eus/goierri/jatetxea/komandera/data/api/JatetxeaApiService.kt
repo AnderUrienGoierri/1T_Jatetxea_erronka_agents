@@ -63,11 +63,42 @@ interface JatetxeaApiService {
 
     @POST("ordainketak")
     suspend fun prozesatuOrdainketa(@Body req: OrdainketaEskaeraDto): Response<ApiResponse<OrdainketaErantzunaDto>>
+    @GET("health")
+    suspend fun getHealth(): Response<Map<String, Any>>
 }
 
 object ApiClient {
-    // 10.0.2.2 Android emuladoreak ordenagailu ostalarira sartzeko (portu 5050)
-    var baseUrl: String = "http://10.0.2.2:5050/api/v1/"
+    private const val PREFS_NAME = "komandera_prefs"
+    private const val KEY_BASE_URL = "api_base_url"
+
+    // Lehenetsia: Ikaztegieta Etxea (192.168.1.134:5050) edo Tokikoa
+    var baseUrl: String = "http://192.168.1.134:5050/api/v1/"
+
+    fun init(context: android.content.Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE)
+        val gordetakoUrl = prefs.getString(KEY_BASE_URL, null)
+        if (!gordetakoUrl.isNullOrBlank()) {
+            baseUrl = garbituUrl(gordetakoUrl)
+        } else {
+            val gomendatua = eus.goierri.jatetxea.komandera.data.network.NetworkProfiles.lortuGomendatutakoProfila(context)
+            baseUrl = gomendatua.baseUrl
+            prefs.edit().putString(KEY_BASE_URL, baseUrl).apply()
+        }
+    }
+
+    fun saveBaseUrl(context: android.content.Context, url: String) {
+        baseUrl = garbituUrl(url)
+        val prefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_BASE_URL, baseUrl).apply()
+    }
+
+    private fun garbituUrl(url: String): String {
+        var garbia = url.trim()
+        if (!garbia.endsWith("/")) {
+            garbia = "$garbia/"
+        }
+        return garbia
+    }
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
