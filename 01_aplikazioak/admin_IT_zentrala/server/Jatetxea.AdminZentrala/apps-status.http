@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:5000
+
+### Aplikazio guztien osasuna eta martxan dauden egoera
+GET {{baseUrl}}/api/apps/status
+Accept: application/json

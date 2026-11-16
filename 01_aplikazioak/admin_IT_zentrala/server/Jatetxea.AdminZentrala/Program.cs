@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -16,6 +18,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
+builder.Services.AddHttpClient("AppHealth", client => client.Timeout = TimeSpan.FromSeconds(2));
 
 // Kalkulatu erroko karpeta dinamikoki eta sendo
 static string LocateProjectRoot(string baseDir)
@@ -48,6 +51,7 @@ if (Directory.Exists(webRootCandidate))
 }
 
 var app = builder.Build();
+var azkenAppJarduera = new ConcurrentDictionary<string, DateTimeOffset>(StringComparer.OrdinalIgnoreCase);
 
 app.UseCors("AllowAll");
 app.UseDefaultFiles();
@@ -853,7 +857,22 @@ var zerbitzuenKatalogoa = new[]
         Fluxua: "ASP.NET Core APIak (portu 5000) eta Odoo sistemak kontsultatzen dute TCP/IP socket bidez (portu 3306 barnean, 3308 kanpoan). Bezeroek eta Web publikoak EZIN dute zuzenean DB kontsultatu.",
         Segurtasuna: "Erabiltzaile eta pasahitz zifratua. Zero-Trust printzipioa: DMZtik konexio zuzenak blokeatuta OPNsense suebakian. Soilik LANeko APIak du sarbidea.",
         Protokoloa: "MySQL Protocol (TCP / SSL gaitua)",
-        HealthCheck: "SELECT 1 / TCP Port 3308",
+        HealthCheck: "SELECT 1 / TCP Port 3308"
+    ),
+    new ServiceDefinition(
+        Id: "phpmyadmin",
+        Izena: "phpMyAdmin MySQL",
+        Mota: "Datu-Basearen Web Kudeatzailea",
+        Host: "127.0.0.1",
+        Port: 8081,
+        Makina: "Erronka-WinServer2025 / Docker Portatila",
+        Gunea: "LAN Barnea",
+        Vlan: "VLAN 10",
+        DockerService: "phpmyadmin",
+        Fluxua: "MySQL datu-basea web interfazetik kudeatzeko tresna (localhost:8081).",
+        Segurtasuna: "LAN barruko kudeaketa-panela; MySQL kredentzialekin autentifikatzen da.",
+        Protokoloa: "HTTP (phpMyAdmin 5.2)",
+        HealthCheck: "GET http://localhost:8081/",
         AppUrl: "http://localhost:8081",
         AppLauncherId: "phpmyadmin"
     ),
@@ -1092,6 +1111,153 @@ app.MapGet("/api/health/ports", async () =>
 
     var results = await Task.WhenAll(tasks);
     return Results.Ok(results);
+});
+
+app.MapGet("/api/apps/status", async (IHttpClientFactory httpClientFactory, CancellationToken cancellationToken) =>
+{
+    using var http = httpClientFactory.CreateClient("AppHealth");
+    http.DefaultRequestHeaders.Add("X-App-Id", "admin_it");
+    http.DefaultRequestHeaders.Add("X-App-Name", "Admin IT Zentrala (Portu 5000)");
+    bool apiOnline = false;
+    bool mysqlOnline = false;
+
+    try
+    {
+        using var response = await http.GetAsync("http://127.0.0.1:5050/health", cancellationToken);
+        apiOnline = true;
+        if (response.IsSuccessStatusCode)
+        {
+            using var health = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+            mysqlOnline =
+                health.RootElement.TryGetProperty("database", out var database) &&
+                string.Equals(database.GetString(), "Connected", StringComparison.OrdinalIgnoreCase);
+        }
+    }
+    catch (HttpRequestException)
+    {
+    }
+    catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+    {
+    }
+    catch (JsonException ex)
+    {
+        Console.Error.WriteLine($"API health erantzuna ezin izan da irakurri: {ex.Message}");
+    }
+
+    var mysqlPort = await TestPortWithLatencyAsync("127.0.0.1", 3308, 500);
+    if (!apiOnline)
+    {
+        mysqlOnline = mysqlPort.Online;
+    }
+
+    var postgresTask = TestPortWithLatencyAsync("127.0.0.1", 5432, 500);
+    var webTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:8085/", cancellationToken);
+    var kdsTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:8086/", cancellationToken);
+    var odooTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:8070/web/login", cancellationToken);
+    var chatTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:3001/socket.io/", cancellationToken);
+    var phpMyAdminTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:8081/", cancellationToken);
+    var adminerTask = IsHttpEndpointRespondingAsync(http, "http://127.0.0.1:8082/", cancellationToken);
+    var opnsenseTask = TestPortWithLatencyAsync("127.0.0.1", 8443, 500);
+    var adminMobileTask = IsAndroidPackageRunningAsync("eus.goierri.jatetxea.adminzentrala");
+
+    if (apiOnline)
+    {
+        try
+        {
+            using var response = await http.GetAsync("http://127.0.0.1:5050/api/v1/aplikazioak-linean", cancellationToken);
+            if (response.IsSuccessStatusCode)
+            {
+                using var activity = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+                if (activity.RootElement.TryGetProperty("aplikazioak", out var applications) &&
+                    applications.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var application in applications.EnumerateArray())
+                    {
+                        if (application.TryGetProperty("aktiboDago", out var active) &&
+                            active.ValueKind == JsonValueKind.True &&
+                            application.TryGetProperty("id", out var id) &&
+                            !string.IsNullOrWhiteSpace(id.GetString()))
+                        {
+                            azkenAppJarduera[id.GetString()!] = DateTimeOffset.UtcNow;
+                        }
+                    }
+                }
+            }
+        }
+        catch (HttpRequestException)
+        {
+        }
+        catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (JsonException ex)
+        {
+            Console.Error.WriteLine($"Aplikazioen jarduera ezin izan da irakurri: {ex.Message}");
+        }
+    }
+
+    var postgresPort = await postgresTask;
+    var webOnline = await webTask;
+    var kdsOnline = await kdsTask;
+    var odooOnline = await odooTask;
+    var chatOnline = await chatTask;
+    var phpMyAdminOnline = await phpMyAdminTask;
+    var adminerOnline = await adminerTask;
+    var opnsenseOnline = (await opnsenseTask).Online;
+    var adminMobileOnline = await adminMobileTask;
+
+    bool HasRecentActivity(string id) =>
+        azkenAppJarduera.TryGetValue(id, out var seenAt) &&
+        DateTimeOffset.UtcNow - seenAt <= TimeSpan.FromSeconds(35);
+
+    object BuildStatus(string id, string name, bool running, bool extraDependencyOnline, string extraDependency)
+    {
+        bool healthy = apiOnline && mysqlOnline && extraDependencyOnline;
+        string state = !running ? "offline" : healthy ? "healthy" : "degraded";
+        string message = !running
+            ? "Itzalita edo azken 35 segundoetan hauteman gabe"
+            : healthy
+                ? "Martxan · APIa eta datu-basea ondo"
+                : $"Martxan, baina {(!apiOnline ? "APIa" : !mysqlOnline ? "MySQL datu-basea" : extraDependency)} ez dabil";
+
+        return new
+        {
+            id,
+            name,
+            online = running,
+            state,
+            message,
+            apiOnline,
+            databaseOnline = mysqlOnline,
+            checkedAt = DateTimeOffset.UtcNow
+        };
+    }
+
+    var statuses = new[]
+    {
+        BuildStatus("csharp_tpv", "C# TPV Areto & Kutxazaina", HasRecentActivity("csharp_tpv"), true, ""),
+        BuildStatus("javafx_kds", "JavaFX Sukaldea, Barra & Biltegia", HasRecentActivity("javafx_kds"), true, ""),
+        BuildStatus("web_php", "Web PHP Frontend Publikoa", webOnline, true, ""),
+        BuildStatus("mobile_bezeroa", "Flutter Bezeroa", HasRecentActivity("mobile_bezeroa"), true, ""),
+        BuildStatus("mobile_zerbitzaria", "Flutter Zerbitzaria", HasRecentActivity("mobile_zerbitzaria"), true, ""),
+        BuildStatus("android_tv", "Android TV Sukaldea KDS", HasRecentActivity("android_tv"), true, ""),
+        BuildStatus("kds_tv", "Sukaldea KDS TV", kdsOnline, true, ""),
+        BuildStatus("odoo", "Odoo 17 ERP", odooOnline, postgresPort.Online, "PostgreSQL"),
+        BuildStatus("api", "REST API", apiOnline, true, ""),
+        BuildStatus("chat", "Barne Txat Zerbitzaria", chatOnline, true, ""),
+        BuildStatus("phpmyadmin", "phpMyAdmin", phpMyAdminOnline, true, ""),
+        BuildStatus("adminer", "Adminer PostgreSQL", adminerOnline, postgresPort.Online, "PostgreSQL"),
+        BuildStatus("opnsense_web", "OPNsense WebGUI", opnsenseOnline, true, ""),
+        BuildStatus("admin_mobile", "1T IT Kontrol Mugikorra", adminMobileOnline, true, "")
+    };
+
+    return Results.Ok(new
+    {
+        checkedAt = DateTimeOffset.UtcNow,
+        apiOnline,
+        databaseOnline = mysqlOnline,
+        applications = statuses
+    });
 });
 
 // Zerbitzu zehatz baten xehetasun osoak eskuratzeko
@@ -1880,6 +2046,81 @@ static async Task<(bool Online, long LatencyMs)> TestPortWithLatencyAsync(string
     {
         sw.Stop();
         return (false, 0);
+    }
+}
+
+static async Task<bool> IsHttpEndpointRespondingAsync(
+    HttpClient http,
+    string url,
+    CancellationToken cancellationToken)
+{
+    try
+    {
+        using var response = await http.GetAsync(url, cancellationToken);
+        return true;
+    }
+    catch (HttpRequestException)
+    {
+        return false;
+    }
+    catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+    {
+        return false;
+    }
+}
+
+static async Task<bool> IsAndroidPackageRunningAsync(string packageName)
+{
+    string adbPath = @"D:\Android\Sdk\platform-tools\adb.exe";
+    if (!File.Exists(adbPath))
+    {
+        adbPath = "adb";
+    }
+
+    var startInfo = new ProcessStartInfo
+    {
+        FileName = adbPath,
+        UseShellExecute = false,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        CreateNoWindow = true
+    };
+    startInfo.ArgumentList.Add("shell");
+    startInfo.ArgumentList.Add("pidof");
+    startInfo.ArgumentList.Add("-s");
+    startInfo.ArgumentList.Add(packageName);
+
+    try
+    {
+        using var process = Process.Start(startInfo);
+        if (process == null)
+        {
+            return false;
+        }
+
+        Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            process.Kill(entireProcessTree: true);
+            return false;
+        }
+
+        return process.ExitCode == 0 && !string.IsNullOrWhiteSpace(await outputTask);
+    }
+    catch (Win32Exception ex)
+    {
+        Console.Error.WriteLine($"ADB ezin izan da exekutatu: {ex.Message}");
+        return false;
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.Error.WriteLine($"Android aplikazioaren egoera ezin izan da egiaztatu: {ex.Message}");
+        return false;
     }
 }
 
