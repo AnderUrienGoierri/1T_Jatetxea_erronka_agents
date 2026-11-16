@@ -24,6 +24,8 @@ public class App extends Application {
         stage.setMinHeight(620);
         stage.setScene(scene);
         stage.show();
+        stage.toFront();
+        stage.requestFocus();
     }
 
     public static void main(String[] args) {

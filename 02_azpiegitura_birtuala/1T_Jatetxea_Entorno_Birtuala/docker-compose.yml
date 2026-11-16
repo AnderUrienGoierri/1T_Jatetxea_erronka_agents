@@ -3,9 +3,7 @@ name: 1T_Jatetxea_Erronka_Zentrala
 services:
   # 1. MySQL Datu-Base Nagusia (jatetxea_db)
   jatetxea-db:
-    build:
-      context: ./../1T_Jatetxea_erronka_agents
-      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/db/Dockerfile
+    image: mysql:8.0
     container_name: jatetxea_mysql
     restart: unless-stopped
     environment:
@@ -15,7 +13,7 @@ services:
       - "3308:3306"
     volumes:
       - jatetxea_db_data:/var/lib/mysql
-      - ./../1T_Jatetxea_erronka_agents/espezifikazioak/datu_basea_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../../04_dokumentazioa/espezifikazioak/datu_basea_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
@@ -28,8 +26,8 @@ services:
   # 2. C# ASP.NET Core REST API Nagusia (.NET 10)
   jatetxea-api:
     build:
-      context: ./../1T_Jatetxea_erronka_agents
-      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
+      context: ../../01_aplikazioak
+      dockerfile: ../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
     container_name: jatetxea_api
     restart: unless-stopped
     environment:
@@ -49,14 +47,14 @@ services:
   # 3. Apache PHP Bezero Publikoa (web_php)
   jatetxea-web:
     build:
-      context: ./../1T_Jatetxea_erronka_agents
-      dockerfile: ./../1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
+      context: ../../01_aplikazioak
+      dockerfile: ../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
     container_name: jatetxea_web_php
     restart: unless-stopped
     ports:
       - "8085:80"
     volumes:
-      - ./../1T_Jatetxea_erronka_agents/web_php:/var/www/html
+      - ../../01_aplikazioak/web_php:/var/www/html
     environment:
       - API_BASE_URL=http://jatetxea-api:5000/api/v1
     depends_on:
@@ -121,8 +119,8 @@ services:
       - PASSWORD=odoo
     volumes:
       - odoo_web_data:/var/lib/odoo
-      - ./../1T_Jatetxea_ODOO/config/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./../1T_Jatetxea_ODOO/addons:/mnt/extra-addons
+      - ../../01_aplikazioak/odoo_erp/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../../01_aplikazioak/odoo_erp/addons:/mnt/extra-addons
     networks:
       - jatetxea_net
 

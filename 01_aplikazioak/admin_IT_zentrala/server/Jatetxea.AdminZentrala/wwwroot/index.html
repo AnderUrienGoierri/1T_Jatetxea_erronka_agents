@@ -1038,17 +1038,25 @@
               class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-2"
             >
               <button
-                onclick="openAppFolder('sukaldea_kds_android_tv')"
+                onclick="launchApp('android_tv')"
                 class="flex-1 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded font-medium text-xs transition text-center"
+                title="Ireki Android Studion"
               >
                 Ireki Android Proiektua
               </button>
               <button
                 onclick="launchApp('kds_tv', 'http://localhost:8086')"
                 class="py-1.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded font-medium text-xs border border-zinc-800 transition"
-                title="Ireki TV Web Kioskoa"
+                title="Ireki TV Web Kioskoa (8086)"
               >
                 TV Kiosk (8086)
+              </button>
+              <button
+                onclick="openAppFolder('sukaldea_kds_android_tv')"
+                class="py-1.5 px-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded font-medium text-xs border border-zinc-800 transition"
+                title="Ireki karpeta esploratzailean"
+              >
+                Karpeta
               </button>
             </div>
           </div>
@@ -1926,7 +1934,7 @@
             onclick="itxiModala()"
             class="text-zinc-400 hover:text-white text-xl font-bold p-1"
           >
-            ✕
+            X
           </button>
         </div>
 
@@ -2132,7 +2140,7 @@
             onclick="itxiModalSareBerria()"
             class="text-zinc-400 hover:text-white text-xl font-bold p-1"
           >
-            ✕
+            X
           </button>
         </div>
 
@@ -2912,9 +2920,46 @@
         }
       }
 
+      // JAKINARAZPEN SISTEMA (TOAST NOTIFICATIONS)
+      function erakutsiJakinarazpena(mezua, mota = "info") {
+        let container = document.getElementById("toast-container");
+        if (!container) {
+          container = document.createElement("div");
+          container.id = "toast-container";
+          container.className =
+            "fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none";
+          document.body.appendChild(container);
+        }
+        const toast = document.createElement("div");
+        const borderCol =
+          mota === "success"
+            ? "border-emerald-500/80 text-emerald-300"
+            : mota === "error"
+              ? "border-rose-500/80 text-rose-300"
+              : "border-zinc-700 text-zinc-200";
+        toast.className = `pointer-events-auto bg-zinc-900/95 border ${borderCol} px-4 py-2.5 rounded-lg shadow-2xl text-xs font-mono backdrop-blur transition-all duration-300 transform translate-y-2 opacity-0 flex items-center justify-between gap-3`;
+        toast.innerHTML = `<span class="flex-1">${mezua}</span><button class="text-zinc-500 hover:text-white text-sm leading-none ml-2" onclick="this.parentElement.remove()">&times;</button>`;
+        container.appendChild(toast);
+        requestAnimationFrame(() => {
+          toast.classList.remove("translate-y-2", "opacity-0");
+        });
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "translate-y-2");
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      }
+
       // APLIKAZIOEN EXEKUZIOA (DESKTOP & WEB APPS)
       async function launchApp(appId, url) {
         idatziLog(`[${unekoAdmin}]: Aplikazioa abiarazten: ${appId}...`);
+        erakutsiJakinarazpena(`Aplikazioa abiarazten: ${appId}...`, "info");
+
+        // Web esteka bada, ireki berehala nabigatzaileko beste leiho/fitxa batean popup-blokeatzailea ekiditeko
+        let targetWindow = null;
+        if (url && (url.startsWith("http://") || url.startsWith("https://"))) {
+          targetWindow = window.open(url, "_blank");
+        }
+
         try {
           const res = await fetch(
             `${API_BASE}/api/apps/launch/${encodeURIComponent(appId)}`,
@@ -2925,8 +2970,21 @@
           );
           const data = await res.json();
           idatziLog(data.message || `Aplikazioa martxan: ${appId}`);
+          erakutsiJakinarazpena(data.message || `Aplikazioa martxan: ${appId}`, data.success ? "success" : "error");
+
+          // Zerbitzariak URL bat itzultzen badu eta oraindik ireki ez bada:
+          if (data && data.isUrl && data.url) {
+            if (!targetWindow || targetWindow.closed) {
+              window.open(data.url, "_blank");
+            } else {
+              try {
+                targetWindow.location.href = data.url;
+              } catch (e) {}
+            }
+          }
         } catch (err) {
           idatziLog(`[ERROREA - ${appId}]: ${err.message}`);
+          erakutsiJakinarazpena(`[ERROREA - ${appId}]: ${err.message}`, "error");
         }
       }
 
@@ -2935,6 +2993,7 @@
         idatziLog(
           `[${unekoAdmin}]: Aplikazioaren karpeta irekitzen: ${appId}...`,
         );
+        erakutsiJakinarazpena(`Karpeta irekitzen: ${appId}...`, "info");
         try {
           const res = await fetch(
             `${API_BASE}/api/apps/open-folder/${encodeURIComponent(appId)}`,
@@ -2945,8 +3004,10 @@
           );
           const data = await res.json();
           idatziLog(data.message || `Karpeta irekita: ${appId}`);
+          erakutsiJakinarazpena(data.message || `Karpeta irekita: ${appId}`, data.success ? "success" : "error");
         } catch (err) {
           idatziLog(`[ERROREA - Karpeta]: ${err.message}`);
+          erakutsiJakinarazpena(`[ERROREA - Karpeta]: ${err.message}`, "error");
         }
       }
 

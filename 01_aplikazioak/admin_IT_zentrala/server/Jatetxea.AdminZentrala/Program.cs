@@ -560,13 +560,27 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             string androidPath = Path.Combine(appsDir, "sukaldea_kds_android_tv");
             if (Directory.Exists(androidPath))
             {
-                Process.Start(new ProcessStartInfo
+                string studioExe = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe");
+                if (File.Exists(studioExe))
                 {
-                    FileName = "explorer.exe",
-                    Arguments = $"\"{androidPath}\"",
-                    UseShellExecute = true
-                });
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektuaren karpeta irekita." });
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = studioExe,
+                        Arguments = $"\"{androidPath}\"",
+                        UseShellExecute = true
+                    });
+                    return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektua Android Studion irekita." });
+                }
+                else
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = $"\"{androidPath}\"",
+                        UseShellExecute = true
+                    });
+                    return Results.Ok(new { Success = true, IsUrl = false, Message = "Sukaldea Android TV (Jetpack Compose) proiektuaren karpeta irekita." });
+                }
             }
             return Results.Ok(new { Success = false, Message = "sukaldea_kds_android_tv karpeta ez da aurkitu." });
 
@@ -638,6 +652,15 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "desktop_csharp":
         case "tpv":
             string csharpDir = Path.Combine(appsDir, "desktop_csharp");
+            try
+            {
+                foreach (var p in Process.GetProcessesByName("Jatetxea.Desktop"))
+                {
+                    try { p.Kill(); } catch { }
+                }
+            }
+            catch { }
+
             string[] csharpExeCandidates = new[]
             {
                 Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "Jatetxea.Desktop.exe"),

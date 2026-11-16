@@ -275,6 +275,19 @@ public partial class LoginForm : Form
             }
         };
 
+        Shown += (s, e) =>
+        {
+            try
+            {
+                TopMost = true;
+                TopMost = false;
+                Activate();
+                BringToFront();
+                Focus();
+            }
+            catch { }
+        };
+
         FormClosing += (s, e) =>
         {
             _autoKonexioTimer.Stop();
