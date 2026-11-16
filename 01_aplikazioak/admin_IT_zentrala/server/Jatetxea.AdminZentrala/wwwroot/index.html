@@ -369,7 +369,7 @@
               onclick="launchApp('javafx')"
               class="px-2.5 py-1.5 bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100 rounded-md font-medium border border-zinc-800 hover:border-zinc-700 transition flex items-center space-x-1.5"
             >
-              <span>Exekutatu JavaFX Sukaldea KDS</span>
+              <span>Exekutatu JavaFX (KDS / BDS / Stock)</span>
             </button>
             <button
               onclick="launchApp('web', 'http://localhost:8085')"
@@ -631,7 +631,7 @@
             <div class="text-zinc-400 font-medium">Mahaigaina (Desktop)</div>
             <div class="text-lg font-bold font-mono text-zinc-100">2 Aplikazio</div>
             <div class="text-[11px] text-zinc-500 font-mono">
-              C# TPV & JavaFX KDS
+              C# TPV & JavaFX (KDS/BDS/Stock)
             </div>
           </div>
           <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
@@ -777,7 +777,7 @@
             </div>
           </div>
 
-          <!-- 2. JavaFX Sukaldea KDS -->
+          <!-- 2. JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock) -->
           <div
             class="app-card-item bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-lg p-4 flex flex-col justify-between transition"
             data-category="mahaigaina"
@@ -787,30 +787,29 @@
                 <div>
                   <span
                     class="text-[10px] uppercase font-mono font-medium tracking-wider text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60"
-                    >Mahaigaina · KDS</span
+                    >Mahaigaina · KDS / BDS / Stock</span
                   >
                   <h3 class="text-sm font-bold text-white mt-1">
-                    JavaFX Sukaldea KDS Terminala
+                    JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock)
                   </h3>
                 </div>
                 <span
                   class="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded"
-                  >Java 21</span
+                  >Java 17/21</span
                 >
               </div>
               <p class="text-xs text-zinc-300 mb-3">
-                Sukaldeko aginduen kudeaketa sistema natiboa (Kitchen Display
-                System). Aginduak unean jaso, prestaketa denborak neurtu eta
-                platerak bukatuta markatu.
+                Sukaldeko aginduen kudeaketa (KDS), barra eta tabernako edarien kontrola (BDS)
+                eta biltegiko lehengaien stock-aren jarraipena integratzen dituen mahaigaineko terminal modularra.
               </p>
               <div class="text-[11px] space-y-1 mb-4 text-zinc-400">
                 <div>
                   <span class="text-zinc-500 font-semibold">Rola:</span>
-                  Sukaldari Burua & Sukaldeko Taldea
+                  Sukaldari Burua, Tabernaria (Barra) & Biltegi Kudeatzailea
                 </div>
                 <div>
                   <span class="text-zinc-500 font-semibold">Teknologia:</span>
-                  Java 21 / JavaFX 21 (Maven Wrapper)
+                  Java 17 / JavaFX 21 (Modularra, Maven)
                 </div>
                 <div>
                   <span class="text-zinc-500 font-semibold">Karpeta:</span>
@@ -827,7 +826,7 @@
                 onclick="launchApp('javafx')"
                 class="flex-1 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded font-medium text-xs transition text-center"
               >
-                Exekutatu JavaFX KDS
+                Exekutatu JavaFX (KDS / BDS / Stock)
               </button>
               <button
                 onclick="openAppFolder('desktop_javafx')"
@@ -2447,7 +2446,7 @@
               else if (targetId === "chat") btnLabel = "Ireki Txata (3001)";
               else if (targetId === "opnsense" || targetId === "opnsense_web") btnLabel = "Ireki OPNsense (8443)";
               else if (targetId === "csharp") btnLabel = "Exekutatu C# TPV";
-              else if (targetId === "javafx") btnLabel = "Exekutatu JavaFX KDS";
+              else if (targetId === "javafx") btnLabel = "Exekutatu JavaFX (KDS/BDS/Stock)";
 
               botoiakHtml += `
                             <button onclick="event.stopPropagation(); launchApp('${targetId}', '${targetUrl}')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="${btnLabel}">

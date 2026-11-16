@@ -52,48 +52,54 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 ## 2. Nola Exekutatu Bezero Bakoitza
 
 ### 1. C# TPV Mahaigainekoa (`desktop_csharp`)
-* **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_csharp`
-* **Abioa:**
+
+- **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_csharp`
+- **Abioa:**
   ```powershell
   cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_csharp
   dotnet run
   ```
-* **Kredentzialak:** PIN bidezko sarbidea (adibidez: `1234` edo langilearen PIN zenbakia).
+- **Kredentzialak:** PIN bidezko sarbidea (adibidez: `1234` edo langilearen PIN zenbakia).
 
 ### 2. JavaFX Mahaigainekoa (`desktop_javafx`)
-* **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_javafx`
-* **Abioa:**
+
+- **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_javafx`
+- **Abioa:**
   ```powershell
   cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\desktop_javafx
   mvn clean javafx:run
   ```
-* **Ezaugarriak:** Fitxetan banatutako 3 gune nagusi:
-  * `Sukaldea (KDS)`: Zai dauden platerak sukaldean sartu eta prestatuta markatu.
-  * `Barra (BDS)`: Edariak eta kafeak bakarrik kudeatu.
-  * `Biltegia (Stocka)`: Lehengaien stock maila eta albaranen sarrerak.
+- **Ezaugarriak:** Fitxetan banatutako 3 gune nagusi:
+  - `Sukaldea (KDS)`: Zai dauden platerak sukaldean sartu eta prestatuta markatu.
+  - `Barra (BDS)`: Edariak eta kafeak bakarrik kudeatu.
+  - `Biltegia (Stocka)`: Lehengaien stock maila eta albaranen sarrerak.
 
 ### 3. Flutter Zerbitzaria (`mobile_zerbitzaria`)
-* **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_zerbitzaria`
-* **Abioa:**
+
+- **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_zerbitzaria`
+- **Abioa:**
   ```powershell
   cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_zerbitzaria
   flutter run
   ```
 
 ### 4. Flutter Bezeroa (`mobile_bezeroa`)
-* **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_bezeroa`
-* **Abioa:**
+
+- **Kokapena:** `C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_bezeroa`
+- **Abioa:**
   ```powershell
   cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\mobile_bezeroa
   flutter run
   ```
 
 ### 5. Sukaldeko Android TV Pantaila
-* **Sarbidea:** Edozein telebista adimendun edo nabigatzailetatik:
-  * Helbidea: `http://<ZERBITZARI_IP>:8086`
+
+- **Sarbidea:** Edozein telebista adimendun edo nabigatzailetatik:
+  - Helbidea: `http://<ZERBITZARI_IP>:8086`
 
 ### 6. Odoo ERP (Giza Baliabideak eta Baimenak)
-* **Sarbidea:**
-  * Helbidea: `http://<ZERBITZARI_IP>:8069`
-  * Erabiltzailea: `admin` (edo sortutako kudeatzailea)
-  * Pasahitza: `Errotagain169232$$`
+
+- **Sarbidea:**
+  - Helbidea: `http://<ZERBITZARI_IP>:8069`
+  - Erabiltzailea: `admin` (edo sortutako kudeatzailea)
+  - Pasahitza: `Errotagain169232$$`

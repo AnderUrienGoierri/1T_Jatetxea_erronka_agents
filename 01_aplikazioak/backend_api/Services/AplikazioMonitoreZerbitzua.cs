@@ -59,7 +59,7 @@ public static class AplikazioMonitoreZerbitzua
     private static void HasieratuAppEzagunak()
     {
         ErregistratuAplikazioEredua("csharp_tpv", "C# TPV Areto & Kutxazaina", "Desktop C# (Windows Forms)");
-        ErregistratuAplikazioEredua("javafx_kds", "JavaFX Sukaldea KDS Terminala", "Desktop Java (JavaFX 21)");
+        ErregistratuAplikazioEredua("javafx_kds", "JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock)", "Desktop Java (JavaFX 21)");
         ErregistratuAplikazioEredua("web_php", "Web PHP Frontend Publikoa", "Web Apache (PHP 8.4)");
         ErregistratuAplikazioEredua("mobile_zerbitzaria", "Flutter Zerbitzaria (Komandera)", "Mugikorra (Flutter / Dart)");
         ErregistratuAplikazioEredua("mobile_bezeroa", "Flutter Bezero Aplikazioa", "Mugikorra (Flutter / Dart)");
@@ -181,7 +181,7 @@ public static class AplikazioMonitoreZerbitzua
     private static string FormatAppIzena(string id) => id switch
     {
         "csharp_tpv" => "C# TPV Areto & Kutxazaina",
-        "javafx_kds" => "JavaFX Sukaldea KDS Terminala",
+        "javafx_kds" => "JavaFX Sukaldea, Barra & Biltegia (KDS, BDS & Stock)",
         "web_php" => "Web PHP Frontend Publikoa",
         "mobile_zerbitzaria" => "Flutter Zerbitzaria (Komandera)",
         "mobile_bezeroa" => "Flutter Bezero Aplikazioa",
