@@ -9,28 +9,30 @@ Dokumentu honek azaltzen du nola konpontzen duen arazo hau **1T Jatetxearen Sare
 ## 1. Arazoaren Deskribapena
 
 Aplikazio bezeroek (Flutter mugikorreko aplikazioak, JavaFX mahaigaineko KDSak, C# TPVak, Web PHP frontendak) API zerbitzariaren IP helbidea jakin behar dute harekin komunikatzeko:
-* Helbidea kodean gogortuta (hardcoded) badago (adibidez `192.168.1.129`), Tolosako etxean ondo ibiliko da, baina Goierri Eskolara joatean (`10.x.x.x` sarean) bezero guztiek konexio errorea emango dute.
-* Helbidea eskuz proiektu bakoitzean aldatzeak denbora galtzea eta akatsak eragiten ditu.
+
+- Helbidea kodean gogortuta (hardcoded) badago (adibidez `192.168.1.129`), Tolosako etxean ondo ibiliko da, baina Goierri Eskolara joatean (`10.x.x.x` sarean) bezero guztiek konexio errorea emango dute.
+- Helbidea eskuz proiektu bakoitzean aldatzeak denbora galtzea eta akatsak eragiten ditu.
 
 ---
 
 ## 2. Irtenbidea: Zentralita Automatikoa (`switch-env.ps1`)
 
 `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/scripts/switch-env.ps1` scriptak zentralita baten gisa funtzionatzen du:
+
 1. Ordenagailuko WiFi eta Ethernet egokitzaileen IP helbideak automatikoki detektatzen ditu.
 2. Aurrez definitutako profilak eskaintzen ditu:
-   * **`localhost`:** Garatzailearen makinako probak (`127.0.0.1` / portu lokala `5050`).
-   * **`tolosako_etxea`:** Tolosako etxeko WiFi sarea (`192.168.1.129`).
-   * **`eskola`:** Goierri Eskolako laborategia (`10.x.x.x`).
-   * **`etxean`:** Etxeko ohiko sarea.
-   * **`vbox_erronka`:** VirtualBox-eko 3 makina birtualen ingurunea (`192.168.10.10`).
-   * **`custom`:** Edozein IP helbide pertsonalizatu idazteko aukera.
+   - **`localhost`:** Garatzailearen makinako probak (`127.0.0.1` / portu lokala `5050`).
+   - **`tolosako_etxea`:** Tolosako etxeko WiFi sarea (`192.168.1.129`).
+   - **`eskola`:** Goierri Eskolako laborategia (`10.x.x.x`).
+   - **`etxean`:** Etxeko ohiko sarea.
+   - **`vbox_erronka`:** VirtualBox-eko 3 makina birtualen ingurunea (`192.168.10.10`).
+   - **`custom`:** Edozein IP helbide pertsonalizatu idazteko aukera.
 3. Behin profila hautatuta, **klik bakarrean** sinkronizatzen du IP helbide berria monorepoko bezero guztietan:
-   * `01_aplikazioak/mobile_zerbitzaria` (Flutter zerbitzarien komandera).
-   * `01_aplikazioak/mobile_bezeroa` (Flutter bezeroen aplikazioa).
-   * `01_aplikazioak/desktop_javafx` (Sukaldea, Barra eta Biltegia).
-   * `01_aplikazioak/desktop_csharp` (TPV Windows Forms).
-   * `01_aplikazioak/web_php` (PHP 8.4 Frontend publikoa).
+   - `01_aplikazioak/mobile_zerbitzaria` (Flutter zerbitzarien komandera).
+   - `01_aplikazioak/mobile_bezeroa` (Flutter bezeroen aplikazioa).
+   - `01_aplikazioak/desktop_javafx` (Sukaldea, Barra eta Biltegia).
+   - `01_aplikazioak/desktop_csharp` (TPV Windows Forms).
+   - `01_aplikazioak/web_php` (PHP 8.4 Frontend publikoa).
 
 ---
 
@@ -49,7 +51,7 @@ powershell -ExecutionPolicy Bypass -File 02_azpiegitura_birtuala\1T_Jatetxea_Ent
 powershell -ExecutionPolicy Bypass -File 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\scripts\switch-env.ps1 -Profile vbox_erronka
 ```
 
-### Irteeraren Adibidea:
+### Irteeraren Adibidea
 
 ```text
 ==========================================================

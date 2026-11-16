@@ -6,7 +6,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 ## 1. Bezeroen Banaketa Funtzionala
 
-```
+```text
 +-----------------------------------------------------------------------------------+
 |                            APLIKAZIO BEZEROEN SAREA                               |
 +-----------------------------------------------------------------------------------+
@@ -60,10 +60,12 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 - **Kokapena:** `01_aplikazioak/desktop_csharp`
 - **Abioa terminaletik:**
+
   ```powershell
   cd 01_aplikazioak\desktop_csharp
   dotnet run
   ```
+
 - **Abioa IT Paneletik:** `http://localhost:5000` helbidera joan eta **"Exekutatu C# TPV"** sakatu (berehala irekiko da interfaze natiboa).
 - **Kredentzialak:** PIN bidezko sarbidea (adibidez: `1234` edo langilearen PIN zenbakia).
 
@@ -71,12 +73,14 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 - **Kokapena:** `01_aplikazioak/desktop_javafx`
 - **Abioa terminaletik:**
+
   ```powershell
   cd 01_aplikazioak\desktop_javafx
   .\hasi_kds_mahaigaina.bat
   # Edo Maven Wrapper erabiliz:
   .\mvnw.cmd javafx:run
   ```
+
 - **Abioa IT Paneletik:** `http://localhost:5000` helbidera joan eta **"Exekutatu JavaFX (KDS / BDS / Stock)"** sakatu (leiho grafikoa berehala irekiko da).
 - **Ezaugarriak:** Fitxetan banatutako 3 gune nagusi:
   - `Sukaldea (KDS)`: Zai dauden platerak sukaldean sartu eta prestatuta markatu.
@@ -87,6 +91,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 - **Kokapena:** `01_aplikazioak/mobile_zerbitzaria`
 - **Abioa:**
+
   ```powershell
   cd 01_aplikazioak\mobile_zerbitzaria
   flutter run
@@ -96,6 +101,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 - **Kokapena:** `01_aplikazioak/mobile_bezeroa`
 - **Abioa:**
+
   ```powershell
   cd 01_aplikazioak\mobile_bezeroa
   flutter run

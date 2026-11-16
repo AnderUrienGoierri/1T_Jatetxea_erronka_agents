@@ -23,47 +23,53 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 ## 2. Edukiontzi Bakoitzaren Xehetasunak
 
 ### 1. `jatetxea-db` (MySQL 8.0)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/db/`
-* **Hasieratzea:** Lehenengo aldian edukiontzia altxatzean, automatikoki exekutatzen du `01_schema.sql` fitxategia, 11 taulak, integritate-murrizketak (CHECK) eta hasierako produktu, langile eta mahai guztiak kargatuz.
-* **Iraunkortasuna:** `jatetxea_db_data` Docker bolumen dedikatuan gordetzen dira datuak, edukiontzia berrabiarazi arren daturik ez galtzeko.
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/db/`
+- **Hasieratzea:** Lehenengo aldian edukiontzia altxatzean, automatikoki exekutatzen du `01_schema.sql` fitxategia, 11 taulak, integritate-murrizketak (CHECK) eta hasierako produktu, langile eta mahai guztiak kargatuz.
+- **Iraunkortasuna:** `jatetxea_db_data` Docker bolumen dedikatuan gordetzen dira datuak, edukiontzia berrabiarazi arren daturik ez galtzeko.
 
 ### 2. `jatetxea-api` (C# ASP.NET Core .NET 10)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile`
-* **Iturburua:** `01_aplikazioak/backend_api/`
-* **Eraikuntza:** Multi-stage build eredu profesionala (SDK-arekin eraiki eta garbi argitaratu runtime arin batean).
-* **Segurtasuna:** `jatetxea_user` erabiltzaile ez-pribilegiatuarekin exekutatzen da edukiontzi barruan.
-* **Osasun-kontrola:** `/health` endpoint-a integratuta, MySQL konexioaren egoera denbora errealean egiaztatzeko.
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile`
+- **Iturburua:** `01_aplikazioak/backend_api/`
+- **Eraikuntza:** Multi-stage build eredu profesionala (SDK-arekin eraiki eta garbi argitaratu runtime arin batean).
+- **Segurtasuna:** `jatetxea_user` erabiltzaile ez-pribilegiatuarekin exekutatzen da edukiontzi barruan.
+- **Osasun-kontrola:** `/health` endpoint-a integratuta, MySQL konexioaren egoera denbora errealean egiaztatzeko.
 
 ### 3. `jatetxea-web` (Apache / PHP 8.4)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile`
-* **Iturburua:** `01_aplikazioak/web_php/`
-* **Integrazioa:** `01_aplikazioak/web_php/` karpetako fitxategiak zuzenean mapeatzen dira. `API_BASE_URL` ingurune-aldagaiaren bidez komunikatzen da REST APIarekin (`http://jatetxea-api:5000/api/v1`).
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile`
+- **Iturburua:** `01_aplikazioak/web_php/`
+- **Integrazioa:** `01_aplikazioak/web_php/` karpetako fitxategiak zuzenean mapeatzen dira. `API_BASE_URL` ingurune-aldagaiaren bidez komunikatzen da REST APIarekin (`http://jatetxea-api:5000/api/v1`).
 
 ### 4. `jatetxea-chat` (Barne Txat Zerbitzaria)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/chat/`
-* **Iturburua:** `01_aplikazioak/chat_zerbitzaria/`
-* **Protokoloa:** WebSockets eta Socket.IO.
-* **Gelak (Rooms):**
-  * `sukaldea`: Sukaldeko eskaerak eta abisuak.
-  * `barra`: Edarien komandak.
-  * `zerbitzariak`: Mahaietako deiak eta jakinarazpenak.
-  * `orokorra`: Jatetxe osoko oharrak.
-* **API integrazioa:** `POST /api/notify` bidez REST APIak jakinarazpen automatikoak txertatu ditzake gelan.
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/chat/`
+- **Iturburua:** `01_aplikazioak/chat_zerbitzaria/`
+- **Protokoloa:** WebSockets eta Socket.IO.
+- **Gelak (Rooms):**
+  - `sukaldea`: Sukaldeko eskaerak eta abisuak.
+  - `barra`: Edarien komandak.
+  - `zerbitzariak`: Mahaietako deiak eta jakinarazpenak.
+  - `orokorra`: Jatetxe osoko oharrak.
+- **API integrazioa:** `POST /api/notify` bidez REST APIak jakinarazpen automatikoak txertatu ditzake gelan.
 
 ### 5. `jatetxea-kds-tv` (Sukaldeko Android TV)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/sukaldea_tv/`
-* **Iturburua:** `01_aplikazioak/sukaldea_kds_android_tv/`
-* **Xede Gailua:** Sukaldean horman kokatutako Smart TV edo Android TV telebistak.
-* **Ezaugarriak:** Kontraste handia, txartel handiak (3 metrotara argi irakurtzeko moduan), denbora neurgailuak eta telebistako urruneko agintearekin nabigatzeko aukera.
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/sukaldea_tv/`
+- **Iturburua:** `01_aplikazioak/sukaldea_kds_android_tv/`
+- **Xede Gailua:** Sukaldean horman kokatutako Smart TV edo Android TV telebistak.
+- **Ezaugarriak:** Kontraste handia, txartel handiak (3 metrotara argi irakurtzeko moduan), denbora neurgailuak eta telebistako urruneko agintearekin nabigatzeko aukera.
 
 ### 6. `jatetxea-odoo` (Odoo 17 ERP eta PostgreSQL)
-* **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/odoo/`
-* **Iturburua:** `01_aplikazioak/odoo_erp/`
-* **Helburua Erronkan:**
-  * Jatetxeko langileen baimenak eta rolak kudeatzea (Zerbitzaria, Sukaldaria, Kudeatzailea).
-  * Fitxaketak erregistratzea (sarrera/irteera orduak).
-  * Bajak eta oporraldiak onartzea.
-  * Hornitzaileen fakturak eta orokorreko administrazioa bateratzea.
+
+- **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/odoo/`
+- **Iturburua:** `01_aplikazioak/odoo_erp/`
+- **Helburua Erronkan:**
+  - Jatetxeko langileen baimenak eta rolak kudeatzea (Zerbitzaria, Sukaldaria, Kudeatzailea).
+  - Fitxaketak erregistratzea (sarrera/irteera orduak).
+  - Bajak eta oporraldiak onartzea.
+  - Hornitzaileen fakturak eta orokorreko administrazioa bateratzea.
 
 ---
 
@@ -71,24 +77,28 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 
 Docker Compose bidez zerbitzu guztiak batera zein banaka kudeatu daitezke:
 
-* **Zerbitzu guztiak altxatzea:**
+- **Zerbitzu guztiak altxatzea:**
+
   ```powershell
   cd 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala
   docker compose up -d
   ```
 
-* **Edukiontzi bakarra berreraiki eta altxatzea (adibidez, APIa soilik):**
+- **Edukiontzi bakarra berreraiki eta altxatzea (adibidez, APIa soilik):**
+
   ```powershell
   docker compose up -d --build jatetxea-api
   ```
 
-* **Edukiontzi baten log-ak jarraitzea:**
+- **Edukiontzi baten log-ak jarraitzea:**
+
   ```powershell
   docker compose logs -f jatetxea-api
   docker compose logs -f jatetxea-chat
   ```
 
-* **Edukiontzi guztiak gelditzea:**
+- **Edukiontzi guztiak gelditzea:**
+
   ```powershell
   docker compose down
   ```

@@ -7,6 +7,7 @@ Dokumentu honek erronkan zehaztutako 3 makina birtualen eta aplikazioen banaketa
 ## 1. Helburua eta Testuingurua
 
 Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea da:
+
 1. Kanpoko bezeroek Internetetik jatetxearen webgunera sartu eta platerak ikusi edo mahaiak erreserbatu ahal izatea (`01_aplikazioak/web_php`, Apache + PHP 8.4).
 2. Barneko langileek (zerbitzariak, sukaldariak, barrakoak, administratzaileak) beren aplikazio espezifikoak erabiltzea (TPV, tabletak, sukaldeko KDS pantaila, Odoo ERP kudeaketa, IT Kontrol Zentrala).
 3. Segurtasuna bermatzea: kanpoko webgunea DMZ gune batean kokatzea eta barneko datu-basea, APIa eta kudeaketa-tresnak sare seguru batean babestea.
@@ -15,7 +16,7 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
 
 ## 2. Hiru Makina Birtualen Banaketa
 
-```
+```text
            +-------------------------------------------------------+
            |                     WAN / INTERNET                    |
            |             (Host / Garatzailearen Sarea)             |
@@ -47,34 +48,37 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
 ```
 
 ### 1. Makina: Erronka-OPNsense (Firewall & Router)
-* **Eginkizuna:** Sarearen kontrolgune nagusia, trafikoaren banaketa eta segurtasun-perimetroa.
-* **Interfazeak:**
-  * `em0` (WAN): Host-arekin eta kanpoko sarearekin komunikazioa.
-  * `em1` (LAN - `192.168.10.1/24`): Barneko zerbitzari segurua eta kudeaketa.
-  * `em2` (DMZ - `192.168.20.1/24`): Eremu desmilitarizatua, web zerbitzari publikoarentzat.
-* **Segurtasun-Politikak:**
-  * WAN -> DMZ: 80 portua baimenduta (Webgunera sartzeko).
-  * DMZ -> LAN: **Zero-Trust blokeo osoa**. DMZko webguneak LANeko APIko 5000 portura soilik bidali ditzake eskaerak. Datu-baseko (3306), SMB (445), RDP (3389) edo gainerako zerbitzuetara sarbidea erabat debekatuta dago.
-  * LAN -> DMZ: Administratzaile eta zerbitzariek DMZrako sarbide osoa dute mantenu lanetarako.
+
+- **Eginkizuna:** Sarearen kontrolgune nagusia, trafikoaren banaketa eta segurtasun-perimetroa.
+- **Interfazeak:**
+  - `em0` (WAN): Host-arekin eta kanpoko sarearekin komunikazioa.
+  - `em1` (LAN - `192.168.10.1/24`): Barneko zerbitzari segurua eta kudeaketa.
+  - `em2` (DMZ - `192.168.20.1/24`): Eremu desmilitarizatua, web zerbitzari publikoarentzat.
+- **Segurtasun-Politikak:**
+  - WAN -> DMZ: 80 portua baimenduta (Webgunera sartzeko).
+  - DMZ -> LAN: **Zero-Trust blokeo osoa**. DMZko webguneak LANeko APIko 5000 portura soilik bidali ditzake eskaerak. Datu-baseko (3306), SMB (445), RDP (3389) edo gainerako zerbitzuetara sarbidea erabat debekatuta dago.
+  - LAN -> DMZ: Administratzaile eta zerbitzariek DMZrako sarbide osoa dute mantenu lanetarako.
 
 ### 2. Makina: Erronka-Ubuntu (DMZ Web Zerbitzaria)
-* **IP Helbidea:** `192.168.20.10`
-* **Eginkizuna:** Jatetxearen webgune publikoa ostatu ematea (`01_aplikazioak/web_php`).
-* **Teknologia:** Apache 2.4 eta PHP 8.4.
-* **Komunikazio Bidea:** Webgune honek ez du datu-baserik lokalean; bezero batek erreserba bat egiten duenean, PHPak HTTP deia egiten dio Windows Server-eko APIari (`http://192.168.10.10:5000/api/v1` edo lokalean `http://localhost:5050/api/v1`).
+
+- **IP Helbidea:** `192.168.20.10`
+- **Eginkizuna:** Jatetxearen webgune publikoa ostatu ematea (`01_aplikazioak/web_php`).
+- **Teknologia:** Apache 2.4 eta PHP 8.4.
+- **Komunikazio Bidea:** Webgune honek ez du datu-baserik lokalean; bezero batek erreserba bat egiten duenean, PHPak HTTP deia egiten dio Windows Server-eko APIari (`http://192.168.10.10:5000/api/v1` edo lokalean `http://localhost:5050/api/v1`).
 
 ### 3. Makina: Erronka-WinServer2025 (LAN Zerbitzari Integratua)
-* **IP Helbidea:** `192.168.10.10`
-* **Eginkizuna:** Jatetxearen datu, logika eta kudeaketa-aplikazio guztiak zentralizatzea:
-  * **MySQL Zerbitzaria:** `jatetxea_db` datu-basea 11 taulekin, InnoDB transakzio pesimistekin.
-  * **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia (`01_aplikazioak/backend_api`, portu 5050).
-  * **Admin IT Zentrala:** Sarearen, zerbitzuen eta Docker edukiontzien kudeaketa integrala (`01_aplikazioak/admin_IT_zentrala`, portu 5000).
-  * **TPV C# Desktop:** Zerbitzariek eta kutxazainek erabiltzeko Windows Forms mahaigaineko programa (`01_aplikazioak/desktop_csharp`).
-  * **JavaFX Sukaldea, Barra & Biltegia:** KDS, BDS eta lehengaien stock kudeaketa bateratua (`01_aplikazioak/desktop_javafx`).
-  * **Odoo ERP:** Langileen alta/bajak, txandak, fitxaketak eta baimenak administratzeko (`01_aplikazioak/odoo_erp`, portu 8070).
-  * **Barne Txat Zerbitzaria:** Sukaldea, barra eta zerbitzarien arteko denbora errealeko komunikazioa (`01_aplikazioak/chat_zerbitzaria`, portu 3001).
-  * **Android TV Sukaldea Zerbitzua:** Sukaldean pantaila handi batean eskaerak bistaratzeko KDS sistema (`01_aplikazioak/sukaldea_kds_android_tv`, portu 8086).
-  * **Sare Zerbitzuak:** Active Directory (`jatetxea.local`), DNS eta DHCP.
+
+- **IP Helbidea:** `192.168.10.10`
+- **Eginkizuna:** Jatetxearen datu, logika eta kudeaketa-aplikazio guztiak zentralizatzea:
+  - **MySQL Zerbitzaria:** `jatetxea_db` datu-basea 11 taulekin, InnoDB transakzio pesimistekin.
+  - **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia (`01_aplikazioak/backend_api`, portu 5050).
+  - **Admin IT Zentrala:** Sarearen, zerbitzuen eta Docker edukiontzien kudeaketa integrala (`01_aplikazioak/admin_IT_zentrala`, portu 5000).
+  - **TPV C# Desktop:** Zerbitzariek eta kutxazainek erabiltzeko Windows Forms mahaigaineko programa (`01_aplikazioak/desktop_csharp`).
+  - **JavaFX Sukaldea, Barra & Biltegia:** KDS, BDS eta lehengaien stock kudeaketa bateratua (`01_aplikazioak/desktop_javafx`).
+  - **Odoo ERP:** Langileen alta/bajak, txandak, fitxaketak eta baimenak administratzeko (`01_aplikazioak/odoo_erp`, portu 8070).
+  - **Barne Txat Zerbitzaria:** Sukaldea, barra eta zerbitzarien arteko denbora errealeko komunikazioa (`01_aplikazioak/chat_zerbitzaria`, portu 3001).
+  - **Android TV Sukaldea Zerbitzua:** Sukaldean pantaila handi batean eskaerak bistaratzeko KDS sistema (`01_aplikazioak/sukaldea_kds_android_tv`, portu 8086).
+  - **Sare Zerbitzuak:** Active Directory (`jatetxea.local`), DNS eta DHCP.
 
 ---
 
