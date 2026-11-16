@@ -1608,43 +1608,44 @@ app.Run();
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia eta bermatuena: conhost.exe bidez Start-Process exekutatzea PowerShell-etik.
-    // Windows 11n Windows Terminal lehenetsia denean, conhost.exe deitzeak bermatzen du
-    // kontsola/terminal leiho erreala (MainWindowHandle erreala) mahaigainean irekitzea.
+    // 1. Modu nagusia eta bermatuena: conhost.exe UseShellExecute = true bidez abiaraztea.
+    // Windows 11n Windows Terminal lehenetsia denean, conhost.exe zuzenean deitzeak
+    // (UseShellExecute = true-rekin) bermatzen du leiho/pantaila erreala mahaigainean irekitzea.
     try
     {
-        string psScript;
         if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
             executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
         {
             string cleanArgs = arguments ?? "";
-            string cmdArgs = "cmd.exe /k \"\"" + executableOrFile + "\" " + cleanArgs + "\"";
-            psScript = "Start-Process -FilePath 'conhost.exe' -ArgumentList '" + cmdArgs.Trim().Replace("'", "''") + "' -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
+            string cmdArgs = @"cmd.exe /k """ + executableOrFile + @""" " + cleanArgs;
+            var psiConhost = new ProcessStartInfo
+            {
+                FileName = "conhost.exe",
+                Arguments = cmdArgs.Trim(),
+                WorkingDirectory = workingDirectory,
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Normal
+            };
+            Process.Start(psiConhost);
+            return;
         }
         else
         {
-            string argPart = string.IsNullOrWhiteSpace(arguments) ? "" : " -ArgumentList '" + arguments.Replace("'", "''") + "'";
-            psScript = "Start-Process -FilePath '" + executableOrFile.Replace("'", "''") + "'" + argPart + " -WorkingDirectory '" + workingDirectory.Replace("'", "''") + "'";
+            var psiDirect = new ProcessStartInfo
+            {
+                FileName = executableOrFile,
+                Arguments = arguments ?? "",
+                WorkingDirectory = workingDirectory,
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Normal
+            };
+            Process.Start(psiDirect);
+            return;
         }
-
-        byte[] bytes = System.Text.Encoding.Unicode.GetBytes(psScript);
-        string encodedCmd = Convert.ToBase64String(bytes);
-
-        var psiPs = new ProcessStartInfo
-        {
-            FileName = "powershell.exe",
-            Arguments = $"-NoProfile -NonInteractive -WindowStyle Hidden -EncodedCommand {encodedCmd}",
-            WorkingDirectory = workingDirectory,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-        using var psProc = Process.Start(psiPs);
-        psProc?.WaitForExit(4000);
-        return;
     }
     catch { }
 
-    // 2. Bigarren aukera: Batch fitxategia (.bat edo .cmd) bada, cmd.exe /c start bidez exekutatu
+    // 2. Bigarren aukera: cmd.exe /c start bidez
     if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
         executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
     {
