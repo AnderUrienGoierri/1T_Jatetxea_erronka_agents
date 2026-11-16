@@ -7,7 +7,7 @@ import '../models/iritzia.dart';
 import '../models/cart_item.dart';
 
 class ApiService {
-  static const String _defaultUrl = 'http://172.16.243.145:5050/api/v1';
+  static const String _defaultUrl = 'http://192.168.1.134:5050/api/v1';
   static const String _prefKey = 'api_base_url';
 
   static String _baseUrl = _defaultUrl;
@@ -27,6 +27,8 @@ class ApiService {
   static Map<String, String> get _headers => {
     'Content-Type': 'application/json; charset=utf-8',
     'Accept': 'application/json',
+    'X-App-Id': 'mobile_bezeroa',
+    'X-App-Name': 'Flutter Bezeroa',
   };
 
   // Osasun-kontrola (/health)
@@ -34,7 +36,9 @@ class ApiService {
     try {
       final rootUrl = _baseUrl.replaceAll('/api/v1', '');
       final uri = Uri.parse('$rootUrl/health');
-      final res = await http.get(uri).timeout(const Duration(seconds: 3));
+      final res = await http
+          .get(uri, headers: _headers)
+          .timeout(const Duration(seconds: 3));
       if (res.statusCode == 200) {
         return (true, true, 'API eta Datu-basea konektatuta daude.');
       }
@@ -293,6 +297,7 @@ class ApiService {
     }
   }
 }
+
 
 
 

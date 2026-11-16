@@ -24,6 +24,13 @@ object RetrofitClient {
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(8, TimeUnit.SECONDS)
+        .addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("X-App-Id", "android_tv")
+                .header("X-App-Name", "Android TV Sukaldea KDS")
+                .build()
+            chain.proceed(request)
+        }
         .addInterceptor(loggingInterceptor)
         .build()
 
