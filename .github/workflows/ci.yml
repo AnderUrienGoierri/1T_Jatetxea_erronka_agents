@@ -23,7 +23,7 @@ jobs:
       - name: Isilpeko Datuen Eskaneatzea (Zero Secret Leakage)
         run: |
           echo "Isilpeko datuen eskaneatze azkarra martxan..."
-          SUSPICIOUS=$(git grep -EIi '(password\s*=\s*["'\''][^"'\'']+["'\'']|api_key\s*=\s*["'\''][^"'\'']+["'\'']|BEGIN PRIVATE KEY)' -- ':!*.sample' ':!*.example' ':!*appsettings.json' ':!*.md' ':!.github/**' ':!github/**' || true)
+          SUSPICIOUS=$(git grep -EIi '(password\s*=\s*["'\''][^"'\'']+["'\'']|api_key\s*=\s*["'\''][^"'\'']+["'\'']|BEGIN PRIVATE KEY)' -- ':!*.sample' ':!*.example' ':!*appsettings.json' ':!*.md' ':!.github/**' || true)
           if [ -n "$SUSPICIOUS" ]; then
             echo "KONTUZ: Isilpeko datu arriskutsuak detektatu dira kodean:"
             echo "$SUSPICIOUS"
