@@ -528,8 +528,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d jatetxea-db jatetxea-api jatetxea-web", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8085");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8085", Message = "Web PHP bezeroa abiarazten eta irekitzen (8085)..." });
 
@@ -539,8 +537,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d db-odoo jatetxea-odoo", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8070");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8070", Message = "1T Jatetxea Odoo 17 ERP irekitzen (8070)..." });
 
@@ -549,8 +545,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d jatetxea-kds-tv", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8086");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8086", Message = "Sukaldeko KDS TV pantaila irekitzen (8086)..." });
 
@@ -608,9 +602,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 });
             }
 
-            // 3. Nabigatzailea ireki 5050 atakan
-            OpenSystemBrowser("http://localhost:5050/");
-
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:5050/", Message = "ASP.NET Core REST API eta kontsolako logak irekita." });
 
         case "chat":
@@ -618,8 +609,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d jatetxea-chat", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:3001");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:3001", Message = "Barne Txat zerbitzaria irekitzen (3001)." });
 
@@ -629,8 +618,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d jatetxea-db phpmyadmin", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8081");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8081", Message = "phpMyAdmin MySQL kudeatzailea abiarazten eta irekitzen (8081)..." });
 
@@ -640,14 +627,11 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = Task.Run(async () =>
             {
                 await RunCommandAsync("docker", "compose up -d db-odoo adminer", dockerDir);
-                await Task.Delay(500);
-                OpenSystemBrowser("http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo");
             });
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://localhost:8082/?pgsql=db-odoo&username=odoo&db=jatetxea_odoo", Message = "Adminer PostgreSQL kudeatzailea abiarazten eta irekitzen (8082)..." });
 
         case "opnsense":
         case "opnsense_web":
-            OpenSystemBrowser("http://127.0.0.1:8443/");
             return Results.Ok(new { Success = true, IsUrl = true, Url = "http://127.0.0.1:8443/", Message = "OPNsense WebGUI irekita (http://127.0.0.1:8443/)." });
 
         case "csharp":
