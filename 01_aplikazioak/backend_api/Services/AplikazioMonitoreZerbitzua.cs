@@ -25,7 +25,10 @@ public class KonektatutakoAppInfo
         get
         {
             if (AzkenKonexioa == DateTime.MinValue) return "DESKONEKTATUTA";
-            return AktiboDago ? "AKTIBO" : "ISILIK";
+            double seconds = (DateTime.UtcNow - AzkenKonexioa).TotalSeconds;
+            if (seconds <= 35) return "AKTIBO";
+            if (seconds <= 90) return "ISILIK";
+            return "DESKONEKTATUTA";
         }
     }
 

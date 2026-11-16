@@ -25,6 +25,7 @@ while ($true) {
         $req = [System.Net.HttpWebRequest]::Create($apiUrl)
         $req.Timeout = 2000
         $req.Method = "GET"
+        $req.Headers.Add("X-App-Id", "admin_it")
         $resp = $req.GetResponse()
         $statusCode = [int]$resp.StatusCode
 
@@ -113,6 +114,7 @@ while ($true) {
         $appsReq = [System.Net.HttpWebRequest]::Create($appsOnlineUrl)
         $appsReq.Timeout = 1200
         $appsReq.Method = "GET"
+        $appsReq.Headers.Add("X-App-Id", "admin_it")
         $appsResp = $appsReq.GetResponse()
         $appsStream = $appsResp.GetResponseStream()
         $appsReader = New-Object System.IO.StreamReader($appsStream)
@@ -139,7 +141,11 @@ while ($true) {
                 else {
                     Write-Host "  [DESKONEKT.] " -ForegroundColor DarkGray -NoNewline
                     Write-Host "$izenaZabal " -ForegroundColor DarkGray -NoNewline
-                    Write-Host "| Ez da oraindik konektatu" -ForegroundColor DarkGray
+                    if ($app.azkenOrdua -and $app.azkenOrdua -ne "Ez da konektatu") {
+                        Write-Host "| Deskonektatuta (Azkena: $($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkGray
+                    } else {
+                        Write-Host "| Ez da oraindik konektatu" -ForegroundColor DarkGray
+                    }
                 }
             }
         } else {
