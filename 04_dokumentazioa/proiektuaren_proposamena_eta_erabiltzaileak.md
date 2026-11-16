@@ -4,7 +4,7 @@
 
 Dokumentu honek Jatetxearen Erronka Integraleko proposamen arkitektonikoa eta funtzionala laburbiltzen du. Soluzio honen helburua jatetxe baten eguneroko jardun osoa digitalizatzea eta automatizatzea da, bezeroak erreserba egiten duen unetik hasi eta hornitzaileen stocka kudeatu edota fakturazioa burutu arte.
 
-Informazio guztia zentralizatuta dago后端 API baten bidez (ASP.NET Core REST API), datu-base sendo baten gainean (PostgreSQL), eragiketa-fluxu bakoitzari dagokion interfaze espezifikoa eskainiz.
+Informazio guztia zentralizatuta dago backend API baten bidez (ASP.NET Core REST API), datu-base sendo baten gainean (PostgreSQL), eragiketa-fluxu bakoitzari dagokion interfaze espezifikoa eskainiz.
 
 ---
 
@@ -25,42 +25,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ## 3. Aplikazioen Deskribapen Zehatza
 
-```mermaid
-graph TD
-    subgraph KANPOKOAK["Bezeroak"]
-        BEZ_WEB["Web Karta & Erreserbak<br/>(web_php)"]
-        BEZ_MOB["Bezeroaren Mugikorra<br/>(mobile_bezeroa - Flutter)"]
-    end
-
-    subgraph JANTOKIA_BARRA["Zerbitzariak eta Barra"]
-        ZERB_AND["Android Komandera<br/>(zerbitzaria_komandera_android - Jetpack Compose)"]
-        BAR_TPV["TPV Kutxa Zentrala<br/>(desktop_csharp - .NET 10)"]
-    end
-
-    subgraph SUKALDEA_BILTEGIA["Sukaldea eta Biltegia"]
-        SUK_TV["Sukaldeko KDS Pantaila<br/>(sukaldea_kds_android_tv)"]
-        BIL_JFX["KDS & Biltegi Kudeaketa<br/>(desktop_javafx - Java 21)"]
-    end
-
-    subgraph ADMIN_ERP["Kudeaketa eta Administrazioa"]
-        ADM_TI["Admin IT Panela<br/>(admin_IT_zentrala)"]
-        ERP_OD["Odoo ERP<br/>(odoo_erp)"]
-    end
-
-    API["REST API Zentrala<br/>(backend_api - ASP.NET Core)"]
-    DB[("PostgreSQL Datu-Basea")]
-
-    BEZ_WEB -->|HTTP/JSON| API
-    BEZ_MOB -->|HTTP/JSON| API
-    ZERB_AND -->|HTTP/JSON| API
-    BAR_TPV -->|HTTP/JSON| API
-    SUK_TV -->|HTTP/WebSockets| API
-    BIL_JFX -->|HTTP/JSON| API
-    ADM_TI -->|HTTP/JSON| API
-    ERP_OD <-->|Sinkronizazioa| API
-
-    API <--> DB
-```
+![Arkitektura Diagrama](arkitektura_diagrama.svg)
 
 ### 3.1. Bezeroen Interfazeak
 * **Web-App (`01_aplikazioak/web_php`):** Jatetxearen atari publikoa. Bezeroak mahai-erreserbak egiteko aukera du, eguneko menua eta karta ikusi eta alergenoen araberako iragazketa egiteko. Stockik ez duten platerak automatikoki agortu gisa agertzen dira.
