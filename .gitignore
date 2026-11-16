@@ -87,3 +87,5 @@ desktop.ini
 # 9. Tokiko Instalazio Markatzaileak (Makina bakoitzak berea sortuko du morroiarekin)
 konfigurazioa_amaituta.json
 konfigurazioa*.json
+
+.fake
