@@ -52,6 +52,7 @@ fun MahaiaXehetasunakScreen(
     var sortuEskaeraDialogIrekita by remember { mutableStateOf(false) }
     var pertsonaKopuruaInput by remember { mutableStateOf("2") }
 
+    var kontuaEskatuDialogIrekita by remember { mutableStateOf(false) }
     var ordainketaDialogIrekita by remember { mutableStateOf(false) }
     var tiketModalIrekita by remember { mutableStateOf(false) }
     var azkenTiketa by remember { mutableStateOf<OrdainketaErantzunaDto?>(null) }
@@ -248,25 +249,38 @@ fun MahaiaXehetasunakScreen(
                                 )
                             }
 
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Button(
                                     onClick = { onGehituPlaterak(eskaera.id, mahaiId) },
                                     colors = ButtonDefaults.buttonColors(containerColor = DarkSurfaceVariant),
-                                    shape = RoundedCornerShape(10.dp)
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                                 ) {
-                                    Icon(imageVector = Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Platerak", fontSize = 13.sp)
+                                    Icon(imageVector = Icons.Default.Add, contentDescription = null, modifier = Modifier.size(15.dp))
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Text("Platerak", fontSize = 12.sp)
+                                }
+
+                                Button(
+                                    onClick = { kontuaEskatuDialogIrekita = true },
+                                    colors = ButtonDefaults.buttonColors(containerColor = AmberPrimary),
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Default.ReceiptLong, contentDescription = null, tint = DarkBackground, modifier = Modifier.size(15.dp))
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Text("Kontua", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = DarkBackground)
                                 }
 
                                 Button(
                                     onClick = { ordainketaDialogIrekita = true },
                                     colors = ButtonDefaults.buttonColors(containerColor = StatusFree),
-                                    shape = RoundedCornerShape(10.dp)
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                                 ) {
-                                    Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Kobratu", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = DarkBackground)
+                                    Icon(imageVector = Icons.Default.Payment, contentDescription = null, tint = DarkBackground, modifier = Modifier.size(15.dp))
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Text("Kobratu", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = DarkBackground)
                                 }
                             }
                         }
@@ -594,389 +608,49 @@ fun MahaiaXehetasunakScreen(
         )
     }
 
-    // ORDAINKETA MODALA (Eskudirua, Txartela, Bizum + Kanbioaren kalkulua)
-    if (ordainketaDialogIrekita && eskaeraAktiboa != null) {
-        val eskaera = eskaeraAktiboa!!
-        var hautatutakoMota by remember { mutableStateOf("Eskudirua") }
-        var jasotakoaText by remember { mutableStateOf(String.format(Locale.ROOT, "%.2f", eskaera.guztira)) }
-        var ordaintzen by remember { mutableStateOf(false) }
-        var ordainketaErrorea by remember { mutableStateOf<String?>(null) }
-
-        val jasotakoaBalioa = jasotakoaText.toDoubleOrNull() ?: 0.0
-        val kanbioa = (jasotakoaBalioa - eskaera.guztira).coerceAtLeast(0.0)
-
-        Dialog(onDismissRequest = { if (!ordaintzen) ordainketaDialogIrekita = false }) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                shape = RoundedCornerShape(16.dp),
-                color = DarkSurface,
-                tonalElevation = 8.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = "Kontua Kobratu",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextPrimary
-                            )
-                            Text(
-                                text = "Mahaia $mahaiaZenb · Eskaera #${eskaera.id}",
-                                fontSize = 12.sp,
-                                color = TextSecondary
-                            )
-                        }
-
-                        IconButton(onClick = { ordainketaDialogIrekita = false }, enabled = !ordaintzen) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = TextSecondary)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Zenbateko osoa nabarmenduta
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = DarkBackground),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(14.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "ORDAINDU BEHARREKOA", fontSize = 11.sp, color = TextSecondary)
-                            Text(
-                                text = String.format(Locale.ROOT, "%.2f €", eskaera.guztira),
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = AmberPrimary
-                            )
-                            val subtotal = eskaera.guztira / 1.10
-                            val bez = eskaera.guztira - subtotal
-                            Text(
-                                text = String.format(Locale.ROOT, "BEZ (%10) barne: %.2f €", bez),
-                                fontSize = 11.sp,
-                                color = TextMuted
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Ordainketa motaren fitxak (Eskudirua, Txartela, Bizum)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        listOf("Eskudirua", "Txartela", "Bizum").forEach { mota ->
-                            val aktibo = hautatutakoMota == mota
-                            Button(
-                                onClick = { hautatutakoMota = mota },
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (aktibo) AmberPrimary else DarkSurfaceVariant
-                                ),
-                                shape = RoundedCornerShape(8.dp),
-                                contentPadding = PaddingValues(vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = mota,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (aktibo) DarkBackground else TextPrimary
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    if (hautatutakoMota == "Eskudirua") {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Text(text = "Jasotako Eskudirua (€):", fontSize = 12.sp, color = TextSecondary)
-                            Spacer(modifier = Modifier.height(6.dp))
-                            OutlinedTextField(
-                                value = jasotakoaText,
-                                onValueChange = { jasotakoaText = it },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = AmberPrimary,
-                                    unfocusedBorderColor = TextMuted,
-                                    focusedTextColor = TextPrimary,
-                                    unfocusedTextColor = TextPrimary
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            // Billete azkarrak
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                listOf(
-                                    "Zehatza" to eskaera.guztira,
-                                    "10€" to 10.0,
-                                    "20€" to 20.0,
-                                    "50€" to 50.0,
-                                    "100€" to 100.0
-                                ).forEach { (etiketa, balioa) ->
-                                    OutlinedButton(
-                                        onClick = {
-                                            jasotakoaText = String.format(Locale.ROOT, "%.2f", balioa)
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                        shape = RoundedCornerShape(6.dp),
-                                        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)
-                                    ) {
-                                        Text(etiketa, fontSize = 10.sp)
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            // Itzuli beharreko kanbioa
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(DarkBackground)
-                                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = "Itzuli beharrekoa (Kanbioa):", fontSize = 13.sp, color = TextSecondary)
-                                Text(
-                                    text = String.format(Locale.ROOT, "%.2f €", kanbioa),
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (jasotakoaBalioa >= eskaera.guztira) StatusFree else StatusBusy
-                                )
-                            }
-                        }
-                    } else if (hautatutakoMota == "Txartela") {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = DarkBackground),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Text("POS Datofonoa Konektatuta", color = StatusFree, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Txartela hurbildu edo txertatu kontakturik gabeko ordainketa egiteko.", color = TextSecondary, fontSize = 11.sp)
-                            }
-                        }
-                    } else {
-                        // Bizum
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = DarkBackground),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Text("Bizum Ordainketa Instantaneoa", color = AmberPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Bezeroak Bizum bidez ordaindu du jatetxeko zenbakira.", color = TextSecondary, fontSize = 11.sp)
-                            }
-                        }
-                    }
-
-                    if (ordainketaErrorea != null) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = ordainketaErrorea!!, color = StatusBusy, fontSize = 12.sp)
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = {
-                            if (hautatutakoMota == "Eskudirua" && jasotakoaBalioa < eskaera.guztira) {
-                                ordainketaErrorea = "Jasotako zenbatekoa ez da nahikoa kontua ordaintzeko."
-                                return@Button
-                            }
-
-                            scope.launch {
-                                ordaintzen = true
-                                ordainketaErrorea = null
-                                try {
-                                    val ordReq = OrdainketaEskaeraDto(
-                                        eskaeraId = eskaera.id,
-                                        mota = hautatutakoMota,
-                                        zenbatekoa = eskaera.guztira,
-                                        jasotakoa = if (hautatutakoMota == "Eskudirua") jasotakoaBalioa else eskaera.guztira,
-                                        langileaId = zerbitzaria.id
-                                    )
-                                    val res = ApiClient.service.prozesatuOrdainketa(ordReq)
-                                    if (res.isSuccessful && res.body()?.data != null) {
-                                        azkenTiketa = res.body()!!.data
-                                        ordainketaDialogIrekita = false
-                                        tiketModalIrekita = true
-                                        // Mahaia libre edo garbitzen jarri
-                                        ApiClient.service.eguneratuMahaiarenEgoera(mahaiId, EgoeraEguneratuRequest("Libre"))
-                                        kargatuDatuak(erakutsiKargatzen = false)
-                                    } else {
-                                        ordainketaErrorea = res.body()?.message ?: "Ezin izan da ordainketa burutu."
-                                    }
-                                } catch (e: Exception) {
-                                    ordainketaErrorea = "Errorea ordaintzean: ${e.localizedMessage}"
-                                } finally {
-                                    ordaintzen = false
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = AmberPrimary),
-                        shape = RoundedCornerShape(10.dp),
-                        enabled = !ordaintzen
-                    ) {
-                        if (ordaintzen) {
-                            CircularProgressIndicator(color = DarkBackground, modifier = Modifier.size(20.dp))
-                        } else {
-                            Text("Ordainketa Burutu eta Tiketa Sortu", color = DarkBackground, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                }
+    // KONTUA ESKATU / PROFORMA MODALA
+    if (kontuaEskatuDialogIrekita && eskaeraAktiboa != null && unekoMahaia != null) {
+        KontuaEskatuDialog(
+            mahaia = unekoMahaia,
+            eskaera = eskaeraAktiboa!!,
+            zerbitzaria = zerbitzaria,
+            onOrdainketaraJoan = {
+                kontuaEskatuDialogIrekita = false
+                ordainketaDialogIrekita = true
+            },
+            onDismiss = {
+                kontuaEskatuDialogIrekita = false
             }
-        }
+        )
     }
 
-    // 80MM TIKETAREN BISTARATZE MODALA (Inprimaketa simulazioa)
-    if (tiketModalIrekita && azkenTiketa != null) {
-        val t = azkenTiketa!!
-        Dialog(onDismissRequest = { tiketModalIrekita = false }) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = Color.White
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "1T JATETXEA",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "Goierri Kalea 1, Ordizia",
-                        fontSize = 11.sp,
-                        color = Color.DarkGray,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "IFZ: B-20123456 · Tel: 943 12 34 56",
-                        fontSize = 10.sp,
-                        color = Color.DarkGray,
-                        fontFamily = FontFamily.Monospace
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "--------------------------------",
-                        color = Color.Gray,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "TIKET ZENBAKIA: ${t.tiketZenbakia}",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "Mahaia $mahaiaZenb · Zerbitzaria: ${zerbitzaria.izena}",
-                        fontSize = 11.sp,
-                        color = Color.DarkGray,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "Mota: ${t.mota}",
-                        fontSize = 11.sp,
-                        color = Color.DarkGray,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Text(
-                        text = "--------------------------------",
-                        color = Color.Gray,
-                        fontFamily = FontFamily.Monospace
-                    )
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text("GUZTIRA:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black, fontFamily = FontFamily.Monospace)
-                        Text(String.format(Locale.ROOT, "%.2f €", t.zenbatekoa), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black, fontFamily = FontFamily.Monospace)
-                    }
-
-                    if (t.jasotakoa != null) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Jasotakoa:", fontSize = 12.sp, color = Color.DarkGray, fontFamily = FontFamily.Monospace)
-                            Text(String.format(Locale.ROOT, "%.2f €", t.jasotakoa), fontSize = 12.sp, color = Color.DarkGray, fontFamily = FontFamily.Monospace)
-                        }
-                    }
-
-                    if (t.itzulitakoa != null) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Itzulitakoa (Kanbioa):", fontSize = 12.sp, color = Color.DarkGray, fontFamily = FontFamily.Monospace)
-                            Text(String.format(Locale.ROOT, "%.2f €", t.itzulitakoa), fontSize = 12.sp, color = Color.DarkGray, fontFamily = FontFamily.Monospace)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Eskerrik asko zure bisitagatik!",
-                        fontSize = 11.sp,
-                        color = Color.DarkGray,
-                        fontFamily = FontFamily.Monospace,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = {
-                            tiketModalIrekita = false
-                            onAtzera()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Itxi eta Mahaietara Itzuli", color = Color.White, fontWeight = FontWeight.Bold)
-                    }
-                }
+    // ORDAINKETA MODALA (Eskudirua, Txartela, Bizum + Kanbioa + C# TPV bateragarritasuna)
+    if (ordainketaDialogIrekita && eskaeraAktiboa != null && unekoMahaia != null) {
+        OrdainketaPantailaDialog(
+            mahaia = unekoMahaia,
+            eskaera = eskaeraAktiboa!!,
+            zerbitzaria = zerbitzaria,
+            onOrdainketaBurutua = { emaitza ->
+                azkenTiketa = emaitza
+                ordainketaDialogIrekita = false
+                tiketModalIrekita = true
+                kargatuDatuak(erakutsiKargatzen = false)
+            },
+            onDismiss = {
+                ordainketaDialogIrekita = false
             }
-        }
+        )
+    }
+
+    // 80MM TIKETAREN BISTARATZE ETA INPRIMATZE MODALA
+    if (tiketModalIrekita && azkenTiketa != null) {
+        TiketFiskalaDialog(
+            ordainketa = azkenTiketa!!,
+            onItxi = {
+                tiketModalIrekita = false
+                onAtzera()
+            }
+        )
     }
 }
 

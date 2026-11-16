@@ -123,5 +123,10 @@ data class OrdainketaErantzunaDto(
     @SerializedName("jasotakoa") val jasotakoa: Double? = null,
     @SerializedName("itzulitakoa") val itzulitakoa: Double? = null,
     @SerializedName("txartelMaskaratua") val txartelMaskaratua: String? = null,
-    @SerializedName("operazioKodea") val operazioKodea: String = ""
+    @SerializedName("txartelMarka") val txartelMarka: String? = null,
+    @SerializedName("operazioKodea") val operazioKodea: String = "",
+    @SerializedName("data") val data: String = "",
+    @SerializedName("tiketTestua") val tiketTestua: String = "",
+    @SerializedName("azpitotala") val azpitotala: Double = 0.0,
+    @SerializedName("bez") val bez: Double = 0.0
 )
