@@ -55,7 +55,9 @@ async function egiaztatuEdoKargatuKarta() {
 
   // Fallback: JS bidez kargatu hutsik badago
   try {
-    const res = await fetch(`${window.API_BASE_URL || "http://localhost:5000/api/v1"}/platerak`);
+    const res = await fetch(`${API_BASE}/platerak`, {
+      headers: { "X-App-Id": "web_php" },
+    });
     const json = await res.json();
     if (json.status === "success" && json.dataList && json.dataList.length > 0) {
       edukiontzia.innerHTML = json.dataList.map((p) => `

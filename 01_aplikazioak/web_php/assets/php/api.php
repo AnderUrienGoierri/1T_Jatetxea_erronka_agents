@@ -7,10 +7,10 @@
 // 1. APIaren Oinarrizko Helbidea
 $api_base_url = getenv('API_BASE_URL');
 if (!$api_base_url) {
-    // Docker barruan bagaude host.docker.internal erabili, bestela localhost
+    // Docker barruan bagaude 'jatetxea-api:5000' erabili, bestela ostalariaren 5050 ataka
     $api_base_url = (file_exists('/.dockerenv') || getenv('DOCKER_CONTAINER'))
-        ? 'http://host.docker.internal:5000/api/v1'
-        : 'http://localhost:5000/api/v1';
+        ? 'http://jatetxea-api:5000/api/v1'
+        : 'http://localhost:5050/api/v1';
 }
 
 /**

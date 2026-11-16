@@ -6,11 +6,19 @@
  * @var bool $api_online
  */
 
-// Nabigatzailearentzako (bezeroa) API helbidea: Docker barruko 'host.docker.internal'
-// ordezkatzen dugu 'localhost'-ekin, nabigatzaileak errore gabe atzitu dezan.
-$client_api_url = (isset($api_base_url) && strpos($api_base_url, 'host.docker.internal') !== false)
-    ? str_replace('host.docker.internal', 'localhost', $api_base_url)
-    : ($api_base_url ?? 'http://localhost:5000/api/v1');
+// Nabigatzailearentzako (bezeroaren JavaScript-a) REST API helbidea kalkulatu:
+// REST APIaren ostalari-ataka 5050 da (5000 ataka IT Zentralarentzat da).
+// Horrez gain, bezeroak webgunera sartzeko erabilitako ostalari bera (localhost edo tokiko IP) ezartzen dugu.
+$client_api_env = getenv('CLIENT_API_BASE_URL');
+if (!empty($client_api_env)) {
+    $client_api_url = $client_api_env;
+} else {
+    $client_host = explode(':', $_SERVER['HTTP_HOST'] ?? 'localhost')[0];
+    if (empty($client_host) || $client_host === '_' || $client_host === '0.0.0.0') {
+        $client_host = 'localhost';
+    }
+    $client_api_url = "http://{$client_host}:5050/api/v1";
+}
 ?>
 <!DOCTYPE html>
 <html lang="eu">

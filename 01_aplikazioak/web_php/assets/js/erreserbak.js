@@ -10,7 +10,9 @@ async function kargatuMahaiak() {
   if (!select) return;
 
   try {
-    const res = await fetch(`${API_BASE}/mahaiak`);
+    const res = await fetch(`${API_BASE}/mahaiak`, {
+      headers: { "X-App-Id": "web_php" },
+    });
     const json = await res.json();
     if (json.status === "success" && json.dataList) {
       select.innerHTML =
@@ -99,7 +101,10 @@ async function bidaliErreserba(e) {
   try {
     const res = await fetch(`${API_BASE}/erreserbak`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-App-Id": "web_php",
+      },
       body: JSON.stringify(eskaeraGorputza),
     });
 

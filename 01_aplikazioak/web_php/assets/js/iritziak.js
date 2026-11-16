@@ -10,7 +10,9 @@ async function kargatuEstatistikak() {
   if (!kaxa) return;
 
   try {
-    const res = await fetch(`${API_BASE}/iritziak/estatistikak`);
+    const res = await fetch(`${API_BASE}/iritziak/estatistikak`, {
+      headers: { "X-App-Id": "web_php" },
+    });
     const json = await res.json();
     if (json.status === "success" && json.data) {
       const d = json.data;
@@ -63,7 +65,9 @@ async function kargatuIritziak() {
   if (!edukiontzia) return;
 
   try {
-    const res = await fetch(`${API_BASE}/iritziak`);
+    const res = await fetch(`${API_BASE}/iritziak`, {
+      headers: { "X-App-Id": "web_php" },
+    });
     const json = await res.json();
     if (json.status === "success" && json.dataList) {
       if (json.dataList.length === 0) {
@@ -123,7 +127,10 @@ async function bidaliIritzia(e) {
   try {
     const res = await fetch(`${API_BASE}/iritziak`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-App-Id": "web_php",
+      },
       body: JSON.stringify({
         bezeroEmaila: emaila,
         bezeroIzena: izena || "Bezeroa",
