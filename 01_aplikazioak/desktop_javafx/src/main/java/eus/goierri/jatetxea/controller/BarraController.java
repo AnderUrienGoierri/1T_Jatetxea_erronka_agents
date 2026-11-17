@@ -1,132 +1,87 @@
 package eus.goierri.jatetxea.controller;
 
-import eus.goierri.jatetxea.PantailaAldatzailea;
-import eus.goierri.jatetxea.Sesioa;
-import eus.goierri.jatetxea.api.ApiZerbitzua;
 import eus.goierri.jatetxea.model.Eskaera;
 import eus.goierri.jatetxea.model.EskaeraLerroa;
-import eus.goierri.jatetxea.model.Langilea;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Duration;
 
-import java.io.IOException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Barrako BDS kontroladorea (Bar Display System - MVC ereduaren kontroladore geruza).
- * Edariak eta kafeak kudeatzeko diseinatua.
- * Barrako langileak edariak eta kafeak soilik ikusten ditu, eta hauen egoera 'Zain' (edo 'Zerbitzatua') da, inoiz ez 'Sukaldean'.
+ * Barrako BDS kontroladorea (Bar Display System - MVC kontroladore geruza).
+ * Edariak eta kafeak bistaratzen eta kudeatzen ditu.
  */
-public class BarraController {
+public class BarraController extends BaseEskaeraController {
 
-    @FXML private TableView<Eskaera> tblEskaerak;
-    @FXML private TableColumn<Eskaera, Integer> colEskaeraId;
-    @FXML private TableColumn<Eskaera, String> colMahaia;
-    @FXML private TableColumn<Eskaera, String> colLangilea;
-    @FXML private TableColumn<Eskaera, String> colEgoera;
     @FXML private TableColumn<Eskaera, Integer> colEdariak;
-    @FXML private TableColumn<Eskaera, String> colOrdua;
-
-    @FXML private TableView<EskaeraLerroa> tblLerroak;
-    @FXML private TableColumn<EskaeraLerroa, String> colLerroPlatera;
-    @FXML private TableColumn<EskaeraLerroa, Integer> colLerroKop;
-    @FXML private TableColumn<EskaeraLerroa, String> colLerroOharrak;
-    @FXML private TableColumn<EskaeraLerroa, String> colLerroEgoera;
-    @FXML private TableColumn<EskaeraLerroa, Void> colLerroEkintza;
-
-    @FXML private Label lblEskaeraKopurua;
-    @FXML private Label lblHautatutakoEskaera;
     @FXML private Label lblEdariKopurua;
-    @FXML private Label lblKonexioa;
-    @FXML private Label lblEgoeraMezua;
-    @FXML private Label lblAzkenFreskatzea;
-    @FXML private CheckBox chkAutoRefresh;
-
-    @FXML private Button btnSukaldeaNav;
-    @FXML private Button btnBarraNav;
-    @FXML private Button btnBiltegiaNav;
-    @FXML private Label lblErabiltzaileaInfo;
-
-    private final ApiZerbitzua api = new ApiZerbitzua();
-    private Timeline tenporizadorea;
 
     @FXML
     public void initialize() {
-        // 1. Eskaeren taularen zutabeak lotu
-        colEskaeraId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colMahaia.setCellValueFactory(new PropertyValueFactory<>("mahaiaTestua"));
-        colLangilea.setCellValueFactory(new PropertyValueFactory<>("langileIzena"));
-        colEgoera.setCellValueFactory(new PropertyValueFactory<>("barrakoEgoera"));
-        colEdariak.setCellValueFactory(new PropertyValueFactory<>("barrakoEdariKopurua"));
-        colOrdua.setCellValueFactory(new PropertyValueFactory<>("sortzeData"));
+        // 1. Oinarrizko zutabeak eta tenporizadorea hasieratu
+        hasieratuBaseEskaera();
 
-        // Eskaeren egoera zutabearen koloreak estilo bereziz
-        colEgoera.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String egoera, boolean empty) {
-                super.updateItem(egoera, empty);
-                if (empty || egoera == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(egoera);
-                    String e = egoera.trim().toLowerCase();
-                    if (e.contains("zerbitzat")) {
-                        setStyle("-fx-text-fill: #64748b; -fx-font-weight: bold;");
-                    } else if (e.contains("prestat") || e.contains("egin")) {
-                        setStyle("-fx-text-fill: #15803d; -fx-font-weight: bold;");
-                    } else if (e.contains("martxan")) {
-                        setStyle("-fx-text-fill: #1d4ed8; -fx-font-weight: bold;");
+        // 2. Barrako zutabe espezifikoak lotu
+        if (colEdariak != null) {
+            colEdariak.setCellValueFactory(new PropertyValueFactory<>("barrakoEdariKopurua"));
+        }
+        if (colEgoera != null) {
+            colEgoera.setCellValueFactory(new PropertyValueFactory<>("barrakoEgoera"));
+            colEgoera.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(String egoera, boolean empty) {
+                    super.updateItem(egoera, empty);
+                    if (empty || egoera == null) {
+                        setText(null);
+                        setStyle("");
                     } else {
-                        setStyle("-fx-text-fill: #b45309; -fx-font-weight: bold;");
+                        setText(egoera);
+                        String e = egoera.trim().toLowerCase();
+                        if (e.contains("zerbitzat")) {
+                            setStyle("-fx-text-fill: #64748b; -fx-font-weight: bold;");
+                        } else if (e.contains("prestat") || e.contains("egin")) {
+                            setStyle("-fx-text-fill: #15803d; -fx-font-weight: bold;");
+                        } else if (e.contains("martxan")) {
+                            setStyle("-fx-text-fill: #1d4ed8; -fx-font-weight: bold;");
+                        } else {
+                            setStyle("-fx-text-fill: #b45309; -fx-font-weight: bold;");
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // 2. Edarien lerroen taularen zutabeak lotu
-        colLerroPlatera.setCellValueFactory(new PropertyValueFactory<>("platerIzena"));
-        colLerroKop.setCellValueFactory(new PropertyValueFactory<>("kantitatea"));
-        colLerroOharrak.setCellValueFactory(new PropertyValueFactory<>("oharrak"));
-        colLerroEgoera.setCellValueFactory(new PropertyValueFactory<>("barrakoEgoera"));
-
-        // Edarien egoera zutabearen koloreak (Zain, Prestatua, Zerbitzatua)
-        colLerroEgoera.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(String egoera, boolean empty) {
-                super.updateItem(egoera, empty);
-                if (empty || egoera == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(egoera);
-                    String e = egoera.trim().toLowerCase();
-                    if (e.contains("zerbitzat")) {
-                        setStyle("-fx-text-fill: #64748b; -fx-font-weight: bold;");
-                    } else if (e.contains("prestat") || e.contains("egin")) {
-                        setStyle("-fx-text-fill: #15803d; -fx-font-weight: bold;");
-                    } else if (e.contains("martxan")) {
-                        setStyle("-fx-text-fill: #1d4ed8; -fx-font-weight: bold;");
+        // 3. Edarien lerroen egoera zutabea
+        if (colLerroEgoera != null) {
+            colLerroEgoera.setCellValueFactory(new PropertyValueFactory<>("barrakoEgoera"));
+            colLerroEgoera.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(String egoera, boolean empty) {
+                    super.updateItem(egoera, empty);
+                    if (empty || egoera == null) {
+                        setText(null);
+                        setStyle("");
                     } else {
-                        // Zain
-                        setStyle("-fx-text-fill: #b45309; -fx-font-weight: bold;");
+                        setText(egoera);
+                        String e = egoera.trim().toLowerCase();
+                        if (e.contains("zerbitzat")) {
+                            setStyle("-fx-text-fill: #64748b; -fx-font-weight: bold;");
+                        } else if (e.contains("prestat") || e.contains("egin")) {
+                            setStyle("-fx-text-fill: #15803d; -fx-font-weight: bold;");
+                        } else if (e.contains("martxan")) {
+                            setStyle("-fx-text-fill: #1d4ed8; -fx-font-weight: bold;");
+                        } else {
+                            setStyle("-fx-text-fill: #b45309; -fx-font-weight: bold;");
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Ekintza azkarreko botoia lerro bakoitzean ('Zerbitzatu' / 'Zerbitzatuta')
+        // 4. Ekintza azkarreko botoia lerro bakoitzean ('Zerbitzatu')
         if (colLerroEkintza != null) {
             colLerroEkintza.setCellFactory(param -> new TableCell<>() {
                 private final Button btnEkintza = new Button("Zerbitzatu");
@@ -164,142 +119,55 @@ public class BarraController {
             });
         }
 
-        // Klike bikoitzarekin ere edaria 'Zerbitzatua' moduan markatu daiteke azkar
-        tblLerroak.setRowFactory(tv -> {
-            TableRow<EskaeraLerroa> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    EskaeraLerroa rowData = row.getItem();
-                    if (rowData != null) {
-                        String berria = "Zerbitzatua".equalsIgnoreCase(rowData.getBarrakoEgoera()) ? "Eskatua" : "Zerbitzatua";
-                        eguneratuLerroaZuzenean(rowData, berria);
-                    }
-                }
-            });
-            return row;
-        });
-
-        // 3. Hautapen gertaerak kudeatu
-        tblEskaerak.getSelectionModel().selectedItemProperty().addListener((obs, zaharra, berria) -> {
-            erakutsiEskaeraXehetasunak(berria);
-        });
-
-        // 4. Datuak kargatu
-        kargatuDatuak();
-
-        // 5. Auto-freskatzea prestatu (10 segundotik behin)
-        tenporizadorea = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-            if (chkAutoRefresh != null && chkAutoRefresh.isSelected()) {
-                kargatuDatuak();
-            }
-        }));
-        tenporizadorea.setCycleCount(Timeline.INDEFINITE);
-        tenporizadorea.play();
-
-        // 6. Langilearen saioa eta rolen araberako nabigazioa
-        konfiguratuSaioaEtaRola();
-    }
-
-    private void konfiguratuSaioaEtaRola() {
-        if (Sesioa.isSaioaHasita()) {
-            Langilea unekoa = Sesioa.getUnekoLangilea();
-            if (lblErabiltzaileaInfo != null) {
-                lblErabiltzaileaInfo.setText(unekoa.getIzenOsoa() + " (" + unekoa.getRola() + ")");
-            }
-            if (!Sesioa.isAdminEdoKudeatzailea()) {
-                if (btnSukaldeaNav != null) {
-                    btnSukaldeaNav.setVisible(Sesioa.isSukaldaria());
-                    btnSukaldeaNav.setManaged(Sesioa.isSukaldaria());
-                }
-                if (btnBiltegiaNav != null) {
-                    btnBiltegiaNav.setVisible(Sesioa.isBiltegikoa());
-                    btnBiltegiaNav.setManaged(Sesioa.isBiltegikoa());
-                }
-            }
-        }
-    }
-
-    public void kargatuDatuak() {
-        new Thread(() -> {
-            ApiZerbitzua.HealthResult health = api.egiaztatuOsasuna();
-            if (!health.apiMartxan) {
-                Platform.runLater(() -> {
-                    lblKonexioa.setText("API konexioa: DESKONEKTATUTA (http://localhost:5050)");
-                    lblKonexioa.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
-                    lblEgoeraMezua.setText("Ezin izan da backend zerbitzariarekin konektatu.");
-                });
-                return;
-            }
-
-            if (!health.dbMartxan) {
-                Platform.runLater(() -> {
-                    lblKonexioa.setText("API KONEKTATUTA | Datu-basea DESKONEKTATUTA!");
-                    lblKonexioa.setStyle("-fx-text-fill: #ea580c; -fx-font-weight: bold;");
-                    lblEgoeraMezua.setText("APIra konektatu da, baina MySQL datu-basearekin ezin izan da konexioa lortu.");
-                });
-                return;
-            }
-
-            try {
-                List<Eskaera> eskaerak = api.lortuEskaeraAktiboak();
-                List<Eskaera> barrakoEskaerak = new ArrayList<>();
-                for (Eskaera e : eskaerak) {
-                    // Edariak dituzten eskaera aktiboak (oraindik kobratu edo itxi gabe daudenak)
-                    if (e.getBarrakoEdariKopurua() > 0 && !"Kobratua".equalsIgnoreCase(e.getEgoera())) {
-                        barrakoEskaerak.add(e);
-                    }
-                }
-
-                Platform.runLater(() -> {
-                    int aurrekoId = tblEskaerak.getSelectionModel().getSelectedItem() != null 
-                            ? tblEskaerak.getSelectionModel().getSelectedItem().getId() 
-                            : -1;
-
-                    tblEskaerak.setItems(FXCollections.observableArrayList(barrakoEskaerak));
-                    lblEskaeraKopurua.setText(barrakoEskaerak.size() + " eskaera");
-
-                    lblKonexioa.setText("API konexioa: KONEKTATUTA (" + ApiZerbitzua.getBaseUrl() + ")");
-                    lblKonexioa.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
-                    lblAzkenFreskatzea.setText("Azken freskatzea: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-                    lblEgoeraMezua.setText("Datuak eguneratuta (Barrako edariak eta kafeak).");
-
-                    // Hautapena mantendu
-                    if (aurrekoId != -1) {
-                        for (Eskaera e : barrakoEskaerak) {
-                            if (e.getId() == aurrekoId) {
-                                tblEskaerak.getSelectionModel().select(e);
-                                break;
-                            }
+        // 5. Klike bikoitzarekin edaria 'Zerbitzatua' moduan markatu daiteke azkar
+        if (tblLerroak != null) {
+            tblLerroak.setRowFactory(tv -> {
+                TableRow<EskaeraLerroa> row = new TableRow<>();
+                row.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                        EskaeraLerroa rowData = row.getItem();
+                        if (rowData != null) {
+                            String berria = "Zerbitzatua".equalsIgnoreCase(rowData.getBarrakoEgoera()) ? "Eskatua" : "Zerbitzatua";
+                            eguneratuLerroaZuzenean(rowData, berria);
                         }
-                    } else if (!barrakoEskaerak.isEmpty()) {
-                        tblEskaerak.getSelectionModel().selectFirst();
                     }
                 });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    lblEgoeraMezua.setText("Errorea datuak kargatzean: " + e.getMessage());
-                });
-            }
-        }).start();
-    }
-
-    private void erakutsiEskaeraXehetasunak(Eskaera eskaera) {
-        if (eskaera == null) {
-            tblLerroak.setItems(FXCollections.emptyObservableList());
-            lblHautatutakoEskaera.setText("Hautatutako Eskaera: Ez dago hautatuta");
-            lblEdariKopurua.setText("0 edari");
-            return;
+                return row;
+            });
         }
 
-        lblHautatutakoEskaera.setText("Eskaera #" + eskaera.getId() + " - " + eskaera.getMahaiaTestua() + " (" + eskaera.getLangileIzena() + ")");
-        tblLerroak.setItems(FXCollections.observableArrayList(eskaera.getBarrakoLerroak()));
-        lblEdariKopurua.setText(eskaera.getBarrakoEdariKopurua() + " edari");
-    }
-
-    @FXML
-    private void onFreskatuClick() {
+        // 6. Hasierako datuak kargatu
         kargatuDatuak();
     }
+
+    @Override
+    protected String getModuluIzena() {
+        return "Barrako edariak eta kafeak";
+    }
+
+    @Override
+    protected List<Eskaera> iragaziEskaerak(List<Eskaera> guztiak) {
+        if (guztiak == null) return Collections.emptyList();
+        return guztiak.stream()
+                .filter(e -> e.getBarrakoEdariKopurua() > 0 && !"Kobratua".equalsIgnoreCase(e.getEgoera()))
+                .toList();
+    }
+
+    @Override
+    protected List<EskaeraLerroa> lortuEskaeraLerroak(Eskaera eskaera) {
+        return eskaera != null ? eskaera.getBarrakoLerroak() : Collections.emptyList();
+    }
+
+    @Override
+    protected void eguneratuXehetasunEtiketa(Eskaera eskaera) {
+        if (lblEdariKopurua != null) {
+            lblEdariKopurua.setText(eskaera != null ? eskaera.getBarrakoEdariKopurua() + " edari" : "0 edari");
+        }
+    }
+
+    // ==========================================
+    // BARRAKO BOTOI ETA EKINTZAK
+    // ==========================================
 
     @FXML
     private void onEdariaZaiClick() {
@@ -314,28 +182,6 @@ public class BarraController {
     @FXML
     private void onEdariaEgindaClick() {
         eguneratuHautatutakoLerroa("Zerbitzatua");
-    }
-
-    private void eguneratuLerroaZuzenean(EskaeraLerroa lerroa, String egoeraBerria) {
-        if (lerroa == null) return;
-
-        new Thread(() -> {
-            try {
-                boolean ok = api.eguneratuLerroEgoera(lerroa.getId(), egoeraBerria);
-                Platform.runLater(() -> {
-                    if (ok) {
-                        lerroa.setEgoera(egoeraBerria);
-                        tblLerroak.refresh();
-                        tblEskaerak.refresh();
-                        lblEgoeraMezua.setText(lerroa.getPlaterIzena() + " -> " + lerroa.getBarrakoEgoera() + " egoerara aldatu da.");
-                    }
-                });
-            } catch (Exception ex) {
-                Platform.runLater(() -> {
-                    lblEgoeraMezua.setText("Errorea egoera aldatzean: " + ex.getMessage());
-                });
-            }
-        }).start();
     }
 
     private void eguneratuHautatutakoLerroa(String egoeraBerria) {
@@ -371,63 +217,5 @@ public class BarraController {
                 });
             }
         }).start();
-    }
-
-    @FXML
-    private void onSukaldeaClick(ActionEvent event) {
-        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isSukaldaria()) {
-            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Sukaldea modulura sartzeko.");
-            return;
-        }
-
-        try {
-            if (tenporizadorea != null) {
-                tenporizadorea.stop();
-            }
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "sukaldea-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Sukaldea pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onBiltegiaClick(ActionEvent event) {
-        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isBiltegikoa()) {
-            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Biltegia modulura sartzeko.");
-            return;
-        }
-
-        try {
-            if (tenporizadorea != null) {
-                tenporizadorea.stop();
-            }
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "biltegia-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Biltegia pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onSaioaItxiClick(ActionEvent event) {
-        if (tenporizadorea != null) {
-            tenporizadorea.stop();
-        }
-        Sesioa.itxiSaioa();
-        try {
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "login-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea saioa ixtean", "Ezin izan da saio-hasiera pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    private void erakutsiAlerta(String izenburua, String mezua) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(izenburua);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mezua);
-        alerta.showAndWait();
     }
 }

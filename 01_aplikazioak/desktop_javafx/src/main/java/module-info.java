@@ -3,10 +3,6 @@ module eus.goierri.jatetxea {
     requires javafx.controls;
     requires javafx.fxml;
 
-    // Datu-basea (JDBC + MySQL driver)
-    requires java.sql;
-    requires mysql.connector.j;
-
     // APIa (HTTP bezeroa + JSON)
     requires java.net.http;
     requires com.google.gson;

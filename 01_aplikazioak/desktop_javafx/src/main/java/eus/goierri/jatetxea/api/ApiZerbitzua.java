@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Jatetxearen REST APIarekin (backend_api) komunikatzeko zerbitzua.
+ * Jatetxearen REST APIarekin (backend_api) komunikatzeko zerbitzua (MVC ereduaren Datu/Model geruza).
  * Sukaldeko KDS, Barrako BDS eta Biltegiko stock kudeaketarako deialdiak eskaintzen ditu.
  */
 public class ApiZerbitzua {
@@ -58,14 +58,22 @@ public class ApiZerbitzua {
         this.gson = new Gson();
     }
 
-    private String getHttpJson(String bidea) throws IOException, InterruptedException {
-        HttpRequest eskaera = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + bidea))
-                .timeout(Duration.ofSeconds(5))
+    /**
+     * HTTP eskaerak sortzeko metodo laguntzailea, goiburuak eta timeout-ak zentralizatuz.
+     */
+    private HttpRequest.Builder sortuRequestBuilder(String bidea, int timeoutSec) {
+        String url = bidea.startsWith("http") ? bidea : BASE_URL + bidea;
+        return HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .timeout(Duration.ofSeconds(timeoutSec))
                 .header("Accept", "application/json")
                 .header("X-App-Id", "javafx_kds")
                 .header("X-App-Name", "JavaFX Sukaldea KDS")
-                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
+                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)");
+    }
+
+    private String getHttpJson(String bidea) throws IOException, InterruptedException {
+        HttpRequest eskaera = sortuRequestBuilder(bidea, 5)
                 .GET()
                 .build();
 
@@ -79,14 +87,8 @@ public class ApiZerbitzua {
     }
 
     private String sendJson(String bidea, String metodoa, String jsonGorputza) throws IOException, InterruptedException {
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + bidea))
-                .timeout(Duration.ofSeconds(5))
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .header("X-App-Id", "javafx_kds")
-                .header("X-App-Name", "JavaFX Sukaldea KDS")
-                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)");
+        HttpRequest.Builder builder = sortuRequestBuilder(bidea, 5)
+                .header("Content-Type", "application/json");
 
         if ("POST".equalsIgnoreCase(metodoa)) {
             builder.POST(HttpRequest.BodyPublishers.ofString(jsonGorputza));
@@ -123,13 +125,7 @@ public class ApiZerbitzua {
 
         for (String u : urls) {
             try {
-                HttpRequest req = HttpRequest.newBuilder()
-                        .uri(URI.create(u))
-                        .timeout(Duration.ofSeconds(2))
-                        .header("Accept", "application/json")
-                        .header("X-App-Id", "javafx_kds")
-                        .header("X-App-Name", "JavaFX Sukaldea KDS")
-                        .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
+                HttpRequest req = sortuRequestBuilder(u, 2)
                         .GET()
                         .build();
                 HttpResponse<String> res = bezeroa.send(req, HttpResponse.BodyHandlers.ofString());
@@ -248,14 +244,8 @@ public class ApiZerbitzua {
         json.addProperty("erabiltzailea", erabiltzailea);
         json.addProperty("pasahitza", pin);
 
-        HttpRequest eskaera = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/langileak/login"))
-                .timeout(Duration.ofSeconds(5))
+        HttpRequest eskaera = sortuRequestBuilder("/langileak/login", 5)
                 .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .header("X-App-Id", "javafx_kds")
-                .header("X-App-Name", "JavaFX Sukaldea KDS")
-                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
                 .build();
 

@@ -1,28 +1,22 @@
 package eus.goierri.jatetxea.controller;
 
-import eus.goierri.jatetxea.PantailaAldatzailea;
-import eus.goierri.jatetxea.Sesioa;
 import eus.goierri.jatetxea.api.ApiZerbitzua;
-import eus.goierri.jatetxea.db.LehengaiaDAO;
-import eus.goierri.jatetxea.model.Langilea;
 import eus.goierri.jatetxea.model.Lehengaia;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Biltegiko stock kudeaketarako kontroladorea (MVC ereduaren kontroladore geruza).
+ * REST APIaren bidez lehengaiak bistaratzen ditu eta horniduren stock sarrerak erregistratzen ditu.
  */
-public class BiltegiaController {
+public class BiltegiaController extends BaseController {
 
     @FXML private TableView<Lehengaia> tblLehengaiak;
     @FXML private TableColumn<Lehengaia, Integer> colId;
@@ -48,13 +42,7 @@ public class BiltegiaController {
     @FXML private TextField txtAlbarana;
     @FXML private TextField txtOharrak;
 
-    @FXML private Button btnSukaldeaNav;
-    @FXML private Button btnBarraNav;
-    @FXML private Button btnBiltegiaNav;
-    @FXML private Label lblErabiltzaileaInfo;
-
     private final ApiZerbitzua api = new ApiZerbitzua();
-    private final LehengaiaDAO dao = new LehengaiaDAO();
     private final ObservableList<Lehengaia> datuZerrenda = FXCollections.observableArrayList();
     private FilteredList<Lehengaia> iragazitakoDatuak;
 
@@ -70,7 +58,7 @@ public class BiltegiaController {
         colEgoera.setCellValueFactory(new PropertyValueFactory<>("egoera"));
 
         // Egoera zutabearen koloreak egokitu (Alerta gorriz/laranjaz, Egokia berdez)
-        colEgoera.setCellFactory(column -> new TableCell<Lehengaia, String>() {
+        colEgoera.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String egoera, boolean empty) {
                 super.updateItem(egoera, empty);
@@ -104,25 +92,6 @@ public class BiltegiaController {
         konfiguratuSaioaEtaRola();
     }
 
-    private void konfiguratuSaioaEtaRola() {
-        if (Sesioa.isSaioaHasita()) {
-            Langilea unekoa = Sesioa.getUnekoLangilea();
-            if (lblErabiltzaileaInfo != null) {
-                lblErabiltzaileaInfo.setText(unekoa.getIzenOsoa() + " (" + unekoa.getRola() + ")");
-            }
-            if (!Sesioa.isAdminEdoKudeatzailea()) {
-                if (btnSukaldeaNav != null) {
-                    btnSukaldeaNav.setVisible(Sesioa.isSukaldaria());
-                    btnSukaldeaNav.setManaged(Sesioa.isSukaldaria());
-                }
-                if (btnBarraNav != null) {
-                    btnBarraNav.setVisible(Sesioa.isBarrakoa());
-                    btnBarraNav.setManaged(Sesioa.isBarrakoa());
-                }
-            }
-        }
-    }
-
     private void eguneratuIragazkia() {
         String testua = txtBilaketa.getText() != null ? txtBilaketa.getText().toLowerCase().trim() : "";
         boolean alertakSoilik = chkAlertakSoilik.isSelected();
@@ -147,16 +116,6 @@ public class BiltegiaController {
         kargatuDatuakAPItik();
     }
 
-    @FXML
-    private void onKargatuApiClick() {
-        kargatuDatuakAPItik();
-    }
-
-    @FXML
-    private void onKargatuDbClick() {
-        kargatuDatuakDBtik();
-    }
-
     public void kargatuDatuakAPItik() {
         new Thread(() -> {
             try {
@@ -171,27 +130,7 @@ public class BiltegiaController {
                 Platform.runLater(() -> {
                     lblIturria.setText("Iturria: API DESKONEKTATUTA");
                     lblIturria.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
-                    lblEgoeraMezua.setText("Errorea APItik kargatzean: " + e.getMessage() + ". Saiatu MySQL (JDBC) bidez.");
-                });
-            }
-        }).start();
-    }
-
-    public void kargatuDatuakDBtik() {
-        new Thread(() -> {
-            try {
-                List<Lehengaia> zerrenda = dao.lortuGuztiak();
-                Platform.runLater(() -> {
-                    eguneratuDatuZerrenda(zerrenda);
-                    lblIturria.setText("Iturria: MySQL Datu-basea (JDBC 3308 portua)");
-                    lblIturria.setStyle("-fx-text-fill: #1e40af; -fx-font-weight: bold;");
-                    lblEgoeraMezua.setText("Datu-basetik " + zerrenda.size() + " lehengai kargatu dira zuzenean.");
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    lblIturria.setText("Iturria: MySQL Konexio errorea");
-                    lblIturria.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
-                    lblEgoeraMezua.setText("Errorea datu-basera konektatzean: " + e.getMessage());
+                    lblEgoeraMezua.setText("Errorea APItik kargatzean: " + e.getMessage());
                 });
             }
         }).start();
@@ -262,62 +201,5 @@ public class BiltegiaController {
                 });
             }
         }).start();
-    }
-
-    @FXML
-    private void onSukaldeaClick(ActionEvent event) {
-        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isSukaldaria()) {
-            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Sukaldea modulura sartzeko.");
-            return;
-        }
-
-        try {
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "sukaldea-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Sukaldea pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onBarraClick(ActionEvent event) {
-        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isBarrakoa()) {
-            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Barra modulura sartzeko.");
-            return;
-        }
-
-        try {
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "barra-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Barra pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onSaioaItxiClick(ActionEvent event) {
-        Sesioa.itxiSaioa();
-        try {
-            Node iturria = (Node) event.getSource();
-            PantailaAldatzailea.aldatu(iturria, "login-view.fxml");
-        } catch (IOException e) {
-            erakutsiAlerta("Errorea saioa ixtean", "Ezin izan da saio-hasiera pantaila kargatu: " + e.getMessage());
-        }
-    }
-
-    private void erakutsiAlerta(String izenburua, String mezua) {
-        Alert alerta = new Alert(Alert.AlertType.ERROR);
-        alerta.setTitle(izenburua);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mezua);
-        alerta.showAndWait();
-    }
-
-    private void erakutsiInformazioa(String izenburua, String mezua) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(izenburua);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mezua);
-        alerta.showAndWait();
     }
 }
