@@ -584,6 +584,38 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             return Results.Ok(new { Success = false, Message = "sukaldea_kds_android_tv karpeta ez da aurkitu." });
 
+        case "zerbitzaria_android":
+        case "zerbitzaria_komandera_android":
+        case "komandera_android":
+            string komanderaPath = Path.Combine(appsDir, "zerbitzaria_komandera_android");
+            if (Directory.Exists(komanderaPath))
+            {
+                string studioExe = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe");
+                if (File.Exists(studioExe))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/c start \"Android Studio - Zerbitzaria Komandera\" \"{studioExe}\" \"{komanderaPath}\"",
+                        WorkingDirectory = komanderaPath,
+                        UseShellExecute = true
+                    });
+                    return Results.Ok(new { Success = true, IsUrl = false, Message = "Zerbitzaria Komandera Android (Jetpack Compose) proiektua Android Studion irekita." });
+                }
+                else
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/c start explorer.exe \"{komanderaPath}\"",
+                        WorkingDirectory = komanderaPath,
+                        UseShellExecute = true
+                    });
+                    return Results.Ok(new { Success = true, IsUrl = false, Message = "Zerbitzaria Komandera Android (Jetpack Compose) proiektuaren karpeta irekita." });
+                }
+            }
+            return Results.Ok(new { Success = false, Message = "zerbitzaria_komandera_android karpeta ez da aurkitu." });
+
         case "api":
         case "jatetxea-api":
         case "backend_api":
@@ -822,6 +854,7 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
         "mobile_bezeroa" or "flutter_bezeroa" => Path.Combine(appsDir, "mobile_bezeroa"),
         "mobile_zerbitzaria" or "flutter_zerbitzaria" => Path.Combine(appsDir, "mobile_zerbitzaria"),
         "android_tv" or "sukaldea_kds_android_tv" => Path.Combine(appsDir, "sukaldea_kds_android_tv"),
+        "zerbitzaria_android" or "zerbitzaria_komandera_android" or "komandera_android" => Path.Combine(appsDir, "zerbitzaria_komandera_android"),
         "web" or "web_php" => Path.Combine(appsDir, "web_php"),
         "odoo" or "odoo_erp" => Path.Combine(appsDir, "odoo_erp"),
         "api" or "backend_api" => Path.Combine(appsDir, "backend_api"),
@@ -1240,6 +1273,7 @@ app.MapGet("/api/apps/status", async (IHttpClientFactory httpClientFactory, Canc
         BuildStatus("web_php", "Web PHP Frontend Publikoa", webOnline, true, ""),
         BuildStatus("mobile_bezeroa", "Flutter Bezeroa", HasRecentActivity("mobile_bezeroa"), true, ""),
         BuildStatus("mobile_zerbitzaria", "Flutter Zerbitzaria", HasRecentActivity("mobile_zerbitzaria"), true, ""),
+        BuildStatus("zerbitzaria_android", "Android Zerbitzaria (Komandera)", HasRecentActivity("zerbitzaria_android"), true, ""),
         BuildStatus("android_tv", "Android TV Sukaldea KDS", HasRecentActivity("android_tv"), true, ""),
         BuildStatus("kds_tv", "Sukaldea KDS TV", kdsOnline, true, ""),
         BuildStatus("odoo", "Odoo 17 ERP", odooOnline, postgresPort.Online, "PostgreSQL"),

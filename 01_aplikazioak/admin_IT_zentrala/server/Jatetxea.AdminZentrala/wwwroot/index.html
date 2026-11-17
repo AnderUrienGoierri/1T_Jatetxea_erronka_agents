@@ -1179,46 +1179,44 @@
             </div>
           </div>
 
-          <!-- 7. Sukaldea KDS TV Kioskoa -->
+          <!-- 7. Zerbitzaria Komandera (Android Mugikorra & Tablet) -->
           <div
             class="app-card-item bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-lg p-4 flex flex-col justify-between transition"
-            data-category="web"
-            data-app-id="kds_tv"
+            data-category="mugikorra"
+            data-app-id="zerbitzaria_android"
           >
             <div>
               <div class="flex items-start justify-between gap-2 mb-2">
                 <div>
                   <span
                     class="text-[10px] uppercase font-mono font-medium tracking-wider text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60"
-                    >Web Kiosk · TV</span
+                    >Mugikorra & Tablet · Android</span
                   >
                   <h3 class="text-sm font-bold text-white mt-1">
-                    Sukaldea KDS TV Web Kiosk
+                    Android Zerbitzaria (Komandera)
                   </h3>
                 </div>
                 <span
                   class="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded"
-                  >Portua 8086</span
+                  >Compose M3</span
                 >
               </div>
               <p class="text-xs text-zinc-300 mb-3">
-                Sukaldeko pantaila nagusirako kiosk web bertsio arina. WebSocket
-                bidez API zentralarekin sinkronizatuta, aginduak denbora
-                errealean erakusten ditu soinu abisuekin.
+                Zerbitzarien komandera mugikor natiboa eta tableterako egokitua (Responsive LazyGrid). Aretoko mahaien kontrola, eskaera azkarrak, plateren ohar bereziak eta sukaldera zuzenean bidali.
               </p>
               <div class="text-[11px] space-y-1 mb-4 text-zinc-400">
                 <div>
                   <span class="text-zinc-500 font-semibold">Rola:</span>
-                  Sukaldeko Pantaila Erraldoia
+                  Zerbitzariak & Areto Burua (Mugikorra + Tablet)
                 </div>
                 <div>
                   <span class="text-zinc-500 font-semibold">Teknologia:</span>
-                  HTML5 / JavaScript / WebSocket / Nginx
+                  Kotlin / Jetpack Compose Material 3 / Retrofit REST
                 </div>
                 <div>
-                  <span class="text-zinc-500 font-semibold">Ataka:</span>
+                  <span class="text-zinc-500 font-semibold">Karpeta:</span>
                   <span class="font-mono text-zinc-300"
-                    >127.0.0.1:8086 (HTTP)</span
+                    >01_aplikazioak/zerbitzaria_komandera_android</span
                   >
                 </div>
               </div>
@@ -1227,10 +1225,18 @@
               class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-2"
             >
               <button
-                onclick="launchApp('kds_tv', 'http://localhost:8086')"
+                onclick="launchApp('zerbitzaria_android')"
                 class="flex-1 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded font-medium text-xs transition text-center"
+                title="Ireki Android Studion"
               >
-                Ireki KDS TV Kioskoa (8086)
+                Ireki Android Proiektua
+              </button>
+              <button
+                onclick="openAppFolder('zerbitzaria_komandera_android')"
+                class="py-1.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded font-medium text-xs border border-zinc-800 transition"
+                title="Ireki karpeta esploratzailean"
+              >
+                Karpeta
               </button>
             </div>
           </div>
