@@ -38,9 +38,15 @@ public class ApiService
             var env = Environment.GetEnvironmentVariable("API_BASE_URL");
             if (!string.IsNullOrWhiteSpace(env)) return env;
 
-            if (File.Exists("appsettings.json"))
+            string configPath = "appsettings.json";
+            if (!File.Exists(configPath))
             {
-                var json = File.ReadAllText("appsettings.json");
+                configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            }
+
+            if (File.Exists(configPath))
+            {
+                var json = File.ReadAllText(configPath);
                 using var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.TryGetProperty("ApiBaseUrl", out var prop))
                 {
@@ -50,11 +56,12 @@ public class ApiService
             }
         }
         catch { }
-        return "http://localhost:5050/api/v1";
+        return "http://127.0.0.1:5050/api/v1";
     }
 
     /// <summary>
     /// API eta MySQL datu-basearen osasuna egiaztatzen du /health endpoint bidez.
+    /// Konexioak huts egiten badu, automatikoki localhost / 127.0.0.1 bidez ere egiaztatzen du fallback gisa.
     /// </summary>
     public async Task<(bool ApiMartxan, bool DatuBaseaMartxan, string Mezua)> CheckHealthAsync()
     {
@@ -73,6 +80,22 @@ public class ApiService
         }
         catch
         {
+            // Konfiguratutako IPak huts egiten badu (adibidez sarea aldatu delako), probatu 127.0.0.1 lokalera
+            if (!_baseUrl.Contains("127.0.0.1") && !_baseUrl.Contains("localhost"))
+            {
+                try
+                {
+                    using var localClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5050/"), Timeout = TimeSpan.FromSeconds(1.5) };
+                    var localRes = await localClient.GetAsync("health");
+                    if (localRes.IsSuccessStatusCode)
+                    {
+                        // Eguneratu BaseAddress lokalera zuzenean funtzionatzen jarraitzeko
+                        _http.BaseAddress = new Uri("http://127.0.0.1:5050/api/v1/");
+                        return (true, true, "Datu-basea konektatuta dago (127.0.0.1 lokaletik).");
+                    }
+                }
+                catch { }
+            }
             return (false, false, $"API zerbitzaria deskonektatuta dago ({_baseUrl}).");
         }
     }
