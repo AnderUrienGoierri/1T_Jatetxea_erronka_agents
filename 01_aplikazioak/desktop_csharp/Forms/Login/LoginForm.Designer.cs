@@ -132,11 +132,11 @@ partial class LoginForm
         // 
         // lblPinTitle
         // 
-        lblPinTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        lblPinTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
         lblPinTitle.ForeColor = Color.FromArgb(220, 38, 38);
-        lblPinTitle.Location = new Point(20, 136);
+        lblPinTitle.Location = new Point(20, 134);
         lblPinTitle.Name = "lblPinTitle";
-        lblPinTitle.Size = new Size(480, 42);
+        lblPinTitle.Size = new Size(480, 34);
         lblPinTitle.TabIndex = 2;
         lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";
         lblPinTitle.TextAlign = ContentAlignment.MiddleCenter;
@@ -148,35 +148,35 @@ partial class LoginForm
         pnlPinDots.Controls.Add(lblDot2);
         pnlPinDots.Controls.Add(lblDot3);
         pnlPinDots.Controls.Add(lblDot4);
-        pnlPinDots.Location = new Point(160, 184);
+        pnlPinDots.Location = new Point(160, 172);
         pnlPinDots.Name = "pnlPinDots";
-        pnlPinDots.Size = new Size(200, 32);
+        pnlPinDots.Size = new Size(200, 30);
         pnlPinDots.TabIndex = 3;
         // 
         // lblDot1
         // 
-        lblDot1.Location = new Point(15, 5);
+        lblDot1.Location = new Point(15, 4);
         lblDot1.Name = "lblDot1";
         lblDot1.Size = new Size(22, 22);
         lblDot1.TabIndex = 0;
         // 
         // lblDot2
         // 
-        lblDot2.Location = new Point(65, 5);
+        lblDot2.Location = new Point(65, 4);
         lblDot2.Name = "lblDot2";
         lblDot2.Size = new Size(22, 22);
         lblDot2.TabIndex = 1;
         // 
         // lblDot3
         // 
-        lblDot3.Location = new Point(115, 5);
+        lblDot3.Location = new Point(115, 4);
         lblDot3.Name = "lblDot3";
         lblDot3.Size = new Size(22, 22);
         lblDot3.TabIndex = 2;
         // 
         // lblDot4
         // 
-        lblDot4.Location = new Point(165, 5);
+        lblDot4.Location = new Point(165, 4);
         lblDot4.Name = "lblDot4";
         lblDot4.Size = new Size(22, 22);
         lblDot4.TabIndex = 3;
@@ -199,14 +199,14 @@ partial class LoginForm
         pnlKeypad.Controls.Add(btnKeyClear, 0, 3);
         pnlKeypad.Controls.Add(btnKey0, 1, 3);
         pnlKeypad.Controls.Add(btnKeyBack, 2, 3);
-        pnlKeypad.Location = new Point(35, 224);
+        pnlKeypad.Location = new Point(35, 208);
         pnlKeypad.Name = "pnlKeypad";
         pnlKeypad.RowCount = 4;
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
         pnlKeypad.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-        pnlKeypad.Size = new Size(450, 288);
+        pnlKeypad.Size = new Size(450, 260);
         pnlKeypad.TabIndex = 4;
         // 
         // btnKey1
@@ -417,9 +417,9 @@ partial class LoginForm
         // 
         lblStatus.Font = new Font("Segoe UI", 9.5F);
         lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
-        lblStatus.Location = new Point(20, 506);
+        lblStatus.Location = new Point(15, 474);
         lblStatus.Name = "lblStatus";
-        lblStatus.Size = new Size(480, 50);
+        lblStatus.Size = new Size(490, 72);
         lblStatus.TabIndex = 5;
         lblStatus.Text = "API zerbitzaria deskonektatuta dago!\nEgiaztatu martxan dagoela (http://localhost:5050)";
         lblStatus.TextAlign = ContentAlignment.MiddleCenter;
@@ -433,9 +433,9 @@ partial class LoginForm
         btnLogin.FlatStyle = FlatStyle.Flat;
         btnLogin.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnLogin.ForeColor = Color.White;
-        btnLogin.Location = new Point(35, 562);
+        btnLogin.Location = new Point(35, 554);
         btnLogin.Name = "btnLogin";
-        btnLogin.Size = new Size(450, 66);
+        btnLogin.Size = new Size(450, 64);
         btnLogin.TabIndex = 6;
         btnLogin.Text = "API-A DESKONEKTATUTA";
         btnLogin.UseVisualStyleBackColor = false;
