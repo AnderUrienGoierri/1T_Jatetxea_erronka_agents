@@ -861,7 +861,7 @@ var zerbitzuenKatalogoa = new[]
     ),
     new ServiceDefinition(
         Id: "phpmyadmin",
-        Izena: "phpMyAdmin MySQL",
+        Izena: "jatetxea_phpmyadmin",
         Mota: "Datu-Basearen Web Kudeatzailea",
         Host: "127.0.0.1",
         Port: 8081,
