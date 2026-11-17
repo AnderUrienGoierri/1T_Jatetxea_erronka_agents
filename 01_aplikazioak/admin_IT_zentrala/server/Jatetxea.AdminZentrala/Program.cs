@@ -1844,25 +1844,21 @@ static void LaunchPowerShellScript(string ps1File, string workingDirectory)
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia eta bermatuena: conhost.exe UseShellExecute = true bidez abiaraztea.
-    // Windows 11n Windows Terminal lehenetsia denean, conhost.exe zuzenean deitzeak
-    // (UseShellExecute = true-rekin) bermatzen du leiho/pantaila erreala mahaigainean irekitzea.
+    // 1. Modu nagusia: cmd.exe /c start bidez exekutatzea leiho interaktibo berri eta aske bat irekitzeko
     try
     {
         if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
             executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
         {
-            string cleanArgs = arguments ?? "";
-            string cmdArgs = @"cmd.exe /k """ + executableOrFile + @""" " + cleanArgs;
-            var psiConhost = new ProcessStartInfo
+            var psiBat = new ProcessStartInfo
             {
-                FileName = "conhost.exe",
-                Arguments = cmdArgs.Trim(),
+                FileName = "cmd.exe",
+                Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal
             };
-            Process.Start(psiConhost);
+            Process.Start(psiBat);
             return;
         }
         else
@@ -1881,22 +1877,23 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
     }
     catch { }
 
-    // 2. Bigarren aukera: cmd.exe /c start bidez
+    // 2. Bigarren aukera: conhost.exe bidez
     if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
         executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
     {
         try
         {
-            var psiBat = new ProcessStartInfo
+            string cleanArgs = arguments ?? "";
+            string cmdArgs = @"cmd.exe /k """ + executableOrFile + @""" " + cleanArgs;
+            var psiConhost = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
+                FileName = "conhost.exe",
+                Arguments = cmdArgs.Trim(),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = true,
-                CreateNoWindow = false,
                 WindowStyle = ProcessWindowStyle.Normal
             };
-            Process.Start(psiBat);
+            Process.Start(psiConhost);
             return;
         }
         catch { }
