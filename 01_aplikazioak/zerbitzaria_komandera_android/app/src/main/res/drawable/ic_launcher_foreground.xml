@@ -1,0 +1,64 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Zirkulu Nagusia: Ardo Gradientea (Zentroan kokatua: cx=54, cy=54, r=36) -->
+    <path
+        android:pathData="M 54,18 A 36,36 0 1,0 54,90 A 36,36 0 1,0 54,18 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="18"
+                android:startY="18"
+                android:endX="90"
+                android:endY="90">
+                <item android:color="#FF9F1239" android:offset="0.0" />
+                <item android:color="#FF881337" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Urrezko Kanpoko Ertza -->
+    <path
+        android:pathData="M 54,18 A 36,36 0 1,0 54,90 A 36,36 0 1,0 54,18 Z"
+        android:strokeWidth="2.2"
+        android:strokeColor="#FCD34D" />
+
+    <!-- Barruko Eraztun Punteatua / Zuria -->
+    <path
+        android:pathData="M 54,22 A 32,32 0 1,0 54,86 A 32,32 0 1,0 54,22 Z"
+        android:strokeWidth="1.0"
+        android:strokeColor="#55FFFFFF" />
+
+    <!-- 'T' Letra Serif Zuria -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 39,41 L 52,41 L 52,44 L 47,44 L 47,61 L 44,61 L 44,44 L 39,44 Z" />
+
+    <!-- '1' Zenbakia Serif Zuria -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 58,45.5 L 62.5,41 L 65.5,41 L 65.5,61 L 62.5,61 L 62.5,45 L 59,47.5 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 60,59.5 L 68,59.5 L 68,61 L 60,61 Z" />
+
+    <!-- Koroa / Arku Urreztatua behean -->
+    <path
+        android:pathData="M 39,72 C 45,77.5 63,77.5 69,72"
+        android:strokeWidth="2.2"
+        android:strokeColor="#F59E0B"
+        android:strokeLineCap="round" />
+
+    <!-- Oliba/Albahaka Berde Xehetasunak -->
+    <path
+        android:pathData="M 48,74 A 2,2 0 1,0 48,78 A 2,2 0 1,0 48,74 Z"
+        android:fillColor="#15803D" />
+    <path
+        android:pathData="M 60,74 A 2,2 0 1,0 60,78 A 2,2 0 1,0 60,74 Z"
+        android:fillColor="#15803D" />
+
+</vector>

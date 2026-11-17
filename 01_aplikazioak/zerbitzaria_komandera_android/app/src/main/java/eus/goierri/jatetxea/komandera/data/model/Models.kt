@@ -130,3 +130,33 @@ data class OrdainketaErantzunaDto(
     @SerializedName("azpitotala") val azpitotala: Double = 0.0,
     @SerializedName("bez") val bez: Double = 0.0
 )
+
+data class ErreserbaDto(
+    @SerializedName("id") val id: Int = 0,
+    @SerializedName("bezeroaId") val bezeroaId: Int = 0,
+    @SerializedName("bezeroIzena") val bezeroIzena: String = "",
+    @SerializedName("bezeroAbizena") val bezeroAbizena: String = "",
+    @SerializedName("bezeroEmaila") val bezeroEmaila: String = "",
+    @SerializedName("bezeroTelefonoa") val bezeroTelefonoa: String = "",
+    @SerializedName("mahaiaId") val mahaiaId: Int = 0,
+    @SerializedName("mahaiZenbakia") val mahaiZenbakia: Int = 0,
+    @SerializedName("kokapena") val kokapena: String = "",
+    @SerializedName("data") val data: String = "",
+    @SerializedName("txanda") val txanda: String = "",
+    @SerializedName("pertsonaKopurua") val pertsonaKopurua: Int = 2,
+    @SerializedName("egoera") val egoera: String = "Baieztatuta",
+    @SerializedName("oharrak") val oharrak: String? = null
+)
+
+data class ErreserbaSortuDto(
+    @SerializedName("mahaiaId") val mahaiaId: Int? = null,
+    @SerializedName("mahaiZenbakia") val mahaiZenbakia: Int? = null,
+    @SerializedName("data") val data: String, // YYYY-MM-DD
+    @SerializedName("txanda") val txanda: String, // Bazkaria_1, Bazkaria_2, Afaria_1, Afaria_2
+    @SerializedName("pertsonaKopurua") val pertsonaKopurua: Int,
+    @SerializedName("oharrak") val oharrak: String? = null,
+    @SerializedName("bezeroIzena") val bezeroIzena: String,
+    @SerializedName("bezeroAbizena") val bezeroAbizena: String? = "-",
+    @SerializedName("bezeroEmaila") val bezeroEmaila: String,
+    @SerializedName("bezeroTelefonoa") val bezeroTelefonoa: String? = "-"
+)

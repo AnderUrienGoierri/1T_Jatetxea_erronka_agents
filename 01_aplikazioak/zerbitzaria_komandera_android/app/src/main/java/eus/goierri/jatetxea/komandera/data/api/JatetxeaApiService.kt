@@ -63,6 +63,16 @@ interface JatetxeaApiService {
 
     @POST("ordainketak")
     suspend fun prozesatuOrdainketa(@Body req: OrdainketaEskaeraDto): Response<ApiResponse<OrdainketaErantzunaDto>>
+
+    @GET("erreserbak")
+    suspend fun getErreserbak(
+        @Query("data") data: String? = null,
+        @Query("txanda") txanda: String? = null
+    ): Response<ApiResponse<ErreserbaDto>>
+
+    @POST("erreserbak")
+    suspend fun sortuErreserba(@Body req: ErreserbaSortuDto): Response<ApiResponse<ErreserbaDto>>
+
     @GET("health")
     suspend fun getHealth(): Response<Map<String, Any>>
 }

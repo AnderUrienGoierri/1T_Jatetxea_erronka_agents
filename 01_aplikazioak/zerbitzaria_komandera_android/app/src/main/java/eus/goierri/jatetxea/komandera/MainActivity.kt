@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,16 +23,18 @@ import eus.goierri.jatetxea.komandera.ui.screens.MahaiaXehetasunakScreen
 import eus.goierri.jatetxea.komandera.ui.theme.DarkBackground
 import eus.goierri.jatetxea.komandera.ui.theme.KomanderaTheme
 
+import eus.goierri.jatetxea.komandera.ui.state.AppPreferences
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eus.goierri.jatetxea.komandera.data.api.ApiClient.init(applicationContext)
         setContent {
-            KomanderaTheme {
+            KomanderaTheme(darkTheme = AppPreferences.isDarkTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = DarkBackground
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     KomanderaApp(
                         onMezuaBistaratu = { mezua ->

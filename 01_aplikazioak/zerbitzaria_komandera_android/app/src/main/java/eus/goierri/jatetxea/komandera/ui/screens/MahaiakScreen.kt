@@ -11,7 +11,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import eus.goierri.jatetxea.komandera.ui.components.ErreserbakDialog
+import eus.goierri.jatetxea.komandera.ui.components.EzarpenakDialog
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +31,18 @@ import androidx.compose.ui.unit.sp
 import eus.goierri.jatetxea.komandera.data.api.ApiClient
 import eus.goierri.jatetxea.komandera.data.model.LangileaDto
 import eus.goierri.jatetxea.komandera.data.model.MahaiaDto
-import eus.goierri.jatetxea.komandera.ui.theme.*
+import eus.goierri.jatetxea.komandera.ui.theme.AmberAccent
+import eus.goierri.jatetxea.komandera.ui.theme.AmberPrimary
+import eus.goierri.jatetxea.komandera.ui.theme.ChiantiPrimary
+import eus.goierri.jatetxea.komandera.ui.theme.DarkBackground
+import eus.goierri.jatetxea.komandera.ui.theme.DarkSurface
+import eus.goierri.jatetxea.komandera.ui.theme.StatusBusy
+import eus.goierri.jatetxea.komandera.ui.theme.StatusCleaning
+import eus.goierri.jatetxea.komandera.ui.theme.StatusFree
+import eus.goierri.jatetxea.komandera.ui.theme.StatusPending
+import eus.goierri.jatetxea.komandera.ui.theme.TextMuted
+import eus.goierri.jatetxea.komandera.ui.theme.TextPrimary
+import eus.goierri.jatetxea.komandera.ui.theme.TextSecondary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -42,6 +59,8 @@ fun MahaiakScreen(
     var kargatzen by remember { mutableStateOf(true) }
     var erroreMezua by remember { mutableStateOf<String?>(null) }
     var eremuFiltroa by remember { mutableStateOf("Guztiak") }
+    var ezarpenakIrekita by remember { mutableStateOf(false) }
+    var erreserbakIrekita by remember { mutableStateOf(false) }
 
     val eremuak = listOf("Guztiak", "Jantoki Nagusia", "Barra", "Terraza", "VIP")
 
@@ -93,12 +112,12 @@ fun MahaiakScreen(
                             text = "Aretoko Mahaiak",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "${zerbitzaria.izena} (${zerbitzaria.rola})",
                             fontSize = 12.sp,
-                            color = AmberPrimary
+                            color = AmberAccent
                         )
                     }
                 },
@@ -112,6 +131,20 @@ fun MahaiakScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { erreserbakIrekita = true }) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = "Erreserbak",
+                            tint = AmberAccent
+                        )
+                    }
+                    IconButton(onClick = { ezarpenakIrekita = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Ezarpenak",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     IconButton(onClick = { kargatuMahaiak(erakutsiKargatzen = true) }) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
@@ -120,20 +153,40 @@ fun MahaiakScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkSurface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         },
-        containerColor = DarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
+        if (ezarpenakIrekita) {
+            EzarpenakDialog(
+                zerbitzaria = zerbitzaria,
+                onDismiss = { ezarpenakIrekita = false }
+            )
+        }
+
+        if (erreserbakIrekita) {
+            ErreserbakDialog(
+                mahaiak = mahaiak,
+                onDismiss = { erreserbakIrekita = false },
+                onErreserbaSortua = {
+                    kargatuMahaiak(erakutsiKargatzen = false)
+                }
+            )
+        }
+
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            // Eremuen botoi-filtroa (Pills)
+            // Eremuen botoi-filtroa (Horizontalki mugikorra - testurik inoiz ez mozteko)
+            val scrollState = rememberScrollState()
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(scrollState),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 eremuak.forEach { eremua ->
@@ -145,18 +198,20 @@ fun MahaiakScreen(
                             Text(
                                 text = eremua,
                                 fontSize = 12.sp,
-                                fontWeight = if (hautatua) FontWeight.Bold else FontWeight.Normal
+                                fontWeight = if (hautatua) FontWeight.Bold else FontWeight.Normal,
+                                maxLines = 1,
+                                softWrap = false
                             )
                         },
                         colors = FilterChipDefaults.filterChipColors(
-                            containerColor = DarkSurface,
-                            labelColor = TextSecondary,
-                            selectedContainerColor = AmberPrimary,
-                            selectedLabelColor = DarkBackground
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            selectedContainerColor = ChiantiPrimary,
+                            selectedLabelColor = Color.White
                         ),
                         border = FilterChipDefaults.filterChipBorder(
-                            borderColor = if (hautatua) AmberPrimary else TextMuted.copy(alpha = 0.3f),
-                            selectedBorderColor = AmberPrimary,
+                            borderColor = if (hautatua) ChiantiPrimary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+                            selectedBorderColor = ChiantiPrimary,
                             enabled = true,
                             selected = hautatua
                         )
@@ -170,36 +225,43 @@ fun MahaiakScreen(
             val libreKop = mahaiak.count { it.egoera.equals("Libre", ignoreCase = true) }
             val okupatuKop = mahaiak.count { it.egoera.equals("Okupatuta", ignoreCase = true) }
             val erreserbaKop = mahaiak.count { it.egoera.equals("Erreserbatuta", ignoreCase = true) }
+            val garbitzenKop = mahaiak.count { it.egoera.equals("Garbitzen", ignoreCase = true) }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
-                    .background(DarkSurface)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     text = "Guztira: ${mahaiak.size}",
-                    fontSize = 12.sp,
-                    color = TextSecondary
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = "Libre: $libreKop",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     color = StatusFree,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Okupatuta: $okupatuKop",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     color = StatusBusy,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Erreserbak: $erreserbaKop",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     color = StatusPending,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Garbitzen: $garbitzenKop",
+                    fontSize = 11.sp,
+                    color = StatusCleaning,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -258,11 +320,12 @@ fun MahaiaTxartela(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -270,25 +333,33 @@ fun MahaiaTxartela(
             ) {
                 Text(
                     text = "Mahaia ${mahaia.zenbakia}",
-                    fontSize = 17.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
 
-                // Egoera puntua eta txapa
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.width(4.dp))
+
+                // Egoera puntua eta txapa (lerro bakarrean)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
                     Box(
                         modifier = Modifier
-                            .size(10.dp)
+                            .size(8.dp)
                             .clip(CircleShape)
                             .background(egoeraKolorea)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = mahaia.egoera,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = egoeraKolorea
+                        color = egoeraKolorea,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }
@@ -298,7 +369,7 @@ fun MahaiaTxartela(
             Text(
                 text = "${mahaia.kokapena} · ${mahaia.edukiera} pax",
                 fontSize = 12.sp,
-                color = TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -313,14 +384,14 @@ fun MahaiaTxartela(
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
-                        tint = TextMuted,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Geh. ${mahaia.edukiera}",
                         fontSize = 11.sp,
-                        color = TextMuted
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                     )
                 }
 
@@ -328,7 +399,7 @@ fun MahaiaTxartela(
                     text = "Kudeatu ->",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = AmberPrimary
+                    color = AmberAccent
                 )
             }
         }

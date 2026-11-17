@@ -188,12 +188,12 @@ fun MahaiaXehetasunakScreen(
                             text = "Mahaia $mahaiaZenb - Xehetasunak",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "${unekoMahaia?.kokapena ?: ""} · Zerbitzaria: ${zerbitzaria.izena}",
                             fontSize = 12.sp,
-                            color = AmberPrimary
+                            color = AmberAccent
                         )
                     }
                 },
@@ -202,7 +202,7 @@ fun MahaiaXehetasunakScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Atzera",
-                            tint = TextPrimary
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -211,14 +211,14 @@ fun MahaiaXehetasunakScreen(
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Freskatu",
-                            tint = AmberPrimary
+                            tint = AmberAccent
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkSurface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         },
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             // Beheko ekintza barrak (Sukaldera bidali, Gehitu platerak, Kobratu)
             if (eskaeraAktiboa != null) {
@@ -336,7 +336,8 @@ fun MahaiaXehetasunakScreen(
                 // MAHAIAREN EGOERA TXARTELA
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -345,19 +346,21 @@ fun MahaiaXehetasunakScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column {
+                            Column(modifier = Modifier.weight(1f, fill = false)) {
                                 Text(
                                     text = "Mahaia ${unekoMahaia.zenbakia} (${unekoMahaia.kokapena})",
-                                    fontSize = 18.sp,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "Edukiera: ${unekoMahaia.edukiera} pertsona",
                                     fontSize = 13.sp,
-                                    color = TextSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
+
+                            Spacer(modifier = Modifier.width(8.dp))
 
                             val egoeraKolorea = when (unekoMahaia.egoera.lowercase()) {
                                 "libre" -> StatusFree
@@ -370,14 +373,16 @@ fun MahaiaXehetasunakScreen(
                             Surface(
                                 color = egoeraKolorea.copy(alpha = 0.15f),
                                 shape = RoundedCornerShape(20.dp),
-                                border = ButtonDefaults.outlinedButtonBorder.copy(brush = androidx.compose.ui.graphics.SolidColor(egoeraKolorea))
+                                border = androidx.compose.foundation.BorderStroke(1.dp, egoeraKolorea)
                             ) {
                                 Text(
                                     text = unekoMahaia.egoera.uppercase(),
                                     color = egoeraKolorea,
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                                 )
                             }
                         }
@@ -391,22 +396,31 @@ fun MahaiaXehetasunakScreen(
                         ) {
                             listOf("Libre", "Okupatuta", "Garbitzen").forEach { egoera ->
                                 val aktibo = unekoMahaia.egoera.equals(egoera, ignoreCase = true)
+                                val egoeraKoloreBotoi = when (egoera.lowercase()) {
+                                    "libre" -> StatusFree
+                                    "okupatuta" -> StatusBusy
+                                    "garbitzen" -> StatusCleaning
+                                    else -> AmberAccent
+                                }
                                 OutlinedButton(
                                     onClick = { aldatuMahaiarenEgoera(egoera) },
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.outlinedButtonColors(
-                                        containerColor = if (aktibo) AmberPrimary.copy(alpha = 0.2f) else Color.Transparent
+                                        containerColor = if (aktibo) egoeraKoloreBotoi.copy(alpha = 0.2f) else Color.Transparent
                                     ),
-                                    border = ButtonDefaults.outlinedButtonBorder.copy(
-                                        brush = androidx.compose.ui.graphics.SolidColor(if (aktibo) AmberPrimary else TextMuted.copy(alpha = 0.4f))
+                                    border = androidx.compose.foundation.BorderStroke(
+                                        1.dp,
+                                        if (aktibo) egoeraKoloreBotoi else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                                     ),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
                                     Text(
                                         text = egoera,
                                         fontSize = 11.sp,
-                                        color = if (aktibo) AmberPrimary else TextSecondary,
-                                        fontWeight = if (aktibo) FontWeight.Bold else FontWeight.Normal
+                                        color = if (aktibo) egoeraKoloreBotoi else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontWeight = if (aktibo) FontWeight.Bold else FontWeight.Medium,
+                                        maxLines = 1,
+                                        softWrap = false
                                     )
                                 }
                             }
@@ -547,7 +561,7 @@ fun MahaiaXehetasunakScreen(
             title = {
                 Text(
                     text = "Mahaia $mahaiaZenb - Eskaera Berria",
-                    color = TextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -556,7 +570,7 @@ fun MahaiaXehetasunakScreen(
                     Text(
                         text = "Aukeratu mahaiko mahaikide kopurua (pax):",
                         fontSize = 14.sp,
-                        color = TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(14.dp))
                     OutlinedTextField(
@@ -565,26 +579,40 @@ fun MahaiaXehetasunakScreen(
                         label = { Text("Pertsona kopurua") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AmberPrimary,
-                            unfocusedBorderColor = TextMuted,
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary
+                            focusedBorderColor = ChiantiPrimary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                    // Botoi azkarrak (2, 4, 6, 8)
+                    // Botoi azkarrak (1, 2, 4, 6, 8)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         listOf("1", "2", "4", "6", "8").forEach { n ->
+                            val sel = pertsonaKopuruaInput == n
                             OutlinedButton(
                                 onClick = { pertsonaKopuruaInput = n },
                                 modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(8.dp)
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (sel) ChiantiPrimary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (sel) GoldBorder else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Text(n, fontSize = 12.sp)
+                                Text(
+                                    text = n,
+                                    fontSize = 13.sp,
+                                    fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium,
+                                    color = if (sel) Color.White else MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         }
                     }
@@ -593,18 +621,18 @@ fun MahaiaXehetasunakScreen(
             confirmButton = {
                 Button(
                     onClick = { sortuEskaeraBerria() },
-                    colors = ButtonDefaults.buttonColors(containerColor = AmberPrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = ChiantiPrimary),
                     enabled = !ekintzanAri
                 ) {
-                    Text("Ireki Eskaera", color = DarkBackground, fontWeight = FontWeight.Bold)
+                    Text("Ireki Eskaera", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { sortuEskaeraDialogIrekita = false }) {
-                    Text("Utzi", color = TextSecondary)
+                    Text("Utzi", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
-            containerColor = DarkSurface
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 
