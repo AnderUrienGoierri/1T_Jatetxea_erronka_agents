@@ -14,13 +14,13 @@ set "EXE_DEBUG=%~dp0bin\Debug\net10.0-windows\Jatetxea.Desktop.exe"
 
 if exist "%EXE_RELEASE%" (
     echo Aplikazioaren interfazea abiarazten: Release
-    "%EXE_RELEASE%"
+    start "" "%EXE_RELEASE%"
     goto :amaitu
 )
 
 if exist "%EXE_DEBUG%" (
     echo Aplikazioaren interfazea abiarazten: Debug
-    "%EXE_DEBUG%"
+    start "" "%EXE_DEBUG%"
     goto :amaitu
 )
 

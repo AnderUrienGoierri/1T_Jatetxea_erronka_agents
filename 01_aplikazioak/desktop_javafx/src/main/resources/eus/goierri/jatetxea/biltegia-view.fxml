@@ -140,7 +140,7 @@
     <!-- 3. BEHEKO EGOERA-BARRA -->
     <bottom>
         <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="status-bar">
-            <Label fx:id="lblIturria" styleClass="status-ok" text="Iturria: API (http://localhost:5000/api/v1/lehengaiak)" />
+            <Label fx:id="lblIturria" styleClass="status-ok" text="Iturria: API (http://localhost:5050/api/v1/lehengaiak)" />
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="lblEgoeraMezua" styleClass="status-text" text="Prest" />
         </HBox>

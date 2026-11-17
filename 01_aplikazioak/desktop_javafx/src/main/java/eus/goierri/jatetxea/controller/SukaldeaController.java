@@ -203,7 +203,7 @@ public class SukaldeaController {
                     tblEskaerak.setItems(FXCollections.observableArrayList(sukaldekoEskaerak));
                     lblEskaeraKopurua.setText(sukaldekoEskaerak.size() + " eskaera");
 
-                    lblKonexioa.setText("API konexioa: KONEKTATUTA (http://localhost:5000)");
+                    lblKonexioa.setText("API konexioa: KONEKTATUTA (" + ApiZerbitzua.getBaseUrl() + ")");
                     lblKonexioa.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
                     lblAzkenFreskatzea.setText("Azken freskatzea: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                     lblEgoeraMezua.setText("Datuak eguneratuta (Sukaldeko platerak).");

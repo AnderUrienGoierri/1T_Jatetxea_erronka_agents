@@ -27,6 +27,10 @@ public class ApiZerbitzua {
     private final HttpClient bezeroa;
     private final Gson gson;
 
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
     private static String hasieratuBaseUrl() {
         String envUrl = System.getenv("API_BASE_URL");
         if (envUrl != null && !envUrl.isBlank()) {
@@ -113,8 +117,7 @@ public class ApiZerbitzua {
     public HealthResult egiaztatuOsasuna() {
         String[] urls = new String[] {
             BASE_URL.replaceAll("/api/v1/?$", "/health"),
-            "http://localhost:5050/health",
-            "http://localhost:5000/health"
+            "http://localhost:5050/health"
         };
 
         for (String u : urls) {

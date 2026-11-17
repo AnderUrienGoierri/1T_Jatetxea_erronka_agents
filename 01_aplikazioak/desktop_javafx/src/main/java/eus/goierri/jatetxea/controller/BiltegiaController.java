@@ -134,7 +134,7 @@ public class BiltegiaController {
                 List<Lehengaia> zerrenda = api.lortuLehengaiak();
                 Platform.runLater(() -> {
                     eguneratuDatuZerrenda(zerrenda);
-                    lblIturria.setText("Iturria: REST API (http://localhost:5000/api/v1/lehengaiak)");
+                    lblIturria.setText("Iturria: REST API (" + ApiZerbitzua.getBaseUrl() + "/lehengaiak)");
                     lblIturria.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
                     lblEgoeraMezua.setText("APItik " + zerrenda.size() + " lehengai kargatu dira.");
                 });

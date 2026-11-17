@@ -73,7 +73,7 @@ public class ApiService
         }
         catch
         {
-            return (false, false, "API zerbitzaria deskonektatuta dago (http://localhost:5000).");
+            return (false, false, $"API zerbitzaria deskonektatuta dago ({_baseUrl}).");
         }
     }
 
@@ -137,7 +137,7 @@ public class ApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"LoginAsync konexio errorea: {ex.Message}");
-            return (false, "Ezin izan da API zerbitzariarekin konektatu (http://localhost:5000). Ziurtatu martxan dagoela.", null);
+            return (false, $"Ezin izan da API zerbitzariarekin konektatu ({_baseUrl}). Ziurtatu martxan dagoela.", null);
         }
     }
 

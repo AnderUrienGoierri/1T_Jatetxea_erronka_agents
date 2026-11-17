@@ -205,7 +205,7 @@ public partial class MahaiakForm : Form
         {
             var lblError = new Label
             {
-                Text = "Ez da mahairik aurkitu datu-basean edo API konexioa falta da.\nMesedez, egiaztatu backend zerbitzaria (http://localhost:5000) martxan dagoela.",
+                Text = "Ez da mahairik aurkitu datu-basean edo API konexioa falta da.\nMesedez, egiaztatu backend zerbitzaria (http://localhost:5050) martxan dagoela.",
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(220, 38, 38),
                 AutoSize = false,

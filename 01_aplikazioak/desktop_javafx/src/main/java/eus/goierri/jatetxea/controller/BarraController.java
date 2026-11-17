@@ -229,7 +229,7 @@ public class BarraController {
                     tblEskaerak.setItems(FXCollections.observableArrayList(barrakoEskaerak));
                     lblEskaeraKopurua.setText(barrakoEskaerak.size() + " eskaera");
 
-                    lblKonexioa.setText("API konexioa: KONEKTATUTA (http://localhost:5000)");
+                    lblKonexioa.setText("API konexioa: KONEKTATUTA (" + ApiZerbitzua.getBaseUrl() + ")");
                     lblKonexioa.setStyle("-fx-text-fill: #166534; -fx-font-weight: bold;");
                     lblAzkenFreskatzea.setText("Azken freskatzea: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                     lblEgoeraMezua.setText("Datuak eguneratuta (Barrako edariak eta kafeak).");

@@ -615,7 +615,7 @@ partial class LoginForm
         lblStatus.Name = "lblStatus";
         lblStatus.Size = new Size(480, 50);
         lblStatus.TabIndex = 5;
-        lblStatus.Text = "API zerbitzaria deskonektatuta dago!\nEgiaztatu martxan dagoela (http://localhost:5000)";
+        lblStatus.Text = "API zerbitzaria deskonektatuta dago!\nEgiaztatu martxan dagoela (http://localhost:5050)";
         lblStatus.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // btnLogin

@@ -632,7 +632,7 @@ public partial class EskaeraForm : Form
             var (arrakastaSortu, mezuaSortu, eskaeraSortua) = await _api.SortuEskaeraAsync(_mahaia.Id, _langilea.Id, _pertsonaKopurua);
             if (!arrakastaSortu || eskaeraSortua == null)
             {
-                MessageBox.Show($"Ezin izan da komanda sortu: {mezuaSortu}\n\nEgiaztatu API zerbitzaria (http://localhost:5000) martxan dagoela.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ezin izan da komanda sortu: {mezuaSortu}\n\nEgiaztatu API zerbitzaria (http://localhost:5050) martxan dagoela.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 btnBidali.Enabled = true;
                 btnBidali.Text = "ESKAERA BIDALI";
                 return;

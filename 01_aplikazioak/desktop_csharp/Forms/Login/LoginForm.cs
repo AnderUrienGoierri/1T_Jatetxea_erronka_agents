@@ -49,7 +49,7 @@ public partial class LoginForm : Form
             TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(220, 38, 38),
-            Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5000)"
+            Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5050)"
         };
 
         _lblOfflineSubtitle = new Label
@@ -446,12 +446,12 @@ public partial class LoginForm : Form
                     item.Panel.Visible = false;
                 }
 
-                _lblOfflineTitle.Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5000)";
+                _lblOfflineTitle.Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5050)";
                 _lblOfflineTitle.ForeColor = Color.FromArgb(220, 38, 38);
                 _lblOfflineSubtitle.Text = "Automatikoki berriro saiatuko da... edo sakatu 'BERRIZ SAIATU'";
                 _pnlOfflineNotice.Visible = true;
 
-                lblStatus.Text = $"Ezin izan da APIarekin konektatu ({DateTime.Now:HH:mm:ss}).\nEgiaztatu zerbitzaria martxan dagoela (http://localhost:5000).";
+                lblStatus.Text = $"Ezin izan da APIarekin konektatu ({DateTime.Now:HH:mm:ss}).\nEgiaztatu zerbitzaria martxan dagoela (http://localhost:5050).";
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
 
                 lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";
