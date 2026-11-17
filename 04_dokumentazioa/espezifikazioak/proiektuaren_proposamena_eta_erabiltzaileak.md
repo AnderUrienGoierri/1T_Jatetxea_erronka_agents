@@ -4,7 +4,7 @@
 
 Dokumentu honek Jatetxearen Erronka Integraleko proposamen arkitektonikoa eta funtzionala laburbiltzen du. Soluzio honen helburua jatetxe baten eguneroko jardun osoa digitalizatzea eta automatizatzea da, bezeroak erreserba egiten duen unetik hasi eta hornitzaileen stocka kudeatu edota fakturazioa burutu arte.
 
-Informazio guztia zentralizatuta dago backend API baten bidez (ASP.NET Core REST API), datu-base sendo baten gainean (PostgreSQL), eragiketa-fluxu bakoitzari dagokion interfaze espezifikoa eskainiz.
+Informazio operatibo guztia zentralizatuta dago backend API baten bidez (ASP.NET Core REST API), datu-base sendo baten gainean (**MySQL** jatetxearen datu-base operatibo nagusirako, eta **PostgreSQL** esklusiboki Odoo ERP sistemak kudeatzen duena). Sistema honetan arkitektura sendo, moderno eta plataforma bakoitzera optimizatua aukeratu da: mugikor eta tablet gailuetan Android natiboa erabiltzen da (Flutter erabili beharrean), eta eragiketa-fluxu bakoitzari bere zereginetarako interfaze aproposena eskaintzen zaio.
 
 ---
 
@@ -12,14 +12,14 @@ Informazio guztia zentralizatuta dago backend API baten bidez (ASP.NET Core REST
 
 Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
-| Rola / Erabiltzailea        | Erabilitako Aplikazioak                                                                       | Plataforma / Teknologia                                             | Funtzio Nagusiak                                                                                                                   |
-| :-------------------------- | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------- |
-| **Bezeroak**                | Web-App (`web_php` / HTML-JS)Mugikorreko App-a (`mobile_bezeroa`)                             | Web (HTML5/JS/PHP)Android / iOS (Flutter)                           | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin, auto-eskaerak bideratu eta faktura ikusi.                         |
-| **Zerbitzariak (Jantokia)** | Komandera Mugikorra (`zerbitzaria_komandera_android`)Komandera Flutter (`mobile_zerbitzaria`) | Android Natiboa (Jetpack Compose)Multiplataforma (Flutter)          | Mahaien mapa eta okupazioa kudeatu, komandak jaso mahai ondoan, eskaerak sukaldera bidali eta kobraketak bideratu.                 |
-| **Sukaldariak**             | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)KDS Mahaigainekoa (`desktop_javafx`)       | Android TV (Leanback / Compose)Desktop (Java 21, JavaFX)            | Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Prestatzen, Prest) eta lehengaiak gastatu. |
-| **Barrakoa (Kutxazaina)**   | TPV Salmenta Puntua (`desktop_csharp`)                                                        | Windows Desktop (.NET 10 WinForms/WPF)                              | Barran zuzeneko salmentak erregistratu, tiketak eta fakturak inprimatu, kontuak kobratu eta mahaien egoera globala ikusi.          |
-| **Biltegikoak**             | Biltegi Kudeatzailea (`desktop_javafx`)ERP Kudeaketa (`odoo_erp`)                             | Desktop (JavaFX MVC)Web ERP (Odoo)                                  | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso eta erosketa-zerrendak sortu.         |
-| **Admin TI / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)ERP / Finantzak (`odoo_erp`)Zentral API (`backend_api`)        | Web Dashboard (Angular / React / HTML)Odoo ERPASP.NET Core REST API | Langileen altak/bajak, baimenak (RBAC), azpiegitura birtualaren monitorizazioa, salmenta txostenak eta segurtasun-kopiak.          |
+| Rola / Erabiltzailea        | Erabilitako Aplikazioak                                                                                             | Plataforma / Teknologia                                             | Funtzio Nagusiak                                                                                                                   |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------- |
+| **Bezeroak**                | Web-App (`web_php` / HTML-JS)                                                                                       | Web (HTML5/JS/PHP)                                                  | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin eta eguneko menua ikusi.                                           |
+| **Zerbitzariak (Jantokia)** | TPV Salmenta Puntua (`desktop_csharp`)<br>Komandera Android (`zerbitzaria_komandera_android`)                        | Windows Desktop (.NET 10 WinForms)<br>Android (Mugikorra + Tableta) | Mahaien mapa eta okupazioa kudeatu, erreserben egutegia ikusi, komandak mahai ondoan jaso, sukaldera bidali eta kobraketak bideratu. |
+| **Sukaldariak**             | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX Aplikazioa (`desktop_javafx` - KDS Modulua)             | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX)        | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda) eta lehengaiak kontrolatu. |
+| **Barrakoa (Kutxazaina)**   | TPV Salmenta Puntua (`desktop_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu eta mugikorrean komandak jaso. |
+| **Biltegikoak**             | JavaFX Aplikazioa (`desktop_javafx` - Biltegia/Stock)<br>ERP Kudeaketa (`odoo_erp`)                                  | Desktop (JavaFX)<br>Web ERP (Odoo 17 / PostgreSQL)                  | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso eta erosketa-zerrendak kudeatu.         |
+| **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Aplikazioa (`desktop_javafx`)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_api`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), finantza-txostenak eta segurtasun-kopiak. |
 
 ---
 
@@ -27,41 +27,45 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ![Arkitektura Diagrama](arkitektura_diagrama.svg)
 
-### 3.1. Bezeroen Interfazeak
+### 3.1. Bezeroen Interfazea
 
 - **Web-App (`01_aplikazioak/web_php`):** Jatetxearen atari publikoa. Bezeroak mahai-erreserbak egiteko aukera du, eguneko menua eta karta ikusi eta alergenoen araberako iragazketa egiteko. Stockik ez duten platerak automatikoki agortu gisa agertzen dira.
-- **Mugikorreko Aplikazioa (`01_aplikazioak/mobile_bezeroa`):** Flutter bidez garatua, bezeroak bere gailutik mahai gaineko QR kodea eskaneatu eta eskaerak zuzenean bideratzeko aukera ematen du.
 
 ### 3.2. Zerbitzarien eta Jantokiaren Interfazeak
 
-- **Komandera Android Natiboa (`01_aplikazioak/zerbitzaria_komandera_android`):** Jetpack Compose bidez sortua, telefono zein tablet tamainetara egokitzen den interfaze modernoa. Zerbitzariak mahaien egoera ikus dezake (Libre, Okupatua, Eskaerarekin), komandak platerka jaso, oharrak gehitu (adib. haragia puntuan) eta eskaera sukaldera igorri.
-- **Multiplataforma Komandera (`01_aplikazioak/mobile_zerbitzaria`):** Flutter bidez egindako komandera alternatiboa.
+- **TPV Salmenta Puntua Aretoa & Kutxazaina (`01_aplikazioak/desktop_csharp`):** Jantokiko zerbitzariek eta arduradunek erabilia. Mahaien banaketa interaktiboa (Jangela Nagusia, Terraza, Barra, VIP), erreserben 5 hilabeteko egutegi integrala eta kobraketa azkarrak bideratzen ditu.
+- **Komandera Android Natiboa (`01_aplikazioak/zerbitzaria_komandera_android`):** Jetpack Compose bidez garatua, telefono zein tablet formatuetara guztiz egokitua. Zerbitzariak esku-gailutik mahai bakoitzeko komandak jaso ditzake, ohar bereziak jarri (alergiak, haragi-puntua) eta berehala sukaldera edo barrara bidali.
 
-### 3.3. Barrako eta Salmenta Puntuko Interfazea
+### 3.3. Sukaldeko Interfazeak (KDS - Kitchen Display System)
 
-- **C# .NET 10 Desktop TPV (`01_aplikazioak/desktop_csharp`):** Barran kokatutako ukipen-pantailarako terminal sendoa. Mahai bakoitzeko kontua ixtea, faktura zatituak kudeatzea, txartel/eskudiruzko kobraketak egitea eta eguneko itxiera ekonomikoa (Z kaxa) burutzea ahalbidetzen du.
+- **Android TV KDS (`01_aplikazioak/sukaldea_kds_android_tv`):** Sukaldeko hormako telebista edo pantaila nagusirako diseinatua (Android TV / Jetpack Compose). Sartzen diren aginduak denbora errealean erakusten ditu, txanden eta prestaketa-denboren arabera ordenatuta.
+- **JavaFX Mahaigaineko Aplikazioa (`01_aplikazioak/desktop_javafx` - Sukaldea KDS):** Sukaldari buruak eta laguntzaileek plateren egoerak ("Zai", "Martxan", "Eginda") klik bakarrean kudeatzeko aukera dute.
 
-### 3.4. Sukaldeko Interfazeak (KDS - Kitchen Display System)
+### 3.4. Barrako eta Salmenta Puntuko Interfazeak
 
-- **Android TV KDS (`01_aplikazioak/sukaldea_kds_android_tv`):** Sukaldeko horman kokatutako telebista edo pantaila handirako pentsatua. Sartzen diren komandak txartel moduan bistaratzen ditu, lehentasunaren arabera ordenatuta eta denbora-markekin.
-- **JavaFX KDS eta Biltegia (`01_aplikazioak/desktop_javafx`):** MVC arkitekturako mahaigaineko aplikazioa. Sukaldariek komandak ikusi eta "Prestatzen" edo "Bukatua" markatu ditzakete bertatik.
+- **C# .NET 10 Desktop TPV (`01_aplikazioak/desktop_csharp`):** Barran kokatutako terminal nagusia. Tiketak eta faktura fiskalak inprimatzea, zatitutako ordainketak (eskudirua, txartela) eta eguneko kaxa-itxiera ahalbidetzen ditu.
+- **JavaFX Barra BDS Modulua (`01_aplikazioak/desktop_javafx`):** Barran prestatzeko diren edari, kafe eta aperitiboen komandak bereizita kudeatzeko pantaila dedikatua.
+- **Android Komandera Mugikorra eta Tableta (`01_aplikazioak/zerbitzaria_komandera_android`):** Barrako langileek ere erabil dezakete mugikor edo tabletan eskaerak azkar hartu eta egoerak ikusteko.
 
 ### 3.5. Biltegiko Interfazea
 
-- **JavaFX Biltegi Modulua (`01_aplikazioak/desktop_javafx`):** Jatetxeko despentsa eta hozkailuetako stock errealaren jarraipena. Gutxieneko stocketik behera dauden lehengaiak gorriz nabarmentzen ditu eta hornitzaileentzako erosketa-proposamena automatikoki kalkulatzen du.
-- **Odoo ERP integrazioa (`01_aplikazioak/odoo_erp`):** Erosketa-eskaera ofizialak, albaranak eta hornitzaileen fakturen kontabilitatea kudeatzeko.
+- **JavaFX Biltegia eta Stock Modulua (`01_aplikazioak/desktop_javafx`):** Jatetxeko biltegi, despentsa eta ganbarako stock errealaren jarraipena. Gutxieneko stocketik behera dauden osagaiak gorriz bistaratzen ditu hornidura bermatuz.
+- **Odoo 17 ERP Integrazioa (`01_aplikazioak/odoo_erp`):** Hornitzaileen erosketa-eskaera ofizialak, albaranen sarrera eta hornitzaileen fakturen kontabilitatea kudeatzeko (PostgreSQL gainean).
 
-### 3.6. Administrazioa eta TI Kudeaketa
+### 3.6. Administrazioa, TI eta Zuzendaritza
 
-- **Admin IT Zentrala (`01_aplikazioak/admin_IT_zentrala`):** Sistemaren administratzailearentzako kontrol-panela. Langileen kudeaketa (rolak, baimenak, PINak), jatetxeko gailuen monitorizazioa eta azpiegitura-zerbitzuen ikuskaritza ahalbidetzen ditu.
-- **Backend REST API (`01_aplikazioak/backend_api`):** Aplikazio guztiei zerbitzua ematen dien nukleoa. Datu-basearekiko transakzio seguruak bermatzen ditu (stock deskontua, eskaera egoerak, balidazioak).
+- **Admin IT Zentrala (`01_aplikazioak/admin_IT_zentrala`):** Sistemaren administratzaileentzako aginte-zentroa. Docker zerbitzuen, ataken, sare-interfazearen, aplikazioen abiarazleen eta VirtualBox makina birtualen kontrol osoa eskaintzen du.
+- **JavaFX Aplikazio Integratua (`01_aplikazioak/desktop_javafx`):** Admin IT eta Zuzendaritzak sarbide osoa dute Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) moduluetara saio-hasiera bakarretik PIN bidez.
+- **Odoo ERP (`01_aplikazioak/odoo_erp`):** Zuzendaritzarentzat finantzak, langileen nominak eta txosten ekonomiko globalak aztertzeko tresna.
+- **Backend REST API Zentrala (`01_aplikazioak/backend_api`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die.
 
 ---
 
-## 4. Azpiegitura Birtuala eta Segurtasuna
+## 4. Azpiegitura Birtuala eta Datu-Baseak
 
-Proiektu honek bere azpiegitura birtual propioa du (`02_azpiegitura_birtuala/`), sare mailan isolamendu zorrotza bermatzen duena:
-
+- **Datu-Baseen Banaketa:**
+  - **MySQL (`jatetxea_db`):** Jatetxearen aplikazio operatibo guztien datu-base nagusia (langileak, mahaiak, platerak, eskaerak, erreserbak, fakturak eta stock eragiketak).
+  - **PostgreSQL (`jatetxea_odoo`):** Odoo 17 ERP sistemak esklusiboki erabiltzen duen datu-basea (kontabilitatea, erosketak eta nominak kudeatzeko).
 - **OPNsense Firewall:** Sareak segmentatzen ditu (Bezeroen Wi-Fi publikoa, Langileen sarea, eta Zerbitzarien DMZ / IT kudeaketa).
-- **Docker Edukiontziak:** Sukaldeko zerbitzuak, APIa eta datu-basea modu arin eta errepikagarrian hedatzeko.
-- **Active Directory / LDAP / RBAC:** Erabiltzaile bakoitzak bere profilari dagozkion datuak bakarrik ikus ditzakeela ziurtatuz.
+- **Docker Edukiontziak:** Backend APIa, datu-baseak eta web zerbitzuak modu arin, isolatu eta fidagarrian hedatzeko.
+- **Active Directory / LDAP / RBAC:** Erabiltzaile bakoitzak bere profilari dagozkion datuak bakarrik ikus ditzakeela ziurtatuz (BCrypt PIN eta rolen araberako sarbide-kontrola).
