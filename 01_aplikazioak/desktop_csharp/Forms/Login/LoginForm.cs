@@ -7,8 +7,19 @@ namespace Jatetxea.Desktop.Forms;
 
 public partial class LoginForm : Form
 {
+    private sealed class AvatarCardInfo
+    {
+        public LangileaDto Langilea { get; set; } = null!;
+        public Panel Panel { get; set; } = null!;
+        public Label Circle { get; set; } = null!;
+        public Label Name { get; set; } = null!;
+        public Label Role { get; set; } = null!;
+    }
+
     private readonly ApiService _api;
     private List<LangileaDto> _langileak = new();
+    private List<LangileaDto> _baimendutakoLangileak = new();
+    private readonly List<AvatarCardInfo> _avatarCards = new();
     private LangileaDto? _aukeratutakoLangilea;
     private string _pin = string.Empty;
     private bool _apiKonektatuta = false;
@@ -37,7 +48,8 @@ public partial class LoginForm : Form
         // 1. Lineaz kanpoko panela (Avatarren gunean bistaratzeko)
         _pnlOfflineNotice = new Panel
         {
-            Dock = DockStyle.Fill,
+            Location = new Point(15, 10),
+            Size = new Size(490, 114),
             BackColor = Color.White,
             Visible = true
         };
@@ -45,7 +57,7 @@ public partial class LoginForm : Form
         _lblOfflineTitle = new Label
         {
             Dock = DockStyle.Top,
-            Height = 32,
+            Height = 36,
             TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI", 11F, FontStyle.Bold),
             ForeColor = Color.FromArgb(220, 38, 38),
@@ -79,12 +91,15 @@ public partial class LoginForm : Form
         _pnlOfflineNotice.Controls.Add(_lblOfflineSubtitle);
         _pnlOfflineNotice.Controls.Add(_lblOfflineTitle);
 
-        pnlAvatars.Controls.Add(_pnlOfflineNotice);
+        pnlCard.Controls.Add(_pnlOfflineNotice);
+        _pnlOfflineNotice.BringToFront();
 
         _pnlOfflineNotice.Resize += (s, e) =>
         {
-            _btnOfflineRetry.Location = new Point((_pnlOfflineNotice.Width - _btnOfflineRetry.Width) / 2, 60);
+            _btnOfflineRetry.Location = new Point((_pnlOfflineNotice.Width - _btnOfflineRetry.Width) / 2, 65);
         };
+
+        pnlAvatars.MouseWheel += OnAvatarsMouseWheel;
 
         // 2. Goiko barrako konexio egoera-panela
         _pnlTopStatus = new Panel
@@ -195,9 +210,6 @@ public partial class LoginForm : Form
 
         // Teklatuko botoiak lotu
         LotuTeklatuBotoiak();
-
-        // Avatarren klikak eta margoak prestatu
-        PrestatuAvatarrak();
 
         // Botoi nagusia: konektatuta badago Login egin, deskonektatuta badago berriz konektatu
         btnLogin.Click += async (s, e) =>
@@ -344,57 +356,248 @@ public partial class LoginForm : Form
         btnKeyBack.Click += (s, e) => KeypadBotoiaKlikatua("←");
     }
 
-    private void PrestatuAvatarrak()
+    private void OnAvatarsMouseWheel(object? sender, MouseEventArgs e)
     {
-        (Panel Panel, Label Circle, Label Name)[] items = {
-            (pnlAvatar1, lblCircle1, lblName1),
-            (pnlAvatar2, lblCircle2, lblName2),
-            (pnlAvatar3, lblCircle3, lblName3),
-            (pnlAvatar4, lblCircle4, lblName4),
-            (pnlAvatar5, lblCircle5, lblName5)
-        };
-
-        for (int i = 0; i < items.Length; i++)
+        if (pnlAvatars.HorizontalScroll.Visible)
         {
-            int index = i;
-            var item = items[index];
+            int change = (e.Delta > 0 ? -1 : 1) * 94;
+            int newVal = Math.Clamp(pnlAvatars.HorizontalScroll.Value + change,
+                                    pnlAvatars.HorizontalScroll.Minimum,
+                                    pnlAvatars.HorizontalScroll.Maximum);
+            pnlAvatars.AutoScrollPosition = new Point(newVal, 0);
+        }
+    }
 
-            item.Circle.Paint += (s, e) =>
+    private void LotuHorizontalaMouseWheel(Control ctrl)
+    {
+        ctrl.MouseWheel += OnAvatarsMouseWheel;
+        foreach (Control child in ctrl.Controls)
+        {
+            LotuHorizontalaMouseWheel(child);
+        }
+    }
+
+    private static bool DaBaimendua(LangileaDto l)
+    {
+        var rola = (l.Rola ?? "").Trim();
+        if (rola.Equals("Zerbitzaria", StringComparison.OrdinalIgnoreCase)) return true;
+        if (rola.Equals("Barrakoa", StringComparison.OrdinalIgnoreCase)) return true;
+        if (rola.Equals("AdminIT", StringComparison.OrdinalIgnoreCase)) return true;
+        if (rola.Equals("Admin", StringComparison.OrdinalIgnoreCase)) return true;
+        if (rola.Equals("Kudeatzailea", StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
+    private static int LortuRolaLehentasuna(string rola)
+    {
+        var r = (rola ?? "").Trim();
+        if (r.Equals("Zerbitzaria", StringComparison.OrdinalIgnoreCase)) return 1;
+        if (r.Equals("Barrakoa", StringComparison.OrdinalIgnoreCase)) return 2;
+        if (r.Equals("AdminIT", StringComparison.OrdinalIgnoreCase) || r.Equals("Admin", StringComparison.OrdinalIgnoreCase)) return 3;
+        if (r.Equals("Kudeatzailea", StringComparison.OrdinalIgnoreCase)) return 4;
+        return 99;
+    }
+
+    private void BistaratuLangileak(List<LangileaDto> langileak)
+    {
+        pnlAvatars.SuspendLayout();
+        pnlAvatars.AutoScrollPosition = new Point(0, 0);
+        pnlAvatars.Controls.Clear();
+        _avatarCards.Clear();
+
+        // Iragazi eta ordenatu: Zerbitzariak lehenik (Mikel Maître buru), gero Barrakoak, ondoren AdminIT eta Kudeatzaileak.
+        _baimendutakoLangileak = langileak
+            .Where(DaBaimendua)
+            .OrderBy(l => LortuRolaLehentasuna(l.Rola))
+            .ThenBy(l => l.Erabiltzailea == "mikel_zerb" ? 0 :
+                         l.Erabiltzailea == "gorka_barra" ? 0 :
+                         l.Erabiltzailea == "anderu" ? 0 : 1)
+            .ThenBy(l => l.Izena)
+            .ToList();
+
+        if (_baimendutakoLangileak.Count == 0)
+        {
+            pnlAvatars.ResumeLayout(true);
+            return;
+        }
+
+        const int cardWidth = 86;
+        const int cardHeight = 90;
+        const int gap = 8;
+        int count = _baimendutakoLangileak.Count;
+        int totalWidth = count * cardWidth + (count - 1) * gap;
+        int startX = totalWidth < pnlAvatars.Width ? Math.Max(0, (pnlAvatars.Width - totalWidth) / 2) : 0;
+
+        var lehenIzenak = _baimendutakoLangileak.Select(x => x.Izena.Trim().Split(' ')[0]).ToList();
+
+        for (int i = 0; i < count; i++)
+        {
+            var l = _baimendutakoLangileak[i];
+            var zatiak = l.Izena.Trim().Split(' ');
+            string lehenIzena = zatiak[0];
+            bool bikoiztua = lehenIzenak.Count(x => x.Equals(lehenIzena, StringComparison.OrdinalIgnoreCase)) > 1;
+
+            string shortName = l.Erabiltzailea switch
+            {
+                "anderu" => "Ander U.",
+                "ander_m_zuz" => "Ander M.",
+                _ => (bikoiztua && zatiak.Length >= 2 && !string.IsNullOrEmpty(zatiak[1]))
+                        ? $"{lehenIzena} {zatiak[1][0]}."
+                        : lehenIzena
+            };
+
+            string initials = l.Erabiltzailea switch
+            {
+                "mikel_zerb" => "MA",
+                "maite_zerb" => "MZ",
+                "unai_zerb" => "UL",
+                "gorka_barra" => "GM",
+                "uxue_barra" => "UE",
+                "anderu" => "AU",
+                "julen" => "JA",
+                "iker" => "IA",
+                "aratz" => "AH",
+                "ander_m_zuz" => "AM",
+                "joseba_r_zuz" => "JR",
+                "estebe_o_zuz" => "EO",
+                _ => (zatiak.Length >= 2 && !string.IsNullOrEmpty(zatiak[1]))
+                        ? $"{zatiak[0][0]}{zatiak[1][0]}".ToUpper()
+                        : (zatiak[0].Length >= 2 ? zatiak[0].Substring(0, 2).ToUpper() : zatiak[0].ToUpper())
+            };
+
+            string roleText = l.Rola switch
+            {
+                "Zerbitzaria" => (l.Erabiltzailea == "mikel_zerb" ? "Maître" : "Jangela"),
+                "Barrakoa" => "Barra",
+                "AdminIT" => "Admin IT",
+                "Admin" => "Admin",
+                "Kudeatzailea" => "Zuzendari",
+                _ => l.Rola
+            };
+
+            var pnlCardItem = new Panel
+            {
+                Size = new Size(cardWidth, cardHeight),
+                Location = new Point(startX + i * (cardWidth + gap), 2),
+                Cursor = Cursors.Hand,
+                BackColor = Color.Transparent
+            };
+
+            var lblCircle = new Label
+            {
+                Size = new Size(48, 48),
+                Location = new Point((cardWidth - 48) / 2, 2),
+                Text = initials,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Cursor = Cursors.Hand,
+                BackColor = Color.Transparent
+            };
+
+            var lblName = new Label
+            {
+                Size = new Size(cardWidth, 18),
+                Location = new Point(0, 52),
+                Text = shortName,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Cursor = Cursors.Hand,
+                AutoEllipsis = true
+            };
+
+            var lblRole = new Label
+            {
+                Size = new Size(cardWidth, 16),
+                Location = new Point(0, 71),
+                Text = roleText,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 7.5F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                Cursor = Cursors.Hand,
+                AutoEllipsis = true
+            };
+
+            var cardInfo = new AvatarCardInfo
+            {
+                Langilea = l,
+                Panel = pnlCardItem,
+                Circle = lblCircle,
+                Name = lblName,
+                Role = lblRole
+            };
+
+            lblCircle.Paint += (s, e) =>
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                bool isSelected = false;
-                if (index < _langileak.Count && _aukeratutakoLangilea != null)
-                {
-                    isSelected = _aukeratutakoLangilea.Id == _langileak[index].Id;
-                }
+                bool isSelected = _aukeratutakoLangilea != null && _aukeratutakoLangilea.Id == cardInfo.Langilea.Id;
 
                 using var bgBrush = new SolidBrush(isSelected ? Color.FromArgb(239, 246, 255) : Color.FromArgb(241, 245, 249));
-                e.Graphics.FillEllipse(bgBrush, 2, 2, item.Circle.Width - 5, item.Circle.Height - 5);
+                e.Graphics.FillEllipse(bgBrush, 2, 2, lblCircle.Width - 5, lblCircle.Height - 5);
 
                 var ertzAkolorea = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(203, 213, 225);
-                float stroke = isSelected ? 2.8f : 1.2f;
+                float stroke = isSelected ? 3.0f : 1.2f;
                 using var pen = new Pen(ertzAkolorea, stroke);
-                e.Graphics.DrawEllipse(pen, 2, 2, item.Circle.Width - 5, item.Circle.Height - 5);
+                e.Graphics.DrawEllipse(pen, 2, 2, lblCircle.Width - 5, lblCircle.Height - 5);
 
                 var textColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(71, 85, 105);
-                using var fontCircle = new Font("Segoe UI", 12F, FontStyle.Bold);
-                TextRenderer.DrawText(e.Graphics, item.Circle.Text, fontCircle,
-                    new Rectangle(0, 0, item.Circle.Width, item.Circle.Height),
+                using var fontCircle = new Font("Segoe UI", 11F, FontStyle.Bold);
+                TextRenderer.DrawText(e.Graphics, lblCircle.Text, fontCircle,
+                    new Rectangle(0, 0, lblCircle.Width, lblCircle.Height),
                     textColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             };
 
-            void OnClick(object? s, EventArgs e)
+            void OnItemClick(object? s, EventArgs e)
             {
-                if (index < _langileak.Count)
-                {
-                    HautatuLangilea(_langileak[index]);
-                }
+                HautatuLangilea(cardInfo.Langilea);
             }
 
-            item.Panel.Click += OnClick;
-            item.Circle.Click += OnClick;
-            item.Name.Click += OnClick;
+            pnlCardItem.Click += OnItemClick;
+            lblCircle.Click += OnItemClick;
+            lblName.Click += OnItemClick;
+            lblRole.Click += OnItemClick;
+
+            LotuHorizontalaMouseWheel(pnlCardItem);
+
+            pnlCardItem.Controls.Add(lblCircle);
+            pnlCardItem.Controls.Add(lblName);
+            pnlCardItem.Controls.Add(lblRole);
+
+            pnlAvatars.Controls.Add(pnlCardItem);
+            _avatarCards.Add(cardInfo);
+        }
+
+        pnlAvatars.ResumeLayout(true);
+
+        // Hautatu lehenetsitako langilea (Mikel Maître edo lehena)
+        var lehenetsia = _baimendutakoLangileak.FirstOrDefault(x => x.Erabiltzailea == "mikel_zerb")
+                      ?? _baimendutakoLangileak.FirstOrDefault();
+        if (lehenetsia != null)
+        {
+            HautatuLangilea(lehenetsia);
+        }
+    }
+
+    private void HautatuLangilea(LangileaDto langilea)
+    {
+        _aukeratutakoLangilea = langilea;
+        _pin = string.Empty;
+        FreskatuPinDots();
+        lblStatus.Text = "";
+
+        foreach (var item in _avatarCards)
+        {
+            bool isSelected = item.Langilea.Id == langilea.Id;
+            item.Name.Font = new Font("Segoe UI", 9.5F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            item.Name.ForeColor = isSelected ? Color.FromArgb(30, 41, 59) : Color.FromArgb(100, 116, 139);
+            item.Role.Font = new Font("Segoe UI", 7.5F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            item.Role.ForeColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(148, 163, 184);
+            item.Circle.Invalidate();
+
+            if (isSelected)
+            {
+                pnlAvatars.ScrollControlIntoView(item.Panel);
+            }
         }
     }
 
@@ -406,14 +609,6 @@ public partial class LoginForm : Form
     {
         if (_kargatzenAriDa) return;
         _kargatzenAriDa = true;
-
-        (Panel Panel, Label Circle, Label Name)[] items = {
-            (pnlAvatar1, lblCircle1, lblName1),
-            (pnlAvatar2, lblCircle2, lblName2),
-            (pnlAvatar3, lblCircle3, lblName3),
-            (pnlAvatar4, lblCircle4, lblName4),
-            (pnlAvatar5, lblCircle5, lblName5)
-        };
 
         if (eskuz)
         {
@@ -439,12 +634,10 @@ public partial class LoginForm : Form
             {
                 _apiKonektatuta = false;
                 _langileak = new List<LangileaDto>();
+                _baimendutakoLangileak.Clear();
                 _aukeratutakoLangilea = null;
 
-                foreach (var item in items)
-                {
-                    item.Panel.Visible = false;
-                }
+                pnlAvatars.Visible = false;
 
                 _lblOfflineTitle.Text = "API zerbitzaria deskonektatuta dago!\n(http://localhost:5050)";
                 _lblOfflineTitle.ForeColor = Color.FromArgb(220, 38, 38);
@@ -471,12 +664,10 @@ public partial class LoginForm : Form
             {
                 _apiKonektatuta = false;
                 _langileak = new List<LangileaDto>();
+                _baimendutakoLangileak.Clear();
                 _aukeratutakoLangilea = null;
 
-                foreach (var item in items)
-                {
-                    item.Panel.Visible = false;
-                }
+                pnlAvatars.Visible = false;
 
                 _lblOfflineTitle.Text = "API-ra konektatuta | Datu-basea DESKONEKTATUTA!\n(3308 portua)";
                 _lblOfflineTitle.ForeColor = Color.FromArgb(234, 88, 12);
@@ -506,12 +697,10 @@ public partial class LoginForm : Form
             {
                 _apiKonektatuta = false;
                 _langileak = new List<LangileaDto>();
+                _baimendutakoLangileak.Clear();
                 _aukeratutakoLangilea = null;
 
-                foreach (var item in items)
-                {
-                    item.Panel.Visible = false;
-                }
+                pnlAvatars.Visible = false;
 
                 _lblOfflineTitle.Text = "Ez da zerbitzaririk aurkitu datu-basean";
                 _lblOfflineTitle.ForeColor = Color.FromArgb(194, 65, 12);
@@ -540,6 +729,7 @@ public partial class LoginForm : Form
             _autoKonexioTimer.Stop();
 
             _pnlOfflineNotice.Visible = false;
+            pnlAvatars.Visible = true;
             lblStatus.Text = "";
             lblPinTitle.Text = "SARTU PIN ZENBAKIA";
             lblPinTitle.ForeColor = Color.FromArgb(30, 41, 59);
@@ -552,46 +742,7 @@ public partial class LoginForm : Form
             _lblApiStatusText.ForeColor = Color.FromArgb(22, 163, 74);
             _lblApiStatusDot.Invalidate();
 
-            int count = Math.Min(_langileak.Count, 5);
-            int avatarWidth = count <= 3 ? 120 : (count == 4 ? 104 : 90);
-            int gap = count > 1 ? Math.Max(8, (pnlAvatars.Width - (count * avatarWidth)) / (count - 1)) : 0;
-            int totalWidth = count * avatarWidth + (count - 1) * gap;
-            int startX = Math.Max(0, (pnlAvatars.Width - totalWidth) / 2);
-
-            var lehenIzenak = _langileak.Select(x => x.Izena.Trim().Split(' ')[0]).ToList();
-
-            for (int i = 0; i < items.Length; i++)
-            {
-                if (i < count)
-                {
-                    var l = _langileak[i];
-                    var zatiak = l.Izena.Trim().Split(' ');
-                    string lehenIzena = zatiak[0];
-                    bool bikoiztua = lehenIzenak.Count(x => x.Equals(lehenIzena, StringComparison.OrdinalIgnoreCase)) > 1;
-                    string shortName = (bikoiztua && zatiak.Length >= 2) ? $"{lehenIzena} {zatiak[1][0]}." : lehenIzena;
-                    string initials = string.Join("", zatiak.Select(z => z.Length > 0 ? z[0].ToString() : "")).ToUpper();
-                    if (initials.Length > 2) initials = initials.Substring(0, 2);
-
-                    items[i].Name.Text = shortName;
-                    items[i].Circle.Text = initials;
-
-                    items[i].Panel.Size = new Size(avatarWidth, 100);
-                    items[i].Circle.Location = new Point((avatarWidth - 52) / 2, 2);
-                    items[i].Circle.Size = new Size(52, 52);
-                    items[i].Name.Location = new Point(0, 58);
-                    items[i].Name.Size = new Size(avatarWidth, 38);
-                    items[i].Name.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-
-                    items[i].Panel.Location = new Point(startX + i * (avatarWidth + gap), 2);
-                    items[i].Panel.Visible = true;
-                }
-                else
-                {
-                    items[i].Panel.Visible = false;
-                }
-            }
-
-            HautatuLangilea(_langileak[0]);
+            BistaratuLangileak(_langileak);
         }
         catch (Exception ex)
         {
@@ -616,33 +767,9 @@ public partial class LoginForm : Form
         await SaiatuKonektatzenAsync(eskuz: true);
     }
 
-    private void HautatuLangilea(LangileaDto langilea)
-    {
-        _aukeratutakoLangilea = langilea;
-        _pin = string.Empty;
-        FreskatuPinDots();
-        lblStatus.Text = "";
-
-        (Label Circle, Label Name)[] items = {
-            (lblCircle1, lblName1),
-            (lblCircle2, lblName2),
-            (lblCircle3, lblName3),
-            (lblCircle4, lblName4),
-            (lblCircle5, lblName5)
-        };
-
-        for (int i = 0; i < items.Length; i++)
-        {
-            bool isSelected = i < _langileak.Count && _langileak[i].Id == langilea.Id;
-            items[i].Name.Font = new Font("Segoe UI", 10F, isSelected ? FontStyle.Bold : FontStyle.Regular);
-            items[i].Name.ForeColor = isSelected ? Color.FromArgb(30, 41, 59) : Color.FromArgb(100, 116, 139);
-            items[i].Circle.Invalidate();
-        }
-    }
-
     private void KeypadBotoiaKlikatua(string txt)
     {
-        if (!_apiKonektatuta || _langileak.Count == 0 || _aukeratutakoLangilea == null)
+        if (!_apiKonektatuta || _baimendutakoLangileak.Count == 0 || _aukeratutakoLangilea == null)
         {
             lblStatus.Text = "APIa deskonektatuta dago. Sakatu 'BERRIZ SAIATU' edo itxaron automatikoki konektatzeko.";
             lblStatus.ForeColor = Color.FromArgb(220, 38, 38);

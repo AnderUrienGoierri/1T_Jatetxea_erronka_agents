@@ -21,21 +21,6 @@ partial class LoginForm
         lblZerbitzariak = new Label();
         pnlCard = new Panel();
         pnlAvatars = new Panel();
-        pnlAvatar1 = new Panel();
-        lblCircle1 = new Label();
-        lblName1 = new Label();
-        pnlAvatar2 = new Panel();
-        lblCircle2 = new Label();
-        lblName2 = new Label();
-        pnlAvatar3 = new Panel();
-        lblCircle3 = new Label();
-        lblName3 = new Label();
-        pnlAvatar4 = new Panel();
-        lblCircle4 = new Label();
-        lblName4 = new Label();
-        pnlAvatar5 = new Panel();
-        lblCircle5 = new Label();
-        lblName5 = new Label();
         pnlDivider = new Panel();
         lblPinTitle = new Label();
         pnlPinDots = new Panel();
@@ -61,11 +46,6 @@ partial class LoginForm
         pnlTopBar.SuspendLayout();
         pnlCard.SuspendLayout();
         pnlAvatars.SuspendLayout();
-        pnlAvatar1.SuspendLayout();
-        pnlAvatar2.SuspendLayout();
-        pnlAvatar3.SuspendLayout();
-        pnlAvatar4.SuspendLayout();
-        pnlAvatar5.SuspendLayout();
         pnlPinDots.SuspendLayout();
         pnlKeypad.SuspendLayout();
         SuspendLayout();
@@ -136,185 +116,11 @@ partial class LoginForm
         // 
         // pnlAvatars
         // 
-        pnlAvatars.Controls.Add(pnlAvatar1);
-        pnlAvatars.Controls.Add(pnlAvatar2);
-        pnlAvatars.Controls.Add(pnlAvatar3);
-        pnlAvatars.Controls.Add(pnlAvatar4);
-        pnlAvatars.Controls.Add(pnlAvatar5);
-        pnlAvatars.Location = new Point(15, 16);
+        pnlAvatars.AutoScroll = true;
+        pnlAvatars.Location = new Point(15, 10);
         pnlAvatars.Name = "pnlAvatars";
-        pnlAvatars.Size = new Size(490, 105);
+        pnlAvatars.Size = new Size(490, 114);
         pnlAvatars.TabIndex = 0;
-        // 
-        // pnlAvatar1
-        // 
-        pnlAvatar1.Controls.Add(lblCircle1);
-        pnlAvatar1.Controls.Add(lblName1);
-        pnlAvatar1.Cursor = Cursors.Hand;
-        pnlAvatar1.Location = new Point(4, 2);
-        pnlAvatar1.Name = "pnlAvatar1";
-        pnlAvatar1.Size = new Size(78, 88);
-        pnlAvatar1.TabIndex = 0;
-        pnlAvatar1.Visible = false;
-        // 
-        // lblCircle1
-        // 
-        lblCircle1.BackColor = Color.FromArgb(239, 246, 255);
-        lblCircle1.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        lblCircle1.ForeColor = Color.FromArgb(37, 99, 235);
-        lblCircle1.Location = new Point(16, 2);
-        lblCircle1.Name = "lblCircle1";
-        lblCircle1.Size = new Size(46, 46);
-        lblCircle1.TabIndex = 0;
-        lblCircle1.Text = "";
-        lblCircle1.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblName1
-        // 
-        lblName1.Font = new Font("Segoe UI", 8.5F);
-        lblName1.ForeColor = Color.FromArgb(51, 65, 85);
-        lblName1.Location = new Point(0, 52);
-        lblName1.Name = "lblName1";
-        lblName1.Size = new Size(78, 34);
-        lblName1.TabIndex = 1;
-        lblName1.Text = "";
-        lblName1.TextAlign = ContentAlignment.TopCenter;
-        // 
-        // pnlAvatar2
-        // 
-        pnlAvatar2.Controls.Add(lblCircle2);
-        pnlAvatar2.Controls.Add(lblName2);
-        pnlAvatar2.Cursor = Cursors.Hand;
-        pnlAvatar2.Location = new Point(86, 2);
-        pnlAvatar2.Name = "pnlAvatar2";
-        pnlAvatar2.Size = new Size(78, 88);
-        pnlAvatar2.TabIndex = 1;
-        pnlAvatar2.Visible = false;
-        // 
-        // lblCircle2
-        // 
-        lblCircle2.BackColor = Color.FromArgb(241, 245, 249);
-        lblCircle2.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        lblCircle2.ForeColor = Color.FromArgb(71, 85, 105);
-        lblCircle2.Location = new Point(16, 2);
-        lblCircle2.Name = "lblCircle2";
-        lblCircle2.Size = new Size(46, 46);
-        lblCircle2.TabIndex = 0;
-        lblCircle2.Text = "";
-        lblCircle2.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblName2
-        // 
-        lblName2.Font = new Font("Segoe UI", 8.5F);
-        lblName2.ForeColor = Color.FromArgb(51, 65, 85);
-        lblName2.Location = new Point(0, 52);
-        lblName2.Name = "lblName2";
-        lblName2.Size = new Size(78, 34);
-        lblName2.TabIndex = 1;
-        lblName2.Text = "";
-        lblName2.TextAlign = ContentAlignment.TopCenter;
-        // 
-        // pnlAvatar3
-        // 
-        pnlAvatar3.Controls.Add(lblCircle3);
-        pnlAvatar3.Controls.Add(lblName3);
-        pnlAvatar3.Cursor = Cursors.Hand;
-        pnlAvatar3.Location = new Point(168, 2);
-        pnlAvatar3.Name = "pnlAvatar3";
-        pnlAvatar3.Size = new Size(78, 88);
-        pnlAvatar3.TabIndex = 2;
-        pnlAvatar3.Visible = false;
-        // 
-        // lblCircle3
-        // 
-        lblCircle3.BackColor = Color.FromArgb(241, 245, 249);
-        lblCircle3.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        lblCircle3.ForeColor = Color.FromArgb(71, 85, 105);
-        lblCircle3.Location = new Point(16, 2);
-        lblCircle3.Name = "lblCircle3";
-        lblCircle3.Size = new Size(46, 46);
-        lblCircle3.TabIndex = 0;
-        lblCircle3.Text = "";
-        lblCircle3.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblName3
-        // 
-        lblName3.Font = new Font("Segoe UI", 8.5F);
-        lblName3.ForeColor = Color.FromArgb(51, 65, 85);
-        lblName3.Location = new Point(0, 52);
-        lblName3.Name = "lblName3";
-        lblName3.Size = new Size(78, 34);
-        lblName3.TabIndex = 1;
-        lblName3.Text = "";
-        lblName3.TextAlign = ContentAlignment.TopCenter;
-        // 
-        // pnlAvatar4
-        // 
-        pnlAvatar4.Controls.Add(lblCircle4);
-        pnlAvatar4.Controls.Add(lblName4);
-        pnlAvatar4.Cursor = Cursors.Hand;
-        pnlAvatar4.Location = new Point(250, 2);
-        pnlAvatar4.Name = "pnlAvatar4";
-        pnlAvatar4.Size = new Size(78, 88);
-        pnlAvatar4.TabIndex = 3;
-        pnlAvatar4.Visible = false;
-        // 
-        // lblCircle4
-        // 
-        lblCircle4.BackColor = Color.FromArgb(241, 245, 249);
-        lblCircle4.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        lblCircle4.ForeColor = Color.FromArgb(71, 85, 105);
-        lblCircle4.Location = new Point(16, 2);
-        lblCircle4.Name = "lblCircle4";
-        lblCircle4.Size = new Size(46, 46);
-        lblCircle4.TabIndex = 0;
-        lblCircle4.Text = "";
-        lblCircle4.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblName4
-        // 
-        lblName4.Font = new Font("Segoe UI", 8.5F);
-        lblName4.ForeColor = Color.FromArgb(51, 65, 85);
-        lblName4.Location = new Point(0, 52);
-        lblName4.Name = "lblName4";
-        lblName4.Size = new Size(78, 34);
-        lblName4.TabIndex = 1;
-        lblName4.Text = "";
-        lblName4.TextAlign = ContentAlignment.TopCenter;
-        // 
-        // pnlAvatar5
-        // 
-        pnlAvatar5.Controls.Add(lblCircle5);
-        pnlAvatar5.Controls.Add(lblName5);
-        pnlAvatar5.Cursor = Cursors.Hand;
-        pnlAvatar5.Location = new Point(332, 2);
-        pnlAvatar5.Name = "pnlAvatar5";
-        pnlAvatar5.Size = new Size(78, 88);
-        pnlAvatar5.TabIndex = 4;
-        pnlAvatar5.Visible = false;
-        // 
-        // lblCircle5
-        // 
-        lblCircle5.BackColor = Color.FromArgb(241, 245, 249);
-        lblCircle5.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-        lblCircle5.ForeColor = Color.FromArgb(71, 85, 105);
-        lblCircle5.Location = new Point(16, 2);
-        lblCircle5.Name = "lblCircle5";
-        lblCircle5.Size = new Size(46, 46);
-        lblCircle5.TabIndex = 0;
-        lblCircle5.Text = "";
-        lblCircle5.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblName5
-        // 
-        lblName5.Font = new Font("Segoe UI", 8.5F);
-        lblName5.ForeColor = Color.FromArgb(51, 65, 85);
-        lblName5.Location = new Point(0, 52);
-        lblName5.Name = "lblName5";
-        lblName5.Size = new Size(78, 34);
-        lblName5.TabIndex = 1;
-        lblName5.Text = "";
-        lblName5.TextAlign = ContentAlignment.TopCenter;
         // 
         // pnlDivider
         // 
@@ -649,11 +455,6 @@ partial class LoginForm
         pnlTopBar.PerformLayout();
         pnlCard.ResumeLayout(false);
         pnlAvatars.ResumeLayout(false);
-        pnlAvatar1.ResumeLayout(false);
-        pnlAvatar2.ResumeLayout(false);
-        pnlAvatar3.ResumeLayout(false);
-        pnlAvatar4.ResumeLayout(false);
-        pnlAvatar5.ResumeLayout(false);
         pnlPinDots.ResumeLayout(false);
         pnlKeypad.ResumeLayout(false);
         ResumeLayout(false);
@@ -665,21 +466,6 @@ partial class LoginForm
     private Label lblZerbitzariak;
     private Panel pnlCard;
     private Panel pnlAvatars;
-    private Panel pnlAvatar1;
-    private Label lblCircle1;
-    private Label lblName1;
-    private Panel pnlAvatar2;
-    private Label lblCircle2;
-    private Label lblName2;
-    private Panel pnlAvatar3;
-    private Label lblCircle3;
-    private Label lblName3;
-    private Panel pnlAvatar4;
-    private Label lblCircle4;
-    private Label lblName4;
-    private Panel pnlAvatar5;
-    private Label lblCircle5;
-    private Label lblName5;
     private Panel pnlDivider;
     private Label lblPinTitle;
     private Panel pnlPinDots;
