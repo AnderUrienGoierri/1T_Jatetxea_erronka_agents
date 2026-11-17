@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane prefHeight="750.0" prefWidth="1180.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eus.goierri.jatetxea.controller.LoginController">
+    <!-- 1. GOIKO BARRA: MARKA ETA API EGOERA -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-bar">
+            <Label styleClass="brand-label" text="T1 Jatetxea" />
+            <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 18px;" text="|" />
+            <Label styleClass="title-label" text="Sukaldea, Barra eta Biltegia (KDS, BDS eta Stock)" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER" spacing="8.0">
+                <Circle fx:id="dotApiStatus" fill="#16a34a" radius="6.0" stroke="transparent" />
+                <Label fx:id="lblApiEgoera" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="API: Egiaztatzen..." />
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- 2. ERDIKO EDUKIA: LOGIN TXARTELA (AVATARRAK + PIN KEYPAD) -->
+    <center>
+        <StackPane style="-fx-background-color: #f8fafc; -fx-padding: 20;">
+            <VBox alignment="TOP_CENTER" maxHeight="640.0" maxWidth="620.0" spacing="14.0" styleClass="card-panel" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 14, 0, 0, 4); -fx-padding: 20 24;">
+                <!-- Izenburua -->
+                <VBox alignment="CENTER" spacing="3.0">
+                    <Label style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Langileen Saio Hasiera" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #64748b;" text="Hautatu zure avatarra eta sartu zure 4 digituko PIN propioa" />
+                </VBox>
+
+                <!-- Avatarren Zerrenda Horizontala (Scroll bidez) -->
+                <VBox spacing="6.0">
+                    <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="LANGILEA HAUTATU:" />
+                    <ScrollPane fx:id="scrollAvatars" fitToHeight="true" minHeight="112.0" prefHeight="112.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8;" vbarPolicy="NEVER">
+                        <content>
+                            <HBox fx:id="pnlAvatars" alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 4 8;">
+                                <!-- Kontroladoreak dinamikoki beteko du -->
+                            </HBox>
+                        </content>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Hautatutako langilearen informazio-etiketa -->
+                <Label fx:id="lblHautatuaInfo" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #881337;" text="Hautatu langile bat jarraitzeko" />
+
+                <!-- PIN Zirkuluen Erakuslea (4 zirkulu) -->
+                <VBox alignment="CENTER" spacing="6.0">
+                    <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #64748b; -fx-letter-spacing: 1px;" text="SARTU 4 DIGITUKO PIN-A" />
+                    <HBox alignment="CENTER" spacing="16.0">
+                        <Circle fx:id="dotPin1" fill="TRANSPARENT" radius="9.0" stroke="#94a3b8" strokeWidth="1.5" />
+                        <Circle fx:id="dotPin2" fill="TRANSPARENT" radius="9.0" stroke="#94a3b8" strokeWidth="1.5" />
+                        <Circle fx:id="dotPin3" fill="TRANSPARENT" radius="9.0" stroke="#94a3b8" strokeWidth="1.5" />
+                        <Circle fx:id="dotPin4" fill="TRANSPARENT" radius="9.0" stroke="#94a3b8" strokeWidth="1.5" />
+                    </HBox>
+                </VBox>
+
+                <!-- Keypad Zenbakizkoa (3x4) -->
+                <GridPane alignment="CENTER" hgap="10.0" maxHeight="200.0" maxWidth="260.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="75.0" prefWidth="80.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="75.0" prefWidth="80.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="75.0" prefWidth="80.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="42.0" prefHeight="44.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="42.0" prefHeight="44.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="42.0" prefHeight="44.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="42.0" prefHeight="44.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    </rowConstraints>
+
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="1" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="2" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="3" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="4" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="6" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="7" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+                    <Button mnemonicParsing="false" onAction="#onPinGarbituClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #fff1f2; -fx-border-color: #fecdd3; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #be123c; -fx-cursor: hand;" text="X Garbitu" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Button mnemonicParsing="false" onAction="#onKeyClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-cursor: hand;" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Button mnemonicParsing="false" onAction="#onPinAtzeraClick" prefHeight="42.0" prefWidth="78.0" style="-fx-background-color: #f1f5f9; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #475569; -fx-cursor: hand;" text="⌫" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                </GridPane>
+
+                <!-- Errore Mezua -->
+                <Label fx:id="lblErrorea" alignment="CENTER" maxWidth="380.0" minHeight="20.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #dc2626;" text="" textAlignment="CENTER" wrapText="true" />
+
+                <!-- Saioa Hasi Botoia -->
+                <Button fx:id="btnLogin" maxWidth="260.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="42.0" styleClass="btn-primary" style="-fx-font-size: 14px;" text="HASI SAIOA" />
+            </VBox>
+        </StackPane>
+    </center>
+
+    <!-- 3. BEHEKO EGOERA-BARRA -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="status-bar">
+            <Label styleClass="status-text" text="Baimendutako langileak: Sukaldariak, Barrakoak, Biltegikoak eta Admin IT" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label styleClass="status-text" text="T1 Jatetxea v1.0.0" />
+        </HBox>
+    </bottom>
+</BorderPane>

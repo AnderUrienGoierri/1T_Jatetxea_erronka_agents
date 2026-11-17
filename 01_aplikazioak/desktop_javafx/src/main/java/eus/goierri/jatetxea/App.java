@@ -15,11 +15,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(App.class.getResource("sukaldea-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("login-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1180, 750);
 
-        stage.setTitle("T1 Jatetxea - Sukaldea, Barra eta Biltegia (KDS, BDS eta Stock)");
+        stage.setTitle("T1 Jatetxea - Saioa Hasi (Sukaldea, Barra eta Biltegia)");
         stage.setMinWidth(960);
         stage.setMinHeight(620);
         stage.setScene(scene);

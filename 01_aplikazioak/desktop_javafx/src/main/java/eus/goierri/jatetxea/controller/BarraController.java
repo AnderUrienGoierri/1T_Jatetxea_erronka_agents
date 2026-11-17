@@ -1,9 +1,11 @@
 package eus.goierri.jatetxea.controller;
 
 import eus.goierri.jatetxea.PantailaAldatzailea;
+import eus.goierri.jatetxea.Sesioa;
 import eus.goierri.jatetxea.api.ApiZerbitzua;
 import eus.goierri.jatetxea.model.Eskaera;
 import eus.goierri.jatetxea.model.EskaeraLerroa;
+import eus.goierri.jatetxea.model.Langilea;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -50,6 +52,11 @@ public class BarraController {
     @FXML private Label lblEgoeraMezua;
     @FXML private Label lblAzkenFreskatzea;
     @FXML private CheckBox chkAutoRefresh;
+
+    @FXML private Button btnSukaldeaNav;
+    @FXML private Button btnBarraNav;
+    @FXML private Button btnBiltegiaNav;
+    @FXML private Label lblErabiltzaileaInfo;
 
     private final ApiZerbitzua api = new ApiZerbitzua();
     private Timeline tenporizadorea;
@@ -188,6 +195,28 @@ public class BarraController {
         }));
         tenporizadorea.setCycleCount(Timeline.INDEFINITE);
         tenporizadorea.play();
+
+        // 6. Langilearen saioa eta rolen araberako nabigazioa
+        konfiguratuSaioaEtaRola();
+    }
+
+    private void konfiguratuSaioaEtaRola() {
+        if (Sesioa.isSaioaHasita()) {
+            Langilea unekoa = Sesioa.getUnekoLangilea();
+            if (lblErabiltzaileaInfo != null) {
+                lblErabiltzaileaInfo.setText(unekoa.getIzenOsoa() + " (" + unekoa.getRola() + ")");
+            }
+            if (!Sesioa.isAdminEdoKudeatzailea()) {
+                if (btnSukaldeaNav != null) {
+                    btnSukaldeaNav.setVisible(Sesioa.isSukaldaria());
+                    btnSukaldeaNav.setManaged(Sesioa.isSukaldaria());
+                }
+                if (btnBiltegiaNav != null) {
+                    btnBiltegiaNav.setVisible(Sesioa.isBiltegikoa());
+                    btnBiltegiaNav.setManaged(Sesioa.isBiltegikoa());
+                }
+            }
+        }
     }
 
     public void kargatuDatuak() {
@@ -346,6 +375,11 @@ public class BarraController {
 
     @FXML
     private void onSukaldeaClick(ActionEvent event) {
+        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isSukaldaria()) {
+            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Sukaldea modulura sartzeko.");
+            return;
+        }
+
         try {
             if (tenporizadorea != null) {
                 tenporizadorea.stop();
@@ -359,6 +393,11 @@ public class BarraController {
 
     @FXML
     private void onBiltegiaClick(ActionEvent event) {
+        if (!Sesioa.isAdminEdoKudeatzailea() && !Sesioa.isBiltegikoa()) {
+            erakutsiAlerta("Baimenik ez", "Ez daukazu baimenik Biltegia modulura sartzeko.");
+            return;
+        }
+
         try {
             if (tenporizadorea != null) {
                 tenporizadorea.stop();
@@ -367,6 +406,20 @@ public class BarraController {
             PantailaAldatzailea.aldatu(iturria, "biltegia-view.fxml");
         } catch (IOException e) {
             erakutsiAlerta("Errorea pantaila aldatzean", "Ezin izan da Biltegia pantaila kargatu: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onSaioaItxiClick(ActionEvent event) {
+        if (tenporizadorea != null) {
+            tenporizadorea.stop();
+        }
+        Sesioa.itxiSaioa();
+        try {
+            Node iturria = (Node) event.getSource();
+            PantailaAldatzailea.aldatu(iturria, "login-view.fxml");
+        } catch (IOException e) {
+            erakutsiAlerta("Errorea saioa ixtean", "Ezin izan da saio-hasiera pantaila kargatu: " + e.getMessage());
         }
     }
 

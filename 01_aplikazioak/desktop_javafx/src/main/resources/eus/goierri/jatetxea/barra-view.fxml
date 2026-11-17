@@ -23,15 +23,20 @@
             <Region HBox.hgrow="ALWAYS" />
             
             <HBox alignment="CENTER" spacing="8.0">
-                <Button mnemonicParsing="false" onAction="#onSukaldeaClick" styleClass="nav-button" text="Sukaldea (KDS)" />
-                <Button mnemonicParsing="false" styleClass="nav-button-active" text="Barra (BDS)" />
-                <Button mnemonicParsing="false" onAction="#onBiltegiaClick" styleClass="nav-button" text="Biltegia (Stocka)" />
+                <Button fx:id="btnSukaldeaNav" mnemonicParsing="false" onAction="#onSukaldeaClick" styleClass="nav-button" text="Sukaldea (KDS)" />
+                <Button fx:id="btnBarraNav" mnemonicParsing="false" styleClass="nav-button-active" text="Barra (BDS)" />
+                <Button fx:id="btnBiltegiaNav" mnemonicParsing="false" onAction="#onBiltegiaClick" styleClass="nav-button" text="Biltegia (Stocka)" />
             </HBox>
             
             <Region prefWidth="16.0" />
             
             <CheckBox fx:id="chkAutoRefresh" mnemonicParsing="false" selected="true" text="Auto-Freskatu (10s)" />
             <Button mnemonicParsing="false" onAction="#onFreskatuClick" styleClass="btn-secondary" text="Freskatu" />
+
+            <HBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 0 0 12; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 0 1;">
+                <Label fx:id="lblErabiltzaileaInfo" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Langilea" />
+                <Button mnemonicParsing="false" onAction="#onSaioaItxiClick" style="-fx-background-color: #881337; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6 12; -fx-background-radius: 4; -fx-cursor: hand;" text="Saioa Itxi" />
+            </HBox>
         </HBox>
     </top>
 

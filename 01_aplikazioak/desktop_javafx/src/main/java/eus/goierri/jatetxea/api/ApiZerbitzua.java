@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import eus.goierri.jatetxea.model.Eskaera;
+import eus.goierri.jatetxea.model.Langilea;
 import eus.goierri.jatetxea.model.Lehengaia;
 import eus.goierri.jatetxea.model.Platera;
 
@@ -229,5 +230,52 @@ public class ApiZerbitzua {
         Type type = new TypeToken<ApiErantzuna<Platera>>() {}.getType();
         ApiErantzuna<Platera> erantzuna = gson.fromJson(json, type);
         return erantzuna != null && erantzuna.getDataList() != null ? erantzuna.getDataList() : Collections.emptyList();
+    }
+
+    // ==========================================
+    // 3. LANGILEAK ETA AUTENTIFIKAZIOA
+    // ==========================================
+
+    public List<Langilea> lortuLangileak() throws IOException, InterruptedException {
+        String json = getHttpJson("/langileak");
+        Type type = new TypeToken<ApiErantzuna<Langilea>>() {}.getType();
+        ApiErantzuna<Langilea> erantzuna = gson.fromJson(json, type);
+        return erantzuna != null && erantzuna.getDataList() != null ? erantzuna.getDataList() : Collections.emptyList();
+    }
+
+    public LoginErantzuna saioaHasi(String erabiltzailea, String pin) throws IOException, InterruptedException {
+        JsonObject json = new JsonObject();
+        json.addProperty("erabiltzailea", erabiltzailea);
+        json.addProperty("pasahitza", pin);
+
+        HttpRequest eskaera = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/langileak/login"))
+                .timeout(Duration.ofSeconds(5))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("X-App-Id", "javafx_kds")
+                .header("X-App-Name", "JavaFX Sukaldea KDS")
+                .header("User-Agent", "Jatetxea-JavaFX-KDS/1.0 (Java 21)")
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+
+        HttpResponse<String> erantzuna = bezeroa.send(eskaera, HttpResponse.BodyHandlers.ofString());
+
+        if (erantzuna.statusCode() == 200) {
+            Type type = new TypeToken<ApiErantzuna<LoginErantzuna>>() {}.getType();
+            ApiErantzuna<LoginErantzuna> apiRes = gson.fromJson(erantzuna.body(), type);
+            if (apiRes != null && apiRes.getData() != null) {
+                return apiRes.getData();
+            }
+        } else if (erantzuna.statusCode() == 401 || erantzuna.statusCode() == 400) {
+            try {
+                JsonObject errObj = gson.fromJson(erantzuna.body(), JsonObject.class);
+                String msg = errObj.has("message") ? errObj.get("message").getAsString() : "PIN okerra.";
+                return new LoginErantzuna(false, msg, null);
+            } catch (Exception ignored) { }
+            return new LoginErantzuna(false, "PIN edo erabiltzaile okerra.", null);
+        }
+
+        return new LoginErantzuna(false, "Errorea zerbitzariarekin konektatzean (Kodea: " + erantzuna.statusCode() + ")", null);
     }
 }
