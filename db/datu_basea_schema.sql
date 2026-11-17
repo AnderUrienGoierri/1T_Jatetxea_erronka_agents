@@ -638,26 +638,26 @@ INSERT INTO mahaiak (zenbakia, edukiera, kokapena, egoera) VALUES
 -- Langileak (1T Jatetxea eta IT Talde Osoa)
 INSERT INTO langileak (erabiltzailea, pasahitza_hash, izena, abizena, nan_dni, emaila, telefonoa, rola, saila, kargua) VALUES
 -- IT Zuzendaritza eta Sistemak
-('anderu', '$2a$11$eXampleHashedPasswordAdmin', 'Ander', 'Urien Telleria', '72548901A', 'ander.urien@goierrieskola.eus', '688112233', 'AdminIT', 'Sistemak_IT', 'IT Lead / Arkitekto Nagusia'),
-('julen', '$2a$11$eXampleHashedPasswordAdmin', 'Julen', 'Aguado Fernández', '72548902B', 'julen.aguado@goierrieskola.eus', '688112234', 'AdminIT', 'Sistemak_IT', 'Sare eta Suebaki Ingeniaria'),
-('iker', '$2a$11$eXampleHashedPasswordAdmin', 'Iker', 'Araujo Dominguez', '72548903C', 'iker.araujo@goierrieskola.eus', '688112235', 'AdminIT', 'Sistemak_IT', 'Sistema Eragileak eta Birtualizazioa'),
-('aratz', '$2a$11$eXampleHashedPasswordAdmin', 'Aratz', 'Huegun Flores', '72548904D', 'aratz.huegun@goierrieskola.eus', '688112236', 'AdminIT', 'Sistemak_IT', 'Zibersegurtasun eta Auditoritza Burua'),
+('anderu', '0001', 'Ander', 'Urien Telleria', '72548901A', 'ander.urien@goierrieskola.eus', '688112233', 'AdminIT', 'Sistemak_IT', 'IT Lead / Arkitekto Nagusia'),
+('julen', '0002', 'Julen', 'Aguado Fernández', '72548902B', 'julen.aguado@goierrieskola.eus', '688112234', 'AdminIT', 'Sistemak_IT', 'Sare eta Suebaki Ingeniaria'),
+('iker', '0003', 'Iker', 'Araujo Dominguez', '72548903C', 'iker.araujo@goierrieskola.eus', '688112235', 'AdminIT', 'Sistemak_IT', 'Sistema Eragileak eta Birtualizazioa'),
+('aratz', '0004', 'Aratz', 'Huegun Flores', '72548904D', 'aratz.huegun@goierrieskola.eus', '688112236', 'AdminIT', 'Sistemak_IT', 'Zibersegurtasun eta Auditoritza Burua'),
 -- Sukaldea
-('ainhoa_chef', '$2a$11$eXampleHashedPassword2', 'Ainhoa', 'Goikoetxea', '72548905E', 'ainhoa.goikoetxea@jatetxea.eus', '677112233', 'Sukaldaria', 'Sukaldea', 'Chef Burua / Sukaldari Nagusia'),
-('eneko_suk', '$2a$11$eXampleHashedPassword2', 'Eneko', 'Otegi', '72548906F', 'eneko.otegi@jatetxea.eus', '677112234', 'Sukaldaria', 'Sukaldea', 'Bigarren Sukaldaria / Parrilleroa'),
+('ainhoa_chef', '3001', 'Ainhoa', 'Goikoetxea', '72548905E', 'ainhoa.goikoetxea@jatetxea.eus', '677112233', 'Sukaldaria', 'Sukaldea', 'Chef Burua / Sukaldari Nagusia'),
+('eneko_suk', '3002', 'Eneko', 'Otegi', '72548906F', 'eneko.otegi@jatetxea.eus', '677112234', 'Sukaldaria', 'Sukaldea', 'Bigarren Sukaldaria / Parrilleroa'),
 -- Jantokia (Zerbitzariak)
-('mikel_zerb', '$2a$11$eXampleHashedPassword1', 'Mikel', 'Arregi', '72548907G', 'mikel.arregi@jatetxea.eus', '666112233', 'Zerbitzaria', 'Jantokia', 'Maître / Zerbitzari Burua'),
-('maite_zerb', '$2a$11$eXampleHashedPassword1', 'Maite', 'Zabaleta', '72548908H', 'maite.zabaleta@jatetxea.eus', '666112234', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
-('unai_zerb', '$2a$11$eXampleHashedPassword1', 'Unai', 'Lasa', '72548909J', 'unai.lasa@jatetxea.eus', '666112235', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
+('mikel_zerb', '1001', 'Mikel', 'Arregi', '72548907G', 'mikel.arregi@jatetxea.eus', '666112233', 'Zerbitzaria', 'Jantokia', 'Maître / Zerbitzari Burua'),
+('maite_zerb', '1002', 'Maite', 'Zabaleta', '72548908H', 'maite.zabaleta@jatetxea.eus', '666112234', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
+('unai_zerb', '1003', 'Unai', 'Lasa', '72548909J', 'unai.lasa@jatetxea.eus', '666112235', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
 -- Barra
-('gorka_barra', '$2a$11$eXampleHashedPassword1', 'Gorka', 'Mendizabal', '72548910K', 'gorka.mendizabal@jatetxea.eus', '655112233', 'Barrakoa', 'Barra', 'Barman / Barrako Arduraduna'),
-('uxue_barra', '$2a$11$eXampleHashedPassword1', 'Uxue', 'Etxarri', '72548911L', 'uxue.etxarri@jatetxea.eus', '655112234', 'Barrakoa', 'Barra', 'Barrako Zerbitzaria'),
+('gorka_barra', '2001', 'Gorka', 'Mendizabal', '72548910K', 'gorka.mendizabal@jatetxea.eus', '655112233', 'Barrakoa', 'Barra', 'Barman / Barrako Arduraduna'),
+('uxue_barra', '2002', 'Uxue', 'Etxarri', '72548911L', 'uxue.etxarri@jatetxea.eus', '655112234', 'Barrakoa', 'Barra', 'Barrako Zerbitzaria'),
 -- Biltegia
-('kepa_biltegi', '$2a$11$eXampleHashedPassword1', 'Kepa', 'Aldasoro', '72548912M', 'kepa.aldasoro@jatetxea.eus', '644112233', 'Biltegikoa', 'Biltegia', 'Biltegi eta Stock Burua'),
+('kepa_biltegi', '4001', 'Kepa', 'Aldasoro', '72548912M', 'kepa.aldasoro@jatetxea.eus', '644112233', 'Biltegikoa', 'Biltegia', 'Biltegi eta Stock Burua'),
 -- Zuzendaritza (3 Zuzendari)
-('ander_m_zuz', '$2a$11$eXampleHashedPassword3', 'Ander', 'Madinabeitia', '72548913N', 'ander.madinabeitia@jatetxea.eus', '633112233', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
-('joseba_r_zuz', '$2a$11$eXampleHashedPassword3', 'Joseba', 'Ramos', '72548914P', 'joseba.ramos@jatetxea.eus', '633112234', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
-('estebe_o_zuz', '$2a$11$eXampleHashedPassword3', 'Estebe', 'Ormazabal', '72548915Q', 'estebe.ormazabal@jatetxea.eus', '633112235', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria');
+('ander_m_zuz', '5001', 'Ander', 'Madinabeitia', '72548913N', 'ander.madinabeitia@jatetxea.eus', '633112233', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
+('joseba_r_zuz', '5002', 'Joseba', 'Ramos', '72548914P', 'joseba.ramos@jatetxea.eus', '633112234', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
+('estebe_o_zuz', '5003', 'Estebe', 'Ormazabal', '72548915Q', 'estebe.ormazabal@jatetxea.eus', '633112235', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria');
 
 -- Langileen Kontratuak (Adibideak)
 INSERT INTO langile_kontratuak (langilea_id, kontratu_zenbakia, kontratu_mota, lanaldia, hasiera_data, hileroko_soldata_brutoa, kategoria_profesionala) VALUES
