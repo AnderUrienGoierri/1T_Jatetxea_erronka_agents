@@ -1877,69 +1877,14 @@ static void LaunchPowerShellScript(string ps1File, string workingDirectory)
 // Laguntza-funtzioak
 static void LaunchInteractiveProcess(string executableOrFile, string arguments, string workingDirectory)
 {
-    // 1. Modu nagusia: cmd.exe /c start bidez exekutatzea leiho interaktibo berri eta aske bat irekitzeko
-    try
-    {
-        if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
-            executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
-        {
-            var psiBat = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
-                WorkingDirectory = workingDirectory,
-                UseShellExecute = true,
-                WindowStyle = ProcessWindowStyle.Normal
-            };
-            Process.Start(psiBat);
-            return;
-        }
-        else
-        {
-            var psiDirect = new ProcessStartInfo
-            {
-                FileName = executableOrFile,
-                Arguments = arguments ?? "",
-                WorkingDirectory = workingDirectory,
-                UseShellExecute = true,
-                WindowStyle = ProcessWindowStyle.Normal
-            };
-            Process.Start(psiDirect);
-            return;
-        }
-    }
-    catch { }
-
-    // 2. Bigarren aukera: conhost.exe bidez
-    if (executableOrFile.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
-        executableOrFile.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
-    {
-        try
-        {
-            string cleanArgs = arguments ?? "";
-            string cmdArgs = @"cmd.exe /k """ + executableOrFile + @""" " + cleanArgs;
-            var psiConhost = new ProcessStartInfo
-            {
-                FileName = "conhost.exe",
-                Arguments = cmdArgs.Trim(),
-                WorkingDirectory = workingDirectory,
-                UseShellExecute = true,
-                WindowStyle = ProcessWindowStyle.Normal
-            };
-            Process.Start(psiConhost);
-            return;
-        }
-        catch { }
-    }
-
-    // 3. Hirugarren aukera: UseShellExecute = true bidezko abioa (ShellExecuteEx API zuzena)
+    // 1. Zuzenean UseShellExecute bidez exekutatu (Windows Shell bidez)
     try
     {
         var psi = new ProcessStartInfo
         {
             FileName = executableOrFile,
-            Arguments = arguments,
-            WorkingDirectory = workingDirectory,
+            Arguments = arguments ?? "",
+            WorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory) ? Environment.CurrentDirectory : workingDirectory,
             UseShellExecute = true,
             WindowStyle = ProcessWindowStyle.Normal
         };
@@ -1948,10 +1893,10 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
     }
     catch { }
 
-    // 4. Laugarren aukera: cmd.exe /c start bidez
+    // 2. cmd.exe /c start bidez
     try
     {
-        var psi = new ProcessStartInfo
+        var psiBat = new ProcessStartInfo
         {
             FileName = "cmd.exe",
             Arguments = $"/c start \"\" /d \"{workingDirectory}\" \"{executableOrFile}\" {arguments}".Trim(),
@@ -1959,7 +1904,7 @@ static void LaunchInteractiveProcess(string executableOrFile, string arguments, 
             UseShellExecute = true,
             WindowStyle = ProcessWindowStyle.Normal
         };
-        Process.Start(psi);
+        Process.Start(psiBat);
     }
     catch { }
 }
