@@ -1,5 +1,5 @@
 ﻿{
-    "active_profile":  "innovatek",
+    "active_profile":  "eskola",
     "profiles":  {
                      "localhost":  {
                                        "deskribapena":  "Tokiko probak garatzailearen ordenagailuan (127.0.0.1)",
@@ -48,13 +48,13 @@
                      "eskola":  {
                                     "deskribapena":  "Goierri Eskolako laborategiko WiFi/LAN sarea",
                                     "wifi_ssid":  "GOI_Ikasleak",
-                                    "api_host":  "172.16.243.145",
+                                    "api_host":  "172.16.243.120",
                                     "api_port":  5050,
-                                    "api_base_url":  "http://172.16.243.145:5050/api/v1",
-                                    "web_url":  "http://172.16.243.145:8085",
-                                    "chat_url":  "http://172.16.243.145:3001",
-                                    "odoo_url":  "http://172.16.243.145:8070",
-                                    "tv_kds_url":  "http://172.16.243.145:8086"
+                                    "api_base_url":  "http://172.16.243.120:5050/api/v1",
+                                    "web_url":  "http://172.16.243.120:8085",
+                                    "chat_url":  "http://172.16.243.120:3001",
+                                    "odoo_url":  "http://172.16.243.120:8070",
+                                    "tv_kds_url":  "http://172.16.243.120:8086"
                                 },
                      "vbox_erronka":  {
                                           "deskribapena":  "VirtualBox 3 Makina Birtualen Ingurunea (OPNsense + Ubuntu + Windows)",
