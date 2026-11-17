@@ -218,6 +218,8 @@ app.MapGet("/health", () =>
     }, statusCode: 503);
 });
 
+// /api/v1 erroa informaziora bideratu
+app.MapGet("/api/v1", () => Results.Redirect("/"));
 app.MapGet("/api/v1/health", () => Results.Redirect("/health"));
 
 // Denbora errealean konektatutako aplikazioen zerrenda
