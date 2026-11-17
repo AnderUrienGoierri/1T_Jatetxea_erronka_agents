@@ -467,7 +467,7 @@ public partial class LoginForm : Form
 
             string roleText = l.Rola switch
             {
-                "Zerbitzaria" => (l.Erabiltzailea == "mikel_zerb" ? "Maître" : "Jangela"),
+                "Zerbitzaria" => (l.Erabiltzailea == "mikel_zerb" ? "Maitre" : "Jangela"),
                 "Barrakoa" => "Barra",
                 "AdminIT" => "Admin IT",
                 "Admin" => "Admin",
