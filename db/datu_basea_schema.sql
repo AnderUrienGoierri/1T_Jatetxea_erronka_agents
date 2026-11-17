@@ -635,29 +635,29 @@ INSERT INTO mahaiak (zenbakia, edukiera, kokapena, egoera) VALUES
 (10, 4, 'Terraza', 'Libre'),
 (11, 6, 'VIP', 'Libre');
 
--- Langileak (1T Jatetxea eta IT Talde Osoa)
+-- Langileak (1T Jatetxea eta IT Talde Osoa - Pasahitzak BCrypt hash bidez)
 INSERT INTO langileak (erabiltzailea, pasahitza_hash, izena, abizena, nan_dni, emaila, telefonoa, rola, saila, kargua) VALUES
 -- IT Zuzendaritza eta Sistemak
-('anderu', '0001', 'Ander', 'Urien Telleria', '72548901A', 'ander.urien@goierrieskola.eus', '688112233', 'AdminIT', 'Sistemak_IT', 'IT Lead / Arkitekto Nagusia'),
-('julen', '0002', 'Julen', 'Aguado Fernández', '72548902B', 'julen.aguado@goierrieskola.eus', '688112234', 'AdminIT', 'Sistemak_IT', 'Sare eta Suebaki Ingeniaria'),
-('iker', '0003', 'Iker', 'Araujo Dominguez', '72548903C', 'iker.araujo@goierrieskola.eus', '688112235', 'AdminIT', 'Sistemak_IT', 'Sistema Eragileak eta Birtualizazioa'),
-('aratz', '0004', 'Aratz', 'Huegun Flores', '72548904D', 'aratz.huegun@goierrieskola.eus', '688112236', 'AdminIT', 'Sistemak_IT', 'Zibersegurtasun eta Auditoritza Burua'),
+('anderu', '$2a$11$WjOP2N6biVYO1HrvAjYKyOmX5zpj5PZ2U16rjklM/tzSiUwNg6odG', 'Ander', 'Urien Telleria', '72548901A', 'ander.urien@goierrieskola.eus', '688112233', 'AdminIT', 'Sistemak_IT', 'IT Lead / Arkitekto Nagusia'),
+('julen', '$2a$11$RqNGdk.gmKgvB5c4btG9leU8PMSBc782S1kS8PSXKsbt0D/HYVBAK', 'Julen', 'Aguado Fernández', '72548902B', 'julen.aguado@goierrieskola.eus', '688112234', 'AdminIT', 'Sistemak_IT', 'Sare eta Suebaki Ingeniaria'),
+('iker', '$2a$11$qJ8PWi0Cy4a4Cu.nNPwL0eDbGCPqI8M4C6c0JeqpnVmY9XmWttWUO', 'Iker', 'Araujo Dominguez', '72548903C', 'iker.araujo@goierrieskola.eus', '688112235', 'AdminIT', 'Sistemak_IT', 'Sistema Eragileak eta Birtualizazioa'),
+('aratz', '$2a$11$xikVH/hjNWd7KUpGt6w11Oyv4XAWbj3zzfYvUs4LXuVGkOCeUCsLC', 'Aratz', 'Huegun Flores', '72548904D', 'aratz.huegun@goierrieskola.eus', '688112236', 'AdminIT', 'Sistemak_IT', 'Zibersegurtasun eta Auditoritza Burua'),
 -- Sukaldea
-('ainhoa_chef', '3001', 'Ainhoa', 'Goikoetxea', '72548905E', 'ainhoa.goikoetxea@jatetxea.eus', '677112233', 'Sukaldaria', 'Sukaldea', 'Chef Burua / Sukaldari Nagusia'),
-('eneko_suk', '3002', 'Eneko', 'Otegi', '72548906F', 'eneko.otegi@jatetxea.eus', '677112234', 'Sukaldaria', 'Sukaldea', 'Bigarren Sukaldaria / Parrilleroa'),
+('ainhoa_chef', '$2a$11$QznQKDnUuNCokupqxQ6RouhWUQkhtAcu6FiXjt0xxGPmNFTPoGjAG', 'Ainhoa', 'Goikoetxea', '72548905E', 'ainhoa.goikoetxea@jatetxea.eus', '677112233', 'Sukaldaria', 'Sukaldea', 'Chef Burua / Sukaldari Nagusia'),
+('eneko_suk', '$2a$11$TTG1qxhdXBNemtYawaY7OO.BKHvNx7QbzcOPHUl827LQ4QlySp0T2', 'Eneko', 'Otegi', '72548906F', 'eneko.otegi@jatetxea.eus', '677112234', 'Sukaldaria', 'Sukaldea', 'Bigarren Sukaldaria / Parrilleroa'),
 -- Jantokia (Zerbitzariak)
-('mikel_zerb', '1001', 'Mikel', 'Arregi', '72548907G', 'mikel.arregi@jatetxea.eus', '666112233', 'Zerbitzaria', 'Jantokia', 'Maître / Zerbitzari Burua'),
-('maite_zerb', '1002', 'Maite', 'Zabaleta', '72548908H', 'maite.zabaleta@jatetxea.eus', '666112234', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
-('unai_zerb', '1003', 'Unai', 'Lasa', '72548909J', 'unai.lasa@jatetxea.eus', '666112235', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
+('mikel_zerb', '$2a$11$qpinuX7AxybylayHyOrV9eA8WCDDBAkgwa5IxwG9bB/tFbtF8EiRS', 'Mikel', 'Arregi', '72548907G', 'mikel.arregi@jatetxea.eus', '666112233', 'Zerbitzaria', 'Jantokia', 'Maître / Zerbitzari Burua'),
+('maite_zerb', '$2a$11$Wv/Yf.tCrQBwRSB5TGg82ez8.P/PRRQjdznEPcVao12YgaxqKjpoS', 'Maite', 'Zabaleta', '72548908H', 'maite.zabaleta@jatetxea.eus', '666112234', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
+('unai_zerb', '$2a$11$2t0Np6A5k7zkDlzh8Z6dreXnGyPU45VrelaqK0M44F2VrWqXIel.O', 'Unai', 'Lasa', '72548909J', 'unai.lasa@jatetxea.eus', '666112235', 'Zerbitzaria', 'Jantokia', 'Jantokiko Zerbitzaria'),
 -- Barra
-('gorka_barra', '2001', 'Gorka', 'Mendizabal', '72548910K', 'gorka.mendizabal@jatetxea.eus', '655112233', 'Barrakoa', 'Barra', 'Barman / Barrako Arduraduna'),
-('uxue_barra', '2002', 'Uxue', 'Etxarri', '72548911L', 'uxue.etxarri@jatetxea.eus', '655112234', 'Barrakoa', 'Barra', 'Barrako Zerbitzaria'),
+('gorka_barra', '$2a$11$40DAjzi765gK1kjGKNbzZuuPEqpS4vg3TROpZ969ODsXytQ5GxgvO', 'Gorka', 'Mendizabal', '72548910K', 'gorka.mendizabal@jatetxea.eus', '655112233', 'Barrakoa', 'Barra', 'Barman / Barrako Arduraduna'),
+('uxue_barra', '$2a$11$ihyQpYEQBDmHDXNoAdy/Geuahgg6.WyCh4Yu.An2QvDSrXEwZrc16', 'Uxue', 'Etxarri', '72548911L', 'uxue.etxarri@jatetxea.eus', '655112234', 'Barrakoa', 'Barra', 'Barrako Zerbitzaria'),
 -- Biltegia
-('kepa_biltegi', '4001', 'Kepa', 'Aldasoro', '72548912M', 'kepa.aldasoro@jatetxea.eus', '644112233', 'Biltegikoa', 'Biltegia', 'Biltegi eta Stock Burua'),
+('kepa_biltegi', '$2a$11$xwax0r.nwsIPIwwEdSr.nO3hlwxCe5TIvj21OFFeRmCRd/vk3Z2WW', 'Kepa', 'Aldasoro', '72548912M', 'kepa.aldasoro@jatetxea.eus', '644112233', 'Biltegikoa', 'Biltegia', 'Biltegi eta Stock Burua'),
 -- Zuzendaritza (3 Zuzendari)
-('ander_m_zuz', '5001', 'Ander', 'Madinabeitia', '72548913N', 'ander.madinabeitia@jatetxea.eus', '633112233', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
-('joseba_r_zuz', '5002', 'Joseba', 'Ramos', '72548914P', 'joseba.ramos@jatetxea.eus', '633112234', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
-('estebe_o_zuz', '5003', 'Estebe', 'Ormazabal', '72548915Q', 'estebe.ormazabal@jatetxea.eus', '633112235', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria');
+('ander_m_zuz', '$2a$11$Fo4WievPUE35eElCleMJjusW.ENeraAMmOm9T6XDgPyGR2nKjB6zm', 'Ander', 'Madinabeitia', '72548913N', 'ander.madinabeitia@jatetxea.eus', '633112233', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
+('joseba_r_zuz', '$2a$11$S7r5PkmmbwSvI2RySPVA1OKpEu/kmIxCdJhw9ZeXmCqY6tSSzhJYy', 'Joseba', 'Ramos', '72548914P', 'joseba.ramos@jatetxea.eus', '633112234', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria'),
+('estebe_o_zuz', '$2a$11$maFEcb7ZQIzRSKjH0Rm.nu/2O7YLioEgLF0KPTyyXeqS47n6aJMjK', 'Estebe', 'Ormazabal', '72548915Q', 'estebe.ormazabal@jatetxea.eus', '633112235', 'Kudeatzailea', 'Zuzendaritza', 'Zuzendaritza Kontseilukoa / Zuzendaria');
 
 -- Langileen Kontratuak (Adibideak)
 INSERT INTO langile_kontratuak (langilea_id, kontratu_zenbakia, kontratu_mota, lanaldia, hasiera_data, hileroko_soldata_brutoa, kategoria_profesionala) VALUES

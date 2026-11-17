@@ -1,5 +1,6 @@
 using System.Data;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 
@@ -97,25 +98,45 @@ public class LangileakController : BaseApiKontroladorea
         if (!aktibo)
             return Unauthorized(new { status = "error", message = "Langile hau desgaituta dago." });
 
+        int langileId = reader.GetInt32("id");
         string pasahitzaGordea = reader.GetString("pasahitza_hash");
         
-        // Egiaztatu pasahitza / PIN propioa
-        // 1. PIN edo pasahitz zuzena berdina bada
-        // 2. Edo BCrypt bidez egiaztatuta (BCrypt.Net erabiliz etorkizunean edo konparaketa zuzena)
-        bool pasahitzZuzena = string.Equals(pasahitzaGordea, dto.Pasahitza?.Trim(), StringComparison.Ordinal);
+        // Egiaztatu pasahitza / PIN propioa BCrypt bidez (edo testu laua migrazio leunean)
+        bool pasahitzZuzena = SegurtasunHelper.EgiaztatuPin(dto.Pasahitza, pasahitzaGordea, out bool berrituBeharDa);
 
         if (!pasahitzZuzena)
             return Unauthorized(new { status = "error", message = "PIN edo pasahitz okerra. Mesedez, idatzi zure 4 digituko PIN propioa." });
 
         var langileaDto = new LangileaDTO
         {
-            Id = reader.GetInt32("id"),
+            Id = langileId,
             Erabiltzailea = reader.GetString("erabiltzailea"),
             Izena = reader.GetString("izena"),
             Rola = reader.GetString("rola"),
             Aktibo = aktibo,
             Ezabatua = false
         };
+
+        // Reader-a itxi jarraian eguneratze kontsultarik egiteko
+        await reader.CloseAsync();
+
+        // Testu laua bazen, oraintxe bertan automatikoki BCrypt hash-era berritu datu-basean
+        if (berrituBeharDa && !string.IsNullOrWhiteSpace(dto.Pasahitza))
+        {
+            try
+            {
+                string hashBerria = SegurtasunHelper.HashPin(dto.Pasahitza);
+                const string updateSql = "UPDATE langileak SET pasahitza_hash = @hash WHERE id = @id;";
+                await using var updateCmd = new MySqlCommand(updateSql, kon);
+                updateCmd.Parameters.AddWithValue("@hash", hashBerria);
+                updateCmd.Parameters.AddWithValue("@id", langileId);
+                await updateCmd.ExecuteNonQueryAsync();
+            }
+            catch
+            {
+                // Isilpeko erregistroa: login-a arrakastatsua da hala ere
+            }
+        }
 
         var loginEmaitza = new LoginEmaitzaDto
         {
@@ -128,7 +149,7 @@ public class LangileakController : BaseApiKontroladorea
     }
 
     /// <summary>
-    /// Langile berria erregistratzen du.
+    /// Langile berria erregistratzen du (PINa automatikoki BCrypt hash bidez zifratuz).
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Sortu([FromBody] LangileaSortuDto dto)
@@ -144,9 +165,11 @@ public class LangileakController : BaseApiKontroladorea
 
         try
         {
+            string hashZifratua = SegurtasunHelper.HashPin(dto.Pasahitza);
+
             await using var cmd = new MySqlCommand(sql, kon);
             cmd.Parameters.AddWithValue("@erab", dto.Erabiltzailea.Trim());
-            cmd.Parameters.AddWithValue("@hash", dto.Pasahitza);
+            cmd.Parameters.AddWithValue("@hash", hashZifratua);
             cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
             cmd.Parameters.AddWithValue("@rola", dto.Rola);
 
@@ -167,5 +190,46 @@ public class LangileakController : BaseApiKontroladorea
         {
             return ConflictError($"Dagoeneko existitzen da '{dto.Erabiltzailea}' erabiltzaile izena duen langilea.");
         }
+    }
+
+    /// <summary>
+    /// Datu-basean dauden testu lau moduko PIN guztiak BCrypt hash-etara migratzen ditu.
+    /// </summary>
+    [HttpPost("migratu-hashak")]
+    public async Task<IActionResult> MigratuHashak()
+    {
+        await using var kon = await SortuKonexioaAsync();
+        const string selectSql = "SELECT id, erabiltzailea, pasahitza_hash FROM langileak;";
+        
+        var eguneratzekoak = new List<(int Id, string Erab, string HashBerria)>();
+        await using (var cmd = new MySqlCommand(selectSql, kon))
+        await using (var reader = await cmd.ExecuteReaderAsync())
+        {
+            while (await reader.ReadAsync())
+            {
+                int id = reader.GetInt32("id");
+                string erab = reader.GetString("erabiltzailea");
+                string unekoHash = reader.GetString("pasahitza_hash");
+                
+                if (!SegurtasunHelper.IsBcryptHash(unekoHash))
+                {
+                    string hashBerria = SegurtasunHelper.HashPin(unekoHash);
+                    eguneratzekoak.Add((id, erab, hashBerria));
+                }
+            }
+        }
+
+        int eguneratuak = 0;
+        foreach (var item in eguneratzekoak)
+        {
+            const string updateSql = "UPDATE langileak SET pasahitza_hash = @hash WHERE id = @id;";
+            await using var upCmd = new MySqlCommand(updateSql, kon);
+            upCmd.Parameters.AddWithValue("@hash", item.HashBerria);
+            upCmd.Parameters.AddWithValue("@id", item.Id);
+            await upCmd.ExecuteNonQueryAsync();
+            eguneratuak++;
+        }
+
+        return Success(new { mezua = $"{eguneratuak} langileren PINak BCrypt hash-era bihurtu dira.", eguneratuak }, 200, "Migrazioa ondo burutu da.");
     }
 }
