@@ -259,25 +259,38 @@ public partial class MahaiaXehetasunakForm : Form
         if (_eskaerak.Count == 0 || _hautatutakoEskaeraIndex >= _eskaerak.Count)
         {
             pnlTicketLines.Controls.Clear();
+            bool isGarbitzen = _mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase);
             var lblHutsik = new Label
             {
-                Text = "Ez dago eskaera aktiborik mahai honetan.\nSakatu beheko '+ ESKAERA GEHITU' botoia.",
+                Text = isGarbitzen
+                    ? $"Mahaia {_mahaia.Zenbakia} 'Garbitzen' egoeran dago.\nKontu guztiak kobratuta daude.\n\nSakatu beheko botoia mahaia 'Librea' gisa uzteko."
+                    : "Ez dago eskaera aktiborik mahai honetan.\nSakatu beheko '+ ESKAERA GEHITU' botoia.",
                 Font = new Font("Segoe UI", 12F, FontStyle.Regular),
                 ForeColor = Color.FromArgb(100, 116, 139),
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter
             };
             pnlTicketLines.Controls.Add(lblHutsik);
-            lblEskaeraInfo.Text = "Ez dago eskaera aktiborik";
+            lblEskaeraInfo.Text = isGarbitzen ? "Mahaia Garbitzen" : "Ez dago eskaera aktiborik";
             lblLerroLaburpena.Text = "0 plater";
             lblGuztira.Text = "GUZTIRA: 0,00 €";
             lblAzpitotala.Text = "Azpitotala: 0,00 €";
             lblBez.Text = "BEZ (%10 barne): 0,00 €";
-            lblEgoeraOrokorra.Text = "Eskaerarik gabe";
-            lblEgoeraOrokorra.ForeColor = Color.FromArgb(100, 116, 139);
-            btnSukalderaBidali.Text = "EZ DAGO ESKAERARIK";
-            btnSukalderaBidali.BackColor = Color.FromArgb(71, 85, 105);
-            btnSukalderaBidali.Enabled = false;
+            lblEgoeraOrokorra.Text = isGarbitzen ? "Mahaia garbitu eta prest utzi bezero berrientzat" : "Eskaerarik gabe";
+            lblEgoeraOrokorra.ForeColor = isGarbitzen ? Color.FromArgb(22, 101, 52) : Color.FromArgb(100, 116, 139);
+
+            if (isGarbitzen)
+            {
+                btnSukalderaBidali.Text = "✓ MAHAIA LIBRE JARRI";
+                btnSukalderaBidali.BackColor = Color.FromArgb(22, 101, 52);
+                btnSukalderaBidali.Enabled = true;
+            }
+            else
+            {
+                btnSukalderaBidali.Text = "EZ DAGO ESKAERARIK";
+                btnSukalderaBidali.BackColor = Color.FromArgb(71, 85, 105);
+                btnSukalderaBidali.Enabled = false;
+            }
             return;
         }
 
@@ -563,6 +576,36 @@ public partial class MahaiaXehetasunakForm : Form
     private async Task SukalderaBidaliKlikatuaAsync()
     {
         if (_eragiketanAri) return;
+
+        // Mahaia Garbitzen badago eta eskaerarik ez badago, zuzenean 'Libre' jarri
+        if (_mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase) && _eskaerak.Count == 0)
+        {
+            _eragiketanAri = true;
+            try
+            {
+                btnSukalderaBidali.Enabled = false;
+                btnSukalderaBidali.Text = "LIBRE UZTEN...";
+                bool ok = await _api.EguneratuMahaiarenEgoeraAsync(_mahaia.Id, "Libre");
+                if (ok)
+                {
+                    _mahaia.Egoera = "Libre";
+                    MessageBox.Show($"Mahaia {_mahaia.Zenbakia} 'Librea' egoerara aldatu da.", "Mahaia Garbituta", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Ezin izan da mahaiaren egoera eguneratu APIan.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btnSukalderaBidali.Enabled = true;
+                    btnSukalderaBidali.Text = "✓ MAHAIA LIBRE JARRI";
+                }
+            }
+            finally
+            {
+                _eragiketanAri = false;
+            }
+            return;
+        }
+
         if (_eskaerak.Count == 0 || _hautatutakoEskaeraIndex >= _eskaerak.Count) return;
         _eragiketanAri = true;
         try

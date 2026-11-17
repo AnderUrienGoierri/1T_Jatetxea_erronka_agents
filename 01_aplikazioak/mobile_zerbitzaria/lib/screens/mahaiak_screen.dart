@@ -53,8 +53,64 @@ class _MahaiakScreenState extends State<MahaiakScreen> {
     if (mahaia.egoera.toLowerCase() == 'libre') {
       // Pertsona kopurua galdetu eta eskaera berria sortu
       _irekiMahaiaModal(mahaia);
+    } else if (mahaia.egoera.toLowerCase() == 'garbitzen') {
+      // Garbitzen badago: Libre jartzeko aukera eman zerbitzariari
+      final aukera = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Row(
+            children: [
+              const Icon(Icons.cleaning_services, color: AppTheme.brandPrimary),
+              const SizedBox(width: 8),
+              Text('Mahaia #${mahaia.zenbakia} Garbitzen'),
+            ],
+          ),
+          content: Text('Mahaia garbituta dago eta prest bezero berrientzat?\n\nNahi duzu mahaia "Libre" egoerara aldatu?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 'utzi'),
+              child: const Text('Utzi'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 'xehetasunak'),
+              child: const Text('Xehetasunak'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.success, foregroundColor: Colors.white),
+              onPressed: () => Navigator.pop(ctx, 'libre'),
+              child: const Text('✓ Libre Jarri'),
+            ),
+          ],
+        ),
+      );
+
+      if (aukera == 'libre') {
+        setState(() => _kargatzen = true);
+        final ok = await ApiService.eguneratuMahaiarenEgoera(mahaia.id, 'Libre');
+        setState(() => _kargatzen = false);
+        if (ok) {
+          _kargatuMahaiak();
+        } else if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ezin izan da mahaiaren egoera eguneratu.'), backgroundColor: AppTheme.danger),
+          );
+        }
+      } else if (aukera == 'xehetasunak') {
+        final aldatuDa = await Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MahaiaXehetasunakScreen(
+              mahaia: mahaia,
+              langilea: widget.langilea,
+            ),
+          ),
+        );
+        if (aldatuDa == true) {
+          _kargatuMahaiak();
+        }
+      }
     } else {
-      // Okupatuta, Erreserbatuta edo Garbitzen: Xehetasunen pantailara joan
+      // Okupatuta edo Erreserbatuta: Xehetasunen pantailara joan
       final aldatuDa = await Navigator.push<bool>(
         context,
         MaterialPageRoute(

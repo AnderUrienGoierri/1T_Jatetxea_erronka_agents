@@ -344,6 +344,40 @@ public partial class MahaiakForm : Form
             };
             card.Controls.Add(lblPax);
         }
+        else if (mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase))
+        {
+            // Garbitzen badago: "Libre jarri" ekintza-botoi berdea txartelaren beheko eskuinean
+            var btnLibreJarri = new Button
+            {
+                Text = "✓ Libre jarri",
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(22, 101, 52), // Berde dotorea
+                Location = new Point(card.Width - badgeWidth - 22, 148),
+                Size = new Size(badgeWidth, 42),
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnLibreJarri.FlatAppearance.BorderSize = 0;
+            btnLibreJarri.Click += async (s, e) =>
+            {
+                btnLibreJarri.Enabled = false;
+                btnLibreJarri.Text = "Eguneratzen...";
+                bool ok = await _api.EguneratuMahaiarenEgoeraAsync(mahaia.Id, "Libre");
+                if (ok)
+                {
+                    mahaia.Egoera = "Libre";
+                    await KargatuMahaiakAsync();
+                }
+                else
+                {
+                    MessageBox.Show("Ezin izan da mahaiaren egoera eguneratu APIan.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btnLibreJarri.Enabled = true;
+                    btnLibreJarri.Text = "✓ Libre jarri";
+                }
+            };
+            card.Controls.Add(btnLibreJarri);
+        }
 
         // Txartelaren kanpoko marra
         card.Paint += (s, e) =>
@@ -385,9 +419,46 @@ public partial class MahaiakForm : Form
                 formEskaera.Show();
             }
         }
+        else if (mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase))
+        {
+            var erantzuna = MessageBox.Show(
+                $"Mahaia {mahaia.Zenbakia} 'Garbitzen' egoeran dago.\n\nMahaia garbituta dago eta 'Librea' egoerara aldatu nahi duzu?",
+                $"Mahaia {mahaia.Zenbakia} - Garbiketa",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (erantzuna == DialogResult.Yes)
+            {
+                bool ok = await _api.EguneratuMahaiarenEgoeraAsync(mahaia.Id, "Libre");
+                if (ok)
+                {
+                    mahaia.Egoera = "Libre";
+                    await KargatuMahaiakAsync();
+                }
+                else
+                {
+                    MessageBox.Show("Ezin izan da mahaiaren egoera eguneratu APIan.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+            else if (erantzuna == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            // 'Ez' sakatzean xehetasunak ireki
+            Hide();
+            var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
+            formXehetasunak.FormClosed += async (s, e) =>
+            {
+                Show();
+                await KargatuMahaiakAsync();
+            };
+            formXehetasunak.Show();
+        }
         else
         {
-            // Okupatuta, Garbitzen edo Erreserbatuta: Mahaiaren xehetasunak (pantaila osoan)
+            // Okupatuta edo Erreserbatuta: Mahaiaren xehetasunak (pantaila osoan)
             Hide();
             var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
             formXehetasunak.FormClosed += async (s, e) =>
