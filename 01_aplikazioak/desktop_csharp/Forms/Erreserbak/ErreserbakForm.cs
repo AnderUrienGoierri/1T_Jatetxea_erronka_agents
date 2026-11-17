@@ -495,6 +495,7 @@ public class ErreserbakForm : Form
             bool isToday = egunData == DateTime.Today;
             bool isSelected = egunData.Date == _hautatutakoData.Date;
 
+            int captureEgunaZenbakia = eguna;
             var cell = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -523,7 +524,8 @@ public class ErreserbakForm : Form
                     ? Color.White 
                     : (isToday ? Color.FromArgb(37, 99, 235) : Color.FromArgb(30, 41, 59));
                 using var fontDay = new Font("Segoe UI", 10F, isToday || isSelected ? FontStyle.Bold : FontStyle.Regular);
-                e.Graphics.DrawString(eguna.ToString(), fontDay, new SolidBrush(dayColor), new PointF(4, 3));
+                using var brushDay = new SolidBrush(dayColor);
+                e.Graphics.DrawString(captureEgunaZenbakia.ToString(), fontDay, brushDay, new PointF(4, 3));
 
                 // Gaur bada eta hautatua ez bada, "Gaur" testua
                 if (isToday && !isSelected)
