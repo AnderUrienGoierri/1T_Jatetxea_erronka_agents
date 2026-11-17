@@ -1,0 +1,2275 @@
+{
+  "info": {
+    "_postman_id": "c8a2e783-f368-45e1-88c9-1a7f0e9d1234",
+    "name": "1T Jatetxea REST API",
+    "description": "1T Jatetxea erronkako ASP.NET Core Web API zentralaren Postman bilduma osoa. Taula eta eragiketa guztien kontsulta eta probak biltzen ditu: Mahaiak, Lehengaiak, Platerak, Eskaerak (KDS), Erreserbak, Langileak, Bezeroak, Iritziak, Ordainketak eta Osasun egoera.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00. Health & Sistema",
+      "item": [
+        {
+          "name": "GET 01. API Informazioa eta Endpoint Zerrenda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            },
+            "description": "APIaren oinarrizko erroa. Informazio orokorra eta erabilgarri dauden bideak itzultzen ditu."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Health Check (Datu-basearen konexio egoera)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "APIaren eta MySQL datu-basearen osasun egoera (UP / DOWN) eta latentezia egiaztatzen du."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Aplikazio Monitore Egoera Laburpena",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aplikazioak-linean",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aplikazioak-linean"
+              ]
+            },
+            "description": "Konektatuta dauden bezero eta aplikazioen egoera laburpena (Android, Web, KDS, etab.)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01. Mahaiak",
+      "item": [
+        {
+          "name": "GET 01. Mahai Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak"
+              ]
+            },
+            "description": "Jatetxeko mahai aktibo guztien zerrenda."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Mahai Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true",
+                  "description": "Logikoki ezabatutako mahaiak ere itzuli"
+                }
+              ]
+            },
+            "description": "Mahai guztiak lortu, logikoki ezabatutakoak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Mahai Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "1"
+              ]
+            },
+            "description": "ID zehatza duen mahaiaren datuak lortu."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 04. Mahai Libreak / Disponibleak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/disponibleak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "disponibleak"
+              ]
+            },
+            "description": "Une honetan Libre egoeran dauden mahaiak soilik itzultzen ditu."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 05. Mahai Berria Sortu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak"
+              ]
+            },
+            "description": "Mahai berria gehitu datu-basean.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"zenbakia\": 15,\n  \"edukiera\": 4,\n  \"kokapena\": \"Terraza\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 06. Mahaiaren Egoera Eguneratu",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/1/egoera",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "1",
+                "egoera"
+              ]
+            },
+            "description": "Mahaiaren egoera aldatu (Libre, Okupatuta, Erreserbatuta, Garbitzen).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"egoera\": \"Okupatuta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 07. Mahaia Ezabatu (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/15?hard=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "15"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "false",
+                  "description": "false = Soft Delete (ezabatua=1)"
+                }
+              ]
+            },
+            "description": "Mahaia logikoki ezabatu (ezabatua=1 marka jarriz)."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 08. Mahaia Behin Betiko Ezabatu (Hard Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/15?hard=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "15"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "true",
+                  "description": "true = Datu-basetik guztiz ezabatu"
+                }
+              ]
+            },
+            "description": "Mahaia datu-basetik behin betiko ezabatu."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 09. Mahaia Berreskuratu (Restore)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mahaiak/15/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mahaiak",
+                "15",
+                "restore"
+              ]
+            },
+            "description": "Logikoki ezabatutako mahaia berreskuratu (ezabatua=0)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02. Lehengaiak & Stocka",
+      "item": [
+        {
+          "name": "GET 01. Lehengaia Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak"
+              ]
+            },
+            "description": "Biltegian dauden lehengai aktibo guztiak lortu."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Lehengaia Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Lehengai guztiak, ezabatuak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Lehengaia Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "1"
+              ]
+            },
+            "description": "ID zehatza duen lehengaiaren datuak eta uneko stocka."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 04. Stock Gutxieneko Alertak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/alertak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "alertak"
+              ]
+            },
+            "description": "Gutxieneko mailatik behera dauden lehengaiak eta proposatutako erosketa kopurua."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 05. Lehengaia Berria Sortu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak"
+              ]
+            },
+            "description": "Lehengai berri bat erregistratu biltegian.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"izena\": \"Oliba Olio Birjina Estra\",\n  \"unitatea\": \"l\",\n  \"unekoStocka\": 25.0,\n  \"gutxienekoStocka\": 10.0,\n  \"kostuUnitarioa\": 8.5,\n  \"hornitzailea\": \"Goierri Olioak Koop.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST 06. Albarana Sarrera (Stock Handitu)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/sarrera",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "sarrera"
+              ]
+            },
+            "description": "Hornitzailearen sarrera/albarana jaso eta lehengaiaren stocka gehitzen du.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lehengaiaId\": 1,\n  \"kantitatea\": 10.0,\n  \"hornitzailea\": \"Tolosa Ekoizleak\",\n  \"oharrak\": \"Faktura: 2026-F042\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 07. Lehengaia Ezabatu (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/1?hard=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Lehengaia logikoki ezabatu."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 08. Lehengaia Behin Betiko Ezabatu (Hard Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/1?hard=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Lehengaia behin betiko ezabatu."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 09. Lehengaia Berreskuratu (Restore)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/lehengaiak/1/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lehengaiak",
+                "1",
+                "restore"
+              ]
+            },
+            "description": "Logikoki ezabatutako lehengaia berreskuratu."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03. Platerak & Menua",
+      "item": [
+        {
+          "name": "GET 01. Plater Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak"
+              ]
+            },
+            "description": "Menuko plater aktibo guztiak lortu."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Platerak Kategoriaren Arabera",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak?kategoria=Bigarrena",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak"
+              ],
+              "query": [
+                {
+                  "key": "kategoria",
+                  "value": "Bigarrena"
+                }
+              ]
+            },
+            "description": "Kategoria zehatz bateko platerak iragazi (Sarrerakoa, Lehena, Bigarrena, Postrea, Edaria)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Plater Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Plater guztiak, ezabatuak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 04. Plater Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "1"
+              ]
+            },
+            "description": "ID zehatza duen plateraren xehetasunak."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 05. Plateren Erabilgarritasuna (Stockaren arabera)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/erabilgarritasuna",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "erabilgarritasuna"
+              ]
+            },
+            "description": "Biltegiko uneko stockarekin plater bakoitzetik zenbat anoa prestatu daitezkeen kalkulatzen du."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 06. Plateraren Eskandalloa (Osagaiak)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/1/eskandalloa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "1",
+                "eskandalloa"
+              ]
+            },
+            "description": "Plateraren osagaien zerrenda eta proportzioak (eskandallo teknikoa)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 07. Plater Berria Sortu (Eskandallo barne)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak"
+              ]
+            },
+            "description": "Plater berria sortu bere osagaiekin batera.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"izena\": \"Txuleta Eusko Label\",\n  \"deskribapena\": \"Kiloko txuleta txingarretan erreta patata frijituekin\",\n  \"kategoria\": \"Bigarrena\",\n  \"prezioa\": 38.5,\n  \"alergenoak\": null,\n  \"osagaiak\": [\n    {\n      \"lehengaiaId\": 1,\n      \"kantitatea\": 1.0,\n      \"unitatea\": \"kg\"\n    },\n    {\n      \"lehengaiaId\": 2,\n      \"kantitatea\": 0.25,\n      \"unitatea\": \"kg\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 08. Platera Ezabatu (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/1?hard=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Platera logikoki ezabatu menutik."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 09. Platera Behin Betiko Ezabatu (Hard Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/1?hard=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Platera behin betiko ezabatu."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 10. Platera Berreskuratu (Restore)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/platerak/1/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platerak",
+                "1",
+                "restore"
+              ]
+            },
+            "description": "Logikoki ezabatutako platera berreskuratu."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04. Eskaerak & Komandak (KDS)",
+      "item": [
+        {
+          "name": "GET 01. Eskaera Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak"
+              ]
+            },
+            "description": "Eskaera guztien zerrenda."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Eskaerak Egoeraren Arabera Iragazi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak?egoera=Irekia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak"
+              ],
+              "query": [
+                {
+                  "key": "egoera",
+                  "value": "Irekia"
+                }
+              ]
+            },
+            "description": "Egoera zehatz batean dauden eskaerak (Irekia, Sukaldean, Zerbitzatua, Kobratua, Ezeztatua)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Eskaera Bakarra Lerroekin ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "1"
+              ]
+            },
+            "description": "Eskaera baten xehetasun osoa bere plater lerroekin batera."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 04. Eskaera Berria Sortu (Mahaia Ireki)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak"
+              ]
+            },
+            "description": "Mahaian eskaera/kontu berria ireki.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mahaiaId\": 1,\n  \"langileaId\": 1,\n  \"pertsonaKopurua\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST 05. Eskaerari Plater Lerroa Gehitu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/1/lerroak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "1",
+                "lerroak"
+              ]
+            },
+            "description": "Irekita dagoen eskaera bati plater bat edo gehiago gehitu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plateraId\": 2,\n  \"kantitatea\": 2,\n  \"oharrak\": \"Haragia gutxi eginda, mesedez\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST 06. Komanda Sukaldera Bidali (KDS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/1/sukaldera",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "1",
+                "sukaldera"
+              ]
+            },
+            "description": "Eskaerako plater berriak sukaldera bidali (KDS pantailan agertzeko) eta stocka deskontatu."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 07. Eskaera Orokorraren Egoera Eguneratu",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/1/egoera",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "1",
+                "egoera"
+              ]
+            },
+            "description": "Eskaera osoaren egoera aldatu (Irekia, Sukaldean, Zerbitzatua, Kobratua, Ezeztatua).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"egoera\": \"Zerbitzatua\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 08. Plater Lerro Zehatzaren Egoera Aldatu (KDS Ekintza)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/lerroak/1/egoera",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "lerroak",
+                "1",
+                "egoera"
+              ]
+            },
+            "description": "Sukaldariak lerro bakoitzaren egoera aldatzen du (Eskatua -> Sukaldean -> Prestatua -> Zerbitzatua).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"egoera\": \"Prestatua\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 09. Eskaera Ezeztatu / Ezabatu",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eskaerak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eskaerak",
+                "1"
+              ]
+            },
+            "description": "Eskaera ezeztatu eta mahaia libre utzi."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05. Erreserbak (Transakzionalak)",
+      "item": [
+        {
+          "name": "GET 01. Erreserba Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak"
+              ]
+            },
+            "description": "Erreserba aktibo guztien zerrenda."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Erreserbak Data eta Txandaren Arabera",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak?data=2026-11-20&txanda=Bazkaria_1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak"
+              ],
+              "query": [
+                {
+                  "key": "data",
+                  "value": "2026-11-20"
+                },
+                {
+                  "key": "txanda",
+                  "value": "Bazkaria_1"
+                }
+              ]
+            },
+            "description": "Egun eta txanda jakin bateko erreserbak iragazi."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Erreserba Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Erreserba guztiak ezabatutakoak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 04. Erreserba Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak",
+                "1"
+              ]
+            },
+            "description": "Erreserba jakin baten xehetasunak."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 05. Erreserba Berria Sortu (Transakzio Babestua)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak"
+              ]
+            },
+            "description": "Erreserba berria sortu. Overbooking eta talken aurkako transakzio isolatua erabiltzen du.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mahaiaId\": 2,\n  \"data\": \"2026-11-20\",\n  \"txanda\": \"Afaria_1\",\n  \"pertsonaKopurua\": 4,\n  \"oharrak\": \"Leihatila ondoan, mesedez\",\n  \"bezeroIzena\": \"Miren\",\n  \"bezeroAbizena\": \"Goikoetxea\",\n  \"bezeroEmaila\": \"miren.goiko@example.eus\",\n  \"bezeroTelefonoa\": \"600123456\",\n  \"itxaron\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 06. Erreserba Ezeztatu / Ezabatu (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak/1?hard=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Erreserba ezeztatu eta soft delete gisa markatu."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 07. Erreserba Behin Betiko Ezabatu (Hard Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak/1?hard=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "hard",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Erreserba behin betiko ezabatu."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 08. Erreserba Berreskuratu (Restore)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/erreserbak/1/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "erreserbak",
+                "1",
+                "restore"
+              ]
+            },
+            "description": "Ezeztatutako erreserba berreskuratu."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06. Langileak & Saio-hasiera",
+      "item": [
+        {
+          "name": "GET 01. Langile Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/langileak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "langileak"
+              ]
+            },
+            "description": "Langile aktibo guztien zerrenda (pasahitzik gabe)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Langile Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/langileak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "langileak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Langile guztiak, baja emandakoak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Langile Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/langileak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "langileak",
+                "1"
+              ]
+            },
+            "description": "ID zehatza duen langilearen profil datuak."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 04. Langile Login / PIN Egiaztapena",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/langileak/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "langileak",
+                "login"
+              ]
+            },
+            "description": "Komandera mugikorreko edo kudeaketako saio-hasiera PIN edo pasahitz bidez.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"erabiltzailea\": \"maite_zerb\",\n  \"pasahitza\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST 05. Langile Berria Sortu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/langileak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "langileak"
+              ]
+            },
+            "description": "Langile berri bat erregistratu sisteman.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"erabiltzailea\": \"ane_zerb\",\n  \"pasahitza\": \"1234\",\n  \"izena\": \"Ane Mendizabal\",\n  \"rola\": \"Zerbitzaria\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07. Bezeroak",
+      "item": [
+        {
+          "name": "GET 01. Bezero Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak"
+              ]
+            },
+            "description": "Erregistratutako bezero guztien zerrenda."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Bezero Guztiak (Ezabatuak barne)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak?barneEzabatuak=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak"
+              ],
+              "query": [
+                {
+                  "key": "barneEzabatuak",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Bezero guztiak, ezabatuak barne."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Bezero Bakarra ID bidez",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak",
+                "1"
+              ]
+            },
+            "description": "ID zehatza duen bezeroaren fitxa osoa."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 04. Bezero Berria Sortu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak"
+              ]
+            },
+            "description": "Bezero berria gehitu datu-basean.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"izena\": \"Jon\",\n  \"abizena\": \"Agirre\",\n  \"telefonoa\": \"654987321\",\n  \"emaila\": \"jon.agirre@example.eus\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT 05. Bezeroaren Datuak Eguneratu",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak",
+                "1"
+              ]
+            },
+            "description": "Bezero baten kontaktu-datuak eguneratu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"izena\": \"Jon\",\n  \"abizena\": \"Agirre Zabala\",\n  \"telefonoa\": \"654987321\",\n  \"emaila\": \"jon.agirre.zabala@example.eus\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 06. Bezeroa Ezabatu (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bezeroak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bezeroak",
+                "1"
+              ]
+            },
+            "description": "Bezeroa logikoki ezabatu (ezabatua=1)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08. Iritziak",
+      "item": [
+        {
+          "name": "GET 01. Iritzi Guztiak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/iritziak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "iritziak"
+              ]
+            },
+            "description": "Jatetxeko bezeroen iritzi eta balorazio guztiak."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Iritzi Estatistikak (Bataz bestekoa eta izarrak)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/iritziak/estatistikak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "iritziak",
+                "estatistikak"
+              ]
+            },
+            "description": "Balorazio orokorraren estatistika kalkulatuak (bataz besteko puntuazioa, izar banaketa)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST 03. Iritzi Berria Utzi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/iritziak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "iritziak"
+              ]
+            },
+            "description": "Bezeroak iritzi eta puntuazio berria utzi (0tik 5era).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bezeroIzena\": \"Miren\",\n  \"bezeroAbizena\": \"Goikoetxea\",\n  \"bezeroEmaila\": \"miren.goiko@example.eus\",\n  \"balorazioa\": 5,\n  \"testua\": \"Janari bikaina eta zerbitzu ezin hobea! Seguru itzuliko garela.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE 04. Iritzia Ezabatu",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/iritziak/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "iritziak",
+                "1"
+              ]
+            },
+            "description": "Iritzi bat ezabatu ID bidez."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09. Ordainketak & Tiketak",
+      "item": [
+        {
+          "name": "POST 01. Ordainketa Burutu (Txartela / Eskudirua / Bizum)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ordainketak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ordainketak"
+              ]
+            },
+            "description": "Eskaera kobratu eta ordainketa erregistratu (Txartela, Eskudirua, Bizum, etab.). Tiketa sortzen du.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eskaeraId\": 1,\n  \"mota\": \"Txartela\",\n  \"zenbatekoa\": 45.5,\n  \"txartelZenbakia\": \"4532XXXXXXXX1234\",\n  \"titularra\": \"Ander Urien\",\n  \"iraungitzea\": \"12/28\",\n  \"cvv\": \"123\",\n  \"langileaId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET 02. Eskaeraren Ordainketa Xehetasunak Lortu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ordainketak/eskaera/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ordainketak",
+                "eskaera",
+                "1"
+              ]
+            },
+            "description": "Eskaera jakin bati lotutako ordainketa eta tiketa lortu."
+          },
+          "response": []
+        },
+        {
+          "name": "GET 03. Tiket Testua Inprimatzeko Lortu (ESC/POS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-App-Id",
+                "value": "postman",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ordainketak/1/inprimatu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ordainketak",
+                "1",
+                "inprimatu"
+              ]
+            },
+            "description": "Tiket fisikoa inprimagailura bidaltzeko testu-formatuan lortu."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
