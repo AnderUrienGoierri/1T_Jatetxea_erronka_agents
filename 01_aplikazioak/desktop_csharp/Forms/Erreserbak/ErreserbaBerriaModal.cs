@@ -27,7 +27,7 @@ public class ErreserbaBerriaModal : Form
 
     public ErreserbaDto? SortutakoErreserba { get; private set; }
 
-    public ErreserbaBerriaModal(LangileaDto langilea, ApiService api, List<MahaiaDto> mahaiak, int? hautatutakoMahaiZenbakia = null)
+    public ErreserbaBerriaModal(LangileaDto langilea, ApiService api, List<MahaiaDto> mahaiak, int? hautatutakoMahaiZenbakia = null, DateTime? hasierakoData = null, string? hasierakoTxanda = null)
     {
         _langilea = langilea;
         _api = api;
@@ -170,7 +170,7 @@ public class ErreserbaBerriaModal : Form
             Size = new Size(236, inputH),
             Format = DateTimePickerFormat.Short,
             Font = new Font("Segoe UI", 10.5F),
-            Value = DateTime.Today
+            Value = hasierakoData ?? DateTime.Today
         };
         _cmbTxanda = new ComboBox
         {
@@ -184,6 +184,18 @@ public class ErreserbaBerriaModal : Form
         _cmbTxanda.Items.Add("Afaria_1 (20:30 - 22:00)");
         _cmbTxanda.Items.Add("Afaria_2 (22:00 - 23:30)");
         _cmbTxanda.SelectedIndex = 0;
+
+        if (!string.IsNullOrWhiteSpace(hasierakoTxanda))
+        {
+            for (int idx = 0; idx < _cmbTxanda.Items.Count; idx++)
+            {
+                if (_cmbTxanda.Items[idx]?.ToString()?.StartsWith(hasierakoTxanda, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    _cmbTxanda.SelectedIndex = idx;
+                    break;
+                }
+            }
+        }
 
         pnlBody.Controls.Add(_dtpData);
         pnlBody.Controls.Add(_cmbTxanda);
