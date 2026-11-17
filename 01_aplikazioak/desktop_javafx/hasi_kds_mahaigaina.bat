@@ -20,7 +20,7 @@ if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HO
 :: 2. Target lib eta classes daudenean zuzenean abiarazi (berehalako abioa)
 if exist "target\classes" if exist "target\lib\javafx-controls-21.0.2-win.jar" (
     echo Aplikazioaren interfaze grafikoa natiboki abiarazten...
-    start "" "%JAVA_BIN%" --module-path "target\classes;target\lib" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher
+    start "1T Jatetxea - JavaFX KDS" "%JAVA_BIN%" --module-path "target\classes;target\lib" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher
     exit /b 0
 )
 

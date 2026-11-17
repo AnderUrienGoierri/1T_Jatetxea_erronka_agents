@@ -701,6 +701,13 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             catch { }
 
+            string csharpBat = Path.Combine(csharpDir, "hasi_tpv_mahaigaina.bat");
+            if (File.Exists(csharpBat))
+            {
+                LaunchInteractiveProcess(csharpBat, "", csharpDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina aplikazioa irekitzen (hasi_tpv_mahaigaina.bat bidez)..." });
+            }
+
             string[] csharpExeCandidates = new[]
             {
                 Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "Jatetxea.Desktop.exe"),
@@ -726,19 +733,19 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 LaunchInteractiveProcess(csharpExe, "", csharpBinDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina mahaigaineko aplikazioaren interfazea (UI) ireki da." });
             }
-
-            string csharpBat = Path.Combine(csharpDir, "hasi_tpv_mahaigaina.bat");
-            if (File.Exists(csharpBat))
-            {
-                LaunchInteractiveProcess(csharpBat, "", csharpDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina aplikazioa irekitzen (hasi_tpv_mahaigaina.bat bidez)..." });
-            }
             return Results.Ok(new { Success = false, Message = "Ez da hasi_tpv_mahaigaina.bat edo Jatetxea.Desktop.exe aurkitu." });
 
         case "javafx":
         case "desktop_javafx":
         case "kds_javafx":
             string javafxDir = Path.Combine(appsDir, "desktop_javafx");
+            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
+            if (File.Exists(batLauncher))
+            {
+                LaunchInteractiveProcess(batLauncher, "", javafxDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) irekitzen (hasi_kds_mahaigaina.bat bidez)..." });
+            }
+
             string targetClasses = Path.Combine(javafxDir, "target", "classes");
             string targetLib = Path.Combine(javafxDir, "target", "lib");
 
@@ -765,13 +772,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             {
                 string jArgs = $"--module-path \"{targetClasses};{targetLib}\" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher";
                 LaunchInteractiveProcess(javaExe, jArgs, javafxDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
-            }
-
-            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
-            if (File.Exists(batLauncher))
-            {
-                LaunchInteractiveProcess(batLauncher, "", javafxDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
             }
 
