@@ -90,8 +90,8 @@ Write-Host "Aplikazio guztiak helbide honetara sinkronizatzen: $ApiBaseUrl ..." 
 $Config.active_profile = $TargetProfile
 $Config | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile -Encoding utf8
 
-# 2. Flutter: mobile_zerbitzaria eguneratu
-$FlutterZerbFile = Join-Path $AppsDir "mobile_zerbitzaria\lib\services\api_service.dart"
+# 2. Flutter: mobile_zerbitzaria_flutter eguneratu
+$FlutterZerbFile = Join-Path $AppsDir "mobile_zerbitzaria_flutter\lib\services\api_service.dart"
 if (Test-Path $FlutterZerbFile) {
     $content = Get-Content $FlutterZerbFile -Raw -Encoding utf8
     $content = $content -replace "static const String _defaultUrl = '.*?';", "static const String _defaultUrl = '$ApiBaseUrl';"
@@ -99,8 +99,8 @@ if (Test-Path $FlutterZerbFile) {
     Write-Host "  [OK] Flutter Zerbitzaria eguneratua: $FlutterZerbFile" -ForegroundColor Green
 }
 
-# 3. Flutter: mobile_bezeroa eguneratu
-$FlutterBezeroFile = Join-Path $AppsDir "mobile_bezeroa\lib\services\api_service.dart"
+# 3. Flutter: mobile_bezeroa_flutter eguneratu
+$FlutterBezeroFile = Join-Path $AppsDir "mobile_bezeroa_flutter\lib\services\api_service.dart"
 if (Test-Path $FlutterBezeroFile) {
     $content = Get-Content $FlutterBezeroFile -Raw -Encoding utf8
     $content = $content -replace "static const String _defaultUrl = '.*?';", "static const String _defaultUrl = '$ApiBaseUrl';"

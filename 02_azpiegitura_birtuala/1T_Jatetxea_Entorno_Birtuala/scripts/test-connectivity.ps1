@@ -12,8 +12,8 @@ Write-Host "Helburu IP: $HostTarget" -ForegroundColor Gray
 Write-Host ""
 
 $tests = @(
-    @{ Name = "ASP.NET Core API Health"; Url = "http://${HostTarget}:5000/health"; ExpectedCode = 200 },
-    @{ Name = "REST API Platerak Endpoint"; Url = "http://${HostTarget}:5000/api/v1/platerak"; ExpectedCode = 200 },
+    @{ Name = "ASP.NET Core API Health"; Url = "http://${HostTarget}:5050/health"; ExpectedCode = 200 },
+    @{ Name = "REST API Platerak Endpoint"; Url = "http://${HostTarget}:5050/api/v1/platerak"; ExpectedCode = 200 },
     @{ Name = "Web PHP Frontend"; Url = "http://${HostTarget}:8085/"; ExpectedCode = 200 },
     @{ Name = "Barne Txat Zerbitzaria"; Url = "http://${HostTarget}:3001/health"; ExpectedCode = 200 },
     @{ Name = "Sukaldea KDS Android TV"; Url = "http://${HostTarget}:8086/"; ExpectedCode = 200 },

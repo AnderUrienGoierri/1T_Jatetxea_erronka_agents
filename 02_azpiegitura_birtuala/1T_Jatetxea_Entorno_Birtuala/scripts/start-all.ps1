@@ -27,7 +27,8 @@ docker compose ps
 Write-Host ""
 Write-Host "Sarbide puntuak:" -ForegroundColor Yellow
 Write-Host "  - MySQL Datu-Basea:     localhost:3308 (root / root)"
-Write-Host "  - ASP.NET Core API:     http://localhost:5000/api/v1 (eta /health)"
+Write-Host "  - Admin IT Zentrala:    http://localhost:5000/"
+Write-Host "  - ASP.NET Core API:     http://localhost:5050/api/v1 (eta /health; Docker barruan 5000)"
 Write-Host "  - Web PHP Frontend:     http://localhost:8085"
 Write-Host "  - Barne Txat Zerbitzua: http://localhost:3001"
 Write-Host "  - Sukaldea KDS TV:      http://localhost:8086"
