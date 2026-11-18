@@ -18,7 +18,7 @@ graph TD
     end
 
     subgraph BARNE_LAN_WINDOWS["2. TPV Salmenta Puntua (LAN)"]
-        TPV["desktop_csharp/<br/>.NET 10 WinForms<br/>Kaxa & Zerbitzarien Terminala"]
+        TPV["zerbitzari_langileak/desktop_tpv_csharp/<br/>.NET 10 WinForms<br/>Kaxa & Zerbitzarien Terminala"]
     end
 
     subgraph BARNE_LAN_SUKALDEA["3. KDS Sukaldea & Biltegia (LAN)"]
@@ -52,7 +52,7 @@ graph TD
 
 ---
 
-### 3. Desktop TPV Zerbitzaria (`desktop_csharp/`)
+### 3. Desktop TPV Zerbitzaria (`zerbitzari_langileak/desktop_tpv_csharp/`)
 
 * **Xede-Hartzailea:** Jangela eta terrazako zerbitzariak eta kudeatzaileak.
 * **Kokapena eta Exekuzioa:** LAN barruko Windows ekipoetan, Active Directory (`jatetxea.local`) domeinura atxikitako terminaletan.

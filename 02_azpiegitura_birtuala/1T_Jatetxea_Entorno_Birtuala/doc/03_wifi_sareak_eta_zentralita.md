@@ -31,7 +31,7 @@ Aplikazio bezeroek (Flutter mugikorreko aplikazioak, JavaFX mahaigaineko KDSak, 
    - `01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter` (Flutter zerbitzarien komandera).
    - `01_aplikazioak/bezeroak/mobile_bezeroa_flutter` (Flutter bezeroen aplikazioa).
    - `01_aplikazioak/desktop_javafx` (Sukaldea, Barra eta Biltegia).
-   - `01_aplikazioak/desktop_csharp` (TPV Windows Forms).
+   - `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp` (TPV Windows Forms).
    - `01_aplikazioak/bezeroak/web_php_bezeroak` (PHP 8.4 Frontend publikoa).
 
 ---
@@ -65,7 +65,7 @@ Aplikazio guztiak helbide honetara sinkronizatzen: http://192.168.1.129:5050/api
   [OK] Flutter Zerbitzaria eguneratua: 01_aplikazioak\zerbitzari_langileak\mobile_zerbitzaria_flutter\lib\services\api_service.dart
   [OK] Flutter Bezeroa eguneratua:     01_aplikazioak\bezeroak\mobile_bezeroa_flutter\lib\services\api_service.dart
   [OK] JavaFX Desktop eguneratua:      01_aplikazioak\desktop_javafx\src\main\resources\api.properties
-  [OK] C# Desktop TPV eguneratua:      01_aplikazioak\desktop_csharp\appsettings.json
+  [OK] C# Desktop TPV eguneratua:      01_aplikazioak\zerbitzari_langileak\desktop_tpv_csharp\appsettings.json
   [OK] Web PHP Frontend eguneratua:    01_aplikazioak\bezeroak\web_php_bezeroak\.env
 
 Sinkronizazioa osatuta!

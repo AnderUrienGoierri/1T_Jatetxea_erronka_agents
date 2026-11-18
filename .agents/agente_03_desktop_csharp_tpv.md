@@ -7,7 +7,7 @@ Agente honek **C# Windows Forms TPV (Terminal Punto de Venta)** mahaigaineko apl
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_03`
-- **Ardurapeko Proiektua:** `01_aplikazioak/desktop_csharp/Jatetxea.Desktop.csproj`
+- **Ardurapeko Proiektua:** `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp/Jatetxea.Desktop.csproj`
 - **Teknologia:** .NET 10 Windows Forms, C# 13, HTTP REST Bezeroa (`HttpClient`).
 - **Xede Ingurunea:** Windows 11 / Windows Server 2025 (Kutxako ordenagailu fisikoa eta ukimen-pantaila).
 
@@ -47,11 +47,11 @@ C# TPV aplikazioaren osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. Proiektuaren konpilazioa
-dotnet build "01_aplikazioak/desktop_csharp/Jatetxea.Desktop.csproj" -c Release
+dotnet build "01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp/Jatetxea.Desktop.csproj" -c Release
 
 # 2. Aldagaien eta izendapenaren berrikuspena
 # Egiaztatu kontroladoreek btn*, txt*, lbl*, tbl* aurrizkiak erabiltzen dituztela
-Get-ChildItem -Path "01_aplikazioak/desktop_csharp/Forms" -Filter "*.Designer.cs" -Recurse | Select-String "private System.Windows.Forms."
+Get-ChildItem -Path "01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp/Forms" -Filter "*.Designer.cs" -Recurse | Select-String "private System.Windows.Forms."
 ```
 
 ---

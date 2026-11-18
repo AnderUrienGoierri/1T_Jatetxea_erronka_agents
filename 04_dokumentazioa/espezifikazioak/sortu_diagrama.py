@@ -52,7 +52,7 @@ def sortu_diagrama_irudia(irteera_bidea):
     # 2. TALDEA: ZERBITZARIAK ETA JANTOKIA (Goi-Eskuina)
     draw.rectangle([(1240, 110), (1640, 390)], outline=(0, 0, 0), width=1, fill=(250, 250, 250))
     draw.text((1255, 128), "2. ZERBITZARIAK ETA JANTOKIA", fill=(0, 0, 0), font=font_sec)
-    draw_box(1260, 150, 1620, 255, "TPV Aretoa & Kutxa", "Mahai-mapa, erreserba egutegia, fitxatu", "[desktop_csharp | .NET 10 WinForms]")
+    draw_box(1260, 150, 1620, 255, "TPV Aretoa & Kutxa", "Mahai-mapa, erreserba egutegia, fitxatu", "[desktop_tpv_csharp | .NET 10 WinForms]")
     draw_box(1260, 275, 1620, 375, "Komandera Android", "Komandak, mahai-egoerak, fitxaketa", "[zerbitzaria_komandera_android | Compose]")
 
     # 3. TALDEA: SUKALDEA ETA BILTEGIA (Behe-Ezkerra)

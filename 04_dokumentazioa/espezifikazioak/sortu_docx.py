@@ -155,9 +155,9 @@ def sortu_docx_dokumentua():
     table_data = [
         ("Rola / Erabiltzailea", "Erabilitako Aplikazioak", "Plataforma / Teknologia", "Funtzio Nagusiak"),
         ("Bezeroak", "• Web-App publikoa (web_php_bezeroak)\n• Mugikorreko App-a (mobile_bezeroa_flutter)", "• Web orria (HTML5, JS, PHP)\n• Android/iOS (Flutter / Dart)", "Karta kontsultatu, alergenoen iragazketa, mahai-erreserbak egin, auto-eskaera eta iritziak utzi."),
-        ("Zerbitzariak\n(Jantokia)", "• TPV Salmenta Puntua (desktop_csharp)\n• Android Komandera (zerbitzaria_komandera_android)", "• Windows Desktop (.NET 10)\n• Android (Mugikorra + Tableta)", "Mahaien mapa eta okupazioa kudeatu, erreserba egutegia ikusi, komandak mahai ondoan jaso, sukaldera igorri, kobraketak bideratu eta lanaldia fitxatu."),
+        ("Zerbitzariak\n(Jantokia)", "• TPV Salmenta Puntua (desktop_tpv_csharp)\n• Android Komandera (zerbitzaria_komandera_android)", "• Windows Desktop (.NET 10)\n• Android (Mugikorra + Tableta)", "Mahaien mapa eta okupazioa kudeatu, erreserba egutegia ikusi, komandak mahai ondoan jaso, sukaldera igorri, kobraketak bideratu eta lanaldia fitxatu."),
         ("Sukaldariak", "• Sukaldeko KDS Telebista (sukaldea_kds_android_tv)\n• JavaFX Aplikazioa (desktop_javafx)", "• Android TV (Compose TV)\n• Desktop (Java 17/21, JavaFX)", "Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta lanaldia fitxatu."),
-        ("Barrakoa\n(Kutxazaina)", "• TPV Salmenta Puntua (desktop_csharp)\n• JavaFX Aplikazioa (BDS modulu)\n• Android Komandera (Mugikorra/Tableta)", "• Windows Desktop (.NET 10)\n• Desktop (JavaFX BDS)\n• Android (Mugikorra/Tableta)", "Barran zuzeneko salmentak erregistratu, edarien komandak prestatu (BDS), tiketak eta fakturak inprimatu, kontuak kobratu eta lanaldia fitxatu."),
+        ("Barrakoa\n(Kutxazaina)", "• TPV Salmenta Puntua (desktop_tpv_csharp)\n• JavaFX Aplikazioa (BDS modulu)\n• Android Komandera (Mugikorra/Tableta)", "• Windows Desktop (.NET 10)\n• Desktop (JavaFX BDS)\n• Android (Mugikorra/Tableta)", "Barran zuzeneko salmentak erregistratu, edarien komandak prestatu (BDS), tiketak eta fakturak inprimatu, kontuak kobratu eta lanaldia fitxatu."),
         ("Biltegikoak", "• JavaFX Biltegia eta Stocka (desktop_javafx)\n• Odoo ERP Kudeaketa (odoo_erp)", "• Desktop (JavaFX MVC)\n• Web ERP (Odoo 17 / PostgreSQL)", "Lehengaien stock errealaren kontrola, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta lanaldia fitxatu."),
         ("Admin IT /\nZuzendaritza", "• TI Aginte Panela (admin_IT_zentrala)\n• JavaFX Aplikazio Integratua\n• Odoo ERP Finantzak (odoo_erp)\n• Backend REST API (backend_rest_api_csharp)", "• Web Dashboard\n• Desktop (JavaFX)\n• Odoo ERP (PostgreSQL)\n• ASP.NET Core REST API", "Azpiegitura eta zerbitzuen monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, finantza-txostenak eta segurtasun-kopiak.")
     ]
@@ -279,7 +279,7 @@ def sortu_docx_dokumentua():
     ])
 
     add_subsection("3.2. Zerbitzarien eta Jantokiaren Interfazeak", [
-        "• TPV Salmenta Puntua Aretoa & Kutxazaina (01_aplikazioak/desktop_csharp): C# eta .NET 10 bidez garatutako mahaigaineko "
+        "• TPV Salmenta Puntua Aretoa & Kutxazaina (01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp): C# eta .NET 10 bidez garatutako mahaigaineko "
         "soluzio sendoa. Mahaien banaketa interaktiboa (Jangela Nagusia, Terraza, Barra, VIP), erreserben 5 hilabeteko egutegi integrala, "
         "kobraketa azkarrak eta txanda hasiera/amaierako fitxaketa erregistratzea ahalbidetzen ditu.",
         "• Komandera Android Natiboa (01_aplikazioak/zerbitzaria_komandera_android): Jetpack Compose teknologiarekin sortutako "
@@ -296,7 +296,7 @@ def sortu_docx_dokumentua():
     ])
 
     add_subsection("3.4. Barrako eta Salmenta Puntuko Interfazeak", [
-        "• C# TPV Salmenta Puntua (01_aplikazioak/desktop_csharp): Barran kokatutako kobraketa-terminala. Tiket fiskalak inprimatzea, "
+        "• C# TPV Salmenta Puntua (01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp): Barran kokatutako kobraketa-terminala. Tiket fiskalak inprimatzea, "
         "ordainketa konbinatuak (eskudirua, txartela) eta eguneko kaxa-itxiera (Z txostena) kudeatzen ditu.",
         "• JavaFX Barra BDS Modulua (01_aplikazioak/desktop_javafx): Barran prestatzen diren edari, aperitibo eta kafetegiko aginduak "
         "bereizita kudeatzeko pantaila dedikatua.",

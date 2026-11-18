@@ -25,11 +25,11 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 │   ├── bezeroak/                                 # Bezeroen aplikazioak
 │   │   ├── web_php_bezeroak/                     # Apache 2.4 + PHP 8.2/8.4 Webgune korporatiboa eta bezeroen karta publikoa
 │   │   └── mobile_bezeroa_flutter/               # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
-│   ├── desktop_csharp/                          # Windows Forms (.NET 10, C#) TPV / Kutxa Mahaia (Zerbitzari/Barra + Erreserbak)
 │   ├── desktop_javafx/                          # JavaFX (Java 17/21, Maven) Sukaldea (KDS), Barra (BDS) eta Stocka
 │   ├── sukalde_langileak/                       # Sukaldeko langileen aplikazioak
 │   │   └── sukaldea_kds_android_tv/             # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
-│   ├── zerbitzari_langileak/                    # Zerbitzarien aplikazio mugikorrak
+│   ├── zerbitzari_langileak/                    # Zerbitzarien mahaigaineko eta mugikorreko aplikazioak
+│   │   ├── desktop_tpv_csharp/                  # Windows Forms (.NET 10, C#) TPV / Kutxa Mahaia (Zerbitzari/Barra + Erreserbak)
 │   │   ├── mobile_zerbitzaria_flutter/          # Flutter (Dart) Zerbitzariaren PDA mugikorra (Eskaerak mahaitik hartu)
 │   │   └── zerbitzaria_komandera_android/       # Jetpack Compose Android Komandera natiboa (Mugikorra + Tableta)
 │   ├── biltegi_langileak/                       # Biltegiko langileen kudeaketa

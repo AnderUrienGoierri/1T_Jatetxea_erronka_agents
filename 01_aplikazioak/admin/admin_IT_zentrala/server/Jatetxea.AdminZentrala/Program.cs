@@ -691,8 +691,11 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
 
         case "csharp":
         case "desktop_csharp":
+        case "desktop_tpv_csharp":
         case "tpv":
-            string csharpDir = Path.Combine(appsDir, "desktop_csharp");
+            string csharpDir = Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp"))
+                ? Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp")
+                : Path.Combine(appsDir, "desktop_csharp");
             try
             {
                 foreach (var p in Process.GetProcessesByName("Jatetxea.Desktop"))
@@ -866,7 +869,9 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
     string appsDir = Path.Combine(projectRoot, "01_aplikazioak");
     string targetDir = appId.ToLowerInvariant() switch
     {
-        "csharp" or "desktop_csharp" or "tpv" => Path.Combine(appsDir, "desktop_csharp"),
+        "csharp" or "desktop_csharp" or "desktop_tpv_csharp" or "tpv" => Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp"))
+            ? Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp")
+            : Path.Combine(appsDir, "desktop_csharp"),
         "javafx" or "desktop_javafx" or "kds_javafx" => Path.Combine(appsDir, "desktop_javafx"),
         "kudeaketa_desktop_java" or "admin_desktop_java" => Path.Combine(appsDir, "admin", "admin_desktop_java"),
         "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Directory.Exists(Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter"))

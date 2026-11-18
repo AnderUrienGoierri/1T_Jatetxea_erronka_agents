@@ -36,7 +36,7 @@
 
   <rect x="610" y="60" width="150" height="70" rx="6" fill="#ffffff" stroke="#c8e6c9" filter="url(#shadow)" />
   <text x="685" y="85" font-size="12" font-weight="bold" fill="#2e7d32" text-anchor="middle">TPV Kutxa Zentrala</text>
-  <text x="685" y="102" font-size="11" fill="#546e7a" text-anchor="middle">desktop_csharp (.NET 10)</text>
+  <text x="685" y="102" font-size="11" fill="#546e7a" text-anchor="middle">desktop_tpv_csharp (.NET 10)</text>
 
   <!-- SECTION 3: SUKALDEA & BILTEGIA -->
   <rect x="25" y="475" width="350" height="120" rx="8" fill="#fff3e0" stroke="#ffcc80" stroke-width="1.5" />

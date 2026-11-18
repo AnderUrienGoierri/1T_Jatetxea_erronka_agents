@@ -11,12 +11,12 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 |                            APLIKAZIO BEZEROEN SAREA                               |
 +-----------------------------------------------------------------------------------+
   |
-  +--> 1. TPV Desktop (C# .NET 10 WinForms `01_aplikazioak/desktop_csharp`)
+  +--> 1. TPV Desktop (C# .NET 10 WinForms `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`)
   |      Erabiltzaileak: Barrako zerbitzariak eta kutxazainak.
   |      Gailua: Ukipen-pantaila edo kutxako PCa (Windows).
   |      Funtzioa: Mahaien egoerak ikusi, komandak sortu, kontuak kobratu.
   |
-  +--> 2. Zerbitzarien Mugikorra / Tableta (Flutter `01_aplikazioak/mobile_zerbitzaria_flutter`)
+  +--> 2. Zerbitzarien Mugikorra / Tableta (Flutter `01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter`)
   |      Erabiltzaileak: Jangelako zerbitzariak.
   |      Gailua: Android / iOS tableta edo smartphone-a.
   |      Funtzioa: Mahai ondoan komandak hartu eta sukaldera zuzenean bidali.
@@ -31,7 +31,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   |      Gailua: Smart TV edo Android TV sukaldeko horman (Portu 8086).
   |      Funtzioa: Eskaera aktibo guztiak urrunetik argi ikustea.
   |
-  +--> 5. Bezero Publikoaren Webgunea (PHP 8.4 Apache `01_aplikazioak/web_php`)
+  +--> 5. Bezero Publikoaren Webgunea (PHP 8.4 Apache `01_aplikazioak/bezeroak/web_php_bezeroak`)
   |      Erabiltzaileak: Jatetxeko bezero orokorrak (Internetetik - Portu 8085).
   |      Gailua: Nabigatzailea (mugikorra edo PCa).
   |      Funtzioa: Karta ikusi, prezioak kontsultatu, mahaiak erreserbatu.
@@ -56,13 +56,13 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 ## 2. Nola Exekutatu Bezero Bakoitza
 
-### 1. C# TPV Mahaigainekoa (`desktop_csharp`)
+### 1. C# TPV Mahaigainekoa (`desktop_tpv_csharp`)
 
-- **Kokapena:** `01_aplikazioak/desktop_csharp`
+- **Kokapena:** `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`
 - **Abioa terminaletik:**
 
   ```powershell
-  cd 01_aplikazioak\desktop_csharp
+  cd 01_aplikazioak\zerbitzari_langileak\desktop_tpv_csharp
   dotnet run
   ```
 

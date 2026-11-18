@@ -23,9 +23,9 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 | Rola / Erabiltzailea | Erabilitako Aplikazioak | Plataforma / Teknologia | Funtzio Nagusiak |
 | :--- | :--- | :--- | :--- |
 | **Bezeroak** | Web-App (`web_php_bezeroak` / HTML-JS)<br>Bezeroen App-a (`mobile_bezeroa_flutter` / Flutter) | Web (HTML5/JS/PHP)<br>Android / iOS (Flutter) | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin, auto-eskaera eta eguneko menua ikusi. |
-| **Zerbitzariak (Jantokia)** | TPV Salmenta Puntua (`desktop_csharp`)<br>Komandera Android (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10 WinForms)<br>Android (Mugikorra + Tableta) | Mahaien mapa eta okupazioa kudeatu, erreserben egutegia ikusi, komandak mahai ondoan jaso, sukaldera bidali, kobraketak bideratu eta **lanaldia fitxatu**. |
+| **Zerbitzariak (Jantokia)** | TPV Salmenta Puntua (`desktop_tpv_csharp`)<br>Komandera Android (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10 WinForms)<br>Android (Mugikorra + Tableta) | Mahaien mapa eta okupazioa kudeatu, erreserben egutegia ikusi, komandak mahai ondoan jaso, sukaldera bidali, kobraketak bideratu eta **lanaldia fitxatu**. |
 | **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX Aplikazioa (`desktop_javafx` - KDS Modulua) | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX) | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta **lanaldia fitxatu**. |
-| **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
+| **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_tpv_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
 | **Biltegikoak** | JavaFX Aplikazioa (`desktop_javafx` - Biltegia/Stock)<br>ERP Kudeaketa (`odoo_erp`) | Desktop (JavaFX)<br>Web ERP (Odoo 17 / PostgreSQL) | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta **lanaldia fitxatu**. |
 | **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Aplikazioa (`desktop_javafx`)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_rest_api_csharp`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, txostenak eta segurtasun-kopiak. |
 
@@ -42,7 +42,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ### 3.2. Zerbitzarien eta Jantokiaren Interfazeak
 
-- **TPV Salmenta Puntua Aretoa & Kutxazaina (`01_aplikazioak/desktop_csharp`):** Jantokiko zerbitzariek eta arduradunek erabilia. Mahaien banaketa interaktiboa (Jangela Nagusia, Terraza, Barra, VIP), erreserben 5 hilabeteko egutegi integrala, kobraketa azkarrak eta txanda hasiera/amaierako **fitxaketa sistema** bideratzen ditu.
+- **TPV Salmenta Puntua Aretoa & Kutxazaina (`01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`):** Jantokiko zerbitzariek eta arduradunek erabilia. Mahaien banaketa interaktiboa (Jangela Nagusia, Terraza, Barra, VIP), erreserben 5 hilabeteko egutegi integrala, kobraketa azkarrak eta txanda hasiera/amaierako **fitxaketa sistema** bideratzen ditu.
 - **Komandera Android Natiboa (`01_aplikazioak/zerbitzaria_komandera_android`):** Jetpack Compose bidez garatua, telefono zein tablet formatuetara guztiz egokitua. Zerbitzariak esku-gailutik mahai bakoitzeko komandak jaso ditzake, ohar bereziak jarri (alergiak, haragi-puntua), berehala sukaldera edo barrara bidali eta fitxaketa erregistratu.
 
 ### 3.3. Sukaldeko Interfazeak (KDS - Kitchen Display System)
@@ -52,7 +52,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ### 3.4. Barrako eta Salmenta Puntuko Interfazeak
 
-- **C# .NET 10 Desktop TPV (`01_aplikazioak/desktop_csharp`):** Barran kokatutako terminal nagusia. Tiketak eta faktura fiskalak inprimatzea, zatitutako ordainketak (eskudirua, txartela), eguneko kaxa-itxiera eta fitxaketa ahalbidetzen ditu.
+- **C# .NET 10 Desktop TPV (`01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`):** Barran kokatutako terminal nagusia. Tiketak eta faktura fiskalak inprimatzea, zatitutako ordainketak (eskudirua, txartela), eguneko kaxa-itxiera eta fitxaketa ahalbidetzen ditu.
 - **JavaFX Barra BDS Modulua (`01_aplikazioak/desktop_javafx`):** Barran prestatzeko diren edari, kafe eta aperitiboen komandak bereizita kudeatzeko pantaila dedikatua.
 - **Android Komandera Mugikorra eta Tableta (`01_aplikazioak/zerbitzaria_komandera_android`):** Barrako langileek ere erabil dezakete mugikor edo tabletan eskaerak azkar hartzeko, egoerak ikusteko eta fitxatzeko.
 

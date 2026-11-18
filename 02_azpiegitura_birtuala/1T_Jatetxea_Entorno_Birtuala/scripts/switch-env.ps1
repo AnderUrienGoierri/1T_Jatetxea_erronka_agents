@@ -121,8 +121,12 @@ $JavaFxPropFile = Join-Path $JavaFxResDir "api.properties"
 "api.base.url=$ApiBaseUrl" | Set-Content $JavaFxPropFile -Encoding utf8
 Write-Host "  [OK] JavaFX Desktop KDS eguneratua: $JavaFxPropFile" -ForegroundColor Green
 
-# 5. C# TPV: desktop_csharp konfigurazioa
-$CsharpAppConfig = Join-Path $AppsDir "desktop_csharp\appsettings.json"
+# 5. C# TPV: desktop_tpv_csharp konfigurazioa
+$CsharpAppConfig = Join-Path $AppsDir "zerbitzari_langileak\desktop_tpv_csharp\appsettings.json"
+if (-not (Test-Path $CsharpAppConfig)) {
+    $legacyConfig = Join-Path $AppsDir "desktop_csharp\appsettings.json"
+    if (Test-Path $legacyConfig) { $CsharpAppConfig = $legacyConfig }
+}
 if (Test-Path $CsharpAppConfig) {
     try {
         $csObj = Get-Content $CsharpAppConfig -Raw -Encoding utf8 | ConvertFrom-Json
@@ -132,6 +136,8 @@ if (Test-Path $CsharpAppConfig) {
         @{ "ApiBaseUrl" = $ApiBaseUrl } | ConvertTo-Json | Set-Content $CsharpAppConfig -Encoding utf8
     }
 } else {
+    $parentDir = Split-Path $CsharpAppConfig
+    if (-not (Test-Path $parentDir)) { New-Item -ItemType Directory -Path $parentDir -Force | Out-Null }
     @{ "ApiBaseUrl" = $ApiBaseUrl } | ConvertTo-Json | Set-Content $CsharpAppConfig -Encoding utf8
 }
 Write-Host "  [OK] C# Desktop TPV eguneratua: $CsharpAppConfig" -ForegroundColor Green

@@ -117,8 +117,8 @@ jobs:
       - name: C# TPV Proiektua Konpilatu
         shell: pwsh
         run: |
-          dotnet restore "01_aplikazioak/desktop_csharp/Jatetxea.Desktop.csproj"
-          dotnet build "01_aplikazioak/desktop_csharp/Jatetxea.Desktop.csproj" -c Release --no-restore
+          dotnet restore "01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp/Jatetxea.Desktop.csproj"
+          dotnet build "01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp/Jatetxea.Desktop.csproj" -c Release --no-restore
 
   javafx-kds-check:
     name: Desktop JavaFX KDS (Java 21)
