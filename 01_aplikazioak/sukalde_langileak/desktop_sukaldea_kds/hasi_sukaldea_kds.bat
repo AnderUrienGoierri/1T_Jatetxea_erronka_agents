@@ -18,7 +18,7 @@ if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HO
 
 if exist "target\classes" if exist "target\lib\javafx-controls-21.0.2-win.jar" (
     echo Aplikazioaren interfaze grafikoa natiboki abiarazten...
-    "%JAVA_BIN%" --module-path "target\classes;target\lib" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea.sukaldea/eus.goierri.jatetxea.sukaldea.Launcher
+    start "" "%JAVA_BIN%" --module-path "target\classes;target\lib" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea.sukaldea/eus.goierri.jatetxea.sukaldea.Launcher
     exit /b 0
 )
 

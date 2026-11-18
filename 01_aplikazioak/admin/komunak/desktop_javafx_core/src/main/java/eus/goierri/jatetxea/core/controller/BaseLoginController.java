@@ -190,6 +190,11 @@ public abstract class BaseLoginController {
         gehituPinDigitoa(balioa);
     }
 
+    @FXML
+    protected void onKeyClick(ActionEvent event) {
+        onPinBotoiaClick(event);
+    }
+
     private void gehituPinDigitoa(String digitoa) {
         if (pinBuffer.length() < 4 && digitoa.matches("\\d")) {
             pinBuffer.append(digitoa);

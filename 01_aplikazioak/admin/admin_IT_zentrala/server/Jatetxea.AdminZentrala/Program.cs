@@ -709,13 +709,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             catch { }
 
-            string csharpBat = Path.Combine(csharpDir, "hasi_tpv_mahaigaina.bat");
-            if (File.Exists(csharpBat))
-            {
-                LaunchInteractiveProcess(csharpBat, "", csharpDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina aplikazioa irekitzen (hasi_tpv_mahaigaina.bat bidez)..." });
-            }
-
             string[] csharpExeCandidates = new[]
             {
                 Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "Jatetxea.Desktop.exe"),
@@ -724,6 +717,20 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 Path.Combine(csharpDir, "bin", "Debug", "net10.0-windows", "win-x64", "Jatetxea.Desktop.exe")
             };
             string? csharpExe = csharpExeCandidates.FirstOrDefault(File.Exists);
+
+            if (csharpExe != null && File.Exists(csharpExe))
+            {
+                string csharpBinDir = Path.GetDirectoryName(csharpExe)!;
+                LaunchInteractiveProcess(csharpExe, "", csharpBinDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina mahaigaineko aplikazioaren interfazea (UI) ireki da." });
+            }
+
+            string csharpBat = Path.Combine(csharpDir, "hasi_tpv_mahaigaina.bat");
+            if (File.Exists(csharpBat))
+            {
+                LaunchInteractiveProcess(csharpBat, "", csharpDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina aplikazioa irekitzen (hasi_tpv_mahaigaina.bat bidez)..." });
+            }
 
             if (csharpExe == null)
             {

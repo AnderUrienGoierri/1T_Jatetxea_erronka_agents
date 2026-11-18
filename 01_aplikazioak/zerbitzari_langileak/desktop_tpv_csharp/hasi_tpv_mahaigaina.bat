@@ -15,14 +15,14 @@ set "EXE_DEBUG=%~dp0bin\Debug\net10.0-windows\Jatetxea.Desktop.exe"
 if exist "%EXE_RELEASE%" (
     echo Aplikazioaren interfazea abiarazten: Release
     cd /d "%~dp0bin\Release\net10.0-windows"
-    "Jatetxea.Desktop.exe"
+    start "" "Jatetxea.Desktop.exe"
     goto :amaitu
 )
 
 if exist "%EXE_DEBUG%" (
     echo Aplikazioaren interfazea abiarazten: Debug
     cd /d "%~dp0bin\Debug\net10.0-windows"
-    "Jatetxea.Desktop.exe"
+    start "" "Jatetxea.Desktop.exe"
     goto :amaitu
 )
 
@@ -30,7 +30,7 @@ echo Dotnet bidez konpilatzen eta abiarazten...
 dotnet build "%~dp0Jatetxea.Desktop.csproj" -c Release
 if exist "%EXE_RELEASE%" (
     cd /d "%~dp0bin\Release\net10.0-windows"
-    "Jatetxea.Desktop.exe"
+    start "" "Jatetxea.Desktop.exe"
     goto :amaitu
 )
 
