@@ -76,7 +76,11 @@ app.Use(async (context, next) =>
 });
 
 // Web aplikazioaren fitxategiak zerbitzatu /app bidean
-var webAppPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "web_php"));
+var webAppPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "bezeroak", "web_php_bezeroak"));
+if (!Directory.Exists(webAppPath))
+{
+    webAppPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "web_php"));
+}
 if (Directory.Exists(webAppPath))
 {
     app.UseFileServer(new FileServerOptions

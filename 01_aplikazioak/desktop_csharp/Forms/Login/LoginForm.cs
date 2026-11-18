@@ -644,7 +644,7 @@ public partial class LoginForm : Form
                 _lblOfflineSubtitle.Text = "Automatikoki berriro saiatuko da... edo sakatu 'BERRIZ SAIATU'";
                 _pnlOfflineNotice.Visible = true;
 
-                lblStatus.Text = $"Ezin izan da APIarekin konektatu ({DateTime.Now:HH:mm:ss}).\nEgiaztatu zerbitzaria martxan dagoela (http://localhost:5050).";
+                lblStatus.Text = $"{healthMsg} ({DateTime.Now:HH:mm:ss}).";
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
 
                 lblPinTitle.Text = "API KONEXIOA BEHARREZKOA DA";

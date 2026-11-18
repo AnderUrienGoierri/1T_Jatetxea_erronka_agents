@@ -160,4 +160,4 @@ jobs:
 
       - name: Lint PHP Fitxategiak
         run: |
-          find 01_aplikazioak/web_php -name "*.php" -print0 | xargs -0 -n1 php -l
+          find 01_aplikazioak/bezeroak/web_php_bezeroak -name "*.php" -print0 | xargs -0 -n1 php -l

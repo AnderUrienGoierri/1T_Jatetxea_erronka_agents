@@ -8,9 +8,9 @@ Agente honek **Flutter bidezko mugikor-aplikazioak (Bezeroa eta Zerbitzaria)**, 
 
 - **ID:** `agente_06`
 - **Ardurapeko Proiektuak:**
-  - `01_aplikazioak/mobile_bezeroa_flutter` (Flutter - Dart)
-  - `01_aplikazioak/mobile_zerbitzaria_flutter` (Flutter - Dart)
-  - `01_aplikazioak/sukaldea_kds_android_tv` (Android Jetpack Compose - Kotlin)
+  - `01_aplikazioak/bezeroak/mobile_bezeroa_flutter` (Flutter - Dart)
+  - `01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter` (Flutter - Dart)
+  - `01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv` (Android Jetpack Compose - Kotlin)
 - **Konektatutako Gailuak:** Android mugikor fisikoak (USB arazketa / ADB), Android TV emuladoreak edo pantaila handiak.
 
 ---

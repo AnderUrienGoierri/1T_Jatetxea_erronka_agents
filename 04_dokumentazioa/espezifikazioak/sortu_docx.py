@@ -154,7 +154,7 @@ def sortu_docx_dokumentua():
     # TAULA
     table_data = [
         ("Rola / Erabiltzailea", "Erabilitako Aplikazioak", "Plataforma / Teknologia", "Funtzio Nagusiak"),
-        ("Bezeroak", "Web-App publikoa\n(web_php)", "Web orria\n(HTML5, JS, PHP)", "Karta kontsultatu, alergenoen iragazketa, mahai-erreserbak egin eta eguneko menua ikusi."),
+        ("Bezeroak", "• Web-App publikoa (web_php_bezeroak)\n• Mugikorreko App-a (mobile_bezeroa_flutter)", "• Web orria (HTML5, JS, PHP)\n• Android/iOS (Flutter / Dart)", "Karta kontsultatu, alergenoen iragazketa, mahai-erreserbak egin, auto-eskaera eta iritziak utzi."),
         ("Zerbitzariak\n(Jantokia)", "• TPV Salmenta Puntua (desktop_csharp)\n• Android Komandera (zerbitzaria_komandera_android)", "• Windows Desktop (.NET 10)\n• Android (Mugikorra + Tableta)", "Mahaien mapa eta okupazioa kudeatu, erreserba egutegia ikusi, komandak mahai ondoan jaso, sukaldera igorri, kobraketak bideratu eta lanaldia fitxatu."),
         ("Sukaldariak", "• Sukaldeko KDS Telebista (sukaldea_kds_android_tv)\n• JavaFX Aplikazioa (desktop_javafx)", "• Android TV (Compose TV)\n• Desktop (Java 17/21, JavaFX)", "Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta lanaldia fitxatu."),
         ("Barrakoa\n(Kutxazaina)", "• TPV Salmenta Puntua (desktop_csharp)\n• JavaFX Aplikazioa (BDS modulu)\n• Android Komandera (Mugikorra/Tableta)", "• Windows Desktop (.NET 10)\n• Desktop (JavaFX BDS)\n• Android (Mugikorra/Tableta)", "Barran zuzeneko salmentak erregistratu, edarien komandak prestatu (BDS), tiketak eta fakturak inprimatu, kontuak kobratu eta lanaldia fitxatu."),
@@ -269,10 +269,13 @@ def sortu_docx_dokumentua():
             p.paragraph_format.space_after = Pt(5)
             p.paragraph_format.line_spacing = 1.15
 
-    add_subsection("3.1. Bezeroen Interfaze Publikoa (Web)", [
-        "• Web-App Publikoa (01_aplikazioak/web_php): Jatetxearen atari korporatiboa eta erreserba-gunea. "
+    add_subsection("3.1. Bezeroen Interfaze Publikoak", [
+        "• Web-App Publikoa (01_aplikazioak/bezeroak/web_php_bezeroak): Jatetxearen atari korporatiboa eta erreserba-gunea. "
         "Bezeroek online bidez mahai-erreserbak egin ditzakete, eguneko menua zein karta kontsultatu eta alergenoen araberako "
-        "iragazketa azkarrak aplikatu. Sukaldean edo biltegian agortutako platerak automatikoki agortu gisa bistaratzen dira."
+        "iragazketa azkarrak aplikatu. Sukaldean edo biltegian agortutako platerak automatikoki agortu gisa bistaratzen dira.",
+        "• Bezeroen Mugikorreko App-a (01_aplikazioak/bezeroak/mobile_bezeroa_flutter): Flutter bidez garatutako Android aplikazioa. "
+        "Mahaian QR kodea eskaneatuz eskaerak auto-kudeatzeko, plateren xehetasunak ikusteko eta ordainketa digital zibersegurua "
+        "burutzeko tresna intuitiboa."
     ])
 
     add_subsection("3.2. Zerbitzarien eta Jantokiaren Interfazeak", [

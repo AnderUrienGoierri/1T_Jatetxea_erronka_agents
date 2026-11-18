@@ -6,8 +6,8 @@ namespace Jatetxea.Desktop.Services;
 
 public class ApiService
 {
-    private readonly HttpClient _http;
-    private readonly string _baseUrl;
+    private HttpClient _http;
+    private string _baseUrl;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -21,14 +21,33 @@ public class ApiService
             baseUrl = LoadBaseUrlFromConfig();
         }
         _baseUrl = baseUrl.TrimEnd('/');
-        _http = new HttpClient
+        _http = SortuHttpClient(_baseUrl);
+    }
+
+    private static HttpClient SortuHttpClient(string baseUrl)
+    {
+        var http = new HttpClient
         {
-            BaseAddress = new Uri(_baseUrl + "/"),
+            BaseAddress = new Uri(baseUrl + "/"),
             Timeout = TimeSpan.FromSeconds(2.5)
         };
-        _http.DefaultRequestHeaders.Add("X-App-Id", "csharp_tpv");
-        _http.DefaultRequestHeaders.Add("X-App-Name", "C# TPV Areto & Kutxazaina");
-        _http.DefaultRequestHeaders.UserAgent.ParseAdd("Jatetxea.Desktop/1.0 (WindowsForms .NET10)");
+        http.DefaultRequestHeaders.Add("X-App-Id", "csharp_tpv");
+        http.DefaultRequestHeaders.Add("X-App-Name", "C# TPV Areto & Kutxazaina");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("Jatetxea.Desktop/1.0 (WindowsForms .NET10)");
+        return http;
+    }
+
+    private void EguneratuBaseUrl(string baseUrl)
+    {
+        if (string.Equals(_baseUrl, baseUrl, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var aurrekoHttp = _http;
+        _http = SortuHttpClient(baseUrl);
+        _baseUrl = baseUrl;
+        aurrekoHttp.Dispose();
     }
 
     private static string LoadBaseUrlFromConfig()
@@ -65,39 +84,63 @@ public class ApiService
     /// </summary>
     public async Task<(bool ApiMartxan, bool DatuBaseaMartxan, string Mezua)> CheckHealthAsync()
     {
-        try
+        var candidates = new List<string>
         {
-            var res = await _http.GetAsync("/health");
-            if (res.IsSuccessStatusCode)
-            {
-                return (true, true, "Datu-basea konektatuta dago.");
-            }
-            if ((int)res.StatusCode == 503)
-            {
-                return (true, false, "MySQL datu-basea DESKONEKTATUTA dago (jatetxea_mysql).");
-            }
-            return (false, false, $"API egoera: {res.StatusCode}");
+            "http://localhost:5050/api/v1",
+            "http://127.0.0.1:5050/api/v1"
+        };
+
+        if (!string.IsNullOrWhiteSpace(_baseUrl) &&
+            !candidates.Contains(_baseUrl, StringComparer.OrdinalIgnoreCase))
+        {
+            candidates.Add(_baseUrl);
         }
-        catch
+
+        var failures = new List<string>();
+        foreach (var candidate in candidates)
         {
-            // Konfiguratutako IPak huts egiten badu (adibidez sarea aldatu delako), probatu 127.0.0.1 lokalera
-            if (!_baseUrl.Contains("127.0.0.1") && !_baseUrl.Contains("localhost"))
+            var attempts = candidate.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase) ? 2 : 1;
+            for (var attempt = 0; attempt < attempts; attempt++)
             {
                 try
                 {
-                    using var localClient = new HttpClient { BaseAddress = new Uri("http://127.0.0.1:5050/"), Timeout = TimeSpan.FromSeconds(1.5) };
-                    var localRes = await localClient.GetAsync("health");
-                    if (localRes.IsSuccessStatusCode)
+                    var candidateUri = new Uri(candidate);
+                    using var client = new HttpClient
                     {
-                        // Eguneratu BaseAddress lokalera zuzenean funtzionatzen jarraitzeko
-                        _http.BaseAddress = new Uri("http://127.0.0.1:5050/api/v1/");
-                        return (true, true, "Datu-basea konektatuta dago (127.0.0.1 lokaletik).");
+                        BaseAddress = new Uri(candidateUri.GetLeftPart(UriPartial.Authority) + "/"),
+                        Timeout = TimeSpan.FromSeconds(2.5)
+                    };
+
+                    using var res = await client.GetAsync("health");
+                    if (res.IsSuccessStatusCode)
+                    {
+                        EguneratuBaseUrl(candidate);
+                        return (true, true, "Datu-basea konektatuta dago.");
                     }
+                    if ((int)res.StatusCode == 503)
+                    {
+                        EguneratuBaseUrl(candidate);
+                        return (true, false, "MySQL datu-basea DESKONEKTATUTA dago (jatetxea_mysql).");
+                    }
+
+                    failures.Add($"{candidate}: HTTP {(int)res.StatusCode} ({res.StatusCode})");
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    var detail = ex.GetBaseException().Message;
+                    failures.Add($"{candidate}: {detail}");
+                    System.Diagnostics.Debug.WriteLine($"Health errorea ({candidate}): {detail}");
+                }
+
+                if (attempt + 1 < attempts)
+                {
+                    await Task.Delay(250);
+                }
             }
-            return (false, false, $"API zerbitzaria deskonektatuta dago ({_baseUrl}).");
         }
+
+        var failureDetails = failures.Count == 0 ? "" : $" Azken erantzunak: {string.Join(" | ", failures)}";
+        return (false, false, $"API zerbitzaria deskonektatuta dago ({_baseUrl}).{failureDetails}");
     }
 
     /// <summary>

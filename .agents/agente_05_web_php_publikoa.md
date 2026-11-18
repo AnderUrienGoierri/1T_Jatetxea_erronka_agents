@@ -7,8 +7,8 @@ Agente honek **Web PHP Frontend Publikoa** (webgune nagusia, karta digitala eta 
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_05`
-- **Ardurapeko Proiektua:** `01_aplikazioak/web_php`
-- **Teknologia:** PHP 8.2, Apache Web Server, Docker edukiontzia (`jatetxea-web`).
+- **Ardurapeko Proiektua:** `01_aplikazioak/bezeroak/web_php_bezeroak`
+- **Teknologia:** PHP 8.4, Apache Web Server, Docker edukiontzia (`jatetxea-web`).
 - **Ataka Finko Bakarra:** `8085`
 - **Sare Gunea:** VLAN 20 (DMZ - Gune Desmilitarizatua).
 
@@ -43,13 +43,13 @@ Web PHP aplikazioaren osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. PHP sintaxiaren linting automatikoa
-php -l "01_aplikazioak/web_php/index.php"
+php -l "01_aplikazioak/bezeroak/web_php_bezeroak/index.php"
 
 # 2. Web zerbitzua egiaztatu
 Invoke-WebRequest -Uri "http://localhost:8085/" -UseBasicParsing
 
 # 3. Zuzeneko DB konexiorik ez dagoela egiaztatu (Segurtasun auditoretza)
-Get-ChildItem -Path "01_aplikazioak/web_php" -Recurse -Include "*.php" | Select-String "new PDO|mysqli_connect"
+Get-ChildItem -Path "01_aplikazioak/bezeroak/web_php_bezeroak" -Recurse -Include "*.php" | Select-String "new PDO|mysqli_connect"
 # Irteerak hutsik egon behar du!
 ```
 

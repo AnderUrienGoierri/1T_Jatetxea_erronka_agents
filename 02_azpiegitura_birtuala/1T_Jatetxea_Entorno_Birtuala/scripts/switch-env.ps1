@@ -91,7 +91,10 @@ $Config.active_profile = $TargetProfile
 $Config | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile -Encoding utf8
 
 # 2. Flutter: mobile_zerbitzaria_flutter eguneratu
-$FlutterZerbFile = Join-Path $AppsDir "mobile_zerbitzaria_flutter\lib\services\api_service.dart"
+$FlutterZerbFile = Join-Path $AppsDir "zerbitzari_langileak\mobile_zerbitzaria_flutter\lib\services\api_service.dart"
+if (-not (Test-Path $FlutterZerbFile)) {
+    $FlutterZerbFile = Join-Path $AppsDir "mobile_zerbitzaria_flutter\lib\services\api_service.dart"
+}
 if (Test-Path $FlutterZerbFile) {
     $content = Get-Content $FlutterZerbFile -Raw -Encoding utf8
     $content = $content -replace "static const String _defaultUrl = '.*?';", "static const String _defaultUrl = '$ApiBaseUrl';"
@@ -100,7 +103,10 @@ if (Test-Path $FlutterZerbFile) {
 }
 
 # 3. Flutter: mobile_bezeroa_flutter eguneratu
-$FlutterBezeroFile = Join-Path $AppsDir "mobile_bezeroa_flutter\lib\services\api_service.dart"
+$FlutterBezeroFile = Join-Path $AppsDir "bezeroak\mobile_bezeroa_flutter\lib\services\api_service.dart"
+if (-not (Test-Path $FlutterBezeroFile)) {
+    $FlutterBezeroFile = Join-Path $AppsDir "mobile_bezeroa_flutter\lib\services\api_service.dart"
+}
 if (Test-Path $FlutterBezeroFile) {
     $content = Get-Content $FlutterBezeroFile -Raw -Encoding utf8
     $content = $content -replace "static const String _defaultUrl = '.*?';", "static const String _defaultUrl = '$ApiBaseUrl';"
@@ -131,7 +137,10 @@ if (Test-Path $CsharpAppConfig) {
 Write-Host "  [OK] C# Desktop TPV eguneratua: $CsharpAppConfig" -ForegroundColor Green
 
 # 6. Web PHP: web_php .env fitxategia
-$WebEnvFile = Join-Path $AppsDir "web_php\.env"
+$WebEnvFile = Join-Path $AppsDir "bezeroak\web_php_bezeroak\.env"
+if (-not (Test-Path $WebEnvFile)) {
+    $WebEnvFile = Join-Path $AppsDir "web_php\.env"
+}
 "API_BASE_URL=$ApiBaseUrl" | Set-Content $WebEnvFile -Encoding utf8
 Write-Host "  [OK] Web PHP Frontend eguneratua: $WebEnvFile" -ForegroundColor Green
 

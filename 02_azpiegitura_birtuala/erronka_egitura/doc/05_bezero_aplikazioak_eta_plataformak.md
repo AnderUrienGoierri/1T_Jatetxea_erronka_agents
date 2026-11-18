@@ -14,7 +14,7 @@ graph TD
     API["C# ASP.NET Core REST API<br/>(Ubuntu DMZ - http://api.jatetxea.local/api/v1)"]
 
     subgraph KANPOA_ETA_WEB["1. Web Bezeroa (Publikoa)"]
-        WEB["web_php/<br/>PHP 8.2 + HTML5/JS<br/>Nabigatzaileak (Mugikorra & PC)"]
+        WEB["bezeroak/web_php_bezeroak/<br/>PHP 8.4 + HTML5/JS<br/>Nabigatzaileak (Mugikorra & PC)"]
     end
 
     subgraph BARNE_LAN_WINDOWS["2. TPV Salmenta Puntua (LAN)"]
@@ -26,8 +26,8 @@ graph TD
     end
 
     subgraph MOBILITATEA["4. Mugikorreko Aplikazioak (WAN / Wi-Fi)"]
-        MOB_BEZ["mobile_bezeroa_flutter/<br/>Flutter Android<br/>Bezeroen Karta & Ordainketa"]
-        MOB_ZER["mobile_zerbitzaria_flutter/<br/>Flutter Android<br/>Zerbitzarien PDA Komandak"]
+        MOB_BEZ["bezeroak/mobile_bezeroa_flutter/<br/>Flutter Android<br/>Bezeroen Karta & Ordainketa"]
+        MOB_ZER["zerbitzari_langileak/mobile_zerbitzaria_flutter/<br/>Flutter Android<br/>Zerbitzarien PDA Komandak"]
     end
 
     WEB -->|"Fetch API (JSON)"| API
@@ -39,11 +39,11 @@ graph TD
 
 ---
 
-### 2. Web Frontend-a (`web_php/`)
+### 2. Web Frontend-a (`bezeroak/web_php_bezeroak/`)
 
 * **Xede-Hartzailea:** Jatetxeko bezeroak (etxetik edo mugikorretik).
 * **Kokapena eta Exekuzioa:** Apache 2.4 zerbitzarian hedatuta Ubuntu zerbitzarian (DMZ).
-* **Teknologiak:** PHP 8.2, HTML5 semantikoa, CSS3 sentikorra (Responsive) eta JavaScript Vanilla asinkronoa (Fetch API).
+* **Teknologiak:** PHP 8.4, HTML5 semantikoa, CSS3 sentikorra (Responsive) eta JavaScript Vanilla asinkronoa (Fetch API).
 * **Ezaugarri Nagusiak:**
   1. **Karta Interaktiboa:** Platerak kategorien arabera (Sarrerakoak, Lehenak, Bigarrenak, Postreak, Edariak) eta alergenoen iragazkia.
   2. **Dinamismoa eta Stock Kontrola:** `GET /api/v1/platerak/erabilgarritasuna` kontsultatzen du asinkronoki; anoa erabilgarririk ez duten platerak automatikoki **"Agortua"** gisa bistaratzen ditu eta eskaerak desgaitu.
@@ -92,11 +92,11 @@ graph TD
 
 ---
 
-### 5. Mugikorreko Aplikazioak (`mobile_bezeroa_flutter/` eta `mobile_zerbitzaria_flutter/`)
+### 5. Mugikorreko Aplikazioak (`bezeroak/mobile_bezeroa_flutter/` eta `zerbitzari_langileak/mobile_zerbitzaria_flutter/`)
 
 * **Xede-Hartzailea:**
-  * `mobile_bezeroa_flutter`: Kanpoko bezeroak (mahaian QR bidez edo etxetik eramateko eskatzeko).
-  * `mobile_zerbitzaria_flutter`: Jatetxeko zerbitzariak (haririk gabeko PDA komanderoak).
+  * `mobile_bezeroa_flutter` (`01_aplikazioak/bezeroak/mobile_bezeroa_flutter`): Kanpoko bezeroak (mahaian QR bidez edo etxetik eramateko eskatzeko).
+  * `mobile_zerbitzaria_flutter` (`01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter`): Jatetxeko zerbitzariak (haririk gabeko PDA komanderoak).
 * **Teknologiak:** Flutter (Dart), Android APK konpilazioa.
 * **Zibersegurtasun Simulazio Aurreratua (`mobile_bezeroa_flutter`):**
   1. **PCI-DSS Maila 1 Estandarrak:** Datu sentikorrak (kreditu-txartelaren zenbakiak, CVVak) ez dira inoiz testu hutsean gordetzen; SHA-256 eta AES-256 bidezko tokenizazio kriptografikoa erabiltzen da (`tok_pci_aes256_...`).

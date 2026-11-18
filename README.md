@@ -19,15 +19,20 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 ├── 01_aplikazioak/                              # Garatutako software ekosistema osoa
 │   ├── admin/                                    # Administrazio-aplikazioak
 │   │   ├── admin_desktop_java/                   # Etorkizuneko administrazio-aplikazioa (oraindik ez garatua)
-│   │   └── admin_IT_zentrala/                    # IT Kontrol Zentrala (ASP.NET Core Web zerbitzaria + WinForms Morroia)
+│   │   ├── admin_IT_zentrala/                    # IT Kontrol Zentrala (ASP.NET Core Web zerbitzaria + WinForms Morroia)
+│   │   └── odoo_erp/                             # Odoo 17 HR ERP & Web Portala (Giza Baliabideak, Langileak, Kontratuak)
 │   ├── backend_rest_api_csharp/                  # ASP.NET Core (.NET 10, C#) REST API nagusia (MySQL 8.0)
+│   ├── bezeroak/                                 # Bezeroen aplikazioak
+│   │   ├── web_php_bezeroak/                     # Apache 2.4 + PHP 8.2/8.4 Webgune korporatiboa eta bezeroen karta publikoa
+│   │   └── mobile_bezeroa_flutter/               # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
 │   ├── desktop_csharp/                          # Windows Forms (.NET 10, C#) TPV / Kutxa Mahaia (Zerbitzari/Barra + Erreserbak)
 │   ├── desktop_javafx/                          # JavaFX (Java 17/21, Maven) Sukaldea (KDS), Barra (BDS) eta Stocka
-│   ├── sukaldea_kds_android_tv/                 # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
-│   ├── web_php/                                 # Apache 2.4 + PHP 8.2 Webgune korporatiboa eta bezeroen karta publikoa
-│   ├── mobile_bezeroa_flutter/                  # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
-│   ├── mobile_zerbitzaria_flutter/               # Flutter (Dart) Zerbitzariaren PDA mugikorra (Eskaerak mahaitik hartu)
-│   ├── odoo_erp/                                # Odoo 17 ERP & Web Portala (Giza Baliabideak, Langileak, Kontratuak)
+│   ├── sukalde_langileak/                       # Sukaldeko langileen aplikazioak
+│   │   └── sukaldea_kds_android_tv/             # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
+│   ├── zerbitzari_langileak/                    # Zerbitzarien aplikazio mugikorrak
+│   │   ├── mobile_zerbitzaria_flutter/          # Flutter (Dart) Zerbitzariaren PDA mugikorra (Eskaerak mahaitik hartu)
+│   │   └── zerbitzaria_komandera_android/       # Jetpack Compose Android Komandera natiboa (Mugikorra + Tableta)
+│   ├── biltegi_langileak/                       # Biltegiko langileen kudeaketa
 │   └── txat_zerbitzaria/                        # Socket.IO / Node.js denbora errealeko barne txat zerbitzaria
 │
 ├── 02_azpiegitura_birtuala/                     # Ingurune birtualeko baliabideak eta orkestrazioa
@@ -110,8 +115,8 @@ Proiektuak 12 software osagai nagusi biltzen ditu, bakoitzak bere ataka eta helb
 | **Desktop JavaFX** | Sukaldea / Barra / Stock | Java 17/21 (JavaFX / Maven) | Ukipen-pantaila / PC | Sukaldeko KDS (plater egoerak), Barrako BDS (edariak soilik) eta Biltegiko Stock kontrola albaranekin. |
 | **Android TV KDS** | Smart TV App | Kotlin / Compose for TV | Android TV (1080p/4K) | Sukaldeko hormako telebista: D-Pad bidez eskaeren egoerak aldatzeko pantaila espezifikoa. |
 | **Sukaldea KDS TV Web** | Pantaila Bistaratzailea | Nginx Alpine / HTML5 | `http://localhost:8086` | Sukaldeko pantaila bistaratzaile arina web bidez telebistetara zabaltzeko. |
-| **Web Publikoa** | Karta eta Erreserbak | Apache 2.4 / PHP 8.2 | `http://localhost:8085` | Jatetxeko webgune korporatiboa, karta interaktiboa, alergenoak, stockaren araberako plater erabilgarritasuna eta iritziak. |
-| **Mobile Bezeroa** | Mugikorreko App-a | Dart (Flutter) | Android / iOS | Bezeroaren aplikazioa: karta ikusi, mahaiko QR bidez eskatu eta erreserbak kudeatu. |
+| **Web Publikoa (web_php_bezeroak)** | Karta eta Erreserbak | Apache 2.4 / PHP 8.4 | `http://localhost:8085` | Jatetxeko webgune korporatiboa, karta interaktiboa, alergenoak, stockaren araberako plater erabilgarritasuna eta iritziak. |
+| **Mobile Bezeroa (mobile_bezeroa_flutter)** | Mugikorreko App-a | Dart (Flutter) | Android / iOS / Web | Bezeroaren aplikazioa: karta ikusi, mahaiko QR bidez eskatu eta erreserbak kudeatu. |
 | **Mobile Zerbitzaria** | Zerbitzariaren PDA | Dart (Flutter) | Android PDA | Zerbitzariaren eskuko gailua: mahaietan komandak hartu eta sukaldera berehala bidaltzeko. |
 | **Odoo 17 HR ERP** | Enpresa Kudeaketa | Python 3.11 / Odoo 17 | `http://localhost:8070` | Giza baliabideen modulua: langileen fitxak, kontratuak, nominak, lan-ordutegiak eta fitxaketak. |
 | **Barne Txat Zerbitzaria** | Komunikazioa | Node.js / Socket.IO | `http://localhost:3001` | Zerbitzarien, sukaldearen eta kudeatzaileen arteko denbora errealeko barne mezularitza. |

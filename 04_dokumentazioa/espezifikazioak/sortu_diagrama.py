@@ -47,7 +47,7 @@ def sortu_diagrama_irudia(irteera_bidea):
     # 1. TALDEA: BEZEROAK (Goi-Ezkerra)
     draw.rectangle([(60, 110), (460, 310)], outline=(0, 0, 0), width=1, fill=(250, 250, 250))
     draw.text((75, 128), "1. BEZEROAK", fill=(0, 0, 0), font=font_sec)
-    draw_box(80, 150, 440, 285, "Web Publikoa & Erreserbak", "Karta, alergenoak, erreserbak", "[web_php | HTML5, JS, PHP]")
+    draw_box(80, 150, 440, 285, "Web Publikoa & Erreserbak", "Karta, alergenoak, erreserbak", "[web_php_bezeroak | HTML5, PHP]")
 
     # 2. TALDEA: ZERBITZARIAK ETA JANTOKIA (Goi-Eskuina)
     draw.rectangle([(1240, 110), (1640, 390)], outline=(0, 0, 0), width=1, fill=(250, 250, 250))

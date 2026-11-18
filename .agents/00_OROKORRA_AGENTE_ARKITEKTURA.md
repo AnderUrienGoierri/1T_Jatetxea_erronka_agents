@@ -12,7 +12,7 @@ Dokumentu honek **1T Jatetxea Kudeaketa Sistema Integralaren** multi-agente egit
 | `agente_02` | **Admin IT Zentralaren Ingeniaria** | `01_aplikazioak/admin/admin_IT_zentrala` | ASP.NET Core (.NET 11/10), Docker CLI, VBox (5000) |
 | `agente_03` | **Desktop C# TPV Ingeniaria** | `01_aplikazioak/desktop_csharp` | C# .NET 10 Windows Forms, ESC/POS Inprimagailua |
 | `agente_04` | **Desktop JavaFX KDS Diseinatzailea** | `01_aplikazioak/desktop_javafx` | Java 21 Temurin, JavaFX, FXML, Scene Builder |
-| `agente_05` | **Web PHP Garatzailea & DMZ Zaindaria** | `01_aplikazioak/web_php` | Apache, PHP 8.2, VLAN 20 DMZ (8085) |
+| `agente_05` | **Web PHP Garatzailea & DMZ Zaindaria** | `01_aplikazioak/bezeroak/web_php_bezeroak` | Apache, PHP 8.4, VLAN 20 DMZ (8085) |
 | `agente_06` | **Mugikor eta Android TV Garatzailea** | `mobile_*`, `sukaldea_kds_android_tv`| Flutter (Dart), Android Jetpack Compose, ADB |
 | `agente_07` | **Sare, Segurtasun eta DevSecOps Ingeniaria** | `02_azpiegitura_birtuala`, `03_laborategia` | OPNsense (8443), Cisco 2960 VLANak, CI/CD |
 | `agente_08` | **Figma UI/UX Ikuskatzaile eta Auditorea** | `gemini/`, Figma Educational Workspace | Figma Auto-Layout, Token Sistema, Inter / JetBrains |

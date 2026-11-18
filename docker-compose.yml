@@ -44,17 +44,17 @@ services:
     networks:
       - jatetxea_net
 
-  # 3. Apache PHP Bezero Publikoa (web_php)
+  # 3. Apache PHP Bezero Publikoa (web_php_bezeroak)
   jatetxea-web:
     build:
-      context: 01_aplikazioak
-      dockerfile: ./../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
+      context: ./01_aplikazioak/bezeroak/web_php_bezeroak
+      dockerfile: ./../../../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
     container_name: jatetxea_web_php
     restart: "no"
     ports:
       - "8085:80"
     volumes:
-      - ./01_aplikazioak/web_php:/var/www/html
+      - ./01_aplikazioak/bezeroak/web_php_bezeroak:/var/www/html
     environment:
       - API_BASE_URL=http://jatetxea-api:5000/api/v1
     depends_on:

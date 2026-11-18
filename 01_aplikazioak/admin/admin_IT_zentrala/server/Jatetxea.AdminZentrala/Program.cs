@@ -798,7 +798,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "mobile_bezeroa":
         case "mobile_bezeroa_flutter":
         case "flutter_bezeroa":
-            string bezeroaDir = Path.Combine(appsDir, "mobile_bezeroa_flutter");
+            string bezeroaDir = Directory.Exists(Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter"))
+                ? Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter")
+                : Path.Combine(appsDir, "mobile_bezeroa_flutter");
             if (Directory.Exists(bezeroaDir))
             {
                 Process.Start(new ProcessStartInfo
@@ -815,7 +817,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "mobile_zerbitzaria":
         case "mobile_zerbitzaria_flutter":
         case "flutter_zerbitzaria":
-            string zerbitzariaDir = Path.Combine(appsDir, "mobile_zerbitzaria_flutter");
+            string zerbitzariaDir = Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "mobile_zerbitzaria_flutter"))
+                ? Path.Combine(appsDir, "zerbitzari_langileak", "mobile_zerbitzaria_flutter")
+                : Path.Combine(appsDir, "mobile_zerbitzaria_flutter");
             if (Directory.Exists(zerbitzariaDir))
             {
                 Process.Start(new ProcessStartInfo
@@ -865,12 +869,25 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
         "csharp" or "desktop_csharp" or "tpv" => Path.Combine(appsDir, "desktop_csharp"),
         "javafx" or "desktop_javafx" or "kds_javafx" => Path.Combine(appsDir, "desktop_javafx"),
         "kudeaketa_desktop_java" or "admin_desktop_java" => Path.Combine(appsDir, "admin", "admin_desktop_java"),
-        "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Path.Combine(appsDir, "mobile_bezeroa_flutter"),
-        "mobile_zerbitzaria" or "mobile_zerbitzaria_flutter" or "flutter_zerbitzaria" => Path.Combine(appsDir, "mobile_zerbitzaria_flutter"),
-        "android_tv" or "sukaldea_kds_android_tv" => Path.Combine(appsDir, "sukaldea_kds_android_tv"),
-        "zerbitzaria_android" or "zerbitzaria_komandera_android" or "komandera_android" => Path.Combine(appsDir, "zerbitzaria_komandera_android"),
-        "web" or "web_php" => Path.Combine(appsDir, "web_php"),
-        "odoo" or "odoo_erp" => Path.Combine(appsDir, "odoo_erp"),
+        "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Directory.Exists(Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter"))
+            ? Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter")
+            : Path.Combine(appsDir, "mobile_bezeroa_flutter"),
+        "mobile_zerbitzaria" or "mobile_zerbitzaria_flutter" or "flutter_zerbitzaria" => Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "mobile_zerbitzaria_flutter"))
+            ? Path.Combine(appsDir, "zerbitzari_langileak", "mobile_zerbitzaria_flutter")
+            : Path.Combine(appsDir, "mobile_zerbitzaria_flutter"),
+        "android_tv" or "sukaldea_kds_android_tv" => Directory.Exists(Path.Combine(appsDir, "sukalde_langileak", "sukaldea_kds_android_tv"))
+            ? Path.Combine(appsDir, "sukalde_langileak", "sukaldea_kds_android_tv")
+            : Path.Combine(appsDir, "sukaldea_kds_android_tv"),
+        "zerbitzaria_android" or "zerbitzaria_komandera_android" or "komandera_android" => Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "zerbitzaria_komandera_android"))
+            ? Path.Combine(appsDir, "zerbitzari_langileak", "zerbitzaria_komandera_android")
+            : Path.Combine(appsDir, "zerbitzaria_komandera_android"),
+        "web" or "web_php" or "web_php_bezeroak" => Directory.Exists(Path.Combine(appsDir, "bezeroak", "web_php_bezeroak"))
+            ? Path.Combine(appsDir, "bezeroak", "web_php_bezeroak")
+            : Path.Combine(appsDir, "web_php"),
+        "odoo" or "odoo_erp" => Directory.Exists(Path.Combine(appsDir, "admin", "odoo_erp"))
+            ? Path.Combine(appsDir, "admin", "odoo_erp")
+            : Path.Combine(appsDir, "odoo_erp"),
+        "bezeroak" => Path.Combine(appsDir, "bezeroak"),
         "api" or "backend_api" or "backend_rest_api_csharp" => Path.Combine(appsDir, "backend_rest_api_csharp"),
         "admin_mobile" or "mobile_admin" => Path.Combine(appsDir, "admin", "admin_IT_zentrala", "mobile_android"),
         "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin", "admin_IT_zentrala"),

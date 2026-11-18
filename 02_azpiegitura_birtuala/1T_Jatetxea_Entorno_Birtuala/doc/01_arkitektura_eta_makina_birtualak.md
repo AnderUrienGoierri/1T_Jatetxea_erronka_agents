@@ -8,7 +8,7 @@ Dokumentu honek erronkan zehaztutako 3 makina birtualen eta aplikazioen banaketa
 
 Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea da:
 
-1. Kanpoko bezeroek Internetetik jatetxearen webgunera sartu eta platerak ikusi edo mahaiak erreserbatu ahal izatea (`01_aplikazioak/web_php`, Apache + PHP 8.4).
+1. Kanpoko bezeroek Internetetik jatetxearen webgunera sartu eta platerak ikusi edo mahaiak erreserbatu ahal izatea (`01_aplikazioak/bezeroak/web_php_bezeroak`, Apache + PHP 8.4).
 2. Barneko langileek (zerbitzariak, sukaldariak, barrakoak, administratzaileak) beren aplikazio espezifikoak erabiltzea (TPV, tabletak, sukaldeko KDS pantaila, Odoo ERP kudeaketa, IT Kontrol Zentrala).
 3. Segurtasuna bermatzea: kanpoko webgunea DMZ gune batean kokatzea eta barneko datu-basea, APIa eta kudeaketa-tresnak sare seguru batean babestea.
 
@@ -36,7 +36,7 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
   |       IP: 192.168.20.10        |     |         IP: 192.168.10.10         |
   +--------------------------------+     +-----------------------------------+
   | - Apache 2.4 / PHP 8.4         |     | - MySQL 8.0/8.4 (jatetxea_db)     |
-  | - Web Bezero Publikoa (web_php)|     | - ASP.NET Core REST API (.NET 10) |
+  | - Web Bezeroa (web_php_bezeroak)|    | - ASP.NET Core REST API (.NET 10) |
   | - Ataka: 80 (Host: 8085)       |     | - Admin IT Zentrala (Port 5000)   |
   |                                |     | - TPV C# Desktop aplikazioa       |
   |                                |     | - JavaFX KDS, BDS eta Stocka      |
@@ -62,7 +62,7 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
 ### 2. Makina: Erronka-Ubuntu (DMZ Web Zerbitzaria)
 
 - **IP Helbidea:** `192.168.20.10`
-- **Eginkizuna:** Jatetxearen webgune publikoa ostatu ematea (`01_aplikazioak/web_php`).
+- **Eginkizuna:** Jatetxearen webgune publikoa ostatu ematea (`01_aplikazioak/bezeroak/web_php_bezeroak`).
 - **Teknologia:** Apache 2.4 eta PHP 8.4.
 - **Komunikazio Bidea:** Webgune honek ez du datu-baserik lokalean; bezero batek erreserba bat egiten duenean, PHPak HTTP deia egiten dio Windows Server-eko APIari (`http://192.168.10.10:5000/api/v1` edo lokalean `http://localhost:5050/api/v1`).
 

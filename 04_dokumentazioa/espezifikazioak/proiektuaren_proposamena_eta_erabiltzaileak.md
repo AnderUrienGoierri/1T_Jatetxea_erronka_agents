@@ -22,7 +22,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 | Rola / Erabiltzailea | Erabilitako Aplikazioak | Plataforma / Teknologia | Funtzio Nagusiak |
 | :--- | :--- | :--- | :--- |
-| **Bezeroak** | Web-App (`web_php` / HTML-JS) | Web (HTML5/JS/PHP) | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin eta eguneko menua ikusi. |
+| **Bezeroak** | Web-App (`web_php_bezeroak` / HTML-JS)<br>Bezeroen App-a (`mobile_bezeroa_flutter` / Flutter) | Web (HTML5/JS/PHP)<br>Android / iOS (Flutter) | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin, auto-eskaera eta eguneko menua ikusi. |
 | **Zerbitzariak (Jantokia)** | TPV Salmenta Puntua (`desktop_csharp`)<br>Komandera Android (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10 WinForms)<br>Android (Mugikorra + Tableta) | Mahaien mapa eta okupazioa kudeatu, erreserben egutegia ikusi, komandak mahai ondoan jaso, sukaldera bidali, kobraketak bideratu eta **lanaldia fitxatu**. |
 | **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX Aplikazioa (`desktop_javafx` - KDS Modulua) | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX) | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta **lanaldia fitxatu**. |
 | **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
@@ -35,9 +35,10 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ![Arkitektura Diagrama](arkitektura_diagrama.svg)
 
-### 3.1. Bezeroen Interfazea
+### 3.1. Bezeroen Interfazeak
 
-- **Web-App (`01_aplikazioak/web_php`):** Jatetxearen atari publikoa. Bezeroak mahai-erreserbak egiteko aukera du, eguneko menua eta karta ikusi eta alergenoen araberako iragazketa egiteko. Stockik ez duten platerak automatikoki agortu gisa agertzen dira.
+- **Web-App Publikoa (`01_aplikazioak/bezeroak/web_php_bezeroak`):** Jatetxearen atari publikoa. Bezeroak mahai-erreserbak egiteko aukera du, eguneko menua eta karta ikusi eta alergenoen araberako iragazketa egiteko. Stockik ez duten platerak automatikoki agortu gisa agertzen dira.
+- **Bezeroen Mugikorreko App-a (`01_aplikazioak/bezeroak/mobile_bezeroa_flutter`):** Flutter bidez garatua, bezeroak mahaian QR kodea eskaneatuz eskaera digitalak egiteko, eramateko eskatzeko eta ordainketa zibersegurua egiteko.
 
 ### 3.2. Zerbitzarien eta Jantokiaren Interfazeak
 

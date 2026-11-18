@@ -11,11 +11,17 @@ Erroa: C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\
   ├── chat_zerbitzaria/          -> Socket.IO / WebSockets barne komunikazioa: port 3001
   ├── desktop_csharp/            -> C# 13 Windows Forms TPV Areto & Kutxazaina (.NET 10)
   ├── desktop_javafx/            -> Java 17 / JavaFX 21 (Sukaldea KDS, Barra BDS eta Biltegia Stock)
-  ├── mobile_bezeroa_flutter/         -> Flutter / Dart bezero mugikorra (erreserbak, karta, iritziak)
-  ├── mobile_zerbitzaria_flutter/     -> Flutter / Dart zerbitzari komandera (eskaerak hartzeko)
-  ├── odoo_erp/                  -> Odoo 17 Community ERP (HR, baimenak, fitxaketak): port 8070
-  ├── sukaldea_kds_android_tv/   -> Sukaldeko Android TV / KDS Web Kioskoa: port 8086
-  └── web_php/                   -> Apache + PHP 8.4 Frontend Publikoa (Karta, Erreserbak): port 8085
+  ├── bezeroak/
+  │     ├── web_php_bezeroak/        -> Apache + PHP 8.4 Frontend Publikoa (Karta, Erreserbak): port 8085
+  │     └── mobile_bezeroa_flutter/  -> Flutter / Dart bezero mugikorra (erreserbak, karta, iritziak)
+  ├── zerbitzari_langileak/
+  │     ├── mobile_zerbitzaria_flutter/ -> Flutter / Dart zerbitzari komandera (eskaerak hartzeko)
+  │     └── zerbitzaria_komandera_android/ -> Android Jetpack Compose komandera natiboa
+  ├── sukalde_langileak/
+  │     └── sukaldea_kds_android_tv/ -> Sukaldeko Android TV / KDS Web Kioskoa: port 8086
+  ├── admin/
+  │     ├── admin_IT_zentrala/       -> IT Kontrol Zentrala (.NET 11 Web + Launcher): port 5000
+  │     └── odoo_erp/                -> Odoo 17 Community ERP (HR, baimenak, fitxaketak): port 8070
 
 02_azpiegitura_birtuala/
   ├── 1T_Jatetxea_Entorno_Birtuala/
@@ -75,11 +81,11 @@ Karpeta nagusia: 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\
 ------------------------------------------------
 Kokapenaren arabera (eskola, etxean, tolosako_etxean edo localhost),
 klik bakarrean eguneratzen dira bezero guztiak:
-- Flutter Zerbitzaria (01_aplikazioak\mobile_zerbitzaria_flutter)
-- Flutter Bezeroa (01_aplikazioak\mobile_bezeroa_flutter)
+- Flutter Zerbitzaria (01_aplikazioak\zerbitzari_langileak\mobile_zerbitzaria_flutter)
+- Flutter Bezeroa (01_aplikazioak\bezeroak\mobile_bezeroa_flutter)
 - JavaFX Sukaldea / Barra / Biltegia (01_aplikazioak\desktop_javafx)
 - C# Desktop TPV (01_aplikazioak\desktop_csharp)
-- Web PHP Frontend (01_aplikazioak\web_php)
+- Web PHP Frontend (01_aplikazioak\bezeroak\web_php_bezeroak)
 
 Komandoa:
 powershell -ExecutionPolicy Bypass -File 02_azpiegitura_birtuala\1T_Jatetxea_Entorno_Birtuala\scripts\switch-env.ps1

@@ -39,8 +39,8 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 ### 3. `jatetxea-web` (Apache / PHP 8.4)
 
 - **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile`
-- **Iturburua:** `01_aplikazioak/web_php/`
-- **Integrazioa:** `01_aplikazioak/web_php/` karpetako fitxategiak zuzenean mapeatzen dira. `API_BASE_URL` ingurune-aldagaiaren bidez komunikatzen da REST APIarekin (`http://jatetxea-api:5000/api/v1`).
+- **Iturburua:** `01_aplikazioak/bezeroak/web_php_bezeroak/`
+- **Integrazioa:** `01_aplikazioak/bezeroak/web_php_bezeroak/` karpetako fitxategiak zuzenean mapeatzen dira. `API_BASE_URL` ingurune-aldagaiaren bidez komunikatzen da REST APIarekin (`http://jatetxea-api:5000/api/v1`).
 
 ### 4. `jatetxea-chat` (Barne Txat Zerbitzaria)
 

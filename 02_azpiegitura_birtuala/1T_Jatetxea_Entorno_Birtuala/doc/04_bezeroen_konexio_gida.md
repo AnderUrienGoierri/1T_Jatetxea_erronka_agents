@@ -36,7 +36,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   |      Gailua: Nabigatzailea (mugikorra edo PCa).
   |      Funtzioa: Karta ikusi, prezioak kontsultatu, mahaiak erreserbatu.
   |
-  +--> 6. Bezeroaren Mugikorreko App-a (Flutter `01_aplikazioak/mobile_bezeroa_flutter`)
+  +--> 6. Bezeroaren Mugikorreko App-a (Flutter `01_aplikazioak/bezeroak/mobile_bezeroa_flutter`)
   |      Erabiltzaileak: Bezero erregistratuak.
   |      Gailua: Mugikor pertsonala.
   |      Funtzioa: Erreserbak kudeatu, platerak eskatu, iritziak utzi.
@@ -89,33 +89,33 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 ### 3. Flutter Zerbitzaria (`mobile_zerbitzaria_flutter`)
 
-- **Kokapena:** `01_aplikazioak/mobile_zerbitzaria_flutter`
+- **Kokapena:** `01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter`
 - **Abioa:**
 
   ```powershell
-  cd 01_aplikazioak\mobile_zerbitzaria_flutter
+  cd 01_aplikazioak\zerbitzari_langileak\mobile_zerbitzaria_flutter
   flutter run
   ```
 
 ### 4. Flutter Bezeroa (`mobile_bezeroa_flutter`)
 
-- **Kokapena:** `01_aplikazioak/mobile_bezeroa_flutter`
+- **Kokapena:** `01_aplikazioak/bezeroak/mobile_bezeroa_flutter`
 - **Abioa:**
 
   ```powershell
-  cd 01_aplikazioak\mobile_bezeroa_flutter
+  cd 01_aplikazioak\bezeroak\mobile_bezeroa_flutter
   flutter run
   ```
 
 ### 5. Sukaldeko Android TV Pantaila (`sukaldea_kds_android_tv`)
 
-- **Kokapena:** `01_aplikazioak/sukaldea_kds_android_tv`
+- **Kokapena:** `01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv`
 - **Sarbidea:** Nabigatzailetik edo Smart TVtik:
   - Helbidea: `http://localhost:8086` (edo `http://<ZERBITZARI_IP>:8086`)
 
-### 6. Web PHP Karta eta Erreserbak (`web_php`)
+### 6. Web PHP Karta eta Erreserbak (`web_php_bezeroak`)
 
-- **Kokapena:** `01_aplikazioak/web_php`
+- **Kokapena:** `01_aplikazioak/bezeroak/web_php_bezeroak`
 - **Teknologia:** Apache + PHP 8.4
 - **Sarbidea:** `http://localhost:8085`
 
