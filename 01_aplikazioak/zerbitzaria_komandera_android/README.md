@@ -38,7 +38,7 @@ Irakaslearen eskakizunak betez, aplikazioak **3 pantaila** nagusi ditu `NavHost`
 ## 2. Aukerazko Erronka: Komunikazioa (REST API)
 
 - **Aukeratutako Erronka:** Web zerbitzu bati dei egin (**REST API Komunikazioa** Retrofit bidez).
-- Aplikazioak komanda sortzean `POST /api/v1/eskaerak` deia egiten dio jatetxeko backend zentralari (`backend_api` 5050 atakan). Sare konexiorik ez badago, tokiko modu seguruan erregistratzen da.
+- Aplikazioak komanda sortzean `POST /api/v1/eskaerak` deia egiten dio jatetxeko backend zentralari (`backend_rest_api_csharp` 5050 atakan). Sare konexiorik ez badago, tokiko modu seguruan erregistratzen da.
 
 ---
 
