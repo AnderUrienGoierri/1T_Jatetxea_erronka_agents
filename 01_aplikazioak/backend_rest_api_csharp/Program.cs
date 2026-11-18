@@ -208,6 +208,7 @@ app.MapGet("/health", () =>
     {
         status = "Unhealthy",
         database = "Disconnected",
+        exceptionType = DatuBaseaMonitorZerbitzua.AzkenSalbuespenMota,
         server = dbOharra,
         errorea = DatuBaseaMonitorZerbitzua.AzkenEgoeraMezua,
         soluzioa = "Egiaztatu Docker-eko 'jatetxea_mysql' edukiontzia martxan dagoela ('docker compose up -d jatetxea-db') edo IT Kontrol Zentroan (http://localhost:5000) piztu.",

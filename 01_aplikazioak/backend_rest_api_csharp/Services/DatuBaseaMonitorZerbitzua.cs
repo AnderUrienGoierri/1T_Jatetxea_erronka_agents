@@ -18,6 +18,7 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
     /// </summary>
     public static bool IsKonektatuta { get; private set; } = false;
     public static string AzkenEgoeraMezua { get; private set; } = "Konexioa hasieratzen...";
+    public static string? AzkenSalbuespenMota { get; private set; }
     public static DateTime AzkenEgiaztapena { get; private set; } = DateTime.MinValue;
     public static string ZerbitzariaOharra { get; private set; } = "jatetxea_mysql:3308";
 
@@ -46,10 +47,11 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         // Atzeko planoan aldizka (3 segundoro) egiaztatzen du
         while (!stoppingToken.IsCancellationRequested)
         {
-            var (konektatuta, errorea) = await EgiaztatuKonexioaAsync(stoppingToken);
+            var (konektatuta, errorea, salbuespenMota) = await EgiaztatuKonexioaAsync(stoppingToken);
 
             AzkenEgiaztapena = DateTime.Now;
             IsKonektatuta = konektatuta;
+            AzkenSalbuespenMota = salbuespenMota;
 
             // Egoera aldaketa gertatu denean bakarrik inprimatu kontsolan mezu deigarria
             if (aurrekoEgoera == null || aurrekoEgoera != konektatuta)
@@ -79,7 +81,8 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
         }
     }
 
-    private async Task<(bool Konektatuta, string? Errorea)> EgiaztatuKonexioaAsync(CancellationToken ct)
+    private async Task<(bool Konektatuta, string? Errorea, string? SalbuespenMota)> EgiaztatuKonexioaAsync(
+        CancellationToken ct)
     {
         try
         {
@@ -89,11 +92,11 @@ public class DatuBaseaMonitorZerbitzua : BackgroundService
             };
             await using var conn = new MySqlConnection(builder.ConnectionString);
             await conn.OpenAsync(ct);
-            return (true, null);
+            return (true, null, null);
         }
         catch (Exception ex)
         {
-            return (false, ex.Message);
+            return (false, ex.Message, ex.GetType().Name);
         }
     }
 

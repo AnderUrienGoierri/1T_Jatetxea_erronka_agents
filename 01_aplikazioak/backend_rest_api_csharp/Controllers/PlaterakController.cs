@@ -179,6 +179,9 @@ public class PlaterakController : BaseApiKontroladorea
             return BadRequestError("Datu baliogabeak bidali dira.");
 
         await using var kon = await SortuKonexioaAsync();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        if (lockError != null)
+            return lockError;
         await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
         try
@@ -240,12 +243,122 @@ public class PlaterakController : BaseApiKontroladorea
     }
 
     /// <summary>
+    /// Plateraren datuak eta errezeta transakzio bakarrean eguneratzen ditu.
+    /// </summary>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Eguneratu(int id, [FromBody] PlateraEguneratuDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequestError("Plateraren datuak ez dira baliozkoak.");
+        if (dto.Osagaiak?.GroupBy(osagai => osagai.LehengaiaId).Any(taldea => taldea.Count() > 1) == true)
+            return BadRequestError("Errezetak ezin du lehengai bera behin baino gehiagotan izan.");
+
+        await using var kon = await SortuKonexioaAsync();
+        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+        try
+        {
+            const string lockTablesSql = "SELECT id FROM mahaiak WHERE ezabatua = 0 FOR UPDATE;";
+            await using (var lockTablesCmd = new MySqlCommand(lockTablesSql, kon, tx))
+            await using (var tablesReader = await lockTablesCmd.ExecuteReaderAsync())
+            {
+                while (await tablesReader.ReadAsync()) { }
+            }
+
+            ServiceStatusDto serviceStatus = await LortuZerbitzuEgoeraAsync(kon, tx);
+            if (serviceStatus.ServiceActive)
+                return ConflictError(
+                    $"Zerbitzua aktibo dago ({serviceStatus.OpenTables} mahai). Menuaren konfigurazioa zerbitzua itxita dagoenean bakarrik alda daiteke.");
+
+            const string lockDishSql = "SELECT aktibo FROM platerak WHERE id = @id AND ezabatua = 0 FOR UPDATE;";
+            bool aktibo;
+            await using (var lockDishCmd = new MySqlCommand(lockDishSql, kon, tx))
+            {
+                lockDishCmd.Parameters.AddWithValue("@id", id);
+                var activeValue = await lockDishCmd.ExecuteScalarAsync();
+                if (activeValue == null)
+                    return NotFoundError($"Ez da aurkitu {id} ID-a duen plater aktiborik.");
+                aktibo = Convert.ToBoolean(activeValue);
+            }
+
+            var osagaiak = dto.Osagaiak ?? new List<PlaterOsagaiaDto>();
+            foreach (var osagai in osagaiak)
+            {
+                const string lockIngredientSql = "SELECT id FROM lehengaiak WHERE id = @id AND ezabatua = 0 FOR UPDATE;";
+                await using var lockIngredientCmd = new MySqlCommand(lockIngredientSql, kon, tx);
+                lockIngredientCmd.Parameters.AddWithValue("@id", osagai.LehengaiaId);
+                if (await lockIngredientCmd.ExecuteScalarAsync() == null)
+                    return ConflictError($"Ezin da errezeta eguneratu: {osagai.LehengaiaId} ID-a duen lehengaia ez dago aktibo.");
+            }
+
+            const string updateDishSql = @"
+                UPDATE platerak
+                SET izena = @izena,
+                    deskribapena = @deskribapena,
+                    kategoria = @kategoria,
+                    prezioa = @prezioa,
+                    alergenoak = @alergenoak
+                WHERE id = @id AND ezabatua = 0;";
+            await using (var updateDishCmd = new MySqlCommand(updateDishSql, kon, tx))
+            {
+                updateDishCmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
+                updateDishCmd.Parameters.AddWithValue("@deskribapena", (object?)dto.Deskribapena ?? DBNull.Value);
+                updateDishCmd.Parameters.AddWithValue("@kategoria", dto.Kategoria);
+                updateDishCmd.Parameters.AddWithValue("@prezioa", dto.Prezioa);
+                updateDishCmd.Parameters.AddWithValue("@alergenoak", (object?)dto.Alergenoak ?? DBNull.Value);
+                updateDishCmd.Parameters.AddWithValue("@id", id);
+                await updateDishCmd.ExecuteNonQueryAsync();
+            }
+
+            await using (var deleteIngredientsCmd = new MySqlCommand(
+                "DELETE FROM plater_osagaiak WHERE platera_id = @id;", kon, tx))
+            {
+                deleteIngredientsCmd.Parameters.AddWithValue("@id", id);
+                await deleteIngredientsCmd.ExecuteNonQueryAsync();
+            }
+
+            const string insertIngredientSql = @"
+                INSERT INTO plater_osagaiak (platera_id, lehengaia_id, kantitatea)
+                VALUES (@platerId, @lehengaiaId, @kantitatea);";
+            foreach (var osagai in osagaiak)
+            {
+                await using var insertIngredientCmd = new MySqlCommand(insertIngredientSql, kon, tx);
+                insertIngredientCmd.Parameters.AddWithValue("@platerId", id);
+                insertIngredientCmd.Parameters.AddWithValue("@lehengaiaId", osagai.LehengaiaId);
+                insertIngredientCmd.Parameters.AddWithValue("@kantitatea", osagai.Kantitatea);
+                await insertIngredientCmd.ExecuteNonQueryAsync();
+            }
+
+            await tx.CommitAsync();
+            return Success(new PlateraDTO
+            {
+                Id = id,
+                Izena = dto.Izena.Trim(),
+                Deskribapena = dto.Deskribapena,
+                Kategoria = dto.Kategoria,
+                Prezioa = dto.Prezioa,
+                Alergenoak = dto.Alergenoak,
+                Aktibo = aktibo,
+                Ezabatua = false
+            }, 200, "Plateraren datuak eta errezeta eguneratu dira.");
+        }
+        catch (MySqlException ex) when (ex.Number is 1062 or 1452)
+        {
+            await tx.RollbackAsync();
+            return ConflictError("Ezin izan da platera eguneratu datu-baseko erlazio edo balio errepikatuengatik.");
+        }
+    }
+
+    /// <summary>
     /// Platera ezabatzen du (Soft Delete lehenetsia, Hard Delete hard=true bidez).
     /// </summary>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Ezabatu(int id, [FromQuery] bool hard = false)
     {
         await using var kon = await SortuKonexioaAsync();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        if (lockError != null)
+            return lockError;
 
         if (hard)
         {
@@ -285,6 +398,9 @@ public class PlaterakController : BaseApiKontroladorea
     public async Task<IActionResult> Berreskuratu(int id)
     {
         await using var kon = await SortuKonexioaAsync();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        if (lockError != null)
+            return lockError;
         const string sql = "UPDATE platerak SET ezabatua = 0, ezabatze_data = NULL WHERE id = @id AND ezabatua = 1;";
 
         await using var cmd = new MySqlCommand(sql, kon);

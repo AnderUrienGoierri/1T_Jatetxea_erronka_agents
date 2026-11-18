@@ -19,7 +19,7 @@ public class LangileakController : BaseApiKontroladorea
     public async Task<IActionResult> LortuGuztiak([FromQuery] bool barneEzabatuak = false)
     {
         await using var kon = await SortuKonexioaAsync();
-        string sql = "SELECT id, erabiltzailea, izena, rola, aktibo, ezabatua FROM langileak";
+        string sql = "SELECT id, erabiltzailea, izena, abizena, nan_dni, emaila, rola, aktibo, ezabatua FROM langileak";
         if (!barneEzabatuak) sql += " WHERE ezabatua = 0";
         sql += " ORDER BY izena ASC;";
 
@@ -33,6 +33,9 @@ public class LangileakController : BaseApiKontroladorea
                 Id = reader.GetInt32("id"),
                 Erabiltzailea = reader.GetString("erabiltzailea"),
                 Izena = reader.GetString("izena"),
+                Abizena = reader.GetString("abizena"),
+                NanDni = reader.GetString("nan_dni"),
+                Emaila = reader.GetString("emaila"),
                 Rola = reader.GetString("rola"),
                 Aktibo = reader.GetBoolean("aktibo"),
                 Ezabatua = reader.GetBoolean("ezabatua")
@@ -49,7 +52,7 @@ public class LangileakController : BaseApiKontroladorea
     public async Task<IActionResult> LortuIdBidez(int id)
     {
         await using var kon = await SortuKonexioaAsync();
-        const string sql = "SELECT id, erabiltzailea, izena, rola, aktibo, ezabatua FROM langileak WHERE id = @id LIMIT 1;";
+        const string sql = "SELECT id, erabiltzailea, izena, abizena, nan_dni, emaila, rola, aktibo, ezabatua FROM langileak WHERE id = @id LIMIT 1;";
 
         await using var cmd = new MySqlCommand(sql, kon);
         cmd.Parameters.AddWithValue("@id", id);
@@ -62,6 +65,9 @@ public class LangileakController : BaseApiKontroladorea
             Id = reader.GetInt32("id"),
             Erabiltzailea = reader.GetString("erabiltzailea"),
             Izena = reader.GetString("izena"),
+            Abizena = reader.GetString("abizena"),
+            NanDni = reader.GetString("nan_dni"),
+            Emaila = reader.GetString("emaila"),
             Rola = reader.GetString("rola"),
             Aktibo = reader.GetBoolean("aktibo"),
             Ezabatua = reader.GetBoolean("ezabatua")
@@ -156,11 +162,13 @@ public class LangileakController : BaseApiKontroladorea
     {
         if (!ModelState.IsValid)
             return BadRequestError("Datu baliogabeak bidali dira.");
+        if (!RolaBaliozkoa(dto.Rola))
+            return BadRequestError("Langilearen rola ez da baliozkoa.");
 
         await using var kon = await SortuKonexioaAsync();
         const string sql = @"
-            INSERT INTO langileak (erabiltzailea, pasahitza_hash, izena, rola, aktibo, ezabatua, sortze_data)
-            VALUES (@erab, @hash, @izena, @rola, 1, 0, CURRENT_TIMESTAMP);
+            INSERT INTO langileak (erabiltzailea, pasahitza_hash, izena, abizena, nan_dni, emaila, rola, aktibo, ezabatua, sortze_data)
+            VALUES (@erab, @hash, @izena, @abizena, @nan, @emaila, @rola, 1, 0, CURRENT_TIMESTAMP);
             SELECT LAST_INSERT_ID();";
 
         try
@@ -171,6 +179,9 @@ public class LangileakController : BaseApiKontroladorea
             cmd.Parameters.AddWithValue("@erab", dto.Erabiltzailea.Trim());
             cmd.Parameters.AddWithValue("@hash", hashZifratua);
             cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
+            cmd.Parameters.AddWithValue("@abizena", dto.Abizena.Trim());
+            cmd.Parameters.AddWithValue("@nan", dto.NanDni.Trim());
+            cmd.Parameters.AddWithValue("@emaila", dto.Emaila.Trim());
             cmd.Parameters.AddWithValue("@rola", dto.Rola);
 
             var sortutakoId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
@@ -179,6 +190,9 @@ public class LangileakController : BaseApiKontroladorea
                 Id = sortutakoId,
                 Erabiltzailea = dto.Erabiltzailea.Trim(),
                 Izena = dto.Izena.Trim(),
+                Abizena = dto.Abizena.Trim(),
+                NanDni = dto.NanDni.Trim(),
+                Emaila = dto.Emaila.Trim(),
                 Rola = dto.Rola,
                 Aktibo = true,
                 Ezabatua = false
@@ -188,8 +202,93 @@ public class LangileakController : BaseApiKontroladorea
         }
         catch (MySqlException ex) when (ex.Number == 1062)
         {
-            return ConflictError($"Dagoeneko existitzen da '{dto.Erabiltzailea}' erabiltzaile izena duen langilea.");
+            return ConflictError("Erabiltzaile-izena, NANa edo emaila jada erregistratuta dago.");
         }
+    }
+
+    /// <summary>
+    /// Langilearen datuak eguneratzen ditu; PIN berria aukerakoa da.
+    /// </summary>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Eguneratu(int id, [FromBody] LangileaEguneratuDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequestError("Langilearen datuak ez dira baliozkoak.");
+        if (!RolaBaliozkoa(dto.Rola))
+            return BadRequestError("Langilearen rola ez da baliozkoa.");
+
+        await using var kon = await SortuKonexioaAsync();
+        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        const string lockSql = "SELECT id FROM langileak WHERE id = @id AND ezabatua = 0 FOR UPDATE;";
+        await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
+        {
+            lockCmd.Parameters.AddWithValue("@id", id);
+            if (await lockCmd.ExecuteScalarAsync() == null)
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen langile aktiborik.");
+        }
+
+        try
+        {
+            string? hashedPin = string.IsNullOrWhiteSpace(dto.Pasahitza)
+                ? null
+                : SegurtasunHelper.HashPin(dto.Pasahitza);
+            const string updateSql = @"
+                UPDATE langileak
+                SET erabiltzailea = @erabiltzailea,
+                    izena = @izena,
+                    abizena = @abizena,
+                    nan_dni = @nan,
+                    emaila = @emaila,
+                    rola = @rola,
+                    pasahitza_hash = COALESCE(@pasahitza, pasahitza_hash)
+                WHERE id = @id AND ezabatua = 0;";
+            await using var cmd = new MySqlCommand(updateSql, kon, tx);
+            cmd.Parameters.AddWithValue("@erabiltzailea", dto.Erabiltzailea.Trim());
+            cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
+            cmd.Parameters.AddWithValue("@abizena", dto.Abizena.Trim());
+            cmd.Parameters.AddWithValue("@nan", dto.NanDni.Trim());
+            cmd.Parameters.AddWithValue("@emaila", dto.Emaila.Trim());
+            cmd.Parameters.AddWithValue("@rola", dto.Rola);
+            cmd.Parameters.AddWithValue("@pasahitza", (object?)hashedPin ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@id", id);
+            await cmd.ExecuteNonQueryAsync();
+            await tx.CommitAsync();
+
+            return Success(new
+            {
+                id,
+                erabiltzailea = dto.Erabiltzailea.Trim(),
+                izena = dto.Izena.Trim(),
+                abizena = dto.Abizena.Trim(),
+                nanDni = dto.NanDni.Trim(),
+                emaila = dto.Emaila.Trim(),
+                rola = dto.Rola,
+                pinEguneratua = hashedPin != null
+            }, 200, "Langilearen datuak eguneratu dira.");
+        }
+        catch (MySqlException ex) when (ex.Number == 1062)
+        {
+            await tx.RollbackAsync();
+            return ConflictError("Erabiltzaile-izena, NANa edo emaila jada erregistratuta dago.");
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Desaktibatu(int id)
+    {
+        await using var kon = await SortuKonexioaAsync();
+        const string sql = @"
+            UPDATE langileak
+            SET aktibo = 0, ezabatua = 1, ezabatze_data = CURRENT_TIMESTAMP
+            WHERE id = @id AND ezabatua = 0;";
+        await using var cmd = new MySqlCommand(sql, kon);
+        cmd.Parameters.AddWithValue("@id", id);
+
+        int errenkadak = await cmd.ExecuteNonQueryAsync();
+        if (errenkadak == 0)
+            return NotFoundError($"Ez da aurkitu {id} ID-a duen langile aktiborik.");
+
+        return Success(new { id, aktibo = false, ezabatua = true }, 200, "Langilea desgaitu da.");
     }
 
     /// <summary>
@@ -232,4 +331,8 @@ public class LangileakController : BaseApiKontroladorea
 
         return Success(new { mezua = $"{eguneratuak} langileren PINak BCrypt hash-era bihurtu dira.", eguneratuak }, 200, "Migrazioa ondo burutu da.");
     }
+
+    private static bool RolaBaliozkoa(string rola)
+        => new[] { "Zerbitzaria", "Sukaldaria", "Barrakoa", "Biltegikoa", "Kudeatzailea", "AdminIT", "Admin" }
+            .Contains(rola, StringComparer.Ordinal);
 }

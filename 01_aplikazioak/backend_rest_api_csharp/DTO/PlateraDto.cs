@@ -47,6 +47,10 @@ public class PlateraSortuDto
     public List<PlaterOsagaiaDto>? Osagaiak { get; set; }
 }
 
+public class PlateraEguneratuDto : PlateraSortuDto
+{
+}
+
 public class PlaterErabilgarritasunaDTO
 {
     public int PlateraId { get; set; }

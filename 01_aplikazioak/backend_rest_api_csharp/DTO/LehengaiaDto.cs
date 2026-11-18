@@ -35,6 +35,25 @@ public class LehengaiaSortuDto
     public string? Hornitzailea { get; set; }
 }
 
+public class LehengaiaEguneratuDto
+{
+    [Required]
+    [StringLength(100)]
+    public string Izena { get; set; } = string.Empty;
+
+    [Required]
+    public string Unitatea { get; set; } = "kg";
+
+    [Range(0, 999999)]
+    public decimal GutxienekoStocka { get; set; }
+
+    [Range(0, 999999)]
+    public decimal KostuUnitarioa { get; set; }
+
+    [StringLength(100)]
+    public string? Hornitzailea { get; set; }
+}
+
 public class LehengaiaAlertaDTO
 {
     public int LehengaiaId { get; set; }

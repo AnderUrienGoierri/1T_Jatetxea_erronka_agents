@@ -1,3 +1,4 @@
+using Jatetxea.Api.DTO;
 using Jatetxea.Api.Responses;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
@@ -28,6 +29,44 @@ public abstract class BaseApiKontroladorea : ControllerBase
         var kon = new MySqlConnection(katea);
         await kon.OpenAsync();
         return kon;
+    }
+
+    protected async Task<ServiceStatusDto> LortuZerbitzuEgoeraAsync(
+        MySqlConnection kon,
+        MySqlTransaction? transakzioa = null)
+    {
+        const string sql = @"
+            SELECT COUNT(DISTINCT m.id)
+            FROM mahaiak m
+            WHERE m.ezabatua = 0
+              AND (
+                    m.egoera = 'Okupatuta'
+                    OR EXISTS (
+                        SELECT 1
+                        FROM eskaerak e
+                        WHERE e.mahaia_id = m.id
+                          AND e.ezabatua = 0
+                          AND e.egoera NOT IN ('Kobratua', 'Ezeztatua')
+                    )
+              );";
+        await using var cmd = new MySqlCommand(sql, kon, transakzioa);
+        int openTables = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        return new ServiceStatusDto
+        {
+            ServiceActive = openTables > 0,
+            OpenTables = openTables
+        };
+    }
+
+    protected async Task<IActionResult?> EgiaztatuZerbitzuaItxitaDagoelaAsync(MySqlConnection kon)
+    {
+        ServiceStatusDto status = await LortuZerbitzuEgoeraAsync(kon);
+        if (status.ServiceActive)
+        {
+            return ConflictError(
+                $"Zerbitzua aktibo dago ({status.OpenTables} mahai). Katalogoaren eta mahaien konfigurazioa blokeatuta dago.");
+        }
+        return null;
     }
 
     // =========================================================================

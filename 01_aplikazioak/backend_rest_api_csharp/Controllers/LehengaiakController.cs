@@ -117,8 +117,11 @@ public class LehengaiakController : BaseApiKontroladorea
     {
         if (!ModelState.IsValid)
             return BadRequestError("Datu baliogabeak bidali dira.");
+        if (!UnitateBaliozkoa(dto.Unitatea))
+            return BadRequestError("Unitatea ez da baliozkoa. Erabili kg, g, l, ml edo unitatea.");
 
         await using var kon = await SortuKonexioaAsync();
+        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
         const string sql = @"
             INSERT INTO lehengaiak (izena, unitatea, uneko_stocka, gutxieneko_stocka, kostu_unitarioa, hornitzailea, ezabatua, sortze_data)
             VALUES (@izena, @unitatea, @uneko, @gutxi, @kostu, @hornitzailea, 0, CURRENT_TIMESTAMP);
@@ -126,15 +129,27 @@ public class LehengaiakController : BaseApiKontroladorea
 
         try
         {
-            await using var cmd = new MySqlCommand(sql, kon);
+            await using var cmd = new MySqlCommand(sql, kon, tx);
             cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
             cmd.Parameters.AddWithValue("@unitatea", dto.Unitatea);
             cmd.Parameters.AddWithValue("@uneko", dto.UnekoStocka);
             cmd.Parameters.AddWithValue("@gutxi", dto.GutxienekoStocka);
             cmd.Parameters.AddWithValue("@kostu", dto.KostuUnitarioa);
-            cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea?.Trim() ?? DBNull.Value);
 
             var sortutakoId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            if (dto.UnekoStocka > 0)
+            {
+                const string stockSql = @"
+                    INSERT INTO stock_mugimenduak (lehengaia_id, mota, kantitatea, oharrak, data)
+                    VALUES (@id, 'Egokitzapena_Inbentarioa', @kantitatea, 'Hasierako inbentarioa', CURRENT_TIMESTAMP);";
+                await using var stockCmd = new MySqlCommand(stockSql, kon, tx);
+                stockCmd.Parameters.AddWithValue("@id", sortutakoId);
+                stockCmd.Parameters.AddWithValue("@kantitatea", dto.UnekoStocka);
+                await stockCmd.ExecuteNonQueryAsync();
+            }
+            await tx.CommitAsync();
+
             var emaitza = new LehengaiaDTO
             {
                 Id = sortutakoId,
@@ -151,6 +166,85 @@ public class LehengaiakController : BaseApiKontroladorea
         }
         catch (MySqlException ex) when (ex.Number == 1062)
         {
+            await tx.RollbackAsync();
+            return ConflictError($"Dagoeneko existitzen da '{dto.Izena}' izena duen lehengaia.");
+        }
+    }
+
+    /// <summary>
+    /// Lehengaiaren datu nagusiak eguneratzen ditu, uneko stocka eta historia aldatu gabe.
+    /// </summary>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Eguneratu(int id, [FromBody] LehengaiaEguneratuDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequestError("Datu baliogabeak bidali dira.");
+        if (!UnitateBaliozkoa(dto.Unitatea))
+            return BadRequestError("Unitatea ez da baliozkoa. Erabili kg, g, l, ml edo unitatea.");
+
+        await using var kon = await SortuKonexioaAsync();
+        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        const string lockSql = @"
+            SELECT unitatea, ezabatua
+            FROM lehengaiak
+            WHERE id = @id
+            FOR UPDATE;";
+        string unitateZaharra;
+        await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
+        {
+            lockCmd.Parameters.AddWithValue("@id", id);
+            await using var reader = await lockCmd.ExecuteReaderAsync();
+            if (!await reader.ReadAsync())
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
+            if (reader.GetBoolean("ezabatua"))
+                return ConflictError("Desgaitutako lehengai bat ezin da editatu.");
+            unitateZaharra = reader.GetString("unitatea");
+        }
+
+        if (!string.Equals(unitateZaharra, dto.Unitatea, StringComparison.Ordinal))
+        {
+            const string historySql = @"
+                SELECT EXISTS(SELECT 1 FROM stock_mugimenduak WHERE lehengaia_id = @id)
+                    OR EXISTS(SELECT 1 FROM plater_osagaiak WHERE lehengaia_id = @id);";
+            await using var historyCmd = new MySqlCommand(historySql, kon, tx);
+            historyCmd.Parameters.AddWithValue("@id", id);
+            if (Convert.ToInt32(await historyCmd.ExecuteScalarAsync()) != 0)
+                return ConflictError("Unitatea ezin da aldatu stock-historia edo errezeta bati lotuta dagoenean.");
+        }
+
+        const string updateSql = @"
+            UPDATE lehengaiak
+            SET izena = @izena,
+                unitatea = @unitatea,
+                gutxieneko_stocka = @gutxi,
+                kostu_unitarioa = @kostu,
+                hornitzailea = @hornitzailea
+            WHERE id = @id AND ezabatua = 0;";
+        try
+        {
+            await using var cmd = new MySqlCommand(updateSql, kon, tx);
+            cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
+            cmd.Parameters.AddWithValue("@unitatea", dto.Unitatea);
+            cmd.Parameters.AddWithValue("@gutxi", dto.GutxienekoStocka);
+            cmd.Parameters.AddWithValue("@kostu", dto.KostuUnitarioa);
+            cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea?.Trim() ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@id", id);
+            await cmd.ExecuteNonQueryAsync();
+            await tx.CommitAsync();
+
+            return Success(new
+            {
+                id,
+                izena = dto.Izena.Trim(),
+                unitatea = dto.Unitatea,
+                gutxienekoStocka = dto.GutxienekoStocka,
+                kostuUnitarioa = dto.KostuUnitarioa,
+                hornitzailea = dto.Hornitzailea
+            }, 200, "Lehengaiaren datuak eguneratu dira; stocka aldatu gabe mantendu da.");
+        }
+        catch (MySqlException ex) when (ex.Number == 1062)
+        {
+            await tx.RollbackAsync();
             return ConflictError($"Dagoeneko existitzen da '{dto.Izena}' izena duen lehengaia.");
         }
     }
@@ -266,13 +360,40 @@ public class LehengaiakController : BaseApiKontroladorea
         }
         else
         {
+            await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            const string lockSql = "SELECT ezabatua FROM lehengaiak WHERE id = @id FOR UPDATE;";
+            await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
+            {
+                lockCmd.Parameters.AddWithValue("@id", id);
+                var deletedValue = await lockCmd.ExecuteScalarAsync();
+                if (deletedValue == null)
+                    return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
+                if (Convert.ToBoolean(deletedValue))
+                    return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
+            }
+
+            const string recipeUseSql = @"
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM plater_osagaiak po
+                    JOIN platerak p ON p.id = po.platera_id
+                    WHERE po.lehengaia_id = @id AND p.ezabatua = 0
+                );";
+            await using (var useCmd = new MySqlCommand(recipeUseSql, kon, tx))
+            {
+                useCmd.Parameters.AddWithValue("@id", id);
+                if (Convert.ToInt32(await useCmd.ExecuteScalarAsync()) != 0)
+                    return ConflictError("Lehengaia ezin da desgaitu plater aktibo baten errezetan erabiltzen den bitartean.");
+            }
+
             const string sqlSoft = "UPDATE lehengaiak SET ezabatua = 1, ezabatze_data = CURRENT_TIMESTAMP WHERE id = @id AND ezabatua = 0;";
-            await using var cmd = new MySqlCommand(sqlSoft, kon);
+            await using var cmd = new MySqlCommand(sqlSoft, kon, tx);
             cmd.Parameters.AddWithValue("@id", id);
             int errenkadak = await cmd.ExecuteNonQueryAsync();
             if (errenkadak == 0)
                 return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
 
+            await tx.CommitAsync();
             return Success(new { id, ezabatua = true, mota = "soft" }, 200, "Lehengaia desgaitu da (soft delete).");
         }
     }
@@ -294,4 +415,7 @@ public class LehengaiakController : BaseApiKontroladorea
 
         return Success(new { id, berreskuratua = true }, 200, "Lehengaia berreskuratu da.");
     }
+
+    private static bool UnitateBaliozkoa(string unitatea)
+        => new[] { "kg", "g", "l", "ml", "unitatea" }.Contains(unitatea, StringComparer.Ordinal);
 }

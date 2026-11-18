@@ -9,6 +9,8 @@ public class MahaiaDTO
     public int Edukiera { get; set; }
     public string Kokapena { get; set; } = string.Empty;
     public string Egoera { get; set; } = string.Empty;
+    public bool Zerbitzuan { get; set; }
+    public bool ErreserbaAktiboa { get; set; }
     public bool Ezabatua { get; set; }
 }
 
@@ -29,4 +31,18 @@ public class MahaiaEgoeraEguneratuDto
 {
     [Required]
     public string Egoera { get; set; } = string.Empty; // 'Libre', 'Okupatuta', 'Erreserbatuta', 'Garbitzen'
+}
+
+public class MahaiaEguneratuDto
+{
+    [Required]
+    [Range(1, 1000)]
+    public int Zenbakia { get; set; }
+
+    [Required]
+    [Range(1, 100)]
+    public int Edukiera { get; set; }
+
+    [Required]
+    public string Kokapena { get; set; } = string.Empty;
 }
