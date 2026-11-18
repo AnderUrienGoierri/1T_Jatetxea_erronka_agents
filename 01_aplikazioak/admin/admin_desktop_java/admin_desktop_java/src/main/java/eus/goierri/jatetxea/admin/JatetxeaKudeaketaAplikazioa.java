@@ -25,7 +25,7 @@ public final class JatetxeaKudeaketaAplikazioa extends Application {
         stage.setMinWidth(1080);
         stage.setMinHeight(720);
         showLogin();
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.show();
     }
 
@@ -43,6 +43,6 @@ public final class JatetxeaKudeaketaAplikazioa extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
     }
 }

@@ -770,6 +770,11 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "admin_desktop_java":
             string managerJavaDir = Path.Combine(appsDir, "admin", "admin_desktop_java", "admin_desktop_java");
             string managerJavaLauncher = Path.Combine(managerJavaDir, "hasi_kudeaketa_mahaigaina.bat");
+            if (!File.Exists(managerJavaLauncher))
+            {
+                managerJavaDir = Path.Combine(appsDir, "admin", "admin_desktop_java");
+                managerJavaLauncher = Path.Combine(managerJavaDir, "hasi_kudeaketa_mahaigaina.bat");
+            }
             if (File.Exists(managerJavaLauncher))
             {
                 LaunchInteractiveProcess(managerJavaLauncher, "", managerJavaDir);
