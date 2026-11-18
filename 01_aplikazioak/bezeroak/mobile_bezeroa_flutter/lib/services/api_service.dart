@@ -7,7 +7,7 @@ import '../models/iritzia.dart';
 import '../models/cart_item.dart';
 
 class ApiService {
-  static const String _defaultUrl = 'http://10.100.30.111:5050/api/v1';
+  static const String _defaultUrl = 'http://172.16.243.221:5050/api/v1';
   static const String _prefKey = 'api_base_url';
 
   static String _baseUrl = _defaultUrl;
@@ -297,6 +297,7 @@ class ApiService {
     }
   }
 }
+
 
 
 

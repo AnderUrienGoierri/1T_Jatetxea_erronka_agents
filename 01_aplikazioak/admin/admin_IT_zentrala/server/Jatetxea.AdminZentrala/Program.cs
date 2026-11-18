@@ -555,11 +555,19 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "android_tv":
         case "kds_android":
         case "sukaldea_kds_android_tv":
-            string androidPath = Path.Combine(appsDir, "sukaldea_kds_android_tv");
+            string androidPath = Directory.Exists(Path.Combine(appsDir, "sukalde_langileak", "sukaldea_kds_android_tv"))
+                ? Path.Combine(appsDir, "sukalde_langileak", "sukaldea_kds_android_tv")
+                : Path.Combine(appsDir, "sukaldea_kds_android_tv");
             if (Directory.Exists(androidPath))
             {
-                string studioExe = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe");
-                if (File.Exists(studioExe))
+                string[] studioCandidates = new[]
+                {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe"),
+                    @"C:\Program Files\Android\Android Studio\bin\studio64.exe",
+                    @"C:\Program Files\Android Studio\bin\studio64.exe"
+                };
+                string? studioExe = studioCandidates.FirstOrDefault(File.Exists);
+                if (studioExe != null)
                 {
                     Process.Start(new ProcessStartInfo
                     {
@@ -587,11 +595,19 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "zerbitzaria_android":
         case "zerbitzaria_komandera_android":
         case "komandera_android":
-            string komanderaPath = Path.Combine(appsDir, "zerbitzaria_komandera_android");
+            string komanderaPath = Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "zerbitzaria_komandera_android"))
+                ? Path.Combine(appsDir, "zerbitzari_langileak", "zerbitzaria_komandera_android")
+                : Path.Combine(appsDir, "zerbitzaria_komandera_android");
             if (Directory.Exists(komanderaPath))
             {
-                string studioExe = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe");
-                if (File.Exists(studioExe))
+                string[] studioCandidates = new[]
+                {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "android-studio", "bin", "studio64.exe"),
+                    @"C:\Program Files\Android\Android Studio\bin\studio64.exe",
+                    @"C:\Program Files\Android Studio\bin\studio64.exe"
+                };
+                string? studioExe = studioCandidates.FirstOrDefault(File.Exists);
+                if (studioExe != null)
                 {
                     Process.Start(new ProcessStartInfo
                     {
