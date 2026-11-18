@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Jatetxearen REST APIarekin (backend_api) komunikatzeko zerbitzua (MVC ereduaren Datu/Model geruza).
+ * Jatetxearen REST APIarekin (backend_rest_api_csharp) komunikatzeko zerbitzua (MVC ereduaren Datu/Model geruza).
  * Sukaldeko KDS, Barrako BDS eta Biltegiko stock kudeaketarako deialdiak eskaintzen ditu.
  */
 public class ApiZerbitzua {
