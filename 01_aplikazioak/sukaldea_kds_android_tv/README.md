@@ -9,7 +9,7 @@ Sukaldeko langileek (sukaldari eta sukalde-laguntzaileek) eskaerak telebista pan
 - **Jetpack Compose for TV (`androidx.tv.material3`, `androidx.tv.foundation`)**:
   - Telebistako agintearen bidezko (D-pad) foku nabigazio osoa (`Card`, `Button`, `LazyRow`).
   - Iluntasun handiko diseinua (High-contrast Dark UI) sukaldeko argitasun eta distantzia handietan garbi ikusteko.
-- **REST API Konexioa (`backend_api`)**:
+- **REST API Konexioa (`backend_rest_api_csharp`)**:
   - `GET /api/v1/eskaerak`: Eskaera aktiboak eta prestatu beharreko platerak eskuratzen ditu.
   - `GET /api/v1/eskaerak/{id}`: Eskaera bakoitzaren lerro xehatuak eta oharrak (alergenoak, puntua).
   - `PUT /api/v1/eskaerak/lerroak/{lerroId}/egoera`: Plater bakoitza banaka "Prestatua" edo "Eginda" moduan markatzeko.
