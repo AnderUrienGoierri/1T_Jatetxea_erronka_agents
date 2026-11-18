@@ -1,4 +1,4 @@
-# T1 Jatetxea · Bezeroen Mugikorreko Aplikazioa (mobile_bezeroa)
+# T1 Jatetxea · Bezeroen Mugikorreko Aplikazioa (mobile_bezeroa_flutter)
 
 Flutter bidez garatutako Android aplikazio profesionala bezeroek jatetxeko esperientzia osoa kudeatu ahal izateko: karta arakatzea, mahaian edo eramateko eskaerak egitea, ordainketa zibersegurua burutzea, mahaiak erreserbatzea eta iritziak uztea.
 
@@ -58,7 +58,7 @@ Aplikazioak `desktop_javafx` eta `web_php`-n ezarritako kolore eta tipografia id
 ## 3. Arkitektura eta Fitxategien Egitura
 
 ```
-mobile_bezeroa/
+mobile_bezeroa_flutter/
 ├── lib/
 │   ├── main.dart                                    # Sarrera nagusia eta gaia
 │   ├── theme/
@@ -93,7 +93,7 @@ mobile_bezeroa/
 ## 4. Nola Ireki eta Abiarazi Android Studion
 
 1. **Ireki Android Studio:**
-   - Aukeratu **Open** eta hautatu `mobile_bezeroa` karpeta.
+   - Aukeratu **Open** eta hautatu `mobile_bezeroa_flutter` karpeta.
 2. **Dependentziak eskuratu:**
    - Terminalean: `flutter pub get`
 3. **Android Gailua / Emuladorea:**
