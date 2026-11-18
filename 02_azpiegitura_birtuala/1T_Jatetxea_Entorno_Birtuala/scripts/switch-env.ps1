@@ -114,12 +114,19 @@ if (Test-Path $FlutterBezeroFile) {
     Write-Host "  [OK] Flutter Bezeroa eguneratua: $FlutterBezeroFile" -ForegroundColor Green
 }
 
-# 4. JavaFX: desktop_javafx konfigurazio fitxategia sortu/eguneratu
-$JavaFxResDir = Join-Path $AppsDir "desktop_javafx\src\main\resources"
-if (-not (Test-Path $JavaFxResDir)) { New-Item -ItemType Directory -Path $JavaFxResDir -Force | Out-Null }
-$JavaFxPropFile = Join-Path $JavaFxResDir "api.properties"
-"api.base.url=$ApiBaseUrl" | Set-Content $JavaFxPropFile -Encoding utf8
-Write-Host "  [OK] JavaFX Desktop KDS eguneratua: $JavaFxPropFile" -ForegroundColor Green
+# 4. JavaFX Desktop moduluak (Sukaldea, Barra, Biltegia eta Core)
+$JavaFxDirs = @(
+    (Join-Path $AppsDir "komunak\desktop_javafx_core\src\main\resources"),
+    (Join-Path $AppsDir "sukalde_langileak\desktop_sukaldea_kds\src\main\resources"),
+    (Join-Path $AppsDir "zerbitzari_langileak\desktop_barra_bds\src\main\resources"),
+    (Join-Path $AppsDir "biltegi_langileak\desktop_biltegia_stock\src\main\resources")
+)
+foreach ($dir in $JavaFxDirs) {
+    if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $propFile = Join-Path $dir "api.properties"
+    "api.base.url=$ApiBaseUrl" | Set-Content $propFile -Encoding utf8
+}
+Write-Host "  [OK] JavaFX Desktop Moduluak eguneratuta (Core, Sukaldea, Barra, Biltegia)" -ForegroundColor Green
 
 # 5. C# TPV: desktop_tpv_csharp konfigurazioa
 $CsharpAppConfig = Join-Path $AppsDir "zerbitzari_langileak\desktop_tpv_csharp\appsettings.json"

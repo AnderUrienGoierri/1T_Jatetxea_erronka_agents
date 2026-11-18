@@ -45,7 +45,7 @@ Flutter bidez garatutako Android aplikazio profesionala bezeroek jatetxeko esper
 
 ## 2. Diseinu-Sistema: Italiar-Euskaldun Estetika
 
-Aplikazioak `desktop_javafx` eta `web_php`-n ezarritako kolore eta tipografia identitatea jarraitzen du:
+Aplikazioak `desktop_javafx_core` eta `web_php_bezeroak`-n ezarritako kolore eta tipografia identitatea jarraitzen du:
 
 - **Chianti Ardo Gorria (`#881337`):** Kolore nagusia goiburuetan, botoi garrantzitsuetan eta akzidenteetan.
 - **Parmigiano Urrea (`#FCD34D`):** Prezio-etiketak, izarrak eta txartel bereizgarriak.

@@ -156,9 +156,9 @@ def sortu_docx_dokumentua():
         ("Rola / Erabiltzailea", "Erabilitako Aplikazioak", "Plataforma / Teknologia", "Funtzio Nagusiak"),
         ("Bezeroak", "• Web-App publikoa (web_php_bezeroak)\n• Mugikorreko App-a (mobile_bezeroa_flutter)", "• Web orria (HTML5, JS, PHP)\n• Android/iOS (Flutter / Dart)", "Karta kontsultatu, alergenoen iragazketa, mahai-erreserbak egin, auto-eskaera eta iritziak utzi."),
         ("Zerbitzariak\n(Jantokia)", "• TPV Salmenta Puntua (desktop_tpv_csharp)\n• Android Komandera (zerbitzaria_komandera_android)", "• Windows Desktop (.NET 10)\n• Android (Mugikorra + Tableta)", "Mahaien mapa eta okupazioa kudeatu, erreserba egutegia ikusi, komandak mahai ondoan jaso, sukaldera igorri, kobraketak bideratu eta lanaldia fitxatu."),
-        ("Sukaldariak", "• Sukaldeko KDS Telebista (sukaldea_kds_android_tv)\n• JavaFX Aplikazioa (desktop_javafx)", "• Android TV (Compose TV)\n• Desktop (Java 17/21, JavaFX)", "Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta lanaldia fitxatu."),
+        ("Sukaldariak", "• Sukaldeko KDS Telebista (sukaldea_kds_android_tv)\n• JavaFX KDS Pantaila (desktop_sukaldea_kds)", "• Android TV (Compose TV)\n• Desktop (Java 17/21, JavaFX)", "Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta lanaldia fitxatu."),
         ("Barrakoa\n(Kutxazaina)", "• TPV Salmenta Puntua (desktop_tpv_csharp)\n• JavaFX Aplikazioa (BDS modulu)\n• Android Komandera (Mugikorra/Tableta)", "• Windows Desktop (.NET 10)\n• Desktop (JavaFX BDS)\n• Android (Mugikorra/Tableta)", "Barran zuzeneko salmentak erregistratu, edarien komandak prestatu (BDS), tiketak eta fakturak inprimatu, kontuak kobratu eta lanaldia fitxatu."),
-        ("Biltegikoak", "• JavaFX Biltegia eta Stocka (desktop_javafx)\n• Odoo ERP Kudeaketa (odoo_erp)", "• Desktop (JavaFX MVC)\n• Web ERP (Odoo 17 / PostgreSQL)", "Lehengaien stock errealaren kontrola, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta lanaldia fitxatu."),
+        ("Biltegikoak", "• JavaFX Biltegia eta Stocka (desktop_biltegia_stock)\n• Odoo ERP Kudeaketa (odoo_erp)", "• Desktop (JavaFX MVC)\n• Web ERP (Odoo 17 / PostgreSQL)", "Lehengaien stock errealaren kontrola, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta lanaldia fitxatu."),
         ("Admin IT /\nZuzendaritza", "• TI Aginte Panela (admin_IT_zentrala)\n• JavaFX Aplikazio Integratua\n• Odoo ERP Finantzak (odoo_erp)\n• Backend REST API (backend_rest_api_csharp)", "• Web Dashboard\n• Desktop (JavaFX)\n• Odoo ERP (PostgreSQL)\n• ASP.NET Core REST API", "Azpiegitura eta zerbitzuen monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, finantza-txostenak eta segurtasun-kopiak.")
     ]
 
@@ -291,21 +291,21 @@ def sortu_docx_dokumentua():
         "• Android TV Sukaldeko Pantaila (01_aplikazioak/sukaldea_kds_android_tv): Sukaldeko horman kokatutako telebista nagusirako "
         "garatutako interfazea (Compose for TV). Sartzen diren platerak denbora errealean erakusten ditu txartel formatuan, "
         "lehentasunaren eta itxaronaldiaren arabera antolatuta.",
-        "• JavaFX Sukaldea KDS Modulua (01_aplikazioak/desktop_javafx): Sukaldari buruak eta taldeak plateren egoerak klik bakarrean "
+        "• JavaFX Sukaldea KDS Modulua (01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds): Sukaldari buruak eta taldeak plateren egoerak klik bakarrean "
         "kudeatzeko aukera dute (Zai, Martxan, Eginda) eta txandaren fitxaketa erraz burutu dezakete."
     ])
 
     add_subsection("3.4. Barrako eta Salmenta Puntuko Interfazeak", [
         "• C# TPV Salmenta Puntua (01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp): Barran kokatutako kobraketa-terminala. Tiket fiskalak inprimatzea, "
         "ordainketa konbinatuak (eskudirua, txartela) eta eguneko kaxa-itxiera (Z txostena) kudeatzen ditu.",
-        "• JavaFX Barra BDS Modulua (01_aplikazioak/desktop_javafx): Barran prestatzen diren edari, aperitibo eta kafetegiko aginduak "
+        "• JavaFX Barra BDS Modulua (01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds): Barran prestatzen diren edari, aperitibo eta kafetegiko aginduak "
         "bereizita kudeatzeko pantaila dedikatua.",
         "• Android Komandera (01_aplikazioak/zerbitzaria_komandera_android): Barrako langileek ere erabil dezakete mugikorrean edo tabletan "
         "eskaerak erregistratzeko, egoerak gainbegiratzeko eta fitxatzeko."
     ])
 
     add_subsection("3.5. Biltegiko Interfazea eta Hornitzaileen Kudeaketa", [
-        "• JavaFX Biltegia eta Stock Modulua (01_aplikazioak/desktop_javafx): Despentsa, ganbara eta hozkailuetako stock errealaren "
+        "• JavaFX Biltegia eta Stock Modulua (01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds): Despentsa, ganbara eta hozkailuetako stock errealaren "
         "jarraipena. Gutxieneko stocketik behera dauden produktuak automatikoki seinalatzen ditu eta biltegiko langileen fitxaketa erregistratzen du.",
         "• Odoo 17 ERP Integrazioa (01_aplikazioak/odoo_erp): Hornitzaileen erosketa-eskaerak, albaranak eta hornitzaileen fakturak "
         "ofizialki erregistratzeko sistema integrala (PostgreSQL gainean)."
@@ -314,7 +314,7 @@ def sortu_docx_dokumentua():
     add_subsection("3.6. Administrazioa, TI eta Zuzendaritza", [
         "• Admin IT Zentrala (01_aplikazioak/admin/admin_IT_zentrala): Administratzaileentzako aginte-zentroa. Docker edukiontzien egoera, "
         "portuen erabilgarritasuna, sare-konexioak, aplikazioen abiarazleak eta VirtualBox makina birtualen kontrol osoa biltzen ditu.",
-        "• JavaFX Aplikazio Integratua (01_aplikazioak/desktop_javafx): Admin IT eta Zuzendaritzak Sukaldea (KDS), Barra (BDS) eta "
+        "• JavaFX Aplikazio Integratua (01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds): Admin IT eta Zuzendaritzak Sukaldea (KDS), Barra (BDS) eta "
         "Biltegia (Stock) ataletarako sarbide osoa dute administratzaile baimenekin.",
         "• Odoo ERP Kudeaketa Orokorra: Zuzendaritzarentzat finantza-egoerak, nominak eta asistentzia/fitxaketa erregistroak ikuskatzeko tresna.",
         "• Backend REST API Zentrala (01_aplikazioak/admin/backend_rest_api_csharp): ASP.NET Core arkitekturako zerbitzari nagusia. Segurtasun transakzionala, "

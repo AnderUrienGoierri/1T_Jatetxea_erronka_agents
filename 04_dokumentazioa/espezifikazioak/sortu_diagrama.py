@@ -59,14 +59,14 @@ def sortu_diagrama_irudia(irteera_bidea):
     draw.rectangle([(60, 850), (460, 1180)], outline=(0, 0, 0), width=1, fill=(250, 250, 250))
     draw.text((75, 868), "3. SUKALDEA ETA BILTEGIA", fill=(0, 0, 0), font=font_sec)
     draw_box(80, 890, 440, 975, "Android TV Sukaldea (KDS)", "Pantaila handiko komandak", "[sukaldea_kds_android_tv | Compose TV]")
-    draw_box(80, 990, 440, 1075, "JavaFX KDS & Biltegia", "Sukaldea, Barra (BDS), Stock & Fitxatu", "[desktop_javafx | Java 17/21]")
+    draw_box(80, 990, 440, 1075, "JavaFX KDS & Biltegia", "Sukaldea, Barra (BDS), Stock & Fitxatu", "[JavaFX Multi-Module | Java 17/21]")
     draw_box(80, 1090, 440, 1165, "Android Mugikorra / Tableta", "Barrako komandak eta fitxaketa", "[zerbitzaria_komandera_android]")
 
     # 4. TALDEA: ADMIN IT, ZUZENDARITZA & ERP (Behe-Eskuina)
     draw.rectangle([(1240, 850), (1640, 1180)], outline=(0, 0, 0), width=1, fill=(250, 250, 250))
     draw.text((1255, 868), "4. KUDEAKETA, ADMIN IT & ERP", fill=(0, 0, 0), font=font_sec)
     draw_box(1260, 890, 1620, 975, "Admin IT Zentrala", "Docker, sareak, VMak, abiarazleak", "[admin_IT_zentrala | Web]")
-    draw_box(1260, 990, 1620, 1075, "JavaFX Mahaigaina", "Admin/Zuzendaritza ikuspegi osoa", "[desktop_javafx | Java 17/21]")
+    draw_box(1260, 990, 1620, 1075, "JavaFX Mahaigaina", "Admin/Zuzendaritza ikuspegi osoa", "[JavaFX Multi-Module | Java 17/21]")
     draw_box(1260, 1090, 1620, 1165, "Odoo 17 ERP", "Finantzak, erosketak, nominak", "[odoo_erp | Python / Web]")
 
     # ZENTROA: BACKEND REST API ZENTRALA

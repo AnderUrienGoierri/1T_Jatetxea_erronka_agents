@@ -193,5 +193,5 @@ OPNsense WebGUIn (`http://127.0.0.1:8443`):
 | **2. DMZ -> LAN Blokeoa** | Ubuntu zerbitzaritik: `ping 192.168.10.10` edo `nc -zv 192.168.10.10 445` | Timeout / Drop (OPNsense-k blokeatuta) | Egiaztatua |
 | **3. Web Nabigazioa** | Nabigatzailetik: `http://192.168.20.10` | Jatetxeko Karta eta Erreserben orria | Egiaztatua |
 | **4. TPV C# Desktop** | Windows bezeroan: `dotnet run --project 01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp` | Mahaien mapa kargatuta eta PIN bidezko sarbidea | Egiaztatua |
-| **5. JavaFX Sukaldea** | Java bezeroan: `mvn javafx:run` (desktop_javafx) | KDS eta BDS pantailak eskaera aktiboekin | Egiaztatua |
+| **5. JavaFX Moduluak** | Java bezeroan: `mvn compile` (desktop_javafx_parent) | KDS, BDS eta Stock pantailak rol bakoitzaren karpetan | Egiaztatua |
 | **6. Transakzio Pesimista** | Plater bat eskatu stockik gabe | HTTP 409 Conflict eta Rollback atomikoa | Egiaztatua |

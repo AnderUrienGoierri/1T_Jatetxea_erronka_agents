@@ -757,50 +757,38 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "javafx":
         case "desktop_javafx":
         case "kds_javafx":
-            string javafxDir = Path.Combine(appsDir, "desktop_javafx");
-            string batLauncher = Path.Combine(javafxDir, "hasi_kds_mahaigaina.bat");
-            if (File.Exists(batLauncher))
+        case "sukaldea_kds":
+        case "sukaldea":
+            string sukaldeDir = Path.Combine(appsDir, "sukalde_langileak", "desktop_sukaldea_kds");
+            string batSukalde = Path.Combine(sukaldeDir, "hasi_sukaldea_kds.bat");
+            if (File.Exists(batSukalde))
             {
-                LaunchInteractiveProcess(batLauncher, "", javafxDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) irekitzen (hasi_kds_mahaigaina.bat bidez)..." });
+                LaunchInteractiveProcess(batSukalde, "", sukaldeDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea (KDS) irekitzen (hasi_sukaldea_kds.bat bidez)..." });
             }
+            return Results.Ok(new { Success = false, Message = "Sukaldea KDS proiektua ez da aurkitu." });
 
-            string targetClasses = Path.Combine(javafxDir, "target", "classes");
-            string targetLib = Path.Combine(javafxDir, "target", "lib");
-
-            // Java exekutablea aurkitu (javaw.exe lehenetsia kontsolarik gabe GUI irekitzeko)
-            string javaHome = Environment.GetEnvironmentVariable("JAVA_HOME") ?? "";
-            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string[] javaCandidates = new[]
+        case "barra_bds":
+        case "barra":
+            string barraDir = Path.Combine(appsDir, "zerbitzari_langileak", "desktop_barra_bds");
+            string batBarra = Path.Combine(barraDir, "hasi_barra_bds.bat");
+            if (File.Exists(batBarra))
             {
-                @"C:\Program Files\Eclipse Adoptium\jre-17.0.21.9-hotspot\bin\javaw.exe",
-                @"C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot\bin\javaw.exe",
-                Path.Combine(javaHome, "bin", "javaw.exe"),
-                Path.Combine(javaHome, "bin", "java.exe"),
-                Path.Combine(userProfile, ".jdks", "ms-17.0.21.0.2", "bin", "javaw.exe"),
-                Path.Combine(userProfile, ".jdks", "ms-17.0.21.0.2", "bin", "java.exe"),
-                @"C:\Program Files\Java\jdk-21\bin\javaw.exe",
-                @"C:\Program Files\Java\jdk-17\bin\javaw.exe",
-                "javaw.exe",
-                "java.exe"
-            };
-            string? javaExe = javaCandidates.FirstOrDefault(File.Exists) ?? "javaw.exe";
-
-            // target/classes eta target/lib badaude, berehala ireki GUI natiboa
-            if (Directory.Exists(targetClasses) && Directory.Exists(targetLib) && File.Exists(javaExe))
-            {
-                string jArgs = $"--module-path \"{targetClasses};{targetLib}\" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea/eus.goierri.jatetxea.Launcher";
-                LaunchInteractiveProcess(javaExe, jArgs, javafxDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Sukaldea, Barra & Biltegia (KDS/BDS/Stock) interfazea (UI) ireki da." });
+                LaunchInteractiveProcess(batBarra, "", barraDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Barra (BDS) irekitzen (hasi_barra_bds.bat bidez)..." });
             }
+            return Results.Ok(new { Success = false, Message = "Barra BDS proiektua ez da aurkitu." });
 
-            string mvnwCmd = Path.Combine(javafxDir, "mvnw.cmd");
-            if (File.Exists(mvnwCmd))
+        case "biltegia_stock":
+        case "biltegia":
+            string biltegiDir = Path.Combine(appsDir, "biltegi_langileak", "desktop_biltegia_stock");
+            string batBiltegi = Path.Combine(biltegiDir, "hasi_biltegia_stock.bat");
+            if (File.Exists(batBiltegi))
             {
-                LaunchInteractiveProcess("cmd.exe", $"/c start \"1T Jatetxea - JavaFX Sukaldea\" cmd /c \"mvnw.cmd javafx:run\"", javafxDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX aplikazioa abiarazita (mvnw bidez)." });
+                LaunchInteractiveProcess(batBiltegi, "", biltegiDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "JavaFX Biltegia (Stock) irekitzen (hasi_biltegia_stock.bat bidez)..." });
             }
-            return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
+            return Results.Ok(new { Success = false, Message = "Biltegia Stock proiektua ez da aurkitu." });
 
         case "mobile_bezeroa":
         case "mobile_bezeroa_flutter":
@@ -876,7 +864,10 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
         "csharp" or "desktop_csharp" or "desktop_tpv_csharp" or "tpv" => Directory.Exists(Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp"))
             ? Path.Combine(appsDir, "zerbitzari_langileak", "desktop_tpv_csharp")
             : Path.Combine(appsDir, "desktop_csharp"),
-        "javafx" or "desktop_javafx" or "kds_javafx" => Path.Combine(appsDir, "desktop_javafx"),
+        "javafx" or "desktop_javafx" or "kds_javafx" or "sukaldea_kds" or "sukaldea" => Path.Combine(appsDir, "sukalde_langileak", "desktop_sukaldea_kds"),
+        "barra_bds" or "barra" => Path.Combine(appsDir, "zerbitzari_langileak", "desktop_barra_bds"),
+        "biltegia_stock" or "biltegia" => Path.Combine(appsDir, "biltegi_langileak", "desktop_biltegia_stock"),
+        "javafx_core" or "javafx_parent" or "komunak" => Path.Combine(appsDir, "komunak"),
         "kudeaketa_desktop_java" or "admin_desktop_java" => Path.Combine(appsDir, "admin", "admin_desktop_java"),
         "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Directory.Exists(Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter"))
             ? Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter")

@@ -24,10 +24,10 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 | :--- | :--- | :--- | :--- |
 | **Bezeroak** | Web-App (`web_php_bezeroak` / HTML-JS)<br>Bezeroen App-a (`mobile_bezeroa_flutter` / Flutter) | Web (HTML5/JS/PHP)<br>Android / iOS (Flutter) | Karta kontsultatu, alergenoen iragazketa, mahai erreserbak egin, auto-eskaera eta eguneko menua ikusi. |
 | **Zerbitzariak (Jantokia)** | TPV Salmenta Puntua (`desktop_tpv_csharp`)<br>Komandera Android (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10 WinForms)<br>Android (Mugikorra + Tableta) | Mahaien mapa eta okupazioa kudeatu, erreserben egutegia ikusi, komandak mahai ondoan jaso, sukaldera bidali, kobraketak bideratu eta **lanaldia fitxatu**. |
-| **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX Aplikazioa (`desktop_javafx` - KDS Modulua) | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX) | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta **lanaldia fitxatu**. |
-| **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_tpv_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
-| **Biltegikoak** | JavaFX Aplikazioa (`desktop_javafx` - Biltegia/Stock)<br>ERP Kudeaketa (`odoo_erp`) | Desktop (JavaFX)<br>Web ERP (Odoo 17 / PostgreSQL) | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta **lanaldia fitxatu**. |
-| **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Aplikazioa (`desktop_javafx`)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_rest_api_csharp`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, txostenak eta segurtasun-kopiak. |
+| **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX KDS Pantaila (`desktop_sukaldea_kds`) | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX) | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta **lanaldia fitxatu**. |
+| **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_tpv_csharp`)<br>JavaFX BDS Pantaila (`desktop_barra_bds`)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
+| **Biltegikoak** | JavaFX Stock Pantaila (`desktop_biltegia_stock`)<br>ERP Kudeaketa (`odoo_erp`) | Desktop (JavaFX)<br>Web ERP (Odoo 17 / PostgreSQL) | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta **lanaldia fitxatu**. |
+| **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Mahaigaineko Moduluak (KDS / BDS / Stock)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_rest_api_csharp`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, txostenak eta segurtasun-kopiak. |
 
 ---
 
@@ -48,23 +48,23 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 ### 3.3. Sukaldeko Interfazeak (KDS - Kitchen Display System)
 
 - **Android TV KDS (`01_aplikazioak/sukaldea_kds_android_tv`):** Sukaldeko hormako telebista edo pantaila nagusirako diseinatua (Android TV / Jetpack Compose). Sartzen diren aginduak denbora errealean erakusten ditu, txanden eta prestaketa-denboren arabera ordenatuta.
-- **JavaFX Mahaigaineko Aplikazioa (`01_aplikazioak/desktop_javafx` - Sukaldea KDS):** Sukaldari buruak eta laguntzaileek plateren egoerak ("Zai", "Martxan", "Eginda") klik bakarrean kudeatzeko eta txandaren fitxaketa egiteko aukera dute.
+- **JavaFX Mahaigaineko Aplikazioa (`01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds`):** Sukaldari buruak eta laguntzaileek plateren egoerak ("Zai", "Martxan", "Eginda") klik bakarrean kudeatzeko eta txandaren fitxaketa egiteko aukera dute.
 
 ### 3.4. Barrako eta Salmenta Puntuko Interfazeak
 
 - **C# .NET 10 Desktop TPV (`01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`):** Barran kokatutako terminal nagusia. Tiketak eta faktura fiskalak inprimatzea, zatitutako ordainketak (eskudirua, txartela), eguneko kaxa-itxiera eta fitxaketa ahalbidetzen ditu.
-- **JavaFX Barra BDS Modulua (`01_aplikazioak/desktop_javafx`):** Barran prestatzeko diren edari, kafe eta aperitiboen komandak bereizita kudeatzeko pantaila dedikatua.
+- **JavaFX Barra BDS Modulua (`01_aplikazioak/zerbitzari_langileak/desktop_barra_bds`):** Barran prestatzeko diren edari, kafe eta aperitiboen komandak bereizita kudeatzeko pantaila dedikatua.
 - **Android Komandera Mugikorra eta Tableta (`01_aplikazioak/zerbitzaria_komandera_android`):** Barrako langileek ere erabil dezakete mugikor edo tabletan eskaerak azkar hartzeko, egoerak ikusteko eta fitxatzeko.
 
 ### 3.5. Biltegiko Interfazea
 
-- **JavaFX Biltegia eta Stock Modulua (`01_aplikazioak/desktop_javafx`):** Jatetxeko biltegi, despentsa eta ganbarako stock errealaren jarraipena. Gutxieneko stocketik behera dauden osagaiak gorriz bistaratzen ditu hornidura bermatuz, eta biltegiko langileen fitxaketa ahalbidetzen du.
+- **JavaFX Biltegia eta Stock Modulua (`01_aplikazioak/zerbitzari_langileak/desktop_barra_bds`):** Jatetxeko biltegi, despentsa eta ganbarako stock errealaren jarraipena. Gutxieneko stocketik behera dauden osagaiak gorriz bistaratzen ditu hornidura bermatuz, eta biltegiko langileen fitxaketa ahalbidetzen du.
 - **Odoo 17 ERP Integrazioa (`01_aplikazioak/odoo_erp`):** Hornitzaileen erosketa-eskaera ofizialak, albaranen sarrera eta hornitzaileen fakturen kontabilitatea kudeatzeko (PostgreSQL gainean).
 
 ### 3.6. Administrazioa, TI eta Zuzendaritza
 
 - **Admin IT Zentrala (`01_aplikazioak/admin/admin_IT_zentrala`):** Sistemaren administratzaileentzako aginte-zentroa. Docker zerbitzuen, ataken, sare-interfazearen, aplikazioen abiarazleen, langileen fitxaketen ikuskaritzaren eta VirtualBox makina birtualen kontrol osoa eskaintzen du.
-- **JavaFX Aplikazio Integratua (`01_aplikazioak/desktop_javafx`):** Admin IT eta Zuzendaritzak sarbide osoa dute Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) moduluetara saio-hasiera bakarretik PIN bidez.
+- **JavaFX Aplikazio Integratua (`01_aplikazioak/zerbitzari_langileak/desktop_barra_bds`):** Admin IT eta Zuzendaritzak sarbide osoa dute Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) moduluetara saio-hasiera bakarretik PIN bidez.
 - **Odoo ERP (`01_aplikazioak/odoo_erp`):** Zuzendaritzarentzat finantzak, langileen nominak, asistentzia-erregistroak (fitxaketak) eta txosten ekonomiko globalak aztertzeko tresna.
 - **Backend REST API Zentrala (`01_aplikazioak/admin/backend_rest_api_csharp`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die, fitxaketen erregistroa barne.
 

@@ -1,0 +1,216 @@
+package eus.goierri.jatetxea.core.api;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import eus.goierri.jatetxea.core.model.Eskaera;
+import eus.goierri.jatetxea.core.model.Langilea;
+import eus.goierri.jatetxea.core.model.Lehengaia;
+import eus.goierri.jatetxea.core.model.Platera;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ApiZerbitzua {
+    private static final String BASE_URL = hasieratuBaseUrl();
+    private final HttpClient bezeroa;
+    private final Gson gson;
+
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
+    private static String hasieratuBaseUrl() {
+        String envUrl = System.getenv("API_BASE_URL");
+        if (envUrl != null && !envUrl.isBlank()) {
+            return envUrl.trim().replaceAll("/+$", "");
+        }
+        try (var is = ApiZerbitzua.class.getClassLoader().getResourceAsStream("api.properties")) {
+            if (is != null) {
+                var props = new java.util.Properties();
+                props.load(is);
+                String propUrl = props.getProperty("api.base.url");
+                if (propUrl != null && !propUrl.isBlank()) {
+                    return propUrl.trim().replaceAll("/+$", "");
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return "http://localhost:5050/api/v1";
+    }
+
+    public ApiZerbitzua() {
+        this.bezeroa = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(4))
+                .build();
+        this.gson = new Gson();
+    }
+
+    public static class HealthResult {
+        public final boolean apiMartxan;
+        public final String mezua;
+
+        public HealthResult(boolean apiMartxan, String mezua) {
+            this.apiMartxan = apiMartxan;
+            this.mezua = mezua;
+        }
+    }
+
+    public HealthResult egiaztatuOsasuna() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/osasuna"))
+                    .timeout(Duration.ofSeconds(3))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return new HealthResult(true, "APIa konektatuta (200 OK)");
+            }
+            return new HealthResult(false, "APIak egoera kode okerra itzuli du: " + response.statusCode());
+        } catch (Exception e) {
+            return new HealthResult(false, "Ezin da APIarekin konektatu (" + e.getClass().getSimpleName() + ")");
+        }
+    }
+
+    public List<Langilea> lortuLangileak() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/langileak"))
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return Collections.emptyList();
+        }
+        Type zerrendaMota = new TypeToken<List<Langilea>>() {}.getType();
+        return gson.fromJson(response.body(), zerrendaMota);
+    }
+
+    public LoginErantzuna saioaHasi(String erabiltzailea, String pin) throws IOException, InterruptedException {
+        JsonObject json = new JsonObject();
+        json.addProperty("erabiltzailea", erabiltzailea);
+        json.addProperty("pin", pin);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/langileak/login"))
+                .timeout(Duration.ofSeconds(5))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            JsonObject res = gson.fromJson(response.body(), JsonObject.class);
+            boolean arrakasta = res.has("arrakasta") && res.get("arrakasta").getAsBoolean();
+            String mezua = res.has("mezua") ? res.get("mezua").getAsString() : "Ongi etorri";
+            Langilea l = null;
+            if (res.has("langilea") && !res.get("langilea").isJsonNull()) {
+                l = gson.fromJson(res.get("langilea"), Langilea.class);
+            }
+            return new LoginErantzuna(arrakasta, mezua, l);
+        } else if (response.statusCode() == 401) {
+            return new LoginErantzuna(false, "PIN edo erabiltzaile okerra.", null);
+        } else {
+            return new LoginErantzuna(false, "Errorea saioa hastean (" + response.statusCode() + ")", null);
+        }
+    }
+
+    public List<Eskaera> lortuEskaeraAktiboak() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/eskaerak"))
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return Collections.emptyList();
+        }
+        Type listType = new TypeToken<List<Eskaera>>() {}.getType();
+        return gson.fromJson(response.body(), listType);
+    }
+
+    public boolean aldatuEskaeraEgoera(int eskaeraId, String egoeraBerria) throws IOException, InterruptedException {
+        JsonObject json = new JsonObject();
+        json.addProperty("egoera", egoeraBerria);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/eskaerak/" + eskaeraId + "/egoera"))
+                .timeout(Duration.ofSeconds(5))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode() == 200 || response.statusCode() == 204;
+    }
+
+    public boolean aldatuLerroEgoera(int lerroId, String egoeraBerria) throws IOException, InterruptedException {
+        JsonObject json = new JsonObject();
+        json.addProperty("egoera", egoeraBerria);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/eskaera-lerroak/" + lerroId + "/egoera"))
+                .timeout(Duration.ofSeconds(5))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode() == 200 || response.statusCode() == 204;
+    }
+
+    public List<Lehengaia> lortuLehengaiak() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/lehengaiak"))
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return Collections.emptyList();
+        }
+        Type listType = new TypeToken<List<Lehengaia>>() {}.getType();
+        return gson.fromJson(response.body(), listType);
+    }
+
+    public boolean gehituStockSarrera(int lehengaiaId, double kantitatea, String albarana, String oharrak) throws IOException, InterruptedException {
+        JsonObject json = new JsonObject();
+        json.addProperty("lehengaiaId", lehengaiaId);
+        json.addProperty("kantitatea", kantitatea);
+        json.addProperty("albarana", albarana);
+        json.addProperty("oharrak", oharrak);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/lehengaiak/" + lehengaiaId + "/stock"))
+                .timeout(Duration.ofSeconds(5))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode() == 200 || response.statusCode() == 201;
+    }
+
+    public List<Platera> lortuPlaterak() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/platerak"))
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return Collections.emptyList();
+        }
+        Type listType = new TypeToken<List<Platera>>() {}.getType();
+        return gson.fromJson(response.body(), listType);
+    }
+}

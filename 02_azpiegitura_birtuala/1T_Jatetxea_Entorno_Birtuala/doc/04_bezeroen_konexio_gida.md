@@ -21,7 +21,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   |      Gailua: Android / iOS tableta edo smartphone-a.
   |      Funtzioa: Mahai ondoan komandak hartu eta sukaldera zuzenean bidali.
   |
-  +--> 3. Sukaldea, Barra eta Biltegia (JavaFX 21 `01_aplikazioak/desktop_javafx`)
+  +--> 3. Sukaldea, Barra eta Biltegia (JavaFX 21 Multi-Modulua)
   |      Erabiltzaileak: Sukaldari-burua, tabernaria eta biltegiko arduraduna.
   |      Gailua: PCa edo sukaldeko terminal finkoa.
   |      Funtzioa: Sukaldeko KDS (martxan/prest), Barrako BDS eta lehengaien stocka.
@@ -69,13 +69,13 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 - **Abioa IT Paneletik:** `http://localhost:5000` helbidera joan eta **"Exekutatu C# TPV"** sakatu (berehala irekiko da interfaze natiboa).
 - **Kredentzialak:** PIN bidezko sarbidea (adibidez: `1234` edo langilearen PIN zenbakia).
 
-### 2. JavaFX Mahaigainekoa (`desktop_javafx`)
+### 2. JavaFX Mahaigaineko Moduluak (KDS, BDS, Stock)
 
-- **Kokapena:** `01_aplikazioak/desktop_javafx`
+- **Kokapena:** `01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds` (Sukaldea), `zerbitzari_langileak/desktop_barra_bds` (Barra), `biltegi_langileak/desktop_biltegia_stock` (Biltegia)
 - **Abioa terminaletik:**
 
   ```powershell
-  cd 01_aplikazioak\desktop_javafx
+  cd 01_aplikazioak\komunak\desktop_javafx_parent
   .\hasi_kds_mahaigaina.bat
   # Edo Maven Wrapper erabiliz:
   .\mvnw.cmd javafx:run

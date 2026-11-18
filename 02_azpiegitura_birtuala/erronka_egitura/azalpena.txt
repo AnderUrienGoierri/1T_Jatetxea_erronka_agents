@@ -7,7 +7,10 @@ Erroa: C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\
 
 01_aplikazioak/
   ├── chat_zerbitzaria/          -> Socket.IO / WebSockets barne komunikazioa: port 3001
-  ├── desktop_javafx/            -> Java 17 / JavaFX 21 (Sukaldea KDS, Barra BDS eta Biltegia Stock)
+  ├── komunak/desktop_javafx_parent/ -> Maven Multi-Modulu Gurasoa (Parent POM)
+  ├── sukalde_langileak/desktop_sukaldea_kds/ -> JavaFX KDS Sukaldea
+  ├── zerbitzari_langileak/desktop_barra_bds/ -> JavaFX BDS Barra
+  ├── biltegi_langileak/desktop_biltegia_stock/ -> JavaFX Stock Biltegia
   ├── bezeroak/
   │     ├── web_php_bezeroak/        -> Apache + PHP 8.4 Frontend Publikoa (Karta, Erreserbak): port 8085
   │     └── mobile_bezeroa_flutter/  -> Flutter / Dart bezero mugikorra (erreserbak, karta, iritziak)
@@ -82,7 +85,7 @@ Kokapenaren arabera (eskola, etxean, tolosako_etxean edo localhost),
 klik bakarrean eguneratzen dira bezero guztiak:
 - Flutter Zerbitzaria (01_aplikazioak\zerbitzari_langileak\mobile_zerbitzaria_flutter)
 - Flutter Bezeroa (01_aplikazioak\bezeroak\mobile_bezeroa_flutter)
-- JavaFX Sukaldea / Barra / Biltegia (01_aplikazioak\desktop_javafx)
+- JavaFX Sukaldea / Barra / Biltegia (Maven Multi-Modulu arkitektura dedikatua)
 - C# Desktop TPV (01_aplikazioak\zerbitzari_langileak\desktop_tpv_csharp)
 - Web PHP Frontend (01_aplikazioak\bezeroak\web_php_bezeroak)
 

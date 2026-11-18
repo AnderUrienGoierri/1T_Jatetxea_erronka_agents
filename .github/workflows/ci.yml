@@ -136,14 +136,14 @@ jobs:
       - name: Egiaztatu FXML Fitxategiak (XML Sintaxia)
         run: |
           echo "FXML fitxategiak baliozkotzen..."
-          for fxml in $(find 01_aplikazioak/desktop_javafx -name "*.fxml"); do
+          for fxml in $(find 01_aplikazioak -name "*.fxml"); do
             echo "Baliozkotzen: $fxml"
             xmlstarlet val "$fxml" 2>/dev/null || xmllint --noout "$fxml" 2>/dev/null || python3 -c "import xml.etree.ElementTree as ET; ET.parse('$fxml')"
           done
 
-      - name: Maven Konpilazioa
+      - name: Maven Konpilazioa (Multi-Modulua)
         run: |
-          cd 01_aplikazioak/desktop_javafx
+          cd 01_aplikazioak/komunak/desktop_javafx_parent
           mvn -B compile test-compile
 
   web-php-check:

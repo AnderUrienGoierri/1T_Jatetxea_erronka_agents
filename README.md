@@ -25,7 +25,19 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 │   ├── bezeroak/                                 # Bezeroen aplikazioak
 │   │   ├── web_php_bezeroak/                     # Apache 2.4 + PHP 8.2/8.4 Webgune korporatiboa eta bezeroen karta publikoa
 │   │   └── mobile_bezeroa_flutter/               # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
-│   ├── desktop_javafx/                          # JavaFX (Java 17/21, Maven) Sukaldea (KDS), Barra (BDS) eta Stocka
+│   ├── sukalde_langileak/
+│   │   ├── desktop_sukaldea_kds/                # JavaFX (Java 17/21, Maven) Sukaldeko KDS Pantaila
+│   │   └── sukaldea_kds_android_tv/             # Kotlin / Android TV Box (Jetpack Compose)
+│   ├── zerbitzari_langileak/
+│   │   ├── desktop_barra_bds/                   # JavaFX (Java 17/21, Maven) Barrako BDS Pantaila
+│   │   ├── desktop_tpv_csharp/                  # C# .NET 10 WinForms TPV Salmenta Puntua
+│   │   ├── mobile_zerbitzaria_flutter/          # Flutter PDA / Mugikorra
+│   │   └── zerbitzaria_komandera_android/       # Android Jatetxeko Komandera Natiboa
+│   ├── biltegi_langileak/
+│   │   └── desktop_biltegia_stock/              # JavaFX (Java 17/21, Maven) Biltegiko Stock Kudeaketa
+│   ├── komunak/
+│   │   ├── desktop_javafx_parent/               # Maven Multi-Modulu Gurasoa (Parent POM)
+│   │   └── desktop_javafx_core/                 # Ereduak, API bezeroa eta kontroladore komunak (DRY)
 │   ├── sukalde_langileak/                       # Sukaldeko langileen aplikazioak
 │   │   └── sukaldea_kds_android_tv/             # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
 │   ├── zerbitzari_langileak/                    # Zerbitzarien mahaigaineko eta mugikorreko aplikazioak

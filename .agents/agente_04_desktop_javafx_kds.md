@@ -7,7 +7,7 @@ Agente honek **JavaFX Sukaldea KDS (Kitchen Display System)** mahaigaineko aplik
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_04`
-- **Ardurapeko Proiektua:** `01_aplikazioak/desktop_javafx/pom.xml`
+- **Ardurapeko Proiektua:** `01_aplikazioak/komunak/desktop_javafx_parent/pom.xml` (Sukaldea KDS, Barra BDS eta Biltegia Stock moduluak)
 - **Teknologia:** Java 21 (Temurin JDK), JavaFX 21, FXML, Scene Builder, Maven.
 - **Xede Ingurunea:** Sukaldeko pantaila handia (1920x1080 16:9 widescreen horizontala).
 
@@ -46,7 +46,7 @@ JavaFX KDS aplikazioaren osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. Maven konpilazioa eta probak
-cd "01_aplikazioak/desktop_javafx"
+cd "01_aplikazioak/komunak/desktop_javafx_parent"
 ./mvnw clean compile test-compile
 
 # 2. FXML sintaxia eta geruzen izenen egiaztapena

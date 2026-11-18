@@ -22,7 +22,7 @@ graph TD
     end
 
     subgraph BARNE_LAN_SUKALDEA["3. KDS Sukaldea & Biltegia (LAN)"]
-        KDS["desktop_javafx/<br/>Java 21 JavaFX FXML<br/>Sukaldea, Barra & Stocka"]
+        KDS["desktop_sukaldea_kds/<br/>desktop_barra_bds/<br/>desktop_biltegia_stock/<br/>JavaFX Multi-Modulua"]
     end
 
     subgraph MOBILITATEA["4. Mugikorreko Aplikazioak (WAN / Wi-Fi)"]
@@ -75,7 +75,7 @@ graph TD
 
 ---
 
-### 4. Desktop Sukaldea, Barra eta Biltegia (`desktop_javafx/`)
+### 4. Desktop Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) (Maven Multi-Modulua)
 
 * **Xede-Hartzailea:** Sukaldariak (sukaldean), zerbitzariak (barran) eta biltegi-arduraduna.
 * **Kokapena eta Exekuzioa:** Sukaldeko eta barrako ukipen-pantaila finkoetan (LAN sarea).
