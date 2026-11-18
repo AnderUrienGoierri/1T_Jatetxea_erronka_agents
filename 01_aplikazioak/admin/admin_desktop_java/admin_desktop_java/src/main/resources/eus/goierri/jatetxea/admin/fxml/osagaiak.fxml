@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="eus.goierri.jatetxea.admin.controller.OsagaiakKontrolagailua"
+      stylesheets="@../css/app.css"
+      spacing="16" styleClass="screen">
+    <padding>
+        <Insets top="2" right="2" bottom="2" left="2"/>
+    </padding>
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Osagaiak eta inbentarioa" styleClass="page-title"/>
+            <Label text="Kontrolatu stock-mailak, alertak eta hornitzaileen sarrerak." styleClass="muted-text"/>
+        </VBox>
+        <Button text="Berritu" onAction="#refresh" styleClass="secondary-button"/>
+    </HBox>
+    <VBox spacing="8" styleClass="card" VBox.vgrow="ALWAYS">
+        <Label text="Inbentarioa" styleClass="section-title"/>
+        <TableView fx:id="ingredientsTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="Osagaia" prefWidth="230"/>
+                <TableColumn fx:id="quantityColumn" text="Uneko stocka" prefWidth="120"/>
+                <TableColumn fx:id="minimumColumn" text="Gutxienekoa" prefWidth="120"/>
+                <TableColumn fx:id="unitColumn" text="Unitatea" prefWidth="100"/>
+                <TableColumn fx:id="supplierColumn" text="Hornitzailea" prefWidth="200"/>
+                <TableColumn fx:id="alertColumn" text="Alerta" prefWidth="100"/>
+            </columns>
+        </TableView>
+        <HBox spacing="10">
+            <Label fx:id="ingredientsMessage" text="Osagaiak kargatzen..." wrapText="true"
+                   styleClass="inline-message" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="editButton" text="Osagaia editatu" onAction="#editIngredient"
+                    styleClass="secondary-button"/>
+            <Button fx:id="deactivateButton" text="Osagaia desgaitu" onAction="#deactivateIngredient"
+                    styleClass="danger-button"/>
+        </HBox>
+    </VBox>
+    <HBox spacing="16">
+        <VBox HBox.hgrow="ALWAYS" spacing="10" styleClass="card">
+            <Label fx:id="formTitle" text="Osagai berria" styleClass="section-title"/>
+            <HBox spacing="10">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Izena" styleClass="field-label"/>
+                    <TextField fx:id="nameField" promptText="Adib. Idiazabal gazta"/>
+                </VBox>
+                <VBox spacing="5" prefWidth="115">
+                    <Label text="Unitatea" styleClass="field-label"/>
+                    <ComboBox fx:id="unitCombo" maxWidth="Infinity"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox fx:id="initialStockBox" spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Hasierako stocka" styleClass="field-label"/>
+                    <TextField fx:id="stockField" promptText="0"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Gutxieneko stocka" styleClass="field-label"/>
+                    <TextField fx:id="minimumStockField" promptText="5"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Unitateko kostua (€)" styleClass="field-label"/>
+                    <TextField fx:id="costField" promptText="0,00"/>
+                </VBox>
+            </HBox>
+            <Label text="Unitatea ezin da aldatu stock-historia edo errezeta batekin lotuta badago."
+                   wrapText="true" styleClass="fine-print"/>
+            <HBox spacing="10" alignment="BOTTOM_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Hornitzailea" styleClass="field-label"/>
+                    <TextField fx:id="supplierField" promptText="Aukerakoa"/>
+                </VBox>
+                <Button fx:id="createButton" text="Osagaia sortu" onAction="#saveIngredient"
+                        styleClass="primary-button"/>
+            </HBox>
+            <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"
+                    maxWidth="Infinity" styleClass="secondary-button"/>
+        </VBox>
+        <VBox prefWidth="300" spacing="10" styleClass="card">
+            <Label text="Stock-sarrera" styleClass="section-title"/>
+            <Label text="Hautatu inbentarioko lerro bat, eta erregistratu jasotako kantitatea."
+                   wrapText="true" styleClass="muted-text"/>
+            <VBox spacing="5">
+                <Label text="Kantitatea" styleClass="field-label"/>
+                <TextField fx:id="entryQuantityField" promptText="Kantitatea"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Oharra / albarana" styleClass="field-label"/>
+                <TextField fx:id="entryNoteField" promptText="Aukerakoa"/>
+            </VBox>
+            <Button fx:id="stockEntryButton" text="Stock-sarrera erregistratu"
+                    onAction="#registerStockEntry" maxWidth="Infinity" styleClass="secondary-button"/>
+            <Label fx:id="alertCountLabel" text="Stock alertak kargatzen..." styleClass="section-title"/>
+            <ListView fx:id="alertList" prefHeight="120"/>
+        </VBox>
+    </HBox>
+</VBox>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="eus.goierri.jatetxea.admin.controller.LangileakKontrolagailua"
+      stylesheets="@../css/app.css"
+      spacing="18" styleClass="screen">
+    <padding>
+        <Insets top="2" right="2" bottom="2" left="2"/>
+    </padding>
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Langileen kudeaketa" styleClass="page-title"/>
+            <Label text="Ikusi langileen rolak eta sortu erabiltzaile berriak." styleClass="muted-text"/>
+        </VBox>
+        <Button text="Zerrenda berritu" onAction="#refresh" styleClass="secondary-button"/>
+    </HBox>
+    <HBox spacing="18" VBox.vgrow="ALWAYS">
+        <VBox HBox.hgrow="ALWAYS" styleClass="card">
+            <Label text="Langileen zerrenda" styleClass="section-title"/>
+            <TableView fx:id="staffTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
+                    <TableColumn fx:id="nameColumn" text="Izena" prefWidth="170"/>
+                    <TableColumn fx:id="usernameColumn" text="Erabiltzailea" prefWidth="150"/>
+                    <TableColumn fx:id="roleColumn" text="Rola" prefWidth="130"/>
+                    <TableColumn fx:id="activeColumn" text="Aktiboa" prefWidth="80"/>
+                </columns>
+            </TableView>
+            <Label fx:id="staffMessage" text="Langileak kargatzen..." wrapText="true" styleClass="inline-message"/>
+        </VBox>
+        <VBox prefWidth="360" spacing="10" styleClass="card">
+            <Label fx:id="formTitle" text="Langile berria" styleClass="section-title"/>
+            <Label text="PINa APIak hash bidez gordetzen du; PIN eremua hutsik utzi editatzean bere horretan mantentzeko."
+                   wrapText="true" styleClass="muted-text"/>
+            <VBox spacing="6">
+                <Label text="Izena" styleClass="field-label"/>
+                <TextField fx:id="nameField" promptText="Adib. Ane"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Abizenak" styleClass="field-label"/>
+                <TextField fx:id="surnameField" promptText="Adib. Goikoetxea"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Erabiltzailea" styleClass="field-label"/>
+                <TextField fx:id="usernameField" promptText="Erabiltzaile-izena"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="NAN / DNI" styleClass="field-label"/>
+                <TextField fx:id="nationalIdField" promptText="NAN / DNI"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Emaila" styleClass="field-label"/>
+                <TextField fx:id="emailField" promptText="izena@jatetxea.eus"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="PINa / pasahitza" styleClass="field-label"/>
+                <PasswordField fx:id="pinField" promptText="Gutxienez 4 karaktere"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text="Rola" styleClass="field-label"/>
+                <ComboBox fx:id="roleCombo" maxWidth="Infinity"/>
+            </VBox>
+            <Button fx:id="createButton" text="Langilea sortu" onAction="#saveStaff"
+                    maxWidth="Infinity" styleClass="primary-button"/>
+            <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"
+                    maxWidth="Infinity" styleClass="secondary-button"/>
+            <Button fx:id="editButton" text="Hautatutakoa editatu" onAction="#editStaff"
+                    maxWidth="Infinity" styleClass="secondary-button"/>
+            <Button fx:id="deactivateButton" text="Hautatutako langilea desgaitu"
+                    onAction="#deactivateStaff" maxWidth="Infinity" styleClass="danger-button"/>
+        </VBox>
+    </HBox>
+</VBox>

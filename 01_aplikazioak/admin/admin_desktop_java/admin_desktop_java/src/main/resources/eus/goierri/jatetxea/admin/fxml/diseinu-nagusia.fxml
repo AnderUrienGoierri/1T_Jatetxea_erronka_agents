@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="eus.goierri.jatetxea.admin.controller.DiseinuNagusiaKontrolagailua"
+            stylesheets="@../css/app.css"
+            styleClass="app-shell">
+    <left>
+        <VBox prefWidth="248" spacing="8" styleClass="sidebar">
+            <padding>
+                <Insets top="24" right="16" bottom="20" left="16"/>
+            </padding>
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="brand-row">
+                <Label text="T1" styleClass="brand-mark-small"/>
+                <VBox spacing="2">
+                    <Label text="Jatetxea" styleClass="brand-name"/>
+                    <Label text="KUDEAKETA" styleClass="brand-caption"/>
+                </VBox>
+            </HBox>
+            <Label text="LAN-ESPAZIOA" styleClass="nav-caption"/>
+            <Button text="Laburpena" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Langileak" onAction="#showStaff" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Menua eta errezetak" onAction="#showMenu" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Osagaiak eta inbentarioa" onAction="#showIngredients" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Mahaiak" onAction="#showTables" maxWidth="Infinity" styleClass="nav-button"/>
+            <VBox VBox.vgrow="ALWAYS"/>
+            <Label text="Kudeatzailearen gunea" styleClass="sidebar-note"/>
+        </VBox>
+    </left>
+    <center>
+        <VBox styleClass="workspace">
+            <HBox alignment="CENTER_LEFT" spacing="18" styleClass="topbar">
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label fx:id="titleLabel" text="Laburpena" styleClass="topbar-title"/>
+                    <Label text="T1 Jatetxea · Administrazioa" styleClass="muted-text"/>
+                </VBox>
+                <Label fx:id="serviceStatusLabel" text="Zerbitzu-egoera egiaztatzen..."
+                       wrapText="true" styleClass="status-warning"/>
+                <Button fx:id="refreshStatusButton" text="Egoera berritu"
+                        onAction="#refreshServiceStatus" styleClass="secondary-button"/>
+                <VBox spacing="3" styleClass="user-block">
+                    <Label fx:id="userLabel" text="Kudeatzailea" styleClass="user-name"/>
+                    <Button text="Saioa itxi" onAction="#signOut" styleClass="text-button"/>
+                </VBox>
+            </HBox>
+            <StackPane fx:id="contentHost" VBox.vgrow="ALWAYS" styleClass="content-host">
+                <padding>
+                    <Insets top="24" right="30" bottom="30" left="30"/>
+                </padding>
+            </StackPane>
+        </VBox>
+    </center>
+</BorderPane>

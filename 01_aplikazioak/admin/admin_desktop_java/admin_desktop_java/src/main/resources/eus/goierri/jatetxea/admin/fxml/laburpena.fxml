@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="eus.goierri.jatetxea.admin.controller.LaburpenKontrolagailua"
+      stylesheets="@../css/app.css"
+      spacing="22" styleClass="screen">
+    <padding>
+        <Insets top="2" right="2" bottom="2" left="2"/>
+    </padding>
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Egun on. Hona hemen jatetxearen egoera." styleClass="page-title"/>
+            <Label text="Datuak lehendik dagoen REST APItik datoz." styleClass="muted-text"/>
+        </VBox>
+        <Button text="Berritu laburpena" onAction="#refresh" styleClass="secondary-button"/>
+    </HBox>
+    <HBox spacing="16">
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="LANGILE AKTIBOAK" styleClass="metric-caption"/>
+            <Label fx:id="staffCountLabel" text="—" styleClass="metric-value"/>
+            <Label text="Langileen zerrendan" styleClass="muted-text"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="KARTAKO PLATERAK" styleClass="metric-caption"/>
+            <Label fx:id="menuCountLabel" text="—" styleClass="metric-value"/>
+            <Label text="Menuaren katalogoan" styleClass="muted-text"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card metric-card-warning">
+            <Label text="STOCK ALERTAK" styleClass="metric-caption"/>
+            <Label fx:id="lowStockCountLabel" text="—" styleClass="metric-value"/>
+            <Label text="Gutxieneko mailan edo azpitik" styleClass="muted-text"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="MAHAIAK" styleClass="metric-caption"/>
+            <Label fx:id="tableCountLabel" text="—" styleClass="metric-value"/>
+            <Label text="Kudeatutako mahaiak" styleClass="muted-text"/>
+        </VBox>
+    </HBox>
+    <VBox spacing="14" styleClass="card">
+        <Label text="Kudeaketa-gunea" styleClass="section-title"/>
+        <Label text="Erabili ezkerreko nabigazioa langileak, menua eta errezetak, osagaiak/inbentarioa edo mahaiak kudeatzeko."
+               wrapText="true" styleClass="body-text"/>
+        <Label text="Menuaren eta mahaien aldaketak zerbitzua itxita dagoenean soilik baimenduko dira."
+               wrapText="true" styleClass="callout"/>
+    </VBox>
+    <Label fx:id="dashboardMessage" text="Laburpena kargatzen..." wrapText="true" styleClass="inline-message"/>
+</VBox>

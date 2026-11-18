@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="eus.goierri.jatetxea.admin.controller.MenuaKontrolagailua"
+      stylesheets="@../css/app.css"
+      spacing="16" styleClass="screen">
+    <padding>
+        <Insets top="2" right="2" bottom="2" left="2"/>
+    </padding>
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Menua eta errezetak" styleClass="page-title"/>
+            <Label text="Sortu platerak, definitu errezetako osagaiak eta desgaitu katalogoko elementuak."
+                   styleClass="muted-text"/>
+        </VBox>
+        <Button text="Berritu" onAction="#refresh" styleClass="secondary-button"/>
+    </HBox>
+    <VBox spacing="8" styleClass="card" VBox.vgrow="ALWAYS">
+        <Label text="Katalogoa" styleClass="section-title"/>
+        <TableView fx:id="menuTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="56"/>
+                <TableColumn fx:id="nameColumn" text="Platera" prefWidth="240"/>
+                <TableColumn fx:id="categoryColumn" text="Kategoria" prefWidth="145"/>
+                <TableColumn fx:id="priceColumn" text="Prezioa (€)" prefWidth="105"/>
+                <TableColumn fx:id="statusColumn" text="Aktiboa" prefWidth="90"/>
+            </columns>
+        </TableView>
+        <HBox spacing="10">
+            <Label fx:id="menuMessage" text="Menua kargatzen..." wrapText="true"
+                   styleClass="inline-message" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="editButton" text="Hautatutakoa editatu" onAction="#editMenuItem"
+                    styleClass="secondary-button"/>
+            <Button fx:id="deactivateButton" text="Hautatutakoa desgaitu" onAction="#deactivateMenuItem"
+                    styleClass="danger-button"/>
+        </HBox>
+    </VBox>
+    <HBox spacing="16">
+        <VBox HBox.hgrow="ALWAYS" spacing="10" styleClass="card">
+            <Label fx:id="formTitle" text="Plater berria" styleClass="section-title"/>
+            <HBox spacing="10">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Izena" styleClass="field-label"/>
+                    <TextField fx:id="nameField" promptText="Plateraren izena"/>
+                </VBox>
+                <VBox spacing="5" prefWidth="150">
+                    <Label text="Kategoria" styleClass="field-label"/>
+                    <ComboBox fx:id="categoryCombo" maxWidth="Infinity"/>
+                </VBox>
+                <VBox spacing="5" prefWidth="120">
+                    <Label text="Prezioa (€)" styleClass="field-label"/>
+                    <TextField fx:id="priceField" promptText="0,00"/>
+                </VBox>
+            </HBox>
+            <VBox spacing="5">
+                <Label text="Deskribapena" styleClass="field-label"/>
+                <TextField fx:id="descriptionField" promptText="Aukerakoa"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Alergenoak" styleClass="field-label"/>
+                <TextField fx:id="allergensField" promptText="Aukerakoa; adib. glutena, esnea"/>
+            </VBox>
+        </VBox>
+        <VBox prefWidth="340" spacing="10" styleClass="card">
+            <Label text="Errezetaren osagaiak" styleClass="section-title"/>
+            <HBox spacing="8">
+                <ComboBox fx:id="ingredientCombo" promptText="Osagaia aukeratu" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="recipeQuantityField" promptText="Kantitatea" prefWidth="95"/>
+                <Button text="Gehitu" onAction="#addRecipeIngredient" styleClass="secondary-button"/>
+            </HBox>
+            <ListView fx:id="recipeList" VBox.vgrow="ALWAYS" prefHeight="108"/>
+            <Button fx:id="removeRecipeIngredientButton" text="Hautatutako osagaia kendu"
+                    onAction="#removeRecipeIngredient" maxWidth="Infinity" styleClass="secondary-button"/>
+            <Button fx:id="createButton" text="Platera eta errezeta sortu" onAction="#saveMenuItem"
+                    maxWidth="Infinity" styleClass="primary-button"/>
+            <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"
+                    maxWidth="Infinity" styleClass="secondary-button"/>
+            <Label text="Zerbitzua irekita edo egiaztatu gabe badago, idazketa desgaituta egongo da."
+                   wrapText="true" styleClass="fine-print"/>
+        </VBox>
+    </HBox>
+</VBox>
