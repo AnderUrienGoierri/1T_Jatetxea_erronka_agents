@@ -86,6 +86,7 @@ jobs:
   admin-javafx-check:
     name: Admin JavaFX Kudeaketa Desktop (Java 21)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Kodea Eskuratu
         uses: actions/checkout@v4
@@ -99,7 +100,7 @@ jobs:
       - name: Maven Probak
         run: |
           cd 01_aplikazioak/admin/admin_desktop_java/admin_desktop_java
-          mvn -B test
+          xvfb-run -a mvn -B test
 
   desktop-csharp-check:
     name: Desktop C# Windows Forms (.NET 10)
