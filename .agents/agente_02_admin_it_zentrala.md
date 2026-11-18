@@ -7,7 +7,7 @@ Agente honek **Admin IT Zentrala** kudeaketa-panela, Docker edukiontzien orkestr
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_02`
-- **Ardurapeko Proiektua:** `01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj`
+- **Ardurapeko Proiektua:** `01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj`
 - **Interfazea:** `wwwroot/index.html` (Sistema-ingeniaritzako panel iluna)
 - **Ataka Finko Bakarra:** `5000` (debekatuta dago APIaren 5050 atakarekin nahastea).
 - **Orkestrazio Baliabideak:** Docker CLI / Engine, VirtualBox VBoxManage CLI, Sare-profilak.
@@ -42,7 +42,7 @@ Admin Zentralaren osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. Konpilazio garbia
-dotnet build "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj" -c Release
+dotnet build "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj" -c Release
 
 # 2. Ataka eta zerbitzua egiaztatu
 Invoke-WebRequest -Uri "http://localhost:5000/" -UseBasicParsing

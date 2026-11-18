@@ -8,8 +8,8 @@ Agente honek **Flutter bidezko mugikor-aplikazioak (Bezeroa eta Zerbitzaria)**, 
 
 - **ID:** `agente_06`
 - **Ardurapeko Proiektuak:**
-  - `01_aplikazioak/mobile_bezeroa` (Flutter - Dart)
-  - `01_aplikazioak/mobile_zerbitzaria` (Flutter - Dart)
+  - `01_aplikazioak/mobile_bezeroa_flutter` (Flutter - Dart)
+  - `01_aplikazioak/mobile_zerbitzaria_flutter` (Flutter - Dart)
   - `01_aplikazioak/sukaldea_kds_android_tv` (Android Jetpack Compose - Kotlin)
 - **Konektatutako Gailuak:** Android mugikor fisikoak (USB arazketa / ADB), Android TV emuladoreak edo pantaila handiak.
 
@@ -17,13 +17,13 @@ Agente honek **Flutter bidezko mugikor-aplikazioak (Bezeroa eta Zerbitzaria)**, 
 
 ## 2. Erantzukizun Nagusiak
 
-1. **Zerbitzarien Mugikorreko Komanda-Hartzailea (`mobile_zerbitzaria`):**
+1. **Zerbitzarien Mugikorreko Komanda-Hartzailea (`mobile_zerbitzaria_flutter`):**
    - Zerbitzariak mahaian bertan eskaerak jasotzeko aplikazio azkarra.
    - Mahaien zerrenda eta egoera eguneratua.
    - Platerak klik bakarrean gehitzea, kantitateak eta ohar bereziak zehaztuz.
    - Eskaera zuzenean REST APIko `POST /api/v1/eskaerak` bidez bidaltzea.
 
-2. **Bezeroen Mugikor Aplikazioa (`mobile_bezeroa`):**
+2. **Bezeroen Mugikor Aplikazioa (`mobile_bezeroa_flutter`):**
    - Karta digitala arakatzea, alergeno-iragazkiak, promozioak eta mahaiko eskaerak egitea.
 
 3. **Android TV KDS Sukaldea (`sukaldea_kds_android_tv`):**
@@ -46,7 +46,7 @@ Mugikor eta TV aplikazioen osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. Flutter proiektuen analisi estatikoa
-cd "01_aplikazioak/mobile_zerbitzaria"
+cd "01_aplikazioak/mobile_zerbitzaria_flutter"
 flutter analyze
 
 # 2. Android TV proiektuaren Gradle konpilazioa

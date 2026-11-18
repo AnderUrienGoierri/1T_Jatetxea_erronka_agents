@@ -49,10 +49,10 @@ Diseinu-sistemaren osotasuna egiaztatzeko kontrol-zerrenda:
 
 ```powershell
 # 1. Kodean Figmako geruza-hitzarmena (btn*, txt*, lbl*, tbl*) betetzen dela egiaztatu
-Select-String -Path "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" -Pattern "btn[A-Z]|txt[A-Z]|lbl[A-Z]|tbl[A-Z]"
+Select-String -Path "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" -Pattern "btn[A-Z]|txt[A-Z]|lbl[A-Z]|tbl[A-Z]"
 
 # 2. Debekatutako kolore biziak edo neonak bilatu
-Select-String -Path "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" -Pattern "linear-gradient|box-shadow:.*0 0 15px|#00ffff|#ff00ff"
+Select-String -Path "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" -Pattern "linear-gradient|box-shadow:.*0 0 15px|#00ffff|#ff00ff"
 ```
 
 ---
