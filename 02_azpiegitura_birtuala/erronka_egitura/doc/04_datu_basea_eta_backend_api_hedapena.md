@@ -1,6 +1,8 @@
 # Erronka 1 - Jatetxea Sare Sistema eta Aplikazioen Hedapena
 ## 04. Datu-Basea eta Backend API Hedapena
 
+> Hedapen gida hau Ubuntu DMZko API zerbitzariari buruzkoa da: VM barruko Kestrel ataka `localhost:5000` da. Tokiko Windows/Docker garapenean, Admin IT Zentrala `localhost:5000` da eta APIa `localhost:5050` da (`5050:5000` Compose mapaketa).
+
 ---
 
 ### 1. Datu-Basearen Arkitektura (MySQL 8.0 InnoDB)
@@ -95,7 +97,7 @@ APIa C# .NET 10-en eraikita dago eta Ubuntu zerbitzarian daemon/zerbitzu iraunko
 #### 3.1. APIaren Argitalpena (Publish):
 Proiektuaren iturburu-kodetik fitxategi bitarrak konpilatu eta ekoizpen karpetara ateratzen dira:
 ```bash
-cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\backend_api
+cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\01_aplikazioak\backend_rest_api_csharp
 dotnet publish -c Release -o /var/www/jatetxea_api
 ```
 

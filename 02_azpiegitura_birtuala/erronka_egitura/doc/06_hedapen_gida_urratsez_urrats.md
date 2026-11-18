@@ -1,6 +1,8 @@
 # Erronka 1 - Jatetxea Sare Sistema eta Aplikazioen Hedapena
 ## 06. Hedapen Gida Urratsez Urrats (Runbook)
 
+> Ubuntu VMko APIa gida honetan 5000 portuan dago. Tokiko Windows/Docker garapenean, Admin IT Zentrala `localhost:5000` da eta REST APIa `localhost:5050` da (`5050:5000` mapaketa).
+
 ---
 
 ### 1. Sarrera

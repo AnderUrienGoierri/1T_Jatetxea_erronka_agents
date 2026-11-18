@@ -1,6 +1,8 @@
 # Erronka 1 - Jatetxea Sare Sistema eta Aplikazioen Hedapena
 ## 05. Bezero Aplikazioak eta Plataformak
 
+> Dokumentu honetako `192.168.20.10:5000` eta WANeko `:5000` helbideak urruneko Ubuntu/DMZ hedapenari dagozkio. Tokiko Windows/Docker ostalarian REST APIa `localhost:5050` da; `localhost:5000` Admin IT Zentrala da.
+
 ---
 
 ### 1. Plataforma Anitzeko Aurre-Maila (Multiplatform Stack)
@@ -24,8 +26,8 @@ graph TD
     end
 
     subgraph MOBILITATEA["4. Mugikorreko Aplikazioak (WAN / Wi-Fi)"]
-        MOB_BEZ["mobile_bezeroa/<br/>Flutter Android<br/>Bezeroen Karta & Ordainketa"]
-        MOB_ZER["mobile_zerbitzaria/<br/>Flutter Android<br/>Zerbitzarien PDA Komandak"]
+        MOB_BEZ["mobile_bezeroa_flutter/<br/>Flutter Android<br/>Bezeroen Karta & Ordainketa"]
+        MOB_ZER["mobile_zerbitzaria_flutter/<br/>Flutter Android<br/>Zerbitzarien PDA Komandak"]
     end
 
     WEB -->|"Fetch API (JSON)"| API
@@ -90,13 +92,13 @@ graph TD
 
 ---
 
-### 5. Mugikorreko Aplikazioak (`mobile_bezeroa/` eta `mobile_zerbitzaria/`)
+### 5. Mugikorreko Aplikazioak (`mobile_bezeroa_flutter/` eta `mobile_zerbitzaria_flutter/`)
 
 * **Xede-Hartzailea:**
-  * `mobile_bezeroa`: Kanpoko bezeroak (mahaian QR bidez edo etxetik eramateko eskatzeko).
-  * `mobile_zerbitzaria`: Jatetxeko zerbitzariak (haririk gabeko PDA komanderoak).
+  * `mobile_bezeroa_flutter`: Kanpoko bezeroak (mahaian QR bidez edo etxetik eramateko eskatzeko).
+  * `mobile_zerbitzaria_flutter`: Jatetxeko zerbitzariak (haririk gabeko PDA komanderoak).
 * **Teknologiak:** Flutter (Dart), Android APK konpilazioa.
-* **Zibersegurtasun Simulazio Aurreratua (`mobile_bezeroa`):**
+* **Zibersegurtasun Simulazio Aurreratua (`mobile_bezeroa_flutter`):**
   1. **PCI-DSS Maila 1 Estandarrak:** Datu sentikorrak (kreditu-txartelaren zenbakiak, CVVak) ez dira inoiz testu hutsean gordetzen; SHA-256 eta AES-256 bidezko tokenizazio kriptografikoa erabiltzen da (`tok_pci_aes256_...`).
   2. **Luhn Algoritmoa:** Kreditu txartelen zenbakien balidazio matematikoa bezeroaren gailuan bertan.
   3. **PSD2 / 3D Secure 2.0 Autentifikazioa:** SMS bidezko 6 digituko OTP autentifikazio modala banku-igorlearen segurtasuna simulatzeko.

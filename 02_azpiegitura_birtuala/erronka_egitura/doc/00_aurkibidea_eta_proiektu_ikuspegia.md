@@ -27,7 +27,7 @@ graph TD
     end
 
     subgraph DMZ_ZONE["DMZ (VLAN 20 - 192.168.20.0/24)"]
-        UBUNTU["Erronka-Ubuntu (Ubuntu 26.04)<br/>- Apache 2.4 (web_php)<br/>- ASP.NET Core API (backend_api)<br/>- MySQL 8.0 (jatetxea_db)"]
+        UBUNTU["Erronka-Ubuntu (Ubuntu 26.04)<br/>- Apache 2.4 (web_php)<br/>- ASP.NET Core API (backend_rest_api_csharp)<br/>- MySQL 8.0 (jatetxea_db)"]
     end
 
     subgraph LAN_ZONE["LAN (VLAN 10 - 192.168.10.0/24)"]
@@ -38,7 +38,7 @@ graph TD
     WAN_CLIENT -->|"Port 80/443 (HTTP/HTTPS)"| ROUTER
     ROUTER -->|"DNAT (Port Forwarding)"| UBUNTU
     WORKSTATIONS -->|"AD / DNS / DHCP"| WINSERV
-    WORKSTATIONS -->|"API Eskaerak (Port 5000 / 443)"| ROUTER
+    WORKSTATIONS -->|"API Eskaerak (DMZ/VPN: 5000; tokiko Docker ostalaria: 5050)"| ROUTER
     ROUTER -->|"Bideratua & Baimendua"| UBUNTU
     UBUNTU -.->|"ERABAT BLOKEATUTA (Drop)"| LAN_ZONE
 ```

@@ -7,6 +7,8 @@
 
 OPNsense suebakiak azpiegitura osoaren segurtasun-nukleo gisa jokatzen du. Bere zeregina da sare-eremu ezberdinen (WAN, LAN eta DMZ) arteko komunikazioak ikuskatzea, baimendutako zerbitzuak soilik igarotzen uztea eta gainerako trafiko guztia lehenespenez ukatzea (**Default Deny** printzipioa).
 
+**Portuen testuingurua:** matrize honetako `5000` urruneko Ubuntu/DMZ hedapeneko API portua da. Tokiko Docker garapenean Admin IT Zentrala `localhost:5000` da, eta APIa `localhost:5050` da (`5050:5000` mapaketa).
+
 Zibersegurtasuneko printzipio nagusi hauek aplikatzen dira:
 1. **Gutxieneko Pribilegioen Printzipioa (Least Privilege):** Behar-beharrezkoak diren atakak eta protokoloak soilik irekitzen dira.
 2. **DMZ Gunearen Isolamendu Erabatekoa:** DMZko zerbitzariek ez dute inoiz baimenik barneko LAN sarera konexiorik hasteko. DMZko zerbitzari bat konprometitua suertatuko balitz ere, erasotzaileak ezin du barne-sarera jauzi egin.

@@ -9,6 +9,8 @@ Azpiegiturak bi zerbitzari nagusi integratzen ditu, bakoitzak bere sare-eremuan 
 1. **Erronka-Ubuntu (DMZ):** Zerbitzu publiko eta aplikazioen zerbitzaria (Web, API eta DB).
 2. **Erronka-WinServer2025 (LAN):** Identitate, sare-azpiegitura eta barne kudeaketako zerbitzaria (Active Directory, DNS, DHCP, IIS).
 
+**Portuen testuingurua:** Ubuntu DMZ honetako Kestrel `localhost:5000` ezarpena urruneko VM hedapenari dagokio. Tokiko Windows/Docker konfigurazioan Admin IT Zentrala `localhost:5000` da, eta REST APIaren ostalari-ataka `localhost:5050` (`5050:5000` mapaketa).
+
 ---
 
 ### 2. Erronka-Ubuntu (DMZ Zerbitzaria)
