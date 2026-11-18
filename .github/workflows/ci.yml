@@ -58,8 +58,8 @@ jobs:
 
       - name: REST API Konpilatu
         run: |
-          dotnet restore "01_aplikazioak/backend_api/Jatetxea.Api.csproj"
-          dotnet build "01_aplikazioak/backend_api/Jatetxea.Api.csproj" -c Release --no-restore
+          dotnet restore "01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj"
+          dotnet build "01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj" -c Release --no-restore
 
   admin-it-zentrala-check:
     name: Admin IT Zentrala Zerbitzaria (.NET)
@@ -71,17 +71,35 @@ jobs:
       - name: Ezarri .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
 
       - name: Admin IT Zerbitzaria Konpilatu
         run: |
-          dotnet restore "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj"
-          dotnet build "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj" -c Release --no-restore
+          dotnet restore "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj"
+          dotnet build "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj" -c Release --no-restore
 
       - name: wwwroot Baliabideen Osotasuna Egiaztatu
         run: |
-          test -f "01_aplikazioak/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" || exit 1
+          test -f "01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/wwwroot/index.html" || exit 1
           echo "wwwroot/index.html fitxategia existitzen da eta osorik dago."
+
+  admin-javafx-check:
+    name: Admin JavaFX Kudeaketa Desktop (Java 21)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodea Eskuratu
+        uses: actions/checkout@v4
+
+      - name: Ezarri Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Maven Probak
+        run: |
+          cd 01_aplikazioak/admin/admin_desktop_java/admin_desktop_java
+          mvn -B test
 
   desktop-csharp-check:
     name: Desktop C# Windows Forms (.NET 10)
