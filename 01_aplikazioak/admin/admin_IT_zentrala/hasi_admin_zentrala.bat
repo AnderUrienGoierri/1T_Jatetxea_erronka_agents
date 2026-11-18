@@ -13,5 +13,5 @@ if not exist "%LAUNCHER%" (
     exit /b 1
 )
 
-start "" "%LAUNCHER%" --direct
+start "" "%LAUNCHER%"
 exit /b

@@ -19,61 +19,48 @@ public static class Program
     private const string TargetUrl = "http://localhost:5000";
 
     [STAThread]
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         try
         {
             string rootDir = FindProjectRoot();
             EnsureDesktopShortcut(rootDir);
 
-            // Zuzeneko irekiera modua (soilik argumentu esplizitua pasatzen bada, adibidez --direct edo --silent):
-            bool directLaunch = args.Length > 0 && (args[0] == "--direct" || args[0] == "--silent");
-
-            if (!directLaunch)
+            // 1. Atzealdean: Egiaztatu zerbitzaria (portu 5000) martxan dagoela eta ireki http://localhost:5000/
+            _ = Task.Run(async () =>
             {
-                // Erabiltzaileak exekutagarria klikatzean, BETI morroi grafikoa irekitzen da:
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new SetupWizardForm(rootDir));
-                return;
-            }
-
-            // Zuzenean ireki da (--direct): egiaztatu zerbitzaria martxan dagoen
-            bool running = await IsServerRunningAsync();
-            if (!running)
-            {
-                StartServer(rootDir);
-
-                // Itxaron zerbitzaria prest egon arte; lehen abiarazteak konpilazioa behar dezake.
-                bool ready = false;
-                for (int i = 0; i < 60; i++)
+                try
                 {
-                    await Task.Delay(1000);
-                    if (await IsServerRunningAsync())
+                    bool running = await IsServerRunningAsync();
+                    if (!running)
                     {
-                        ready = true;
-                        break;
+                        StartServer(rootDir);
+
+                        // Itxaron zerbitzaria prest egon arte
+                        for (int i = 0; i < 60; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (await IsServerRunningAsync()) break;
+                        }
                     }
-                }
 
-                if (!ready)
+                    // Ireki nabigatzailea zuzenean IT Kontrol Zentralera (http://localhost:5000/)
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = TargetUrl + "/",
+                        UseShellExecute = true
+                    });
+                }
+                catch
                 {
-                    MessageBoxW(
-                        IntPtr.Zero,
-                        "Ezin izan da IT Kontrol Zentrala (5000) abiarazi 60 segundotan.\nEgiaztatu .NET SDK eta portuaren egoera.",
-                        "1T Jatetxea - Errorea",
-                        MB_OK | MB_ICONERROR
-                    );
-                    return;
+                    // Ez oztopatu morroiaren exekuzioa
                 }
-            }
-
-            // Ireki nabigatzailea zuzenean IT Kontrol Zentralera (http://localhost:5000/)
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = TargetUrl + "/",
-                UseShellExecute = true
             });
+
+            // 2. Aldi berean: Ireki morroi grafikoa (SetupWizardForm) mahaigainean
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new SetupWizardForm(rootDir));
         }
         catch (Exception ex)
         {
@@ -251,7 +238,7 @@ public static class Program
                     rootDir,
                     iconPath,
                     "1T Jatetxea - IT Kontrol Zentrala",
-                    "--direct");
+                    "");
             }
         }
         catch

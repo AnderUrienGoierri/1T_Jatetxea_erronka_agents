@@ -8,4 +8,4 @@ if (-not (Test-Path -LiteralPath $launcher)) {
     throw "Admin IT Zentrala abiarazlea ez da aurkitu: $launcher"
 }
 
-Start-Process -FilePath $launcher -ArgumentList "--direct" -WorkingDirectory $projectRoot
+Start-Process -FilePath $launcher -WorkingDirectory $projectRoot
