@@ -23,9 +23,9 @@
 
     <modules>
         <module>../desktop_javafx_core</module>
-        <module>../../sukalde_langileak/desktop_sukaldea_kds</module>
-        <module>../../zerbitzari_langileak/desktop_barra_bds</module>
-        <module>../../biltegi_langileak/desktop_biltegia_stock</module>
+        <module>../../../sukalde_langileak/desktop_sukaldea_kds</module>
+        <module>../../../zerbitzari_langileak/desktop_barra_bds</module>
+        <module>../../../biltegi_langileak/desktop_biltegia_stock</module>
     </modules>
 
     <dependencyManagement>

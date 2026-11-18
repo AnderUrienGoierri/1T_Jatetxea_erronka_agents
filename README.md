@@ -35,9 +35,13 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 │   │   └── zerbitzaria_komandera_android/       # Android Jatetxeko Komandera Natiboa
 │   ├── biltegi_langileak/
 │   │   └── desktop_biltegia_stock/              # JavaFX (Java 17/21, Maven) Biltegiko Stock Kudeaketa
-│   ├── komunak/
-│   │   ├── desktop_javafx_parent/               # Maven Multi-Modulu Gurasoa (Parent POM)
-│   │   └── desktop_javafx_core/                 # Ereduak, API bezeroa eta kontroladore komunak (DRY)
+│   ├── admin/
+│   │   ├── admin_IT_zentrala/                   # IT Zuzendaritza & Monitorizazio Panela (ASP.NET Core 11 + Tailwind)
+│   │   ├── admin_desktop_java/                  # Jatetxeko Kudeaketa Mahaigainean (Java 21 JavaFX)
+│   │   ├── backend_rest_api_csharp/             # ASP.NET Core REST API Nagusia (Datu-basea, Autentifikazioa, CRUD)
+│   │   └── komunak/
+│   │       ├── desktop_javafx_parent/           # Maven Multi-Modulu Gurasoa (Parent POM)
+│   │       └── desktop_javafx_core/             # Ereduak, API bezeroa eta kontroladore komunak (DRY)
 │   ├── sukalde_langileak/                       # Sukaldeko langileen aplikazioak
 │   │   └── sukaldea_kds_android_tv/             # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
 │   ├── zerbitzari_langileak/                    # Zerbitzarien mahaigaineko eta mugikorreko aplikazioak

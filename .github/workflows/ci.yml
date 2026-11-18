@@ -143,7 +143,7 @@ jobs:
 
       - name: Maven Konpilazioa (Multi-Modulua)
         run: |
-          cd 01_aplikazioak/komunak/desktop_javafx_parent
+          cd 01_aplikazioak/admin/komunak/desktop_javafx_parent
           mvn -B compile test-compile
 
   web-php-check:

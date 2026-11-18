@@ -116,7 +116,7 @@ if (Test-Path $FlutterBezeroFile) {
 
 # 4. JavaFX Desktop moduluak (Sukaldea, Barra, Biltegia eta Core)
 $JavaFxDirs = @(
-    (Join-Path $AppsDir "komunak\desktop_javafx_core\src\main\resources"),
+    (Join-Path $AppsDir "admin\komunak\desktop_javafx_core\src\main\resources"),
     (Join-Path $AppsDir "sukalde_langileak\desktop_sukaldea_kds\src\main\resources"),
     (Join-Path $AppsDir "zerbitzari_langileak\desktop_barra_bds\src\main\resources"),
     (Join-Path $AppsDir "biltegi_langileak\desktop_biltegia_stock\src\main\resources")

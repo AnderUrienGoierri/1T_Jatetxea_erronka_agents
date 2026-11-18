@@ -8,7 +8,7 @@
         <groupId>eus.goierri.jatetxea</groupId>
         <artifactId>desktop-javafx-parent</artifactId>
         <version>1.0.0</version>
-        <relativePath>../../komunak/desktop_javafx_parent/pom.xml</relativePath>
+        <relativePath>../../../admin/komunak/desktop_javafx_parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>desktop-sukaldea-kds</artifactId>

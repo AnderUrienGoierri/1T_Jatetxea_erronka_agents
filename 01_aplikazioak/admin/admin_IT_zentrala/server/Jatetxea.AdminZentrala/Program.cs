@@ -867,7 +867,7 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
         "javafx" or "desktop_javafx" or "kds_javafx" or "sukaldea_kds" or "sukaldea" => Path.Combine(appsDir, "sukalde_langileak", "desktop_sukaldea_kds"),
         "barra_bds" or "barra" => Path.Combine(appsDir, "zerbitzari_langileak", "desktop_barra_bds"),
         "biltegia_stock" or "biltegia" => Path.Combine(appsDir, "biltegi_langileak", "desktop_biltegia_stock"),
-        "javafx_core" or "javafx_parent" or "komunak" => Path.Combine(appsDir, "komunak"),
+        "javafx_core" or "javafx_parent" or "komunak" => Path.Combine(appsDir, "admin", "komunak"),
         "kudeaketa_desktop_java" or "admin_desktop_java" => Path.Combine(appsDir, "admin", "admin_desktop_java"),
         "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Directory.Exists(Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter"))
             ? Path.Combine(appsDir, "bezeroak", "mobile_bezeroa_flutter")
