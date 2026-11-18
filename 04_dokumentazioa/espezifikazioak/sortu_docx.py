@@ -159,7 +159,7 @@ def sortu_docx_dokumentua():
         ("Sukaldariak", "• Sukaldeko KDS Telebista (sukaldea_kds_android_tv)\n• JavaFX Aplikazioa (desktop_javafx)", "• Android TV (Compose TV)\n• Desktop (Java 17/21, JavaFX)", "Sukaldeko pantaila handian komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta lanaldia fitxatu."),
         ("Barrakoa\n(Kutxazaina)", "• TPV Salmenta Puntua (desktop_csharp)\n• JavaFX Aplikazioa (BDS modulu)\n• Android Komandera (Mugikorra/Tableta)", "• Windows Desktop (.NET 10)\n• Desktop (JavaFX BDS)\n• Android (Mugikorra/Tableta)", "Barran zuzeneko salmentak erregistratu, edarien komandak prestatu (BDS), tiketak eta fakturak inprimatu, kontuak kobratu eta lanaldia fitxatu."),
         ("Biltegikoak", "• JavaFX Biltegia eta Stocka (desktop_javafx)\n• Odoo ERP Kudeaketa (odoo_erp)", "• Desktop (JavaFX MVC)\n• Web ERP (Odoo 17 / PostgreSQL)", "Lehengaien stock errealaren kontrola, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta lanaldia fitxatu."),
-        ("Admin IT /\nZuzendaritza", "• TI Aginte Panela (admin_IT_zentrala)\n• JavaFX Aplikazio Integratua\n• Odoo ERP Finantzak (odoo_erp)\n• Backend REST API (backend_api)", "• Web Dashboard\n• Desktop (JavaFX)\n• Odoo ERP (PostgreSQL)\n• ASP.NET Core REST API", "Azpiegitura eta zerbitzuen monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, finantza-txostenak eta segurtasun-kopiak.")
+        ("Admin IT /\nZuzendaritza", "• TI Aginte Panela (admin_IT_zentrala)\n• JavaFX Aplikazio Integratua\n• Odoo ERP Finantzak (odoo_erp)\n• Backend REST API (backend_rest_api_csharp)", "• Web Dashboard\n• Desktop (JavaFX)\n• Odoo ERP (PostgreSQL)\n• ASP.NET Core REST API", "Azpiegitura eta zerbitzuen monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, finantza-txostenak eta segurtasun-kopiak.")
     ]
 
     table = doc.add_table(rows=len(table_data), cols=4)
@@ -309,12 +309,12 @@ def sortu_docx_dokumentua():
     ])
 
     add_subsection("3.6. Administrazioa, TI eta Zuzendaritza", [
-        "• Admin IT Zentrala (01_aplikazioak/admin_IT_zentrala): Administratzaileentzako aginte-zentroa. Docker edukiontzien egoera, "
+        "• Admin IT Zentrala (01_aplikazioak/admin/admin_IT_zentrala): Administratzaileentzako aginte-zentroa. Docker edukiontzien egoera, "
         "portuen erabilgarritasuna, sare-konexioak, aplikazioen abiarazleak eta VirtualBox makina birtualen kontrol osoa biltzen ditu.",
         "• JavaFX Aplikazio Integratua (01_aplikazioak/desktop_javafx): Admin IT eta Zuzendaritzak Sukaldea (KDS), Barra (BDS) eta "
         "Biltegia (Stock) ataletarako sarbide osoa dute administratzaile baimenekin.",
         "• Odoo ERP Kudeaketa Orokorra: Zuzendaritzarentzat finantza-egoerak, nominak eta asistentzia/fitxaketa erregistroak ikuskatzeko tresna.",
-        "• Backend REST API Zentrala (01_aplikazioak/backend_api): ASP.NET Core arkitekturako zerbitzari nagusia. Segurtasun transakzionala, "
+        "• Backend REST API Zentrala (01_aplikazioak/backend_rest_api_csharp): ASP.NET Core arkitekturako zerbitzari nagusia. Segurtasun transakzionala, "
         "BCrypt pasahitzen balidazioa eta langileen fitxaketen erregistro iraunkorra bermatzen ditu."
     ])
 

@@ -17,14 +17,16 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 ├── .gitignore                                   # Biltegi garbiko iragazketa arauak (ISO, VDI, bin/obj, tokenak baztertuta)
 │
 ├── 01_aplikazioak/                              # Garatutako software ekosistema osoa
-│   ├── admin_IT_zentrala/                       # IT Kontrol Zentrala (ASP.NET Core Web zerbitzaria + WinForms Morroia)
-│   ├── backend_api/                             # ASP.NET Core (.NET 10, C#) REST API nagusia (MySQL 8.0)
+│   ├── admin/                                    # Administrazio-aplikazioak
+│   │   ├── admin_desktop_java/                   # Etorkizuneko administrazio-aplikazioa (oraindik ez garatua)
+│   │   └── admin_IT_zentrala/                    # IT Kontrol Zentrala (ASP.NET Core Web zerbitzaria + WinForms Morroia)
+│   ├── backend_rest_api_csharp/                  # ASP.NET Core (.NET 10, C#) REST API nagusia (MySQL 8.0)
 │   ├── desktop_csharp/                          # Windows Forms (.NET 10, C#) TPV / Kutxa Mahaia (Zerbitzari/Barra + Erreserbak)
 │   ├── desktop_javafx/                          # JavaFX (Java 17/21, Maven) Sukaldea (KDS), Barra (BDS) eta Stocka
 │   ├── sukaldea_kds_android_tv/                 # Jetpack Compose for TV (Android TV 14, Kotlin) Sukaldeko Telebista Adimenduna
 │   ├── web_php/                                 # Apache 2.4 + PHP 8.2 Webgune korporatiboa eta bezeroen karta publikoa
-│   ├── mobile_bezeroa/                          # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
-│   ├── mobile_zerbitzaria/                      # Flutter (Dart) Zerbitzariaren PDA mugikorra (Eskaerak mahaitik hartu)
+│   ├── mobile_bezeroa_flutter/                  # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)
+│   ├── mobile_zerbitzaria_flutter/               # Flutter (Dart) Zerbitzariaren PDA mugikorra (Eskaerak mahaitik hartu)
 │   ├── odoo_erp/                                # Odoo 17 ERP & Web Portala (Giza Baliabideak, Langileak, Kontratuak)
 │   └── txat_zerbitzaria/                        # Socket.IO / Node.js denbora errealeko barne txat zerbitzaria
 │
@@ -115,6 +117,8 @@ Proiektuak 12 software osagai nagusi biltzen ditu, bakoitzak bere ataka eta helb
 | **Barne Txat Zerbitzaria** | Komunikazioa | Node.js / Socket.IO | `http://localhost:3001` | Zerbitzarien, sukaldearen eta kudeatzaileen arteko denbora errealeko barne mezularitza. |
 | **phpMyAdmin** | MySQL Web Admin | phpMyAdmin 5.2 | `http://localhost:8081` | MySQL datu-basearen taulak, datuak eta kontsultak nabigatzailetik kudeatzeko tresna grafikoa. |
 | **Adminer** | Postgres Web Admin | Adminer Latest | `http://localhost:8082` | PostgreSQL datu-basearen (Odoo DB) kudeaketa grafikoa web bidez. |
+
+**Portuen arau finkoa (tokiko garapena):** Admin IT Zentrala `http://localhost:5000/` da; Backend REST APIa `http://localhost:5050/` da. Docker barruko API ataka 5000 da, baina ostalariko `5050:5000` mapaketak APIa 5050ean uzten du. Ez aldatu bi helbide horien rola.
 
 ---
 

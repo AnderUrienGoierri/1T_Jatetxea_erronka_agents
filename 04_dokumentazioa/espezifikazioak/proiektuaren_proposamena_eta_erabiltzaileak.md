@@ -27,7 +27,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 | **Sukaldariak** | Sukaldeko KDS Telebista (`sukaldea_kds_android_tv`)<br>JavaFX Aplikazioa (`desktop_javafx` - KDS Modulua) | Android TV (Jetpack Compose)<br>Desktop (Java 17/21, JavaFX) | Sukaldeko pantailan komandak denbora errealean jaso, plateren egoerak eguneratu (Zai, Martxan, Eginda), lehengaiak kontrolatu eta **lanaldia fitxatu**. |
 | **Barrakoa (Kutxazaina)** | TPV Salmenta Puntua (`desktop_csharp`)<br>JavaFX Aplikazioa (`desktop_javafx` - BDS)<br>Android App (`zerbitzaria_komandera_android`) | Windows Desktop (.NET 10)<br>Desktop (JavaFX BDS)<br>Android (Mugikorra + Tableta) | Barran salmentak erregistratu, edarien komandak prestatu (BDS), tiketak/fakturak inprimatu, kontuak kobratu, mugikorrean komandak jaso eta **lanaldia fitxatu**. |
 | **Biltegikoak** | JavaFX Aplikazioa (`desktop_javafx` - Biltegia/Stock)<br>ERP Kudeaketa (`odoo_erp`) | Desktop (JavaFX)<br>Web ERP (Odoo 17 / PostgreSQL) | Lehengaien stocka kontrolatu, gutxieneko stock alertak aztertu, hornitzaileen albaranak jaso, erosketa-zerrendak kudeatu eta **lanaldia fitxatu**. |
-| **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Aplikazioa (`desktop_javafx`)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_api`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, txostenak eta segurtasun-kopiak. |
+| **Admin IT / Zuzendaritza** | TI Panela (`admin_IT_zentrala`)<br>JavaFX Aplikazioa (`desktop_javafx`)<br>ERP / Finantzak (`odoo_erp`)<br>Zentral API (`backend_rest_api_csharp`) | Web Dashboard<br>Desktop (JavaFX)<br>Odoo ERP (PostgreSQL)<br>ASP.NET Core REST API | Zerbitzuen eta azpiegituraren monitorizazioa, langileen login eta baimenak (RBAC/PINak), asistentzia eta fitxaketen ikuskaritza, txostenak eta segurtasun-kopiak. |
 
 ---
 
@@ -62,10 +62,10 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 
 ### 3.6. Administrazioa, TI eta Zuzendaritza
 
-- **Admin IT Zentrala (`01_aplikazioak/admin_IT_zentrala`):** Sistemaren administratzaileentzako aginte-zentroa. Docker zerbitzuen, ataken, sare-interfazearen, aplikazioen abiarazleen, langileen fitxaketen ikuskaritzaren eta VirtualBox makina birtualen kontrol osoa eskaintzen du.
+- **Admin IT Zentrala (`01_aplikazioak/admin/admin_IT_zentrala`):** Sistemaren administratzaileentzako aginte-zentroa. Docker zerbitzuen, ataken, sare-interfazearen, aplikazioen abiarazleen, langileen fitxaketen ikuskaritzaren eta VirtualBox makina birtualen kontrol osoa eskaintzen du.
 - **JavaFX Aplikazio Integratua (`01_aplikazioak/desktop_javafx`):** Admin IT eta Zuzendaritzak sarbide osoa dute Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) moduluetara saio-hasiera bakarretik PIN bidez.
 - **Odoo ERP (`01_aplikazioak/odoo_erp`):** Zuzendaritzarentzat finantzak, langileen nominak, asistentzia-erregistroak (fitxaketak) eta txosten ekonomiko globalak aztertzeko tresna.
-- **Backend REST API Zentrala (`01_aplikazioak/backend_api`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die, fitxaketen erregistroa barne.
+- **Backend REST API Zentrala (`01_aplikazioak/backend_rest_api_csharp`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die, fitxaketen erregistroa barne.
 
 ---
 
