@@ -3,6 +3,12 @@
 
 **1T Jatetxea IT Kontrol Zentrala** jatetxearen sistema osoa monitorizatu, kontrolatu eta kudeatzeko garatutako kontrol-panela da. Portatilean, mahaigainean zein WiFi bidez konektatutako mugikor edo tabletetan erabil daiteke.
 
+### Portuen arau finkoa
+
+- **Admin IT Zentrala:** `http://localhost:5000/`
+- **Backend REST APIa:** `http://localhost:5050/`
+- Docker sarearen barruan APIak 5000 erabiltzen du; ostalariko 5050 portura `5050:5000` mapatzen da.
+
 ---
 
 ## 1. Taldea eta Baimenak (IT Administradoreak)
@@ -28,7 +34,8 @@ Aplikazioak ekintza bakoitza nork egin duen erregistratzen du (auditoretza log-a
    - Klik bakarreko abiarazte ixila (`headless`) eta itzaltze segurua (`ACPI powerbutton`).
 3. **Sareko Portuen Osasuna (TCP Health Check):**
    - Ataka kritikoen egiaztapen automatikoa 5 segundoro:
-     * Port 5000: ASP.NET Core API
+     * Port 5000: Admin IT Zentrala
+     * Port 5050: Backend REST API
      * Port 3308: MySQL Datu-basea
      * Port 8085: Web PHP ataria
      * Port 3001: Barne Txat zerbitzaria
@@ -50,10 +57,10 @@ Aplikazioak ekintza bakoitza nork egin duen erregistratzen du (auditoretza log-a
 ## 3. Nola Abiarazi eta Erabili
 
 ### 3.1. Ordenagailuan (Desktop)
-1. Egin klik bikoitza [hasi_admin_zentrala.bat](file:///C:/Dev/GoierriEskola/2_maila/1T_Jatxetxea_Erronka/admin_IT_zentrala/hasi_admin_zentrala.bat) fitxategian (edo PowerShell-etik: `.\hasi_admin_zentrala.ps1`).
+1. Egin klik bikoitza [hasi_admin_zentrala.bat](./hasi_admin_zentrala.bat) fitxategian (edo PowerShell-etik: `.\hasi_admin_zentrala.ps1`).
 2. Zerbitzaria martxan jarriko da eta automatikoki irekiko du panela zure nabigatzailean:
    ```
-   http://localhost:5050
+   http://localhost:5000
    ```
 
 ### 3.2. Mugikorrean edo Tabletan (WiFi)
@@ -61,7 +68,7 @@ Aplikazioak ekintza bakoitza nork egin duen erregistratzen du (auditoretza log-a
 2. Eramangarriaren IP lokala aurkitu (`ipconfig` bidez, adib. `192.168.10.100` edo `192.168.1.50`).
 3. Ireki mugikorreko edo tabletako nabigatzailea eta sartu:
    ```
-   http://[ZURE-PORTATILAREN-IP-A]:5050
+   http://[ZURE-PORTATILAREN-IP-A]:5000
    ```
 4. Panela guztiz sentikorra (responsive) da eta mugikorreko zein tabletako pantailara egokitzen da.
 

@@ -44,7 +44,7 @@ if (!File.Exists(Path.Combine(projectRoot, "docker-compose.yml")))
     projectRoot = LocateProjectRoot(AppContext.BaseDirectory);
 }
 
-string webRootCandidate = Path.Combine(projectRoot, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "wwwroot");
+string webRootCandidate = Path.Combine(projectRoot, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "wwwroot");
 if (Directory.Exists(webRootCandidate))
 {
     builder.Environment.WebRootPath = webRootCandidate;
@@ -66,7 +66,7 @@ app.MapGet("/", async (HttpContext context) =>
     string indexPath = Path.Combine(app.Environment.WebRootPath ?? "", "index.html");
     if (!File.Exists(indexPath))
     {
-        indexPath = Path.Combine(projectRoot, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "wwwroot", "index.html");
+        indexPath = Path.Combine(projectRoot, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "wwwroot", "index.html");
     }
     if (!File.Exists(indexPath))
     {
@@ -619,12 +619,13 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api":
         case "jatetxea-api":
         case "backend_api":
+        case "backend_rest_api_csharp":
         case "swagger":
             // 1. REST APIa bakarrik abiarazi Dockerren (datu-basea itzalita badago ere martxan jartzeko)
             _ = RunCommandAsync("docker", "compose up -d --no-deps jatetxea-api", dockerDir);
 
             // 2. Kontsolako terminal-leiho erreala abiarazi zuzenean logak bistaratzeko
-            string apiDir = Path.Combine(appsDir, "backend_api");
+            string apiDir = Path.Combine(appsDir, "backend_rest_api_csharp");
             string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
 
             if (File.Exists(batPath))
@@ -637,7 +638,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api_terminal":
         case "api_logs":
         case "api_console":
-            string apiDirTerm = Path.Combine(appsDir, "backend_api");
+            string apiDirTerm = Path.Combine(appsDir, "backend_rest_api_csharp");
             string ps1PathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.ps1");
             string batPathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.bat");
 
@@ -735,6 +736,17 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             }
             return Results.Ok(new { Success = false, Message = "Ez da hasi_tpv_mahaigaina.bat edo Jatetxea.Desktop.exe aurkitu." });
 
+        case "kudeaketa_desktop_java":
+        case "admin_desktop_java":
+            string managerJavaDir = Path.Combine(appsDir, "admin", "admin_desktop_java", "admin_desktop_java");
+            string managerJavaLauncher = Path.Combine(managerJavaDir, "hasi_kudeaketa_mahaigaina.bat");
+            if (File.Exists(managerJavaLauncher))
+            {
+                LaunchInteractiveProcess(managerJavaLauncher, "", managerJavaDir);
+                return Results.Ok(new { Success = true, IsUrl = false, Message = "Jatetxeko Kudeaketa JavaFX abiarazten..." });
+            }
+            return Results.BadRequest(new { Success = false, Message = "Kudeaketa JavaFX abiarazlea ez da aurkitu." });
+
         case "javafx":
         case "desktop_javafx":
         case "kds_javafx":
@@ -784,8 +796,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             return Results.Ok(new { Success = false, Message = "JavaFX proiektua ez da aurkitu." });
 
         case "mobile_bezeroa":
+        case "mobile_bezeroa_flutter":
         case "flutter_bezeroa":
-            string bezeroaDir = Path.Combine(appsDir, "mobile_bezeroa");
+            string bezeroaDir = Path.Combine(appsDir, "mobile_bezeroa_flutter");
             if (Directory.Exists(bezeroaDir))
             {
                 Process.Start(new ProcessStartInfo
@@ -797,11 +810,12 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 });
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "Flutter Bezero Mugikorra (Chrome Web moduan) abiarazten..." });
             }
-            return Results.Ok(new { Success = false, Message = "mobile_bezeroa karpeta ez da aurkitu." });
+            return Results.Ok(new { Success = false, Message = "mobile_bezeroa_flutter karpeta ez da aurkitu." });
 
         case "mobile_zerbitzaria":
+        case "mobile_zerbitzaria_flutter":
         case "flutter_zerbitzaria":
-            string zerbitzariaDir = Path.Combine(appsDir, "mobile_zerbitzaria");
+            string zerbitzariaDir = Path.Combine(appsDir, "mobile_zerbitzaria_flutter");
             if (Directory.Exists(zerbitzariaDir))
             {
                 Process.Start(new ProcessStartInfo
@@ -813,7 +827,7 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 });
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "Flutter Zerbitzari Komandera (Chrome Web moduan) abiarazten..." });
             }
-            return Results.Ok(new { Success = false, Message = "mobile_zerbitzaria karpeta ez da aurkitu." });
+            return Results.Ok(new { Success = false, Message = "mobile_zerbitzaria_flutter karpeta ez da aurkitu." });
 
         case "admin_mobile":
         case "mobile_admin":
@@ -850,15 +864,16 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
     {
         "csharp" or "desktop_csharp" or "tpv" => Path.Combine(appsDir, "desktop_csharp"),
         "javafx" or "desktop_javafx" or "kds_javafx" => Path.Combine(appsDir, "desktop_javafx"),
-        "mobile_bezeroa" or "flutter_bezeroa" => Path.Combine(appsDir, "mobile_bezeroa"),
-        "mobile_zerbitzaria" or "flutter_zerbitzaria" => Path.Combine(appsDir, "mobile_zerbitzaria"),
+        "kudeaketa_desktop_java" or "admin_desktop_java" => Path.Combine(appsDir, "admin", "admin_desktop_java"),
+        "mobile_bezeroa" or "mobile_bezeroa_flutter" or "flutter_bezeroa" => Path.Combine(appsDir, "mobile_bezeroa_flutter"),
+        "mobile_zerbitzaria" or "mobile_zerbitzaria_flutter" or "flutter_zerbitzaria" => Path.Combine(appsDir, "mobile_zerbitzaria_flutter"),
         "android_tv" or "sukaldea_kds_android_tv" => Path.Combine(appsDir, "sukaldea_kds_android_tv"),
         "zerbitzaria_android" or "zerbitzaria_komandera_android" or "komandera_android" => Path.Combine(appsDir, "zerbitzaria_komandera_android"),
         "web" or "web_php" => Path.Combine(appsDir, "web_php"),
         "odoo" or "odoo_erp" => Path.Combine(appsDir, "odoo_erp"),
-        "api" or "backend_api" => Path.Combine(appsDir, "backend_api"),
-        "admin_mobile" or "mobile_admin" => Path.Combine(appsDir, "admin_IT_zentrala", "mobile_android"),
-        "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin_IT_zentrala"),
+        "api" or "backend_api" or "backend_rest_api_csharp" => Path.Combine(appsDir, "backend_rest_api_csharp"),
+        "admin_mobile" or "mobile_admin" => Path.Combine(appsDir, "admin", "admin_IT_zentrala", "mobile_android"),
+        "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin", "admin_IT_zentrala"),
         _ => Path.Combine(appsDir, appId)
     };
 
@@ -1269,6 +1284,7 @@ app.MapGet("/api/apps/status", async (IHttpClientFactory httpClientFactory, Canc
     {
         BuildStatus("csharp_tpv", "C# TPV Areto & Kutxazaina", HasRecentActivity("csharp_tpv"), true, ""),
         BuildStatus("javafx_kds", "JavaFX Sukaldea, Barra & Biltegia", HasRecentActivity("javafx_kds"), true, ""),
+        BuildStatus("kudeaketa_desktop_java", "Jatetxeko Kudeaketa (JavaFX)", HasRecentActivity("kudeaketa_desktop_java"), true, ""),
         BuildStatus("web_php", "Web PHP Frontend Publikoa", webOnline, true, ""),
         BuildStatus("mobile_bezeroa", "Flutter Bezeroa", HasRecentActivity("mobile_bezeroa"), true, ""),
         BuildStatus("mobile_zerbitzaria", "Flutter Zerbitzaria", HasRecentActivity("mobile_zerbitzaria"), true, ""),

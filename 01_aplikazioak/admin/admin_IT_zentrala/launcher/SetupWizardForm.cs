@@ -218,7 +218,7 @@ public class SetupWizardForm : Form
                 "3. DOCKER IRUDIAK ETA EDUKIONTZIAK:\n" +
                 "   - MySQL 8.0, PostgreSQL, phpMyAdmin, Adminer, Web PHP, Txat Node.js, Sukaldea TV eta Odoo 17 prestatu.\n\n" +
                 "4. .NET REST API NAGUSIA:\n" +
-                "   - C# backend_api proiektuaren mendekotasunak leheneratu eta eraikitzen dira.\n\n" +
+                "   - C# backend_rest_api_csharp proiektuaren mendekotasunak leheneratu eta eraikitzen dira.\n\n" +
                 "5. IT KONTROL ZENTRALA (ADMIN):\n" +
                 "   - Kudeaketa zentroa eta zerbitzuen kontrolatzailea konpilatu eta prest uzten dira.\n\n" +
                 "6. MAHAIGAINERAKO LASTERBIDEA:\n" +
@@ -507,17 +507,17 @@ public class SetupWizardForm : Form
                 // -------------------------------------------------------------
                 // 4. URRATSA: C# REST API Nagusia konpilatu
                 // -------------------------------------------------------------
-                UpdateProgress(70, "4/6 Urratsa: C# REST API Nagusia (.NET) eraikitzen...", "backend_api proiektuaren konpilazioa");
+                UpdateProgress(70, "4/6 Urratsa: C# REST API Nagusia (.NET) eraikitzen...", "backend_rest_api_csharp proiektuaren konpilazioa");
                 AppendLog("\n>>> 4/6 URRATSA: C# REST API Nagusia leheneratzen eta konpilatzen...");
 
-                string apiProj = Path.Combine(_rootDir, "01_aplikazioak", "backend_api", "Jatetxea.BackendApi.csproj");
+                string apiProj = Path.Combine(_rootDir, "01_aplikazioak", "backend_rest_api_csharp", "Jatetxea.Api.csproj");
                 if (File.Exists(apiProj))
                 {
                     await RunCmdAsync("dotnet", $"build \"{apiProj}\" -c Release", Path.GetDirectoryName(apiProj)!);
                 }
                 else
                 {
-                    AppendLog("[OHARRA]: backend_api proiektua ez da aurkitu bide horretan: " + apiProj);
+                    AppendLog("[OHARRA]: backend_rest_api_csharp proiektua ez da aurkitu bide horretan: " + apiProj);
                 }
 
                 // -------------------------------------------------------------
@@ -526,7 +526,7 @@ public class SetupWizardForm : Form
                 UpdateProgress(85, "5/6 Urratsa: IT Kontrol Zentrala (5000) eraikitzen...", "Admin Zentralaren konpilazioa");
                 AppendLog("\n>>> 5/6 URRATSA: IT Kontrol Zentralaren zerbitzaria eraikitzen...");
 
-                string serverProj = Path.Combine(_rootDir, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "Jatetxea.AdminZentrala.csproj");
+                string serverProj = Path.Combine(_rootDir, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala", "Jatetxea.AdminZentrala.csproj");
                 if (File.Exists(serverProj))
                 {
                     await RunCmdAsync("dotnet", $"build \"{serverProj}\" -c Release", Path.GetDirectoryName(serverProj)!);
@@ -744,7 +744,7 @@ public class SetupWizardForm : Form
     {
         try
         {
-            string serverDir = Path.Combine(_rootDir, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
+            string serverDir = Path.Combine(_rootDir, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
             string projPath = Path.Combine(serverDir, "Jatetxea.AdminZentrala.csproj");
             string dllRelease = Path.Combine(serverDir, "bin", "Release", "net11.0", "Jatetxea.AdminZentrala.dll");
             string dllDebug = Path.Combine(serverDir, "bin", "Debug", "net11.0", "Jatetxea.AdminZentrala.dll");

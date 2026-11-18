@@ -44,11 +44,11 @@ public static class Program
             {
                 StartServer(rootDir);
 
-                // Polling: itxaron zerbitzaria erantzuteko prest egon arte (gehienez 15 segundu)
+                // Itxaron zerbitzaria prest egon arte; lehen abiarazteak konpilazioa behar dezake.
                 bool ready = false;
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < 60; i++)
                 {
-                    await Task.Delay(300);
+                    await Task.Delay(1000);
                     if (await IsServerRunningAsync())
                     {
                         ready = true;
@@ -60,7 +60,7 @@ public static class Program
                 {
                     MessageBoxW(
                         IntPtr.Zero,
-                        "Ezin izan da IT Kontrol Zentrala (5000) abiarazi 15 segundotan.\nEgiaztatu .NET SDK eta portuaren egoera.",
+                        "Ezin izan da IT Kontrol Zentrala (5000) abiarazi 60 segundotan.\nEgiaztatu .NET SDK eta portuaren egoera.",
                         "1T Jatetxea - Errorea",
                         MB_OK | MB_ICONERROR
                     );
@@ -145,8 +145,8 @@ public static class Program
         string markerPath = Path.Combine(rootDir, "konfigurazioa_amaituta.json");
         if (File.Exists(markerPath)) return true;
 
-        string serverDir = Path.Combine(rootDir, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
-        string apiDir = Path.Combine(rootDir, "01_aplikazioak", "backend_api");
+        string serverDir = Path.Combine(rootDir, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
+        string apiDir = Path.Combine(rootDir, "01_aplikazioak", "backend_rest_api_csharp");
 
         bool hasAdminDll =
             File.Exists(Path.Combine(serverDir, "bin", "Release", "net11.0", "Jatetxea.AdminZentrala.dll")) ||
@@ -184,8 +184,13 @@ public static class Program
         try
         {
             using var client = new HttpClient { Timeout = TimeSpan.FromMilliseconds(500) };
-            var res = await client.GetAsync(TargetUrl);
-            return res.IsSuccessStatusCode;
+            using var res = await client.GetAsync(TargetUrl + "/health");
+            if (!res.IsSuccessStatusCode) return false;
+
+            using var document = System.Text.Json.JsonDocument.Parse(
+                await res.Content.ReadAsStringAsync());
+            return document.RootElement.TryGetProperty("app", out var appName) &&
+                   appName.GetString() == "Admin IT Zentrala";
         }
         catch
         {
@@ -195,7 +200,7 @@ public static class Program
 
     private static void StartServer(string rootDir)
     {
-        string serverDir = Path.Combine(rootDir, "01_aplikazioak", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
+        string serverDir = Path.Combine(rootDir, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
         string projPath = Path.Combine(serverDir, "Jatetxea.AdminZentrala.csproj");
         string dllRelease = Path.Combine(serverDir, "bin", "Release", "net11.0", "Jatetxea.AdminZentrala.dll");
         string dllDebug = Path.Combine(serverDir, "bin", "Debug", "net11.0", "Jatetxea.AdminZentrala.dll");
@@ -203,15 +208,15 @@ public static class Program
         string args;
         if (File.Exists(dllRelease))
         {
-            args = $"\"{dllRelease}\" --urls \"{TargetUrl}\"";
+            args = $"\"{dllRelease}\"";
         }
         else if (File.Exists(dllDebug))
         {
-            args = $"\"{dllDebug}\" --urls \"{TargetUrl}\"";
+            args = $"\"{dllDebug}\"";
         }
         else
         {
-            args = $"run --project \"{projPath}\" --urls \"{TargetUrl}\"";
+            args = $"run --project \"{projPath}\" --no-launch-profile";
         }
 
         string dotnetPath = File.Exists(@"C:\Program Files\dotnet\dotnet.exe") ? @"C:\Program Files\dotnet\dotnet.exe" : "dotnet";
@@ -236,9 +241,15 @@ public static class Program
             string targetExe = Path.Combine(rootDir, "Admin_IT_Zentrala.exe");
             string iconPath = Path.Combine(rootDir, "admin_it_zentrala.ico");
 
-            if (!File.Exists(shortcutPath) && File.Exists(targetExe))
+            if (File.Exists(targetExe))
             {
-                CreateShortcut(shortcutPath, targetExe, rootDir, iconPath, "1T Jatetxea - IT Kontrol Zentrala");
+                CreateShortcut(
+                    shortcutPath,
+                    targetExe,
+                    rootDir,
+                    iconPath,
+                    "1T Jatetxea - IT Kontrol Zentrala",
+                    "--direct");
             }
         }
         catch
@@ -247,7 +258,13 @@ public static class Program
         }
     }
 
-    private static void CreateShortcut(string shortcutPath, string targetPath, string workingDir, string iconPath, string description)
+    private static void CreateShortcut(
+        string shortcutPath,
+        string targetPath,
+        string workingDir,
+        string iconPath,
+        string description,
+        string arguments)
     {
         Type? shellType = Type.GetTypeFromProgID("WScript.Shell");
         if (shellType == null) return;
@@ -257,6 +274,7 @@ public static class Program
 
         dynamic shortcut = shell.CreateShortcut(shortcutPath);
         shortcut.TargetPath = targetPath;
+        shortcut.Arguments = arguments;
         shortcut.WorkingDirectory = workingDir;
         shortcut.Description = description;
         if (File.Exists(iconPath))
