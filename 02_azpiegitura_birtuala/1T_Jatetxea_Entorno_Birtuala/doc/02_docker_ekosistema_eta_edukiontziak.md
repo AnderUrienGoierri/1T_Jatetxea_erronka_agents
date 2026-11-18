@@ -31,7 +31,7 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 ### 2. `jatetxea-api` (C# ASP.NET Core .NET 10)
 
 - **Karpeta:** `02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile`
-- **Iturburua:** `01_aplikazioak/backend_api/`
+- **Iturburua:** `01_aplikazioak/backend_rest_api_csharp/`
 - **Eraikuntza:** Multi-stage build eredu profesionala (SDK-arekin eraiki eta garbi argitaratu runtime arin batean).
 - **Segurtasuna:** `jatetxea_user` erabiltzaile ez-pribilegiatuarekin exekutatzen da edukiontzi barruan.
 - **Osasun-kontrola:** `/health` endpoint-a integratuta, MySQL konexioaren egoera denbora errealean egiaztatzeko.

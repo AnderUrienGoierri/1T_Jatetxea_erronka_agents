@@ -28,8 +28,8 @@ Aplikazio bezeroek (Flutter mugikorreko aplikazioak, JavaFX mahaigaineko KDSak, 
    - **`vbox_erronka`:** VirtualBox-eko 3 makina birtualen ingurunea (`192.168.10.10`).
    - **`custom`:** Edozein IP helbide pertsonalizatu idazteko aukera.
 3. Behin profila hautatuta, **klik bakarrean** sinkronizatzen du IP helbide berria monorepoko bezero guztietan:
-   - `01_aplikazioak/mobile_zerbitzaria` (Flutter zerbitzarien komandera).
-   - `01_aplikazioak/mobile_bezeroa` (Flutter bezeroen aplikazioa).
+   - `01_aplikazioak/mobile_zerbitzaria_flutter` (Flutter zerbitzarien komandera).
+   - `01_aplikazioak/mobile_bezeroa_flutter` (Flutter bezeroen aplikazioa).
    - `01_aplikazioak/desktop_javafx` (Sukaldea, Barra eta Biltegia).
    - `01_aplikazioak/desktop_csharp` (TPV Windows Forms).
    - `01_aplikazioak/web_php` (PHP 8.4 Frontend publikoa).
@@ -62,8 +62,8 @@ Uneko ordenagailuan detektatutako sare helbideak:
   - Wi-Fi: 192.168.1.129
 
 Aplikazio guztiak helbide honetara sinkronizatzen: http://192.168.1.129:5050/api/v1 ...
-  [OK] Flutter Zerbitzaria eguneratua: 01_aplikazioak\mobile_zerbitzaria\lib\services\api_service.dart
-  [OK] Flutter Bezeroa eguneratua:     01_aplikazioak\mobile_bezeroa\lib\services\api_service.dart
+  [OK] Flutter Zerbitzaria eguneratua: 01_aplikazioak\mobile_zerbitzaria_flutter\lib\services\api_service.dart
+  [OK] Flutter Bezeroa eguneratua:     01_aplikazioak\mobile_bezeroa_flutter\lib\services\api_service.dart
   [OK] JavaFX Desktop eguneratua:      01_aplikazioak\desktop_javafx\src\main\resources\api.properties
   [OK] C# Desktop TPV eguneratua:      01_aplikazioak\desktop_csharp\appsettings.json
   [OK] Web PHP Frontend eguneratua:    01_aplikazioak\web_php\.env

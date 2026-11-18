@@ -87,8 +87,11 @@ Zerbitzu guztiak erantzuten ari direla egiaztatzeko:
 | Zerbitzua | Portua | Helbidea (Localhost) | Helbidea (Sare Lokalean) |
 | :--- | :--- | :--- | :--- |
 | **MySQL Datu-Basea** | `3308` | `localhost:3308` | `<IP>:3308` |
-| **ASP.NET Core REST API** | `5000` | `http://localhost:5000/api/v1` | `http://<IP>:5000/api/v1` |
+| **Admin IT Zentrala** | `5000` | `http://localhost:5000/` | `http://<IP>:5000/` |
+| **ASP.NET Core REST API** | `5050` (ostalaria) / `5000` (Docker barrukoa) | `http://localhost:5050/api/v1` | `http://<IP>:5050/api/v1` |
 | **Web PHP Publikoa** | `8085` | `http://localhost:8085` | `http://<IP>:8085` |
 | **Barne Txat Zerbitzaria** | `3001` | `http://localhost:3001` | `http://<IP>:3001` |
 | **Sukaldea KDS Android TV** | `8086` | `http://localhost:8086` | `http://<IP>:8086` |
 | **Odoo 17 ERP (Kudeaketa)** | `8069` | `http://localhost:8069` | `http://<IP>:8069` |
+
+**Ez nahastu portuak:** 5000 Admin IT Zentrala da beti tokiko ostalarian. REST APIaren ostalariko ataka 5050 da; Compose-k `5050:5000` mapatzen du (ezkerrekoa ostalaria, eskuinekoa edukiontzia).

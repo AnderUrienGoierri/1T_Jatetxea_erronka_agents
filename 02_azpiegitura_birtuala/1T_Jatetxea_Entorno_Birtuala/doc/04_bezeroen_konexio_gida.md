@@ -16,7 +16,7 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   |      Gailua: Ukipen-pantaila edo kutxako PCa (Windows).
   |      Funtzioa: Mahaien egoerak ikusi, komandak sortu, kontuak kobratu.
   |
-  +--> 2. Zerbitzarien Mugikorra / Tableta (Flutter `01_aplikazioak/mobile_zerbitzaria`)
+  +--> 2. Zerbitzarien Mugikorra / Tableta (Flutter `01_aplikazioak/mobile_zerbitzaria_flutter`)
   |      Erabiltzaileak: Jangelako zerbitzariak.
   |      Gailua: Android / iOS tableta edo smartphone-a.
   |      Funtzioa: Mahai ondoan komandak hartu eta sukaldera zuzenean bidali.
@@ -36,12 +36,12 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   |      Gailua: Nabigatzailea (mugikorra edo PCa).
   |      Funtzioa: Karta ikusi, prezioak kontsultatu, mahaiak erreserbatu.
   |
-  +--> 6. Bezeroaren Mugikorreko App-a (Flutter `01_aplikazioak/mobile_bezeroa`)
+  +--> 6. Bezeroaren Mugikorreko App-a (Flutter `01_aplikazioak/mobile_bezeroa_flutter`)
   |      Erabiltzaileak: Bezero erregistratuak.
   |      Gailua: Mugikor pertsonala.
   |      Funtzioa: Erreserbak kudeatu, platerak eskatu, iritziak utzi.
   |
-  +--> 7. Admin IT Zentrala (`01_aplikazioak/admin_IT_zentrala`)
+  +--> 7. Admin IT Zentrala (`01_aplikazioak/admin/admin_IT_zentrala`)
   |      Erabiltzaileak: IT Administratzailea eta Zerbitzari Burua.
   |      Gailua: Web panela (Portu 5000) eta Android Mugikorra (Jetpack Compose).
   |      Funtzioa: Docker zerbitzuak, sare portuak eta fluxu koordinatua kudeatzea.
@@ -87,23 +87,23 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
   - `Barra (BDS)`: Edariak eta kafeak kudeatu.
   - `Biltegia (Stocka)`: Lehengaien stock maila eta albaranen sarrerak.
 
-### 3. Flutter Zerbitzaria (`mobile_zerbitzaria`)
+### 3. Flutter Zerbitzaria (`mobile_zerbitzaria_flutter`)
 
-- **Kokapena:** `01_aplikazioak/mobile_zerbitzaria`
+- **Kokapena:** `01_aplikazioak/mobile_zerbitzaria_flutter`
 - **Abioa:**
 
   ```powershell
-  cd 01_aplikazioak\mobile_zerbitzaria
+  cd 01_aplikazioak\mobile_zerbitzaria_flutter
   flutter run
   ```
 
-### 4. Flutter Bezeroa (`mobile_bezeroa`)
+### 4. Flutter Bezeroa (`mobile_bezeroa_flutter`)
 
-- **Kokapena:** `01_aplikazioak/mobile_bezeroa`
+- **Kokapena:** `01_aplikazioak/mobile_bezeroa_flutter`
 - **Abioa:**
 
   ```powershell
-  cd 01_aplikazioak\mobile_bezeroa
+  cd 01_aplikazioak\mobile_bezeroa_flutter
   flutter run
   ```
 
@@ -121,9 +121,9 @@ Jatetxearen soluzioak bezero-mota anitz ditu, bakoitza bere rol eta gailu espezi
 
 ### 7. Admin IT Zentrala (`admin_IT_zentrala`)
 
-- **Kokapena:** `01_aplikazioak/admin_IT_zentrala`
+- **Kokapena:** `01_aplikazioak/admin/admin_IT_zentrala`
 - **Web Panela:** `http://localhost:5000`
-- **Android Aplikazioa:** `01_aplikazioak/admin_IT_zentrala/mobile_android` (Android Studio edo `./gradlew installDebug`)
+- **Android Aplikazioa:** `01_aplikazioak/admin/admin_IT_zentrala/mobile_android` (Android Studio edo `./gradlew installDebug`)
 
 ### 8. Odoo 17 ERP (`odoo_erp`)
 
