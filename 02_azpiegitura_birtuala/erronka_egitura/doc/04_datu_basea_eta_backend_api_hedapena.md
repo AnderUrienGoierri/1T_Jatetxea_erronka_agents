@@ -97,7 +97,7 @@ APIa C# .NET 10-en eraikita dago eta Ubuntu zerbitzarian daemon/zerbitzu iraunko
 #### 3.1. APIaren Argitalpena (Publish):
 Proiektuaren iturburu-kodetik fitxategi bitarrak konpilatu eta ekoizpen karpetara ateratzen dira:
 ```bash
-cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\01_aplikazioak\backend_rest_api_csharp
+cd C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\01_aplikazioak\admin\backend_rest_api_csharp
 dotnet publish -c Release -o /var/www/jatetxea_api
 ```
 

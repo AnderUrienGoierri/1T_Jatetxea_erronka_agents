@@ -7,7 +7,7 @@ Agente honek **ASP.NET Core REST API nagusia** eta **MySQL 8.0 datu-basearen art
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_01`
-- **Ardurapeko Proiektua:** `01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj`
+- **Ardurapeko Proiektua:** `01_aplikazioak/admin/backend_rest_api_csharp/Jatetxea.Api.csproj`
 - **Exekuzio Ingurunea:** Docker edukiontzia (`jatetxea_api`) edo lokala (.NET 10).
 - **Ataka Finko Bakarra:** `5050` (debekatuta dago 5000 ataka erabiltzea).
 - **Datu-Basea:** MySQL 8.0 InnoDB (`jatetxea_mysql:3308` edo `localhost:3308`).
@@ -44,7 +44,7 @@ APIaren osotasuna egiaztatzeko aginduak:
 
 ```powershell
 # 1. Konpilazio garbia
-dotnet build "01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj" -c Release
+dotnet build "01_aplikazioak/admin/backend_rest_api_csharp/Jatetxea.Api.csproj" -c Release
 
 # 2. APIaren erro-egoera egiaztatu
 Invoke-RestMethod -Uri "http://localhost:5050/" -Method Get

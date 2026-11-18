@@ -510,7 +510,9 @@ public class SetupWizardForm : Form
                 UpdateProgress(70, "4/6 Urratsa: C# REST API Nagusia (.NET) eraikitzen...", "backend_rest_api_csharp proiektuaren konpilazioa");
                 AppendLog("\n>>> 4/6 URRATSA: C# REST API Nagusia leheneratzen eta konpilatzen...");
 
-                string apiProj = Path.Combine(_rootDir, "01_aplikazioak", "backend_rest_api_csharp", "Jatetxea.Api.csproj");
+                string apiProj = Directory.Exists(Path.Combine(_rootDir, "01_aplikazioak", "admin", "backend_rest_api_csharp"))
+                    ? Path.Combine(_rootDir, "01_aplikazioak", "admin", "backend_rest_api_csharp", "Jatetxea.Api.csproj")
+                    : Path.Combine(_rootDir, "01_aplikazioak", "backend_rest_api_csharp", "Jatetxea.Api.csproj");
                 if (File.Exists(apiProj))
                 {
                     await RunCmdAsync("dotnet", $"build \"{apiProj}\" -c Release", Path.GetDirectoryName(apiProj)!);

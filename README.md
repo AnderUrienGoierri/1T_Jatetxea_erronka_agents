@@ -20,8 +20,8 @@ Proiektu honek jatetxe-kudeaketarako sistema integral oso bat biltzen du: progra
 │   ├── admin/                                    # Administrazio-aplikazioak
 │   │   ├── admin_desktop_java/                   # Etorkizuneko administrazio-aplikazioa (oraindik ez garatua)
 │   │   ├── admin_IT_zentrala/                    # IT Kontrol Zentrala (ASP.NET Core Web zerbitzaria + WinForms Morroia)
+│   │   ├── backend_rest_api_csharp/              # ASP.NET Core (.NET 10, C#) REST API nagusia (MySQL 8.0)
 │   │   └── odoo_erp/                             # Odoo 17 HR ERP & Web Portala (Giza Baliabideak, Langileak, Kontratuak)
-│   ├── backend_rest_api_csharp/                  # ASP.NET Core (.NET 10, C#) REST API nagusia (MySQL 8.0)
 │   ├── bezeroak/                                 # Bezeroen aplikazioak
 │   │   ├── web_php_bezeroak/                     # Apache 2.4 + PHP 8.2/8.4 Webgune korporatiboa eta bezeroen karta publikoa
 │   │   └── mobile_bezeroa_flutter/               # Flutter (Dart) Bezeroen mugikorrerako app-a (Karta, Erreserbak, Ordainketa)

@@ -58,8 +58,8 @@ jobs:
 
       - name: REST API Konpilatu
         run: |
-          dotnet restore "01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj"
-          dotnet build "01_aplikazioak/backend_rest_api_csharp/Jatetxea.Api.csproj" -c Release --no-restore
+          dotnet restore "01_aplikazioak/admin/backend_rest_api_csharp/Jatetxea.Api.csproj"
+          dotnet build "01_aplikazioak/admin/backend_rest_api_csharp/Jatetxea.Api.csproj" -c Release --no-restore
 
   admin-it-zentrala-check:
     name: Admin IT Zentrala Zerbitzaria (.NET)

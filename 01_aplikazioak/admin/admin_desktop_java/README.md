@@ -26,7 +26,7 @@ cd "01_aplikazioak\admin\admin_desktop_java\admin_desktop_java"
 APIa abiarazi beste terminal batean; honek MySQL zerbitzua ere martxan behar du:
 
 ```powershell
-cd "01_aplikazioak\backend_rest_api_csharp"
+cd "01_aplikazioak\admin\backend_rest_api_csharp"
 .\hasi_api_kontsola.bat
 ```
 

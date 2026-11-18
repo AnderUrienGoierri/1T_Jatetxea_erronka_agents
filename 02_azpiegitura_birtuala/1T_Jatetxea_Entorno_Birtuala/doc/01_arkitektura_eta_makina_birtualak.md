@@ -71,7 +71,7 @@ Erronkaren helburua jatetxe baten informatika eta sare sistema osoa simulatzea d
 - **IP Helbidea:** `192.168.10.10`
 - **Eginkizuna:** Jatetxearen datu, logika eta kudeaketa-aplikazio guztiak zentralizatzea:
   - **MySQL Zerbitzaria:** `jatetxea_db` datu-basea 11 taulekin, InnoDB transakzio pesimistekin.
-  - **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia (`01_aplikazioak/backend_rest_api_csharp`, portu 5050).
+  - **ASP.NET Core REST API:** C# bidez garatutako negozio-logika nagusia (`01_aplikazioak/admin/backend_rest_api_csharp`, portu 5050).
   - **Admin IT Zentrala:** Sarearen, zerbitzuen eta Docker edukiontzien kudeaketa integrala (`01_aplikazioak/admin/admin_IT_zentrala`, portu 5000).
   - **TPV C# Desktop:** Zerbitzariek eta kutxazainek erabiltzeko Windows Forms mahaigaineko programa (`01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp`).
   - **JavaFX Sukaldea, Barra & Biltegia:** KDS, BDS eta lehengaien stock kudeaketa bateratua (`01_aplikazioak/desktop_javafx`).

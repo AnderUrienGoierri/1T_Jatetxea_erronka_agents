@@ -146,7 +146,9 @@ public static class Program
         if (File.Exists(markerPath)) return true;
 
         string serverDir = Path.Combine(rootDir, "01_aplikazioak", "admin", "admin_IT_zentrala", "server", "Jatetxea.AdminZentrala");
-        string apiDir = Path.Combine(rootDir, "01_aplikazioak", "backend_rest_api_csharp");
+        string apiDir = Directory.Exists(Path.Combine(rootDir, "01_aplikazioak", "admin", "backend_rest_api_csharp"))
+            ? Path.Combine(rootDir, "01_aplikazioak", "admin", "backend_rest_api_csharp")
+            : Path.Combine(rootDir, "01_aplikazioak", "backend_rest_api_csharp");
 
         bool hasAdminDll =
             File.Exists(Path.Combine(serverDir, "bin", "Release", "net11.0", "Jatetxea.AdminZentrala.dll")) ||

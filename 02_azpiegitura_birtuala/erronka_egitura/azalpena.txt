@@ -6,8 +6,6 @@
 Erroa: C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\
 
 01_aplikazioak/
-  ├── admin/admin_IT_zentrala/        -> IT Kontrol Zentroa (Web Panela: port 5000 / Android: Jetpack Compose)
-  ├── backend_rest_api_csharp/        -> ASP.NET Core REST API (.NET 10 C#): port 5050 (kontenedorean 5000)
   ├── chat_zerbitzaria/          -> Socket.IO / WebSockets barne komunikazioa: port 3001
   ├── desktop_javafx/            -> Java 17 / JavaFX 21 (Sukaldea KDS, Barra BDS eta Biltegia Stock)
   ├── bezeroak/
@@ -21,6 +19,7 @@ Erroa: C:\Dev\GoierriEskola\1T_Jatetxea_erronka_agents\
   │     └── sukaldea_kds_android_tv/ -> Sukaldeko Android TV / KDS Web Kioskoa: port 8086
   ├── admin/
   │     ├── admin_IT_zentrala/       -> IT Kontrol Zentrala (.NET 11 Web + Launcher): port 5000
+  │     ├── backend_rest_api_csharp/ -> ASP.NET Core REST API (.NET 10 C#): port 5050 (kontenedorean 5000)
   │     └── odoo_erp/                -> Odoo 17 Community ERP (HR, baimenak, fitxaketak): port 8070
 
 02_azpiegitura_birtuala/

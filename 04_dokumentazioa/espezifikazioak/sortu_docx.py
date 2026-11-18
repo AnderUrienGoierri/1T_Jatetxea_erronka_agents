@@ -317,7 +317,7 @@ def sortu_docx_dokumentua():
         "• JavaFX Aplikazio Integratua (01_aplikazioak/desktop_javafx): Admin IT eta Zuzendaritzak Sukaldea (KDS), Barra (BDS) eta "
         "Biltegia (Stock) ataletarako sarbide osoa dute administratzaile baimenekin.",
         "• Odoo ERP Kudeaketa Orokorra: Zuzendaritzarentzat finantza-egoerak, nominak eta asistentzia/fitxaketa erregistroak ikuskatzeko tresna.",
-        "• Backend REST API Zentrala (01_aplikazioak/backend_rest_api_csharp): ASP.NET Core arkitekturako zerbitzari nagusia. Segurtasun transakzionala, "
+        "• Backend REST API Zentrala (01_aplikazioak/admin/backend_rest_api_csharp): ASP.NET Core arkitekturako zerbitzari nagusia. Segurtasun transakzionala, "
         "BCrypt pasahitzen balidazioa eta langileen fitxaketen erregistro iraunkorra bermatzen ditu."
     ])
 

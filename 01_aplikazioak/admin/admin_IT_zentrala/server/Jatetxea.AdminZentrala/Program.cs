@@ -625,7 +625,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             _ = RunCommandAsync("docker", "compose up -d --no-deps jatetxea-api", dockerDir);
 
             // 2. Kontsolako terminal-leiho erreala abiarazi zuzenean logak bistaratzeko
-            string apiDir = Path.Combine(appsDir, "backend_rest_api_csharp");
+            string apiDir = Directory.Exists(Path.Combine(appsDir, "admin", "backend_rest_api_csharp"))
+                ? Path.Combine(appsDir, "admin", "backend_rest_api_csharp")
+                : Path.Combine(appsDir, "backend_rest_api_csharp");
             string batPath = Path.Combine(apiDir, "hasi_api_kontsola.bat");
 
             if (File.Exists(batPath))
@@ -638,7 +640,9 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
         case "api_terminal":
         case "api_logs":
         case "api_console":
-            string apiDirTerm = Path.Combine(appsDir, "backend_rest_api_csharp");
+            string apiDirTerm = Directory.Exists(Path.Combine(appsDir, "admin", "backend_rest_api_csharp"))
+                ? Path.Combine(appsDir, "admin", "backend_rest_api_csharp")
+                : Path.Combine(appsDir, "backend_rest_api_csharp");
             string ps1PathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.ps1");
             string batPathTerm = Path.Combine(apiDirTerm, "hasi_api_kontsola.bat");
 
@@ -893,7 +897,9 @@ app.MapPost("/api/apps/open-folder/{appId}", (string appId, HttpContext ctx) =>
             ? Path.Combine(appsDir, "admin", "odoo_erp")
             : Path.Combine(appsDir, "odoo_erp"),
         "bezeroak" => Path.Combine(appsDir, "bezeroak"),
-        "api" or "backend_api" or "backend_rest_api_csharp" => Path.Combine(appsDir, "backend_rest_api_csharp"),
+        "api" or "backend_api" or "backend_rest_api_csharp" => Directory.Exists(Path.Combine(appsDir, "admin", "backend_rest_api_csharp"))
+            ? Path.Combine(appsDir, "admin", "backend_rest_api_csharp")
+            : Path.Combine(appsDir, "backend_rest_api_csharp"),
         "admin_mobile" or "mobile_admin" => Path.Combine(appsDir, "admin", "admin_IT_zentrala", "mobile_android"),
         "admin_zentrala" or "admin_it_zentrala" => Path.Combine(appsDir, "admin", "admin_IT_zentrala"),
         _ => Path.Combine(appsDir, appId)

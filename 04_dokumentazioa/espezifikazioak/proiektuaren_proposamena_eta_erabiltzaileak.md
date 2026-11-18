@@ -66,7 +66,7 @@ Jatetxearen ekosisteman 6 erabiltzaile-rol nagusi identifikatu dira:
 - **Admin IT Zentrala (`01_aplikazioak/admin/admin_IT_zentrala`):** Sistemaren administratzaileentzako aginte-zentroa. Docker zerbitzuen, ataken, sare-interfazearen, aplikazioen abiarazleen, langileen fitxaketen ikuskaritzaren eta VirtualBox makina birtualen kontrol osoa eskaintzen du.
 - **JavaFX Aplikazio Integratua (`01_aplikazioak/desktop_javafx`):** Admin IT eta Zuzendaritzak sarbide osoa dute Sukaldea (KDS), Barra (BDS) eta Biltegia (Stock) moduluetara saio-hasiera bakarretik PIN bidez.
 - **Odoo ERP (`01_aplikazioak/odoo_erp`):** Zuzendaritzarentzat finantzak, langileen nominak, asistentzia-erregistroak (fitxaketak) eta txosten ekonomiko globalak aztertzeko tresna.
-- **Backend REST API Zentrala (`01_aplikazioak/backend_rest_api_csharp`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die, fitxaketen erregistroa barne.
+- **Backend REST API Zentrala (`01_aplikazioak/admin/backend_rest_api_csharp`):** ASP.NET Core bidez sortua, MySQL datu-base operatibo nagusiarekin komunikatzen da eta aplikazio guztiei (Desktop, Android, Web) zerbitzua ematen die, fitxaketen erregistroa barne.
 
 ---
 

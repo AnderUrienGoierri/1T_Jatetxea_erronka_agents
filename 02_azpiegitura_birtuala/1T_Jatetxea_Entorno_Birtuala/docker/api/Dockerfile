@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy project file and restore dependencies
-COPY backend_rest_api_csharp/Jatetxea.Api.csproj backend_rest_api_csharp/
-RUN dotnet restore backend_rest_api_csharp/Jatetxea.Api.csproj
+COPY admin/backend_rest_api_csharp/Jatetxea.Api.csproj admin/backend_rest_api_csharp/
+RUN dotnet restore admin/backend_rest_api_csharp/Jatetxea.Api.csproj
 
 # Copy full source and publish release
-COPY backend_rest_api_csharp/ backend_rest_api_csharp/
-WORKDIR /src/backend_rest_api_csharp
+COPY admin/backend_rest_api_csharp/ admin/backend_rest_api_csharp/
+WORKDIR /src/admin/backend_rest_api_csharp
 RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime stage

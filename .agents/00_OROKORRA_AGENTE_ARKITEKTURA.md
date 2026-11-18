@@ -8,7 +8,7 @@ Dokumentu honek **1T Jatetxea Kudeaketa Sistema Integralaren** multi-agente egit
 
 | Agente ID | Agentearen Rola eta Izena | Azpisistema / Esparrua | Tekno-Pilaketa |
 | :--- | :--- | :--- | :--- |
-| `agente_01` | **Backend REST API Arkitektoa** | `01_aplikazioak/backend_rest_api_csharp` | ASP.NET Core (.NET 10), MySQL 8.0, Docker (5050) |
+| `agente_01` | **Backend REST API Arkitektoa** | `01_aplikazioak/admin/backend_rest_api_csharp` | ASP.NET Core (.NET 10), MySQL 8.0, Docker (5050) |
 | `agente_02` | **Admin IT Zentralaren Ingeniaria** | `01_aplikazioak/admin/admin_IT_zentrala` | ASP.NET Core (.NET 11/10), Docker CLI, VBox (5000) |
 | `agente_03` | **Desktop C# TPV Ingeniaria** | `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp` | C# .NET 10 Windows Forms, ESC/POS Inprimagailua |
 | `agente_04` | **Desktop JavaFX KDS Diseinatzailea** | `01_aplikazioak/desktop_javafx` | Java 21 Temurin, JavaFX, FXML, Scene Builder |
