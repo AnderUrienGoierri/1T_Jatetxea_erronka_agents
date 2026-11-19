@@ -1,33 +1,33 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 3. FASEA: GARAPENA
+# AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak) · 4. FASEA: FROGAK
 
-> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
-> **Fasearen Epea Orokorra:** 2026/11/15 - 2026/11/24  
-> **Moduluaren Epe Zehatza:** 2026/11/15 - 2026/11/19  
-> **Arduraduna / Rola:** Sistema administratzailea  
+> **Atala:** Rack 19", Cisco bideratzea, kableatua eta Wi-Fi sareak  
+> **Fasearen Epea Orokorra:** 2026/11/25 - 2026/11/28  
+> **Moduluaren Epe Zehatza:** 2026/11/25 - 2026/11/27  
+> **Arduraduna / Rola:** Sare teknikaria  
 > **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**3. FASEA: GARAPENA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
-Iturburu-kodearen garapen osoa, zerbitzarien programazioa, negozio-logika, interfaze grafikoak, scriptak eta datu-baseen inplementazioa.
+**4. FASEA: FROGAK** fasean, **AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)** moduluaren helburu nagusia honakoa da:
+Proba unitarioak, integrazio-probak sistemen artean, erreserben talka eta karga-probak, eta zibersegurtasuneko ikuskapenak.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
+> Jatetxearen hardware eta sare-azpiegitura erreala: 19" Rack-a, Cisco switch eta routerrak, kableatu egituratua (TIA-568-B), Access Point-ak eta TPV ekipo fisikoak.
 
-- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
-- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
+- **Kodearen kokapena (Path):** [03_laborategi_fisikoa](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/03_laborategi_fisikoa)
+- **Erabilitako Teknologia Nagusiak:** `Cisco IOS (Switch/Router), 19" Rack, Patch Panel RJ45, Wi-Fi AP`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `3.12`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `4.12`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).**
-- [ ] **Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).**
-- [ ] **OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.**
+- [ ] **Kableatuaren jarraitutasun-testa kable-testagailuarekin.**
+- [ ] **Sare fisikoaren abiadura eta pakete-galeren neurketa (Ping, Iperf).**
+- [ ] **Wi-Fi estalduraren eta seinalearen intentsitatearen neurketa laborategian.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).
+### 3.1. Kableatuaren jarraitutasun-testa kable-testagailuarekin.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).
+### 3.2. Sare fisikoaren abiadura eta pakete-galeren neurketa (Ping, Iperf).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.
+### 3.3. Wi-Fi estalduraren eta seinalearen intentsitatearen neurketa laborategian.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`3.12`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`4.12`) atazak osatuta markatzea.
 
 ---
 

@@ -1,32 +1,33 @@
-# APP - Android Bezeroak (Flutter Mugikorra) · 5. FASEA: MARTXAN JARTZEA
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 2. FASEA: DISEINUA
 
-> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa mugikorretik  
-> **Fasearen Epea Orokorra:** 2026/11/29 - 2026/12/01  
-> **Moduluaren Epe Zehatza:** 2026/11/30 - 2026/12/01  
-> **Arduraduna / Rola:** Mugikor garatzailea  
-> **Lehentasuna (Planner):** Ertaina  
+> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
+> **Moduluaren Epe Zehatza:** 2026/11/09 - 2026/11/12  
+> **Arduraduna / Rola:** Sistema administratzailea  
+> **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**5. FASEA: MARTXAN JARTZEA** fasean, **APP - Android Bezeroak (Flutter Mugikorra)** moduluaren helburu nagusia honakoa da:
-Ekoizpen-inguruneko hedapena (Deployment), Docker edukiontzien abiaraztea, ekipo eta tablet fisikoetan instalazioa eta benetako kaxa-irekiera.
+**2. FASEA: DISEINUA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
+> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
 
-- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak/mobile_bezeroa_flutter](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak/mobile_bezeroa_flutter)
-- **Erabilitako Teknologia Nagusiak:** `Flutter 3.x, Dart, Mobile Camera (QR), REST Client`
+- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
+- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `5.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `2.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Bezeroen app-a probako ingurune irekian jarri (edo QR bidezko deskarga zuzena prestatu).**
-- [ ] **Mahaiko QR kode fisikoak inprimatu eta mahaietan itsatsi.**
+- [ ] **Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).**
+- [ ] **Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).**
+- [ ] **`docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.**
 
 ---
 
@@ -34,14 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Bezeroen app-a probako ingurune irekian jarri (edo QR bidezko deskarga zuzena prestatu).
+### 3.1. Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Mahaiko QR kode fisikoak inprimatu eta mahaietan itsatsi.
+### 3.2. Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).
+- **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
+- **Jarduera teknikoak:**
+  - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
+  - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
+  - Frogak eta balidazio automatikoak gainditzea.
+
+### 3.3. `docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -65,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`5.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`2.11`) atazak osatuta markatzea.
 
 ---
 

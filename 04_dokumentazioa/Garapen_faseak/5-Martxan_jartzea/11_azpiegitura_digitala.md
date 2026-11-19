@@ -1,33 +1,33 @@
-# APP - Android Bezeroak (Flutter Mugikorra) · 1. FASEA: ANALISIA
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 5. FASEA: MARTXAN JARTZEA
 
-> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa mugikorretik  
-> **Fasearen Epea Orokorra:** 2026/11/03 - 2026/11/08  
-> **Moduluaren Epe Zehatza:** 2026/11/05 - 2026/11/08  
-> **Arduraduna / Rola:** Mugikor garatzailea  
-> **Lehentasuna (Planner):** Ertaina  
+> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Fasearen Epea Orokorra:** 2026/11/29 - 2026/12/01  
+> **Moduluaren Epe Zehatza:** 2026/11/29 - 2026/11/30  
+> **Arduraduna / Rola:** Sistema administratzailea  
+> **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**1. FASEA: ANALISIA** fasean, **APP - Android Bezeroak (Flutter Mugikorra)** moduluaren helburu nagusia honakoa da:
-Eskakizunen bilketa sakona, erabilera-kasuen definizioa, plataformen bideragarritasuna eta oinarrizko arkitekturaren zehaztapena.
+**5. FASEA: MARTXAN JARTZEA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Ekoizpen-inguruneko hedapena (Deployment), Docker edukiontzien abiaraztea, ekipo eta tablet fisikoetan instalazioa eta benetako kaxa-irekiera.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
+> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
 
-- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak/mobile_bezeroa_flutter](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak/mobile_bezeroa_flutter)
-- **Erabilitako Teknologia Nagusiak:** `Flutter 3.x, Dart, Mobile Camera (QR), REST Client`
+- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
+- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `5.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Mahaiko QR kodeen bidezko auto-eskaera lan-fluxua aztertzea.**
-- [ ] **Eramateko eskaerak eta ordainketa simulatuaren eskakizunak zehaztea.**
-- [ ] **Bezeroen esperientzia (UX) eta karta nabigazio azkarra definitzea.**
+- [ ] **Zerbitzari birtual guztiak ekoizpen moduan martxan jarri.**
+- [ ] **Sare birtualak eta OPNsense suebakiaren defentsa-mekanismoak gaitu.**
+- [ ] **Auto-abiaraztea (startup scripts) konfiguratzea zerbitzari nagusia berrabiarazten denerako.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Mahaiko QR kodeen bidezko auto-eskaera lan-fluxua aztertzea.
+### 3.1. Zerbitzari birtual guztiak ekoizpen moduan martxan jarri.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Eramateko eskaerak eta ordainketa simulatuaren eskakizunak zehaztea.
+### 3.2. Sare birtualak eta OPNsense suebakiaren defentsa-mekanismoak gaitu.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Bezeroen esperientzia (UX) eta karta nabigazio azkarra definitzea.
+### 3.3. Auto-abiaraztea (startup scripts) konfiguratzea zerbitzari nagusia berrabiarazten denerako.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`1.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`5.11`) atazak osatuta markatzea.
 
 ---
 

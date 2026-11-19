@@ -1,8 +1,8 @@
-# AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak) · 3. FASEA: GARAPENA
+# AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak) · 2. FASEA: DISEINUA
 
 > **Atala:** Rack 19", Cisco bideratzea, kableatua eta Wi-Fi sareak  
-> **Fasearen Epea Orokorra:** 2026/11/15 - 2026/11/24  
-> **Moduluaren Epe Zehatza:** 2026/11/15 - 2026/11/19  
+> **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
+> **Moduluaren Epe Zehatza:** 2026/11/09 - 2026/11/12  
 > **Arduraduna / Rola:** Sare teknikaria  
 > **Lehentasuna (Planner):** Premiazkoa  
 
@@ -10,8 +10,8 @@
 
 ## 1. Testuingurua eta Helburua
 
-**3. FASEA: GARAPENA** fasean, **AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)** moduluaren helburu nagusia honakoa da:
-Iturburu-kodearen garapen osoa, zerbitzarien programazioa, negozio-logika, interfaze grafikoak, scriptak eta datu-baseen inplementazioa.
+**2. FASEA: DISEINUA** fasean, **AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)** moduluaren helburu nagusia honakoa da:
+Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 > Jatetxearen hardware eta sare-azpiegitura erreala: 19" Rack-a, Cisco switch eta routerrak, kableatu egituratua (TIA-568-B), Access Point-ak eta TPV ekipo fisikoak.
@@ -21,13 +21,13 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `3.13`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `2.12`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Laborategiko kableatu fisikoa crimpatu eta patch panelean konektatu.**
-- [ ] **Cisco Switch eta Router konfigurazioak kargatu CLI bidez (VLANak, Trunk, OSPF).**
-- [ ] **Wi-Fi Access Point-ak muntatu eta jatetxeko sare publiko/pribatuak igorri.**
+- [ ] **Cisco Packet Tracer simulazioa diseinatzea eta balioztatzea (.pkt).**
+- [ ] **19" Rack-aren antolaketa plano fisikoa diseinatzea (Patch panel, switch, router kokapena).**
+- [ ] **Sare-kableen kolore-kodeen eskema diseinatzea (TIA/EIA-568-B estandarra).**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Laborategiko kableatu fisikoa crimpatu eta patch panelean konektatu.
+### 3.1. Cisco Packet Tracer simulazioa diseinatzea eta balioztatzea (.pkt).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Cisco Switch eta Router konfigurazioak kargatu CLI bidez (VLANak, Trunk, OSPF).
+### 3.2. 19" Rack-aren antolaketa plano fisikoa diseinatzea (Patch panel, switch, router kokapena).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Wi-Fi Access Point-ak muntatu eta jatetxeko sare publiko/pribatuak igorri.
+### 3.3. Sare-kableen kolore-kodeen eskema diseinatzea (TIA/EIA-568-B estandarra).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`3.13`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`2.12`) atazak osatuta markatzea.
 
 ---
 

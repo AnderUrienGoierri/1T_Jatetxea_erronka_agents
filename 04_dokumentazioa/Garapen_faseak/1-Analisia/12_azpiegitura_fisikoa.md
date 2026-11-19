@@ -1,33 +1,33 @@
-# APP - Android Bezeroak (Flutter Mugikorra) · 3. FASEA: GARAPENA
+# AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak) · 1. FASEA: ANALISIA
 
-> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa mugikorretik  
-> **Fasearen Epea Orokorra:** 2026/11/15 - 2026/11/24  
-> **Moduluaren Epe Zehatza:** 2026/11/18 - 2026/11/23  
-> **Arduraduna / Rola:** Mugikor garatzailea  
-> **Lehentasuna (Planner):** Ertaina  
+> **Atala:** Rack 19", Cisco bideratzea, kableatua eta Wi-Fi sareak  
+> **Fasearen Epea Orokorra:** 2026/11/03 - 2026/11/08  
+> **Moduluaren Epe Zehatza:** 2026/11/03 - 2026/11/06  
+> **Arduraduna / Rola:** Sare teknikaria  
+> **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**3. FASEA: GARAPENA** fasean, **APP - Android Bezeroak (Flutter Mugikorra)** moduluaren helburu nagusia honakoa da:
-Iturburu-kodearen garapen osoa, zerbitzarien programazioa, negozio-logika, interfaze grafikoak, scriptak eta datu-baseen inplementazioa.
+**1. FASEA: ANALISIA** fasean, **AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)** moduluaren helburu nagusia honakoa da:
+Eskakizunen bilketa sakona, erabilera-kasuen definizioa, plataformen bideragarritasuna eta oinarrizko arkitekturaren zehaztapena.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
+> Jatetxearen hardware eta sare-azpiegitura erreala: 19" Rack-a, Cisco switch eta routerrak, kableatu egituratua (TIA-568-B), Access Point-ak eta TPV ekipo fisikoak.
 
-- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak/mobile_bezeroa_flutter](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak/mobile_bezeroa_flutter)
-- **Erabilitako Teknologia Nagusiak:** `Flutter 3.x, Dart, Mobile Camera (QR), REST Client`
+- **Kodearen kokapena (Path):** [03_laborategi_fisikoa](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/03_laborategi_fisikoa)
+- **Erabilitako Teknologia Nagusiak:** `Cisco IOS (Switch/Router), 19" Rack, Patch Panel RJ45, Wi-Fi AP`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `3.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.12`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Flutter mugikorreko bezeroen aplikazioa kodetu.**
-- [ ] **QR kode irakurlea integratu mahaiko auto-eskaerarako.**
-- [ ] **Txartel birtualaren bidezko ordainketa simulatuaren logika programatu.**
+- [ ] **Laborategiko ekipoen inbentarioa egitea (Cisco routerrak, switxak, TPVak, APak).**
+- [ ] **Kableatu-egituratuaren beharrak neurtzea (RJ45 patch kableak, patch panelak).**
+- [ ] **Jatetxearen plano fisikoaren arabera gailuen kokapena identifikatzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Flutter mugikorreko bezeroen aplikazioa kodetu.
+### 3.1. Laborategiko ekipoen inbentarioa egitea (Cisco routerrak, switxak, TPVak, APak).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. QR kode irakurlea integratu mahaiko auto-eskaerarako.
+### 3.2. Kableatu-egituratuaren beharrak neurtzea (RJ45 patch kableak, patch panelak).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Txartel birtualaren bidezko ordainketa simulatuaren logika programatu.
+### 3.3. Jatetxearen plano fisikoaren arabera gailuen kokapena identifikatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`3.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`1.12`) atazak osatuta markatzea.
 
 ---
 

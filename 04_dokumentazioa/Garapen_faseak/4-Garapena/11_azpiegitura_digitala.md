@@ -1,32 +1,33 @@
-# APP - Android Bezeroak (Flutter Mugikorra) · 4. FASEA: FROGAK
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 3. FASEA: GARAPENA
 
-> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa mugikorretik  
-> **Fasearen Epea Orokorra:** 2026/11/25 - 2026/11/28  
-> **Moduluaren Epe Zehatza:** 2026/11/26 - 2026/11/28  
-> **Arduraduna / Rola:** Mugikor garatzailea  
-> **Lehentasuna (Planner):** Ertaina  
+> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Fasearen Epea Orokorra:** 2026/11/15 - 2026/11/24  
+> **Moduluaren Epe Zehatza:** 2026/11/15 - 2026/11/19  
+> **Arduraduna / Rola:** Sistema administratzailea  
+> **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**4. FASEA: FROGAK** fasean, **APP - Android Bezeroak (Flutter Mugikorra)** moduluaren helburu nagusia honakoa da:
-Proba unitarioak, integrazio-probak sistemen artean, erreserben talka eta karga-probak, eta zibersegurtasuneko ikuskapenak.
+**3. FASEA: GARAPENA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Iturburu-kodearen garapen osoa, zerbitzarien programazioa, negozio-logika, interfaze grafikoak, scriptak eta datu-baseen inplementazioa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
+> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
 
-- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak/mobile_bezeroa_flutter](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak/mobile_bezeroa_flutter)
-- **Erabilitako Teknologia Nagusiak:** `Flutter 3.x, Dart, Mobile Camera (QR), REST Client`
+- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
+- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `4.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `3.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **QR kodeen eskaneatze azkarra egiaztatu kamerarekin.**
-- [ ] **Ordainketa-pasabide simulatuaren balidazio guztiak probatu.**
+- [ ] **VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).**
+- [ ] **Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).**
+- [ ] **OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.**
 
 ---
 
@@ -34,14 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. QR kodeen eskaneatze azkarra egiaztatu kamerarekin.
+### 3.1. VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Ordainketa-pasabide simulatuaren balidazio guztiak probatu.
+### 3.2. Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).
+- **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
+- **Jarduera teknikoak:**
+  - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
+  - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
+  - Frogak eta balidazio automatikoak gainditzea.
+
+### 3.3. OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -65,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`4.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`3.11`) atazak osatuta markatzea.
 
 ---
 

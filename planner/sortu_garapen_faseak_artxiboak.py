@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Sortu Garapen Faseetako Markdown Fitxategiak (78 fitxategi = 6 fase x 13 aplikazio/modulu)
+Sortu Garapen Faseetako Markdown Fitxategiak (72 fitxategi = 6 fase x 12 aplikazio/modulu)
 Microsoft Teams Planner planifikazio integralean oinarritua.
+(Flutter/Android Bezeroen aplikazioa erronkatik kanpo utzita).
 """
 
 import os
@@ -133,23 +134,15 @@ MODULE_INFO = {
         "teknologia": "PHP 8.2, Apache 2.4, HTML5, Tailwind CSS, JavaScript"
     },
     11: {
-        "filename": "11_app_android_bezeroak.md",
-        "izena": "APP - Android Bezeroak (Flutter Mugikorra)",
-        "azpititulua": "Mahaiko auto-eskaera eta auto-ordainketa mugikorretik",
-        "deskribapena": "Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.",
-        "path": "01_aplikazioak/bezeroak/mobile_bezeroa_flutter",
-        "teknologia": "Flutter 3.x, Dart, Mobile Camera (QR), REST Client"
-    },
-    12: {
-        "filename": "12_azpiegitura_digitala.md",
+        "filename": "11_azpiegitura_digitala.md",
         "izena": "AZPIEGITURA DIGITALA (Makina Birtualak & Docker)",
         "azpititulua": "Sare birtualak, suebakia eta zerbitzarien orkestrazioa",
         "deskribapena": "Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.",
         "path": "02_azpiegitura_birtuala",
         "teknologia": "VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server"
     },
-    13: {
-        "filename": "13_azpiegitura_fisikoa.md",
+    12: {
+        "filename": "12_azpiegitura_fisikoa.md",
         "izena": "AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)",
         "azpititulua": "Rack 19\", Cisco bideratzea, kableatua eta Wi-Fi sareak",
         "deskribapena": "Jatetxearen hardware eta sare-azpiegitura erreala: 19\" Rack-a, Cisco switch eta routerrak, kableatu egituratua (TIA-568-B), Access Point-ak eta TPV ekipo fisikoak.",
@@ -275,6 +268,12 @@ def main():
         target_dir = os.path.join(DOCS_DIR, pinfo['folder'])
         os.makedirs(target_dir, exist_ok=True)
         print(f"Sortzen fasea: {pinfo['folder']} ({pinfo['izena']})...")
+        
+        # Garbitu aurreko 12_azpiegitura_digitala.md eta 13_azpiegitura_fisikoa.md zaharrak
+        for old_file in ['12_azpiegitura_digitala.md', '13_azpiegitura_fisikoa.md', '11_app_android_bezeroak.md']:
+            old_path = os.path.join(target_dir, old_file)
+            if os.path.exists(old_path):
+                os.remove(old_path)
         
         tasks = planner_data.get(pnum, {})
         for mod_idx, minfo in MODULE_INFO.items():

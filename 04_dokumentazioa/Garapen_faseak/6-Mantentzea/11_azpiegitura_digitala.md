@@ -1,33 +1,33 @@
-# APP - Android Bezeroak (Flutter Mugikorra) · 2. FASEA: DISEINUA
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 6. FASEA: MANTENTZEA
 
-> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa mugikorretik  
-> **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
-> **Moduluaren Epe Zehatza:** 2026/11/11 - 2026/11/14  
-> **Arduraduna / Rola:** Mugikor garatzailea  
-> **Lehentasuna (Planner):** Ertaina  
+> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Fasearen Epea Orokorra:** 2026/12/02 - 2026/12/05  
+> **Moduluaren Epe Zehatza:** 2026/12/02 - 2026/12/05  
+> **Arduraduna / Rola:** Sistema administratzailea  
+> **Lehentasuna (Planner):** Premiazkoa  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**2. FASEA: DISEINUA** fasean, **APP - Android Bezeroak (Flutter Mugikorra)** moduluaren helburu nagusia honakoa da:
-Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
+**6. FASEA: MANTENTZEA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Sistemaren eguneroko jarraipena, segurtasun-kopiak (backupak), log-en kudeaketa, erabiltzaile-dokumentazioa eta akatsen prebentzioa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxera datozen bezeroentzako mugikorreko aplikazioa. Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
+> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
 
-- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak/mobile_bezeroa_flutter](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak/mobile_bezeroa_flutter)
-- **Erabilitako Teknologia Nagusiak:** `Flutter 3.x, Dart, Mobile Camera (QR), REST Client`
+- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
+- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `2.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `6.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Flutter app-aren pantailen prototipoa diseinatzea (Onboarding, Karta, Ordainketa, QR).**
-- [ ] **Txartel birtualaren animazioa eta ordainketa fluxuaren diseinua egitea.**
-- [ ] **Erreserben baieztapen pantaila eta QR sortzailearen interfazea diseinatzea.**
+- [ ] **Docker irudien eta sistema eragileen segurtasun-eguneraketak aplikatzea.**
+- [ ] **Disko-erabilera, RAM kontsumoa eta tenperaturak monitorizatzea.**
+- [ ] **Hondamenditik berreskuratzeko plana (Disaster Recovery Plan) dokumentatzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Flutter app-aren pantailen prototipoa diseinatzea (Onboarding, Karta, Ordainketa, QR).
+### 3.1. Docker irudien eta sistema eragileen segurtasun-eguneraketak aplikatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Txartel birtualaren animazioa eta ordainketa fluxuaren diseinua egitea.
+### 3.2. Disko-erabilera, RAM kontsumoa eta tenperaturak monitorizatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Erreserben baieztapen pantaila eta QR sortzailearen interfazea diseinatzea.
+### 3.3. Hondamenditik berreskuratzeko plana (Disaster Recovery Plan) dokumentatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`2.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`6.11`) atazak osatuta markatzea.
 
 ---
 
