@@ -1,8 +1,8 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 5. FASEA: MARTXAN JARTZEA
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 2. FASEA: DISEINUA
 
 > **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
-> **Fasearen Epea Orokorra:** 2026/11/29 - 2026/12/01  
-> **Moduluaren Epe Zehatza:** 2026/11/29 - 2026/11/30  
+> **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
+> **Moduluaren Epe Zehatza:** 2026/11/09 - 2026/11/12  
 > **Arduraduna / Rola:** Sistema administratzailea  
 > **Lehentasuna (Planner):** Premiazkoa  
 
@@ -10,8 +10,8 @@
 
 ## 1. Testuingurua eta Helburua
 
-**5. FASEA: MARTXAN JARTZEA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
-Ekoizpen-inguruneko hedapena (Deployment), Docker edukiontzien abiaraztea, ekipo eta tablet fisikoetan instalazioa eta benetako kaxa-irekiera.
+**2. FASEA: DISEINUA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 > Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
@@ -21,13 +21,13 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `5.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `2.12`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Zerbitzari birtual guztiak ekoizpen moduan martxan jarri.**
-- [ ] **Sare birtualak eta OPNsense suebakiaren defentsa-mekanismoak gaitu.**
-- [ ] **Auto-abiaraztea (startup scripts) konfiguratzea zerbitzari nagusia berrabiarazten denerako.**
+- [ ] **Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).**
+- [ ] **Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).**
+- [ ] **`docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Zerbitzari birtual guztiak ekoizpen moduan martxan jarri.
+### 3.1. Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Sare birtualak eta OPNsense suebakiaren defentsa-mekanismoak gaitu.
+### 3.2. Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Auto-abiaraztea (startup scripts) konfiguratzea zerbitzari nagusia berrabiarazten denerako.
+### 3.3. `docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`5.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`2.12`) atazak osatuta markatzea.
 
 ---
 

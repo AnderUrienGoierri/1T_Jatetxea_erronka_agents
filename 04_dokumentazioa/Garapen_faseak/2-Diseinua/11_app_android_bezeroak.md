@@ -1,23 +1,23 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 2. FASEA: DISEINUA
+# APP - Android Bezeroak (Android Mugikorra) · 2. FASEA: DISEINUA
 
-> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa Android aplikaziotik  
 > **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
-> **Moduluaren Epe Zehatza:** 2026/11/09 - 2026/11/12  
-> **Arduraduna / Rola:** Sistema administratzailea  
-> **Lehentasuna (Planner):** Premiazkoa  
+> **Moduluaren Epe Zehatza:** 2026/11/11 - 2026/11/14  
+> **Arduraduna / Rola:** Mugikor garatzailea  
+> **Lehentasuna (Planner):** Ertaina  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**2. FASEA: DISEINUA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+**2. FASEA: DISEINUA** fasean, **APP - Android Bezeroak (Android Mugikorra)** moduluaren helburu nagusia honakoa da:
 Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
+> Jatetxera datozen bezeroentzako Android aplikazio mugikor natiboa (Jetpack Compose / Kotlin). Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
 
-- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
-- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
+- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak)
+- **Erabilitako Teknologia Nagusiak:** `Android SDK, Kotlin, Jetpack Compose, CameraX (QR), Retrofit 2`
 
 ---
 
@@ -25,9 +25,9 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).**
-- [ ] **Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).**
-- [ ] **`docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.**
+- [ ] **Android bezeroen app-aren pantailen prototipoa diseinatzea (Jetpack Compose) (Onboarding, Karta, Ordainketa, QR).**
+- [ ] **Txartel birtualaren animazioa eta ordainketa fluxuaren diseinua egitea.**
+- [ ] **Erreserben baieztapen pantaila eta QR sortzailearen interfazea diseinatzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Sare birtualaren arkitektura diagrama osatzea (OPNsense WAN, LAN, DMZ, VLANak).
+### 3.1. Android bezeroen app-aren pantailen prototipoa diseinatzea (Jetpack Compose) (Onboarding, Karta, Ordainketa, QR).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Firewall erregela-matrizea diseinatzea (sarbide baimenduak eta blokeatuak).
+### 3.2. Txartel birtualaren animazioa eta ordainketa fluxuaren diseinua egitea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. `docker-compose.yml` konfigurazio-fitxategiaren egitura diseinatzea.
+### 3.3. Erreserben baieztapen pantaila eta QR sortzailearen interfazea diseinatzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.

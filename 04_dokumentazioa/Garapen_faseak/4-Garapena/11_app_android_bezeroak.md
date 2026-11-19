@@ -1,23 +1,23 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 3. FASEA: GARAPENA
+# APP - Android Bezeroak (Android Mugikorra) · 3. FASEA: GARAPENA
 
-> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
+> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa Android aplikaziotik  
 > **Fasearen Epea Orokorra:** 2026/11/15 - 2026/11/24  
-> **Moduluaren Epe Zehatza:** 2026/11/15 - 2026/11/19  
-> **Arduraduna / Rola:** Sistema administratzailea  
-> **Lehentasuna (Planner):** Premiazkoa  
+> **Moduluaren Epe Zehatza:** 2026/11/18 - 2026/11/23  
+> **Arduraduna / Rola:** Mugikor garatzailea  
+> **Lehentasuna (Planner):** Ertaina  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**3. FASEA: GARAPENA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+**3. FASEA: GARAPENA** fasean, **APP - Android Bezeroak (Android Mugikorra)** moduluaren helburu nagusia honakoa da:
 Iturburu-kodearen garapen osoa, zerbitzarien programazioa, negozio-logika, interfaze grafikoak, scriptak eta datu-baseen inplementazioa.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
+> Jatetxera datozen bezeroentzako Android aplikazio mugikor natiboa (Jetpack Compose / Kotlin). Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
 
-- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
-- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
+- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak)
+- **Erabilitako Teknologia Nagusiak:** `Android SDK, Kotlin, Jetpack Compose, CameraX (QR), Retrofit 2`
 
 ---
 
@@ -25,9 +25,9 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).**
-- [ ] **Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).**
-- [ ] **OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.**
+- [ ] **Android mugikorreko bezeroen aplikazioa kodetu (Jetpack Compose / Kotlin).**
+- [ ] **QR kode irakurlea integratu mahaiko auto-eskaerarako.**
+- [ ] **Txartel birtualaren bidezko ordainketa simulatuaren logika programatu.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. VirtualBox makina birtualak konfiguratu (OPNsense, WinServer2025, Ubuntu).
+### 3.1. Android mugikorreko bezeroen aplikazioa kodetu (Jetpack Compose / Kotlin).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Docker Compose zerbitzuak abiarazi (MySQL, API, Odoo, Nginx, Adminer).
+### 3.2. QR kode irakurlea integratu mahaiko auto-eskaerarako.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. OPNsense suebakian VLANak, DHCP zerbitzariak eta NAT erregelak konfiguratzea.
+### 3.3. Txartel birtualaren bidezko ordainketa simulatuaren logika programatu.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.

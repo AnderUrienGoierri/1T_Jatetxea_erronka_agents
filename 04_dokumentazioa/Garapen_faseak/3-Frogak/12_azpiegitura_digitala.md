@@ -1,8 +1,8 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 1. FASEA: ANALISIA
+# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 4. FASEA: FROGAK
 
 > **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
-> **Fasearen Epea Orokorra:** 2026/11/03 - 2026/11/08  
-> **Moduluaren Epe Zehatza:** 2026/11/03 - 2026/11/06  
+> **Fasearen Epea Orokorra:** 2026/11/25 - 2026/11/28  
+> **Moduluaren Epe Zehatza:** 2026/11/25 - 2026/11/27  
 > **Arduraduna / Rola:** Sistema administratzailea  
 > **Lehentasuna (Planner):** Premiazkoa  
 
@@ -10,8 +10,8 @@
 
 ## 1. Testuingurua eta Helburua
 
-**1. FASEA: ANALISIA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
-Eskakizunen bilketa sakona, erabilera-kasuen definizioa, plataformen bideragarritasuna eta oinarrizko arkitekturaren zehaztapena.
+**4. FASEA: FROGAK** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
+Proba unitarioak, integrazio-probak sistemen artean, erreserben talka eta karga-probak, eta zibersegurtasuneko ikuskapenak.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 > Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
@@ -21,13 +21,13 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `4.12`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Makina birtualen baliabideak (RAM, CPU, Diskoa) kalkulatzea (OPNsense, WinServer, Ubuntu).**
-- [ ] **Sare birtualen segmentazioa (VLANak, DMZ, Lan, Bezeroak) definitzea.**
-- [ ] **Docker edukiontzien arkitektura eta portuen mapeoa planifikatzea.**
+- [ ] **Firewall erregela-probak (segurtasun-eskaneoa Nmap bidez).**
+- [ ] **Docker edukiontzien berrabiarazte automatikoa probatu (`restart: always`).**
+- [ ] **Segurtasun-kopiak eta leheneratze simulazioa burutzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Makina birtualen baliabideak (RAM, CPU, Diskoa) kalkulatzea (OPNsense, WinServer, Ubuntu).
+### 3.1. Firewall erregela-probak (segurtasun-eskaneoa Nmap bidez).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Sare birtualen segmentazioa (VLANak, DMZ, Lan, Bezeroak) definitzea.
+### 3.2. Docker edukiontzien berrabiarazte automatikoa probatu (`restart: always`).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Docker edukiontzien arkitektura eta portuen mapeoa planifikatzea.
+### 3.3. Segurtasun-kopiak eta leheneratze simulazioa burutzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`1.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`4.12`) atazak osatuta markatzea.
 
 ---
 

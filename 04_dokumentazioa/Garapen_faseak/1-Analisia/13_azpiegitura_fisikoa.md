@@ -21,7 +21,7 @@ Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.12`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.13`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`1.12`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`1.13`) atazak osatuta markatzea.
 
 ---
 

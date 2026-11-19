@@ -1,33 +1,33 @@
-# AZPIEGITURA DIGITALA (Makina Birtualak & Docker) · 6. FASEA: MANTENTZEA
+# APP - Android Bezeroak (Android Mugikorra) · 1. FASEA: ANALISIA
 
-> **Atala:** Sare birtualak, suebakia eta zerbitzarien orkestrazioa  
-> **Fasearen Epea Orokorra:** 2026/12/02 - 2026/12/05  
-> **Moduluaren Epe Zehatza:** 2026/12/02 - 2026/12/05  
-> **Arduraduna / Rola:** Sistema administratzailea  
-> **Lehentasuna (Planner):** Premiazkoa  
+> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa Android aplikaziotik  
+> **Fasearen Epea Orokorra:** 2026/11/03 - 2026/11/08  
+> **Moduluaren Epe Zehatza:** 2026/11/05 - 2026/11/08  
+> **Arduraduna / Rola:** Mugikor garatzailea  
+> **Lehentasuna (Planner):** Ertaina  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**6. FASEA: MANTENTZEA** fasean, **AZPIEGITURA DIGITALA (Makina Birtualak & Docker)** moduluaren helburu nagusia honakoa da:
-Sistemaren eguneroko jarraipena, segurtasun-kopiak (backupak), log-en kudeaketa, erabiltzaile-dokumentazioa eta akatsen prebentzioa.
+**1. FASEA: ANALISIA** fasean, **APP - Android Bezeroak (Android Mugikorra)** moduluaren helburu nagusia honakoa da:
+Eskakizunen bilketa sakona, erabilera-kasuen definizioa, plataformen bideragarritasuna eta oinarrizko arkitekturaren zehaztapena.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Ingurune birtualizatua: OPNsense suebakia (sareen segmentazioa, VLANak, DHCP), Windows Server 2025, Ubuntu Server eta zerbitzuak biltzen dituzten Docker edukiontziak.
+> Jatetxera datozen bezeroentzako Android aplikazio mugikor natiboa (Jetpack Compose / Kotlin). Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
 
-- **Kodearen kokapena (Path):** [02_azpiegitura_birtuala](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/02_azpiegitura_birtuala)
-- **Erabilitako Teknologia Nagusiak:** `VirtualBox, OPNsense, Docker & Docker Compose, Linux/Windows Server`
+- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak)
+- **Erabilitako Teknologia Nagusiak:** `Android SDK, Kotlin, Jetpack Compose, CameraX (QR), Retrofit 2`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `6.11`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `1.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Docker irudien eta sistema eragileen segurtasun-eguneraketak aplikatzea.**
-- [ ] **Disko-erabilera, RAM kontsumoa eta tenperaturak monitorizatzea.**
-- [ ] **Hondamenditik berreskuratzeko plana (Disaster Recovery Plan) dokumentatzea.**
+- [ ] **Mahaiko QR kodeen bidezko auto-eskaera lan-fluxua aztertzea.**
+- [ ] **Eramateko eskaerak eta ordainketa simulatuaren eskakizunak zehaztea.**
+- [ ] **Bezeroen esperientzia (UX) eta karta nabigazio azkarra definitzea.**
 
 ---
 
@@ -35,21 +35,21 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Docker irudien eta sistema eragileen segurtasun-eguneraketak aplikatzea.
+### 3.1. Mahaiko QR kodeen bidezko auto-eskaera lan-fluxua aztertzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. Disko-erabilera, RAM kontsumoa eta tenperaturak monitorizatzea.
+### 3.2. Eramateko eskaerak eta ordainketa simulatuaren eskakizunak zehaztea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.3. Hondamenditik berreskuratzeko plana (Disaster Recovery Plan) dokumentatzea.
+### 3.3. Bezeroen esperientzia (UX) eta karta nabigazio azkarra definitzea.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +73,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`6.11`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`1.11`) atazak osatuta markatzea.
 
 ---
 

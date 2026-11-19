@@ -1,33 +1,32 @@
-# AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak) · 2. FASEA: DISEINUA
+# APP - Android Bezeroak (Android Mugikorra) · 5. FASEA: MARTXAN JARTZEA
 
-> **Atala:** Rack 19", Cisco bideratzea, kableatua eta Wi-Fi sareak  
-> **Fasearen Epea Orokorra:** 2026/11/09 - 2026/11/14  
-> **Moduluaren Epe Zehatza:** 2026/11/09 - 2026/11/12  
-> **Arduraduna / Rola:** Sare teknikaria  
-> **Lehentasuna (Planner):** Premiazkoa  
+> **Atala:** Mahaiko auto-eskaera eta auto-ordainketa Android aplikaziotik  
+> **Fasearen Epea Orokorra:** 2026/11/29 - 2026/12/01  
+> **Moduluaren Epe Zehatza:** 2026/11/30 - 2026/12/01  
+> **Arduraduna / Rola:** Mugikor garatzailea  
+> **Lehentasuna (Planner):** Ertaina  
 
 ---
 
 ## 1. Testuingurua eta Helburua
 
-**2. FASEA: DISEINUA** fasean, **AZPIEGITURA FISIKOA (Laborategia, Sareak eta Ekipoak)** moduluaren helburu nagusia honakoa da:
-Datu-ereduen definizio zehatza, API kontratuen eta JSON eskemen egituraketa, Figma bidezko UI/UX diseinuak eta sare-topologien modelaketa.
+**5. FASEA: MARTXAN JARTZEA** fasean, **APP - Android Bezeroak (Android Mugikorra)** moduluaren helburu nagusia honakoa da:
+Ekoizpen-inguruneko hedapena (Deployment), Docker edukiontzien abiaraztea, ekipo eta tablet fisikoetan instalazioa eta benetako kaxa-irekiera.
 
 Modulu honek sistemaren arkitekturan betetzen duen eginkizuna:
-> Jatetxearen hardware eta sare-azpiegitura erreala: 19" Rack-a, Cisco switch eta routerrak, kableatu egituratua (TIA-568-B), Access Point-ak eta TPV ekipo fisikoak.
+> Jatetxera datozen bezeroentzako Android aplikazio mugikor natiboa (Jetpack Compose / Kotlin). Mahaiko QR kodea eskaneatuz auto-eskaera egiteko, eramateko eskatzeko eta ordainketa birtuala burutzeko.
 
-- **Kodearen kokapena (Path):** [03_laborategi_fisikoa](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/03_laborategi_fisikoa)
-- **Erabilitako Teknologia Nagusiak:** `Cisco IOS (Switch/Router), 19" Rack, Patch Panel RJ45, Wi-Fi AP`
+- **Kodearen kokapena (Path):** [01_aplikazioak/bezeroak](file:///C:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/01_aplikazioak/bezeroak)
+- **Erabilitako Teknologia Nagusiak:** `Android SDK, Kotlin, Jetpack Compose, CameraX (QR), Retrofit 2`
 
 ---
 
-## 2. Betebeharrak eta Eginkizunak (Planner Karta: `2.12`)
+## 2. Betebeharrak eta Eginkizunak (Planner Karta: `5.11`)
 
 Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
-- [ ] **Cisco Packet Tracer simulazioa diseinatzea eta balioztatzea (.pkt).**
-- [ ] **19" Rack-aren antolaketa plano fisikoa diseinatzea (Patch panel, switch, router kokapena).**
-- [ ] **Sare-kableen kolore-kodeen eskema diseinatzea (TIA/EIA-568-B estandarra).**
+- [ ] **Bezeroen app-a probako ingurune irekian jarri (edo QR bidezko deskarga zuzena prestatu).**
+- [ ] **Mahaiko QR kode fisikoak inprimatu eta mahaietan itsatsi.**
 
 ---
 
@@ -35,21 +34,14 @@ Fase honetan aplikazio honek burutu beharreko zeregin nagusien zerrenda:
 
 Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dira:
 
-### 3.1. Cisco Packet Tracer simulazioa diseinatzea eta balioztatzea (.pkt).
+### 3.1. Bezeroen app-a probako ingurune irekian jarri (edo QR bidezko deskarga zuzena prestatu).
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
   - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
   - Frogak eta balidazio automatikoak gainditzea.
 
-### 3.2. 19" Rack-aren antolaketa plano fisikoa diseinatzea (Patch panel, switch, router kokapena).
-- **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
-- **Jarduera teknikoak:**
-  - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
-  - Proiektuko beste moduluekin (REST API, Datu-basea, Sareak) integrazio garbia bermatzea.
-  - Frogak eta balidazio automatikoak gainditzea.
-
-### 3.3. Sare-kableen kolore-kodeen eskema diseinatzea (TIA/EIA-568-B estandarra).
+### 3.2. Mahaiko QR kode fisikoak inprimatu eta mahaietan itsatsi.
 - **Helburua:** Zeregin honen bidez, modulua fase honetan behar den egoera funtzionalera eramatea.
 - **Jarduera teknikoak:**
   - Ezarritako arkitektura-arauak eta kodetze-estandarrak zorrotz jarraitzea.
@@ -73,7 +65,7 @@ Jarraian, zeregin bakoitzaren garapen-gida eta jarraibide teknikoak xehatzen dir
 Fase hau bukatutzat emateko entregatu behar diren elementuak:
 1. Moduluari dagokion iturburu-kodea edo konfigurazio-fitxategi eguneratuak.
 2. Frogak eta balidazio-txostenak (errore gabe exekutatzen dela egiaztatuta).
-3. Teams Planner-eko dagokion kartaren (`2.12`) atazak osatuta markatzea.
+3. Teams Planner-eko dagokion kartaren (`5.11`) atazak osatuta markatzea.
 
 ---
 
