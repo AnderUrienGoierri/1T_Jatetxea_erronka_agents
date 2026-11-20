@@ -273,7 +273,9 @@ public abstract class BaseLoginController {
 
                         try {
                             PantailaAldatzailea.aldatu(btnLogin, getMainFxml(), getAppResourceClass());
-                        } catch (IOException e) {
+                        } catch (Throwable e) {
+                            System.err.println("[BaseLoginController] Errorea pantaila aldatzean: " + e.getMessage());
+                            e.printStackTrace();
                             if (lblErrorea != null) lblErrorea.setText("Errorea pantaila kargatzean: " + e.getMessage());
                         }
 

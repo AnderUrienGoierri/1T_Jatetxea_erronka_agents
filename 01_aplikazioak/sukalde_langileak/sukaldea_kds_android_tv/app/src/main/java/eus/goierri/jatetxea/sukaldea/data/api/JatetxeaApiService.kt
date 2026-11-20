@@ -5,6 +5,7 @@ import eus.goierri.jatetxea.sukaldea.data.model.EgoeraUpdateRequest
 import eus.goierri.jatetxea.sukaldea.data.model.Eskaera
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -28,4 +29,7 @@ interface JatetxeaApiService {
         @Path("id") eskaeraId: Int,
         @Body body: EgoeraUpdateRequest
     ): Response<Unit>
+
+    @DELETE("eskaerak/{id}")
+    suspend fun ezabatuEskaera(@Path("id") eskaeraId: Int): Response<Unit>
 }

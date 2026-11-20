@@ -1,15 +1,25 @@
 package eus.goierri.jatetxea.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Biltegiko lehengaiaren eredu orokorra (Stocka eta hornikuntza).
  */
 public class Lehengaia {
     private int id;
     private String izena;
+
+    @SerializedName(value = "stock", alternate = {"unekoStocka", "uneko_stocka"})
     private double stock;
+
+    @SerializedName(value = "stockMinimoa", alternate = {"gutxienekoStocka", "gutxieneko_stocka"})
     private double stockMinimoa;
+
     private String unitatea;
+
+    @SerializedName(value = "kostua", alternate = {"kostuUnitarioa", "kostu_unitarioa"})
     private double kostua;
+
     private String hornitzailea;
 
     public Lehengaia() {}
@@ -36,6 +46,15 @@ public class Lehengaia {
     public double getStockMinimoa() { return stockMinimoa; }
     public void setStockMinimoa(double stockMinimoa) { this.stockMinimoa = stockMinimoa; }
 
+    public double getUnekoStocka() { return stock; }
+    public void setUnekoStocka(double unekoStocka) { this.stock = unekoStocka; }
+
+    public double getGutxienekoStocka() { return stockMinimoa; }
+    public void setGutxienekoStocka(double gutxienekoStocka) { this.stockMinimoa = gutxienekoStocka; }
+
+    public double getKostuUnitarioa() { return kostua; }
+    public void setKostuUnitarioa(double kostuUnitarioa) { this.kostua = kostuUnitarioa; }
+
     public String getUnitatea() { return unitatea != null ? unitatea : ""; }
     public void setUnitatea(String unitatea) { this.unitatea = unitatea; }
 
@@ -46,15 +65,15 @@ public class Lehengaia {
     public void setHornitzailea(String hornitzailea) { this.hornitzailea = hornitzailea; }
 
     public String getStockFormateatua() {
-        return String.format("%.2f %s", stock, getUnitatea()).trim();
+        return String.format(java.util.Locale.US, "%.2f %s", stock, getUnitatea()).trim();
     }
 
     public String getGutxienekoFormateatua() {
-        return String.format("%.2f %s", stockMinimoa, getUnitatea()).trim();
+        return String.format(java.util.Locale.US, "%.2f %s", stockMinimoa, getUnitatea()).trim();
     }
 
     public String getKostuaFormateatua() {
-        return String.format("%.2f €", kostua);
+        return String.format(java.util.Locale.US, "%.2f €", kostua);
     }
 
     public String getEgoera() {

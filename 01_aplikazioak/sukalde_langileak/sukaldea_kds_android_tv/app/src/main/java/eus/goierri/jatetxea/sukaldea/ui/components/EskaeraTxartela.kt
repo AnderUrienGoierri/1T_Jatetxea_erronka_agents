@@ -60,7 +60,8 @@ fun EskaeraTxartela(
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    val isGuztiakEginda = eskaera.lerroak.isNotEmpty() && eskaera.lerroak.all { it.isEginda }
+    val isGuztiakEginda = eskaera.egoera.equals("Prestatua", ignoreCase = true) ||
+        (eskaera.lerroak.isNotEmpty() && eskaera.lerroak.all { it.isEginda })
     val borderColor = when {
         isFocused -> RosePrimary
         isGuztiakEginda -> EmeraldSuccess

@@ -45,7 +45,7 @@ public partial class MahaiaXehetasunakForm : Form
     {
         Text = $"T1 Jatetxea - Mahaia {_mahaia.Zenbakia} Xehetasunak";
         lblMahaiaTit.Text = $"T1 Jatetxea - Mahaia {_mahaia.Zenbakia}";
-        lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax) · {_mahaia.Egoera}";
+        lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax)";
 
         // Barraren beheko marra
         pnlTopBar.Paint += (s, e) =>
@@ -76,6 +76,13 @@ public partial class MahaiaXehetasunakForm : Form
         btnGehituKontua.Click += async (s, e) => await GehituKontuBerriaKlikatuaAsync();
         btnKontuaEskatu.Click += async (s, e) => await KobratuEtaItxiAsync();
         btnAldatuMahaiaz.Click += (s, e) => AldatuMahaiazKlikatua();
+
+        // Mahaiaren egoera aldatzeko botoiak (Libre, Okupatuta, Garbitzeko)
+        btnEgoeraLibre.Click += async (s, e) => await AldatuEgoeraLibreAsync();
+        btnEgoeraOkupatuta.Click += async (s, e) => await AldatuEgoeraOkupatutaAsync();
+        btnEgoeraGarbitzen.Click += async (s, e) => await AldatuEgoeraGarbitzenAsync();
+
+        EguneratuEgoeraBotoiak();
 
         // Auto-freskatzea eta Dir-Dir animazioa konfiguratu
         _autoRefreshTimer.Tick += async (s, e) => await AutoFreskatuAsync();
@@ -226,29 +233,105 @@ public partial class MahaiaXehetasunakForm : Form
             int index = i;
             var eskaera = _eskaerak[index];
             bool isAukeratua = index == _hautatutakoEskaeraIndex;
+            bool platerikGabe = (eskaera.Lerroak == null || eskaera.Lerroak.Count == 0 || eskaera.Lerroak.Sum(l => l.Kantitatea) == 0) && eskaera.Guztira == 0m;
 
-            var btn = new Button
+            if (platerikGabe)
             {
-                Text = $"{index + 1}. Kontua (#{eskaera.Id}) - {eskaera.Guztira:F2} €",
-                Font = new Font("Segoe UI", 10.5F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
-                BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
-                ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
-                Size = new Size(245, 46),
-                Margin = new Padding(0, 0, 10, 0),
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btn.FlatAppearance.BorderColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225);
-            btn.FlatAppearance.BorderSize = 1;
+                // Platerik ez duen kontua: eskuin ertzean '✕' botoia jarri kontua ezabatzeko aukera emanez
+                var pnlTab = new Panel
+                {
+                    Size = new Size(255, 46),
+                    Margin = new Padding(0, 0, 10, 0),
+                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White
+                };
+                pnlTab.Paint += (s, e) =>
+                {
+                    using var pen = new Pen(isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225), 1.5f);
+                    e.Graphics.DrawRectangle(pen, 0, 0, pnlTab.Width - 1, pnlTab.Height - 1);
+                };
 
-            btn.Click += (s, e) =>
+                var btnTab = new Button
+                {
+                    Text = $"{index + 1}. Kontua (#{eskaera.Id}) - 0,00 €",
+                    Font = new Font("Segoe UI", 9.5F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
+                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
+                    ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
+                    Location = new Point(0, 0),
+                    Size = new Size(215, 46),
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                btnTab.FlatAppearance.BorderSize = 0;
+                btnTab.Click += (s, e) =>
+                {
+                    _hautatutakoEskaeraIndex = index;
+                    EguneratuKontuFitxak();
+                    BistaratuHautatutakoEskaera();
+                };
+
+                var btnX = new Button
+                {
+                    Text = "✕",
+                    Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                    BackColor = isAukeratua ? Color.FromArgb(159, 18, 57) : Color.FromArgb(254, 242, 242),
+                    ForeColor = isAukeratua ? Color.FromArgb(254, 205, 211) : Color.FromArgb(220, 38, 38),
+                    Location = new Point(216, 0),
+                    Size = new Size(39, 46),
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand
+                };
+                btnX.FlatAppearance.BorderSize = 0;
+
+                var tip = new ToolTip();
+                tip.SetToolTip(btnX, "Ezabatu kontu hutsa (platerik gabe)");
+
+                btnX.MouseEnter += (s, e) =>
+                {
+                    btnX.BackColor = Color.FromArgb(220, 38, 38);
+                    btnX.ForeColor = Color.White;
+                };
+                btnX.MouseLeave += (s, e) =>
+                {
+                    btnX.BackColor = isAukeratua ? Color.FromArgb(159, 18, 57) : Color.FromArgb(254, 242, 242);
+                    btnX.ForeColor = isAukeratua ? Color.FromArgb(254, 205, 211) : Color.FromArgb(220, 38, 38);
+                };
+
+                btnX.Click += async (s, e) =>
+                {
+                    await EzabatuKontuHutsaAsync(eskaera, index);
+                };
+
+                pnlTab.Controls.Add(btnTab);
+                pnlTab.Controls.Add(btnX);
+                flowKontuFitxak.Controls.Add(pnlTab);
+            }
+            else
             {
-                _hautatutakoEskaeraIndex = index;
-                EguneratuKontuFitxak();
-                BistaratuHautatutakoEskaera();
-            };
+                // Platerak dituen kontua: fitxa arrunta (ezabatzeko '✕' botoirik gabe)
+                var btn = new Button
+                {
+                    Text = $"{index + 1}. Kontua (#{eskaera.Id}) - {eskaera.Guztira:F2} €",
+                    Font = new Font("Segoe UI", 10F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
+                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
+                    ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
+                    Size = new Size(245, 46),
+                    Margin = new Padding(0, 0, 10, 0),
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand
+                };
+                btn.FlatAppearance.BorderColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225);
+                btn.FlatAppearance.BorderSize = 1;
 
-            flowKontuFitxak.Controls.Add(btn);
+                btn.Click += (s, e) =>
+                {
+                    _hautatutakoEskaeraIndex = index;
+                    EguneratuKontuFitxak();
+                    BistaratuHautatutakoEskaera();
+                };
+
+                flowKontuFitxak.Controls.Add(btn);
+            }
         }
 
         flowKontuFitxak.ResumeLayout(true);
@@ -256,28 +339,37 @@ public partial class MahaiaXehetasunakForm : Form
 
     private void BistaratuHautatutakoEskaera()
     {
+        EguneratuEgoeraBotoiak();
+
         if (_eskaerak.Count == 0 || _hautatutakoEskaeraIndex >= _eskaerak.Count)
         {
             pnlTicketLines.Controls.Clear();
             bool isGarbitzen = _mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase);
+            bool isLibre = _mahaia.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase);
+            string hutsikText = isGarbitzen
+                ? $"Mahaia {_mahaia.Zenbakia} 'Garbitzen' egoeran dago.\nKontu guztiak kobratuta daude.\n\nSakatu beheko botoia edo goiko 'Libre' botoia mahaia libratzeko."
+                : (isLibre
+                    ? $"Mahaia {_mahaia.Zenbakia} 'Libre' dago.\n\nEskari berria hasteko, sakatu beheko '+ PRODUKTUAK GEHITU' botoia."
+                    : $"Mahaia {_mahaia.Zenbakia} 'Okupatuta' dago baina ez du eskari aktiborik.\n\nSakatu beheko '+ PRODUKTUAK GEHITU' botoia.");
+
             var lblHutsik = new Label
             {
-                Text = isGarbitzen
-                    ? $"Mahaia {_mahaia.Zenbakia} 'Garbitzen' egoeran dago.\nKontu guztiak kobratuta daude.\n\nSakatu beheko botoia mahaia 'Librea' gisa uzteko."
-                    : "Ez dago eskaera aktiborik mahai honetan.\nSakatu beheko '+ ESKAERA GEHITU' botoia.",
+                Text = hutsikText,
                 Font = new Font("Segoe UI", 12F, FontStyle.Regular),
                 ForeColor = Color.FromArgb(100, 116, 139),
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter
             };
             pnlTicketLines.Controls.Add(lblHutsik);
-            lblEskaeraInfo.Text = isGarbitzen ? "Mahaia Garbitzen" : "Ez dago eskaera aktiborik";
+            lblEskaeraInfo.Text = isGarbitzen ? "Mahaia Garbitzen" : (isLibre ? "Mahaia Librea" : "Mahaia Okupatuta");
             lblLerroLaburpena.Text = "0 plater";
             lblGuztira.Text = "GUZTIRA: 0,00 €";
             lblAzpitotala.Text = "Azpitotala: 0,00 €";
             lblBez.Text = "BEZ (%10 barne): 0,00 €";
-            lblEgoeraOrokorra.Text = isGarbitzen ? "Mahaia garbitu eta prest utzi bezero berrientzat" : "Eskaerarik gabe";
-            lblEgoeraOrokorra.ForeColor = isGarbitzen ? Color.FromArgb(22, 101, 52) : Color.FromArgb(100, 116, 139);
+            lblEgoeraOrokorra.Text = isGarbitzen 
+                ? "Mahaia garbitu eta prest utzi bezero berrientzat" 
+                : (isLibre ? "Mahaia libre dago bezero berrientzat" : "Eskaerarik gabe");
+            lblEgoeraOrokorra.ForeColor = isGarbitzen || isLibre ? Color.FromArgb(22, 101, 52) : Color.FromArgb(100, 116, 139);
 
             if (isGarbitzen)
             {
@@ -287,7 +379,7 @@ public partial class MahaiaXehetasunakForm : Form
             }
             else
             {
-                btnSukalderaBidali.Text = "EZ DAGO ESKAERARIK";
+                btnSukalderaBidali.Text = isLibre ? "MAHAIA LIBRE DAGO" : "EZ DAGO ESKAERARIK";
                 btnSukalderaBidali.BackColor = Color.FromArgb(71, 85, 105);
                 btnSukalderaBidali.Enabled = false;
             }
@@ -295,6 +387,7 @@ public partial class MahaiaXehetasunakForm : Form
         }
 
         var eskaera = _eskaerak[_hautatutakoEskaeraIndex];
+        int targetWidth = pnlTicketLines.ClientSize.Width > 100 ? pnlTicketLines.ClientSize.Width - 16 : 740;
 
         // 1. Egoera eta Laburpena
         int guztiraKop = eskaera.Lerroak.Sum(l => l.Kantitatea);
@@ -312,6 +405,87 @@ public partial class MahaiaXehetasunakForm : Form
         lblAzpitotala.Text = $"Azpitotala:  {subtotal:F2} €";
         lblBez.Text = $"BEZ (%10 barne):  {bez:F2} €";
         lblGuztira.Text = $"GUZTIRA:  {eskaera.Guztira:F2} €";
+
+        if (guztiraKop == 0)
+        {
+            lblEgoeraOrokorra.Text = "Ez dago platerik kontu honetan (0,00 €)";
+            lblEgoeraOrokorra.ForeColor = Color.FromArgb(100, 116, 139);
+            btnSukalderaBidali.Text = "EZ DAGO PLATERIK";
+            btnSukalderaBidali.BackColor = Color.FromArgb(71, 85, 105); // Grisa
+            btnSukalderaBidali.Enabled = false;
+
+            btnKontuaEskatu.Text = "ITXI / EZABATU KONTUA";
+            btnKontuaEskatu.BackColor = Color.FromArgb(220, 38, 38); // Gorria
+            btnKontuaEskatu.ForeColor = Color.White;
+
+            _egindaControls.Clear();
+            pnlTicketLines.SuspendLayout();
+            pnlTicketLines.Controls.Clear();
+
+            var pnlHutsa = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.White,
+                ColumnCount = 1,
+                RowCount = 6
+            };
+            pnlHutsa.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.Percent, 32f));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.Absolute, 20f));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            pnlHutsa.RowStyles.Add(new RowStyle(SizeType.Percent, 68f));
+
+            var lblTit = new Label
+            {
+                Text = "Kontu honek ez du platerik (0,00 €)",
+                Font = new Font("Segoe UI", 13.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(71, 85, 105),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = new Padding(12, 0, 12, 6)
+            };
+
+            var lblSub = new Label
+            {
+                Text = "Sakatu beheko '+ PRODUKTUAK GEHITU' platerak eskatzeko,\nedo fitxako '✕' / azpiko botoia kontu hau itxi eta ezabatzeko.",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = new Padding(12, 0, 12, 8)
+            };
+
+            var btnEzabatuZentroa = new Button
+            {
+                Text = $"🗑 Itxi / Ezabatu {_hautatutakoEskaeraIndex + 1}. Kontua (#{eskaera.Id})",
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                BackColor = Color.FromArgb(254, 242, 242),
+                ForeColor = Color.FromArgb(220, 38, 38),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(340, 48),
+                Anchor = AnchorStyles.None,
+                Cursor = Cursors.Hand
+            };
+            btnEzabatuZentroa.FlatAppearance.BorderColor = Color.FromArgb(252, 165, 165);
+            btnEzabatuZentroa.Click += async (s, e) => await EzabatuKontuHutsaAsync(eskaera, _hautatutakoEskaeraIndex);
+
+            pnlHutsa.Controls.Add(lblTit, 0, 1);
+            pnlHutsa.Controls.Add(lblSub, 0, 2);
+            pnlHutsa.Controls.Add(btnEzabatuZentroa, 0, 4);
+            pnlTicketLines.Controls.Add(pnlHutsa);
+            pnlTicketLines.ResumeLayout(true);
+            return;
+        }
+        else
+        {
+            btnKontuaEskatu.Text = "KONTUA ESKATU / KOBRATU";
+            btnKontuaEskatu.BackColor = Color.FromArgb(241, 245, 249);
+            btnKontuaEskatu.ForeColor = Color.FromArgb(30, 41, 59);
+        }
 
         if (zaiKop > 0)
         {
@@ -351,7 +525,6 @@ public partial class MahaiaXehetasunakForm : Form
         pnlTicketLines.SuspendLayout();
         pnlTicketLines.Controls.Clear();
 
-        int targetWidth = pnlTicketLines.ClientSize.Width > 100 ? pnlTicketLines.ClientSize.Width - 16 : 740;
         int y = 8;
 
         // Platerak lehentasunaren arabera ordenatu:
@@ -438,7 +611,7 @@ public partial class MahaiaXehetasunakForm : Form
         card.Controls.Add(lblKop);
 
         // 2. Plateraren Izena
-        int nameWidth = Math.Max(200, cardWidth - 395);
+        int nameWidth = lerroEgoera == "Zai" ? Math.Max(160, cardWidth - 460) : Math.Max(200, cardWidth - 395);
         var lblIzena = new Label
         {
             Text = lerro.PlaterIzena,
@@ -467,23 +640,133 @@ public partial class MahaiaXehetasunakForm : Form
             card.Controls.Add(lblOharra);
         }
 
-        // 4. Prezioa (Eskuinean)
-        var lblPrezioa = new Label
+        // 4. Prezioa eta Ekintzak ([ZAI: Sukaldera banaka & Ezabatu] / [EGINDA: Zerbitzatu] / [MARTXAN/ZERBITZATUA: Txapa])
+        if (lerroEgoera == "Zai")
         {
-            Text = $"{lerro.Azpitotala:F2} €",
-            Font = new Font("Segoe UI", 13F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(cardWidth - 305, 16),
-            Size = new Size(125, 40),
-            TextAlign = ContentAlignment.MiddleRight,
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            UseCompatibleTextRendering = false
-        };
-        card.Controls.Add(lblPrezioa);
+            // Prezioa
+            var lblPrezioa = new Label
+            {
+                Text = $"{lerro.Azpitotala:F2} €",
+                Font = new Font("Segoe UI", 12.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                Location = new Point(cardWidth - 375, 16),
+                Size = new Size(110, 40),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                UseCompatibleTextRendering = false
+            };
+            card.Controls.Add(lblPrezioa);
 
-        // 5. Egoera Txapa edo Botoia ([ZAI] / [MARTXAN] / [ZERBITZATU] / [ZERBITZATUA])
-        if (lerroEgoera == "Eginda")
+            // Botoia: Sukaldera banaka bidali (▶ Sukaldera)
+            var btnBidaliBanaka = new Button
+            {
+                Location = new Point(cardWidth - 250, 16),
+                Size = new Size(130, 40),
+                BackColor = Color.FromArgb(22, 101, 52), // Berde iluna
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Text = "▶ Sukaldera",
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                UseCompatibleTextRendering = false
+            };
+            btnBidaliBanaka.FlatAppearance.BorderSize = 0;
+            btnBidaliBanaka.Click += async (s, e) =>
+            {
+                if (_eragiketanAri) return;
+                _eragiketanAri = true;
+                btnBidaliBanaka.Enabled = false;
+                btnBidaliBanaka.Text = "...";
+                try
+                {
+                    bool ok = await _api.EguneratuLerroEgoeraAsync(lerro.Id, "Sukaldean");
+                    if (ok)
+                    {
+                        lerro.Egoera = "Sukaldean";
+                        _mahaia.Egoera = "Okupatuta";
+                        await KargatuDatuakAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ezin izan da platera sukaldera bidali.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        btnBidaliBanaka.Enabled = true;
+                        btnBidaliBanaka.Text = "▶ Sukaldera";
+                    }
+                }
+                finally
+                {
+                    _eragiketanAri = false;
+                }
+            };
+            card.Controls.Add(btnBidaliBanaka);
+
+            // Botoia: Sukaldera bidali gabeko platera ezabatu (🗑 Ezabatu)
+            var btnEzabatu = new Button
+            {
+                Location = new Point(cardWidth - 110, 16),
+                Size = new Size(100, 40),
+                BackColor = Color.FromArgb(254, 242, 242), // Gorri leuna
+                ForeColor = Color.FromArgb(185, 28, 28), // Gorri iluna
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Text = "🗑 Ezabatu",
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                UseCompatibleTextRendering = false
+            };
+            btnEzabatu.FlatAppearance.BorderColor = Color.FromArgb(252, 165, 165);
+            btnEzabatu.FlatAppearance.BorderSize = 1;
+            btnEzabatu.Click += async (s, e) =>
+            {
+                if (_eragiketanAri) return;
+                var confirm = MessageBox.Show(
+                    $"Ziur zaude '{lerro.PlaterIzena}' (x{lerro.Kantitatea}) eskaritik ezabatu nahi duzula?\n\n(Platera oraindik ez da sukaldera bidali, stocka berreskuratuko da)",
+                    "Platera Ezabatu",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                _eragiketanAri = true;
+                btnEzabatu.Enabled = false;
+                btnEzabatu.Text = "...";
+                try
+                {
+                    var (ok, mezua) = await _api.EzabatuEskaeraLerroaAsync(lerro.Id);
+                    if (ok)
+                    {
+                        await KargatuDatuakAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show(mezua, "Errorea platera ezabatzean", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        btnEzabatu.Enabled = true;
+                        btnEzabatu.Text = "🗑 Ezabatu";
+                    }
+                }
+                finally
+                {
+                    _eragiketanAri = false;
+                }
+            };
+            card.Controls.Add(btnEzabatu);
+        }
+        else if (lerroEgoera == "Eginda")
         {
+            var lblPrezioa = new Label
+            {
+                Text = $"{lerro.Azpitotala:F2} €",
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                Location = new Point(cardWidth - 305, 16),
+                Size = new Size(125, 40),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                UseCompatibleTextRendering = false
+            };
+            card.Controls.Add(lblPrezioa);
+
             var btnZerbitzatu = new Button
             {
                 Location = new Point(cardWidth - 170, 16),
@@ -520,6 +803,19 @@ public partial class MahaiaXehetasunakForm : Form
         }
         else
         {
+            var lblPrezioa = new Label
+            {
+                Text = $"{lerro.Azpitotala:F2} €",
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 41, 59),
+                Location = new Point(cardWidth - 305, 16),
+                Size = new Size(125, 40),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                UseCompatibleTextRendering = false
+            };
+            card.Controls.Add(lblPrezioa);
+
             var pnlBadge = new Panel
             {
                 Location = new Point(cardWidth - 170, 16),
@@ -639,7 +935,7 @@ public partial class MahaiaXehetasunakForm : Form
             // Mahaiaren egoera eguneratu datu-basean
             _ = _api.EguneratuMahaiarenEgoeraAsync(_mahaia.Id, "Okupatuta");
 
-            lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax) · Sukaldean";
+            EguneratuEgoeraBotoiak();
             await KargatuDatuakAsync();
 
             MessageBox.Show(
@@ -737,6 +1033,62 @@ public partial class MahaiaXehetasunakForm : Form
     }
 
     /// <summary>
+    /// Platerik gabeko kontu / eskaera huts bat ezabatzen du APIan eta interfazetik kentzen du.
+    /// </summary>
+    private async Task EzabatuKontuHutsaAsync(EskaeraDto eskaera, int index, bool galdetu = true)
+    {
+        if (_eragiketanAri) return;
+
+        if (galdetu)
+        {
+            var confirm = MessageBox.Show(
+                $"Ziur zaude {index + 1}. Kontua (#{eskaera.Id}) itxi eta ezabatu nahi duzula?\n\nEz du platerik eta kontua behin betiko ezabatuko da.",
+                "Kontua Itxi / Ezabatu",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes) return;
+        }
+
+        _eragiketanAri = true;
+        try
+        {
+            var (ok, mezua) = await _api.EzabatuEskaeraAsync(eskaera.Id);
+            if (ok)
+            {
+                _eskaerak.RemoveAt(index);
+                if (_eskaerak.Count == 0)
+                {
+                    _hautatutakoEskaeraIndex = 0;
+                    // Kontu gehiago ez badaude, mahaia automatikoki Libre geratuko da!
+                    await _api.EguneratuMahaiarenEgoeraAsync(_mahaia.Id, "Libre");
+                    _mahaia.Egoera = "Libre";
+                    EguneratuEgoeraBotoiak();
+                    MessageBox.Show(
+                        $"Kontua arrakastaz itxi da.\nMahai honetan ez da kontu gehiagorik geratzen eta mahaia 'Libre' geratu da.",
+                        "Kontua Itxita",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    _hautatutakoEskaeraIndex = Math.Max(0, Math.Min(_hautatutakoEskaeraIndex, _eskaerak.Count - 1));
+                }
+
+                await KargatuDatuakAsync();
+            }
+            else
+            {
+                MessageBox.Show(mezua, "Errorea kontua ezabatzean", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        finally
+        {
+            _eragiketanAri = false;
+        }
+    }
+
+    /// <summary>
     /// Ordainketa pantaila profesionala irekitzen du (Eskudirua, Txartela, Bizum) eta tiketa sortzen du
     /// </summary>
     private async Task KobratuEtaItxiAsync()
@@ -748,11 +1100,28 @@ public partial class MahaiaXehetasunakForm : Form
             return;
         }
 
+        var eskaera = _eskaerak[_hautatutakoEskaeraIndex];
+
+        // Kontua hutsik badago (platerik gabe eta 0,00 €), zuzenean ixteko proposatu
+        bool platerikGabe = (eskaera.Lerroak == null || eskaera.Lerroak.Count == 0 || eskaera.Lerroak.Sum(l => l.Kantitatea) == 0) && eskaera.Guztira == 0m;
+        if (platerikGabe)
+        {
+            var delConfirm = MessageBox.Show(
+                $"{_hautatutakoEskaeraIndex + 1}. Kontuak ez du platerik (0,00 €).\n\nNahi duzu kontu huts hau itxi eta ezabatu?",
+                "Kontu Hutsa Itxi",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (delConfirm == DialogResult.Yes)
+            {
+                await EzabatuKontuHutsaAsync(eskaera, _hautatutakoEskaeraIndex, galdetu: false);
+            }
+            return;
+        }
+
         _eragiketanAri = true;
         try
         {
-        var eskaera = _eskaerak[_hautatutakoEskaeraIndex];
-
         using var ordainketaForm = new OrdainketaForm(_mahaia, eskaera, _langilea, _api);
         var emaitza = ordainketaForm.ShowDialog(this);
 
@@ -782,6 +1151,156 @@ public partial class MahaiaXehetasunakForm : Form
                     MessageBoxIcon.Information);
             }
         }
+        }
+        finally
+        {
+            _eragiketanAri = false;
+        }
+    }
+
+    private void EguneratuEgoeraBotoiak()
+    {
+        string egoera = _mahaia.Egoera;
+        bool isLibre = egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase);
+        bool isOkupatuta = egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase);
+        bool isGarbitzen = egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase) ||
+                           egoera.Equals("Garbitzeko", StringComparison.OrdinalIgnoreCase);
+
+        // 1. Libre botoia
+        btnEgoeraLibre.Text = "Libre";
+        btnEgoeraLibre.BackColor = isLibre ? Color.FromArgb(220, 252, 231) : Color.White;
+        btnEgoeraLibre.ForeColor = isLibre ? Color.FromArgb(22, 101, 52) : Color.FromArgb(100, 116, 139);
+        btnEgoeraLibre.FlatAppearance.BorderColor = isLibre ? Color.FromArgb(34, 197, 94) : Color.FromArgb(203, 213, 225);
+        btnEgoeraLibre.FlatAppearance.BorderSize = isLibre ? 2 : 1;
+
+        // 2. Okupatuta botoia
+        btnEgoeraOkupatuta.Text = "Okupatuta";
+        btnEgoeraOkupatuta.BackColor = isOkupatuta ? Color.FromArgb(51, 65, 85) : Color.White;
+        btnEgoeraOkupatuta.ForeColor = isOkupatuta ? Color.White : Color.FromArgb(100, 116, 139);
+        btnEgoeraOkupatuta.FlatAppearance.BorderColor = isOkupatuta ? Color.FromArgb(30, 41, 59) : Color.FromArgb(203, 213, 225);
+        btnEgoeraOkupatuta.FlatAppearance.BorderSize = isOkupatuta ? 2 : 1;
+
+        // 3. Garbitzeko botoia
+        btnEgoeraGarbitzen.Text = "Garbitzeko";
+        btnEgoeraGarbitzen.BackColor = isGarbitzen ? Color.FromArgb(254, 243, 199) : Color.White;
+        btnEgoeraGarbitzen.ForeColor = isGarbitzen ? Color.FromArgb(180, 83, 9) : Color.FromArgb(100, 116, 139);
+        btnEgoeraGarbitzen.FlatAppearance.BorderColor = isGarbitzen ? Color.FromArgb(245, 158, 11) : Color.FromArgb(203, 213, 225);
+        btnEgoeraGarbitzen.FlatAppearance.BorderSize = isGarbitzen ? 2 : 1;
+
+        lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax)";
+    }
+
+    /// <summary>
+    /// Mahaia 'Libre' egoeran jartzen du, eskaeretan platerik EZ badago.
+    /// Araua: Platerak badaude mahai bateko eskarian ezin du mahai batek libre egon.
+    /// </summary>
+    private async Task AldatuEgoeraLibreAsync()
+    {
+        if (_eragiketanAri) return;
+
+        // Platerak badaude mahai bateko eskarian, ezin da mahaia libratu!
+        bool platerakDitu = _eskaerak.Any(e => e.Lerroak != null && e.Lerroak.Count > 0);
+        if (platerakDitu)
+        {
+            int guztiraPlaterak = _eskaerak.Sum(e => e.Lerroak?.Sum(l => l.Kantitatea) ?? 0);
+            MessageBox.Show(
+                $"Mahaia {_mahaia.Zenbakia} ezin da 'Libre' egoeran jarri eskari aktiboetan {guztiraPlaterak} plater daudelako.\n\n" +
+                "⚠️ Platerak badaude mahai bateko eskarian, ezin du mahai batek libre egon.\n\n" +
+                "Sukaldera bidali gabeko platerak ezabatu (🗑 Ezabatu botoiarekin) edo kontua kobratu behar da lehenik.",
+                "Ezin da Mahaia Libratu",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            $"Mahaia {_mahaia.Zenbakia} 'Libre' egoerara aldatu nahi duzu?",
+            "Mahaia Libre Jarri",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirm != DialogResult.Yes) return;
+
+        _eragiketanAri = true;
+        try
+        {
+            // Mahaiak hutsik zeuden kontuak baditu (platerik gabe), guztiak ezabatu/itxi
+            foreach (var e in _eskaerak.Where(e => (e.Lerroak == null || e.Lerroak.Count == 0 || e.Lerroak.Sum(l => l.Kantitatea) == 0) && e.Guztira == 0m).ToList())
+            {
+                await _api.EzabatuEskaeraAsync(e.Id);
+            }
+
+            var (ok, mezua) = await _api.AldatuMahaiarenEgoeraAsync(_mahaia.Id, "Libre");
+            if (ok)
+            {
+                _mahaia.Egoera = "Libre";
+                EguneratuEgoeraBotoiak();
+                await KargatuDatuakAsync();
+                MessageBox.Show($"Mahaia {_mahaia.Zenbakia} 'Libre' egoerara aldatu da arrakastaz.", "Egoera Aldatuta", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(mezua, "Errorea egoera aldatzean", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        finally
+        {
+            _eragiketanAri = false;
+        }
+    }
+
+    /// <summary>
+    /// Mahaia 'Okupatuta' egoeran jartzen du.
+    /// </summary>
+    private async Task AldatuEgoeraOkupatutaAsync()
+    {
+        if (_eragiketanAri) return;
+        if (_mahaia.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase)) return;
+
+        _eragiketanAri = true;
+        try
+        {
+            var (ok, mezua) = await _api.AldatuMahaiarenEgoeraAsync(_mahaia.Id, "Okupatuta");
+            if (ok)
+            {
+                _mahaia.Egoera = "Okupatuta";
+                EguneratuEgoeraBotoiak();
+                await KargatuDatuakAsync();
+            }
+            else
+            {
+                MessageBox.Show(mezua, "Errorea egoera aldatzean", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        finally
+        {
+            _eragiketanAri = false;
+        }
+    }
+
+    /// <summary>
+    /// Mahaia 'Garbitzeko' ('Garbitzen') egoeran jartzen du.
+    /// </summary>
+    private async Task AldatuEgoeraGarbitzenAsync()
+    {
+        if (_eragiketanAri) return;
+        if (_mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase) ||
+            _mahaia.Egoera.Equals("Garbitzeko", StringComparison.OrdinalIgnoreCase)) return;
+
+        _eragiketanAri = true;
+        try
+        {
+            var (ok, mezua) = await _api.AldatuMahaiarenEgoeraAsync(_mahaia.Id, "Garbitzen");
+            if (ok)
+            {
+                _mahaia.Egoera = "Garbitzen";
+                EguneratuEgoeraBotoiak();
+                await KargatuDatuakAsync();
+            }
+            else
+            {
+                MessageBox.Show(mezua, "Errorea egoera aldatzean", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         finally
         {

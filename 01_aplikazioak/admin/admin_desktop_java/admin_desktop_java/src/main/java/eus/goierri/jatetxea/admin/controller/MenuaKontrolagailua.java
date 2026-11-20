@@ -77,7 +77,11 @@ public final class MenuaKontrolagailua {
         menuTable.setItems(menuItems);
         menuTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    if (editingMenuItemId != 0 && (newValue == null || newValue.id != editingMenuItemId)) {
+                    if (newValue != null) {
+                        if (editingMenuItemId != newValue.id) {
+                            loadMenuItem(newValue);
+                        }
+                    } else if (editingMenuItemId != 0) {
                         beginNewMenuItem();
                     }
                     updateWriteButtons();
@@ -86,9 +90,22 @@ public final class MenuaKontrolagailua {
                 "Sarrerakoa", "Lehena", "Bigarrena", "Postrea", "Edaria"));
         categoryCombo.getSelectionModel().selectFirst();
         ingredientCombo.setItems(ingredients);
+        ingredientCombo.valueProperty().addListener(
+                (observable, oldValue, newValue) -> updateWriteButtons());
         recipeList.setItems(recipeComponents);
         recipeList.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> updateWriteButtons());
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        for (Lehengaia ing : ingredients) {
+                            if (ing.id == newValue.ingredientId()) {
+                                ingredientCombo.setValue(ing);
+                                break;
+                            }
+                        }
+                        recipeQuantityField.setText(Double.toString(newValue.quantity()));
+                    }
+                    updateWriteButtons();
+                });
         beginNewMenuItem();
         if (session != null) {
             session.configurationWritableProperty().addListener(
@@ -126,15 +143,14 @@ public final class MenuaKontrolagailua {
             menuMessage.setText("Aukeratu errezetaren osagai bat.");
             return;
         }
-        if (recipeComponents.stream().anyMatch(component -> component.ingredientId() == ingredient.id)) {
-            menuMessage.setText("Osagai hori dagoeneko gehitu da errezetara.");
-            return;
-        }
         try {
             double quantity = PantailaLaguntza.parsePositive(recipeQuantityField.getText(), "Kantitatea");
+            recipeComponents.removeIf(component -> component.ingredientId() == ingredient.id);
             recipeComponents.add(new RecipeComponent(
                     ingredient.id, quantity, ingredient.unitatea, ingredient.izena));
             recipeQuantityField.clear();
+            menuMessage.setText(ingredient.izena + " (" + quantity + " " + ingredient.unitatea + ") errezetan ezarri da.");
+            updateWriteButtons();
         } catch (IllegalArgumentException ex) {
             menuMessage.setText(ex.getMessage());
         }
@@ -210,6 +226,14 @@ public final class MenuaKontrolagailua {
             menuMessage.setText("Hautatu editatu nahi duzun platera.");
             return;
         }
+        loadMenuItem(selected);
+    }
+
+    private void loadMenuItem(Platera selected) {
+        if (selected == null) {
+            beginNewMenuItem();
+            return;
+        }
         busy = true;
         updateWriteButtons();
         menuMessage.setText("Plateraren errezeta kargatzen...");
@@ -223,10 +247,12 @@ public final class MenuaKontrolagailua {
                     priceField.setText(Double.toString(selected.prezioa));
                     allergensField.setText(selected.alergenoak == null ? "" : selected.alergenoak);
                     recipeComponents.clear();
-                    for (PlaterEskandalloa.RecipeIngredient ingredient : recipe.osagaiak) {
-                        recipeComponents.add(new RecipeComponent(
-                                ingredient.lehengaiaId, ingredient.kantitatea,
-                                ingredient.unitatea, ingredient.lehengaiaIzena));
+                    if (recipe != null && recipe.osagaiak != null) {
+                        for (PlaterEskandalloa.RecipeIngredient ingredient : recipe.osagaiak) {
+                            recipeComponents.add(new RecipeComponent(
+                                    ingredient.lehengaiaId, ingredient.kantitatea,
+                                    ingredient.unitatea, ingredient.lehengaiaIzena));
+                        }
                     }
                     formTitle.setText("Platera editatzen");
                     createButton.setText("Gorde platera eta errezeta");
@@ -245,6 +271,7 @@ public final class MenuaKontrolagailua {
 
     @FXML
     private void cancelEdit() {
+        menuTable.getSelectionModel().clearSelection();
         beginNewMenuItem();
         menuMessage.setText("Plater berria sortzeko formularioa prest.");
     }
@@ -254,7 +281,21 @@ public final class MenuaKontrolagailua {
         RecipeComponent selected = recipeList.getSelectionModel().getSelectedItem();
         if (selected != null) {
             recipeComponents.remove(selected);
+            menuMessage.setText(selected.name() + " errezetatik kendu da.");
+            recipeQuantityField.clear();
             updateWriteButtons();
+            return;
+        }
+        Lehengaia comboIng = ingredientCombo.getValue();
+        if (comboIng != null) {
+            boolean removed = recipeComponents.removeIf(c -> c.ingredientId() == comboIng.id);
+            if (removed) {
+                menuMessage.setText(comboIng.izena + " errezetatik kendu da.");
+                recipeQuantityField.clear();
+                updateWriteButtons();
+            } else {
+                menuMessage.setText("Osagai hori ez dago errezetan.");
+            }
         }
     }
 
@@ -301,7 +342,10 @@ public final class MenuaKontrolagailua {
         menuTable.setDisable(busy);
         boolean recipeSelected = recipeList != null
                 && recipeList.getSelectionModel().getSelectedItem() != null;
-        removeRecipeIngredientButton.setDisable(busy || !recipeSelected);
+        boolean comboMatch = ingredientCombo != null
+                && ingredientCombo.getValue() != null
+                && recipeComponents.stream().anyMatch(c -> c.ingredientId() == ingredientCombo.getValue().id);
+        removeRecipeIngredientButton.setDisable(busy || (!recipeSelected && !comboMatch));
         if (session == null) {
             createButton.setDisable(true);
             editButton.setDisable(true);

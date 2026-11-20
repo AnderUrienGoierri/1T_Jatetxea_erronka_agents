@@ -61,17 +61,6 @@
                     <Label fx:id="lblKpiAgortuta" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #dc2626;" text="0" />
                     <Label style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" text="Stocka = 0 dutenak" />
                 </VBox>
-                
-                <Region HBox.hgrow="ALWAYS" />
-
-                <!-- DATU ITURRIAREN BOTOIAK (API edo DB zuzenean) -->
-                <VBox alignment="CENTER_RIGHT" spacing="6.0">
-                    <Label style="-fx-font-size: 11px; -fx-text-fill: #64748b;" text="Datu-iturria aukeratu:" />
-                    <HBox spacing="8.0">
-                        <Button mnemonicParsing="false" onAction="#onKargatuApiClick" styleClass="btn-secondary" text="APItik Kargatu" />
-                        <Button mnemonicParsing="false" onAction="#onKargatuDbClick" styleClass="btn-secondary" text="MySQL DBtik (JDBC)" />
-                    </HBox>
-                </VBox>
             </HBox>
 
             <!-- BILAKETA ETA IRAGAZKIAK -->

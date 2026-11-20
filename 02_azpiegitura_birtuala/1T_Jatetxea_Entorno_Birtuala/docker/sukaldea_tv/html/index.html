@@ -243,6 +243,139 @@
         background: #10b981;
         color: white;
       }
+      .btn-serve {
+        background: #0ea5e9;
+        color: white;
+      }
+      .btn-serve:active {
+        background: #0284c7;
+      }
+      .btn-delete {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        border: 1px solid #ef4444;
+        padding: 8px 12px;
+      }
+      .btn-delete:hover,
+      .btn-delete:active {
+        background: #dc2626;
+        color: white;
+      }
+      .btn-clear-all {
+        background: #047857;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-clear-all:hover {
+        background: #059669;
+      }
+      .dish-name {
+        cursor: pointer;
+        transition: color 0.15s;
+      }
+      .dish-name:hover {
+        color: #38bdf8;
+        text-decoration: underline;
+      }
+      /* Modal Dialog for Ingredients */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal-content {
+        background: #1e293b;
+        border: 2px solid #3b82f6;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 520px;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        animation: modalIn 0.2s ease-out;
+      }
+      @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
+      }
+      .modal-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #38bdf8;
+      }
+      .modal-badge {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: #334155;
+        color: #cbd5e1;
+        margin-top: 4px;
+      }
+      .modal-close {
+        background: #334155;
+        color: #f8fafc;
+        border: none;
+        border-radius: 6px;
+        font-size: 20px;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-close:hover {
+        background: #ef4444;
+      }
+      .ingredient-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        margin-bottom: 6px;
+      }
+      .allergen-box {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid #ef4444;
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: #fca5a5;
+        font-size: 14px;
+        font-weight: 600;
+      }
       .empty-state {
         padding: 24px;
         text-align: center;
@@ -311,12 +444,37 @@
 
       <div class="column col-prest">
         <div class="column-header">
-          <span>Prestatuta (Ateratzeko)</span>
-          <span id="countPrest">0</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span>Prestatuta (Ateratzeko)</span>
+            <span id="countPrest">0</span>
+          </div>
+          <button class="btn-clear-all" onclick="garbituPrestatutakoak(event)" title="Garbitu prestatutako eskaera guztiak">
+            🧹 Garbitu
+          </button>
         </div>
         <div class="card-list" id="listPrest"></div>
       </div>
     </main>
+
+    <!-- Modal: Plateraren Osagaiak eta Alergenoak -->
+    <div id="ingredientsModal" class="modal-overlay" onclick="itxiOsagaiakModal()">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <div id="modalDishTitle" class="modal-title">Plateraren Izena</div>
+            <span id="modalDishCategory" class="modal-badge">Kategoria</span>
+          </div>
+          <button class="modal-close" onclick="itxiOsagaiakModal()" title="Itxi">&times;</button>
+        </div>
+        <p id="modalDishDesc" style="color:var(--text-muted); font-size:14px; font-style:italic;"></p>
+        <div id="modalDishAllergens" class="allergen-box" style="display:none;"></div>
+        <div id="modalLoading" style="text-align:center; padding:16px; color:#38bdf8; display:none;">Kargatzen osagaiak...</div>
+        <div id="modalIngredientsList"></div>
+        <button class="btn-action" style="background:#334155; color:white; width:100%; margin-top:8px;" onclick="itxiOsagaiakModal()">
+          Itxi
+        </button>
+      </div>
+    </div>
 
     <footer>
       <span
@@ -336,6 +494,17 @@
       updateClock();
 
       let currentApiBase = null;
+      let currentPrestOrders = [];
+
+      function escapeHtml(text) {
+        if (!text) return "";
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
 
       function getElapsedTime(dateStr) {
         if (!dateStr) return "";
@@ -353,10 +522,11 @@
       function createOrderCardHtml(order) {
         const lerroak = order.lerroak || [];
         const guztiaEginda =
-          lerroak.length > 0 &&
-          lerroak.every(
-            (l) => l.egoera === "Prestatua" || l.egoera === "Zerbitzatua",
-          );
+          order.egoera === "Prestatua" ||
+          (lerroak.length > 0 &&
+            lerroak.every(
+              (l) => l.egoera === "Prestatua" || l.egoera === "Zerbitzatua",
+            ));
         const mahaiaIzena = order.mahaiZenbakia
           ? `Mahaia ${order.mahaiZenbakia}`
           : order.mahaia || `Eskaera #${order.id}`;
@@ -391,14 +561,17 @@
                   hurrengoEgoera = "Sukaldean";
                 }
 
+                const platerIzenaSafe = escapeHtml(l.platerIzena || l.plater_izena || "Platera");
+                const platerId = l.plateraId || l.platera_id || 0;
+
                 return `
-                <li class="dish-row ${isPrestatua ? "is-done" : ""}">
+                <li class="dish-row ${isPrestatua ? "is-done" : ""}" onclick="erakutsiOsagaiak(${platerId}, '${platerIzenaSafe}', event)">
                   <div class="dish-info">
                     <div class="dish-item">
                       <span class="dish-qty">${l.kantitatea || 1}x</span>
-                      <span>${l.platerIzena || l.plater_izena || "Platera"}</span>
+                      <span class="dish-name" title="Klik egin osagaiak eta errezetaren datuak ikusteko">${platerIzenaSafe} <span style="font-size:12px; opacity:0.8;">ℹ️</span></span>
                     </div>
-                    ${l.oharrak ? `<div class="dish-notes">📝 ${l.oharrak}</div>` : ""}
+                    ${l.oharrak ? `<div class="dish-notes">📝 ${escapeHtml(l.oharrak)}</div>` : ""}
                   </div>
                   <button class="dish-btn ${btnClass}" onclick="updateLineState(${l.id}, '${hurrengoEgoera}', event)">
                     ${btnText}
@@ -418,8 +591,21 @@
             `
                 : ""
             }
-            <button class="btn-action btn-complete" ${guztiaEginda ? 'disabled style="opacity:0.5;"' : ""} onclick="updateOrderState(${order.id}, 'Prestatua', event)">
-              ${guztiaEginda ? "✓ Dena Prestatuta" : "Eskaera Osoa Eginda"}
+            ${
+              guztiaEginda
+                ? `
+              <button class="btn-action btn-serve" onclick="updateOrderState(${order.id}, 'Zerbitzatua', event)" title="Aterata/Zerbitzatuta markatu eta pantailatik kendu">
+                ✓ Aterata (Zerbitzatua)
+              </button>
+            `
+                : `
+              <button class="btn-action btn-complete" onclick="updateOrderState(${order.id}, 'Prestatua', event)">
+                Eskaera Osoa Eginda
+              </button>
+            `
+            }
+            <button class="btn-action btn-delete" onclick="ezabatuEskaera(${order.id}, event)" title="Ezabatu eskaera">
+              🗑️
             </button>
           </div>
         </div>
@@ -427,13 +613,17 @@
       }
 
       function renderOrders(orders) {
-        // Filtratu soilik aktiboak (ez kobratuak, ez ezezatuak)
+        // 1. Filtratu soilik aktiboak (ez kobratuak, ez ezezatuak, ez zerbitzatuak)
+        // 2. GARRANTZITSUA: Platerik ez duten eskaera hutsak kanpoan utzi!
         const aktiboak = orders.filter(
           (o) =>
             o.egoera !== "Kobratua" &&
             o.egoera !== "Ezeztatua" &&
+            o.egoera !== "Zerbitzatua" &&
             o.ezabatua !== 1 &&
-            o.ezabatua !== true,
+            o.ezabatua !== true &&
+            Array.isArray(o.lerroak) &&
+            o.lerroak.length > 0,
         );
 
         // Kategoriak banatu lerroen/eskaeraren egoeraren arabera
@@ -443,13 +633,6 @@
 
         aktiboak.forEach((order) => {
           const lerroak = order.lerroak || [];
-          if (lerroak.length === 0) {
-            if (order.egoera === "Sukaldean") martxan.push(order);
-            else if (order.egoera === "Prestatua") prest.push(order);
-            else zai.push(order);
-            return;
-          }
-
           const allDone = lerroak.every(
             (l) => l.egoera === "Prestatua" || l.egoera === "Zerbitzatua",
           );
@@ -463,6 +646,8 @@
             zai.push(order);
           }
         });
+
+        currentPrestOrders = prest;
 
         document.getElementById("countZai").textContent = zai.length;
         document.getElementById("countMartxan").textContent = martxan.length;
@@ -505,22 +690,155 @@
         if (event) event.stopPropagation();
         if (!currentApiBase) return;
         try {
+          let res;
           if (newEgoera === "Sukaldean") {
-            await fetch(`${currentApiBase}/eskaerak/${orderId}/sukaldera`, {
+            res = await fetch(`${currentApiBase}/eskaerak/${orderId}/sukaldera`, {
               method: "POST",
             });
           } else {
-            await fetch(`${currentApiBase}/eskaerak/${orderId}/egoera`, {
+            res = await fetch(`${currentApiBase}/eskaerak/${orderId}/egoera`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ egoera: newEgoera }),
             });
           }
-          loadOrdersFromApi();
+          if (res && res.ok) {
+            loadOrdersFromApi();
+          } else if (res) {
+            console.error("Errorea eskaera aldatzean:", await res.text());
+          }
         } catch (err) {
           console.error("Fetch errorea eskaera aldatzean:", err);
         }
       }
+
+      async function ezabatuEskaera(orderId, event) {
+        if (event) event.stopPropagation();
+        if (!confirm(`#${orderId} eskaera ezabatu nahi duzu?`)) return;
+        if (!currentApiBase) return;
+        try {
+          const res = await fetch(`${currentApiBase}/eskaerak/${orderId}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            loadOrdersFromApi();
+          } else {
+            alert("Errorea eskaera ezabatzean: " + (await res.text()));
+          }
+        } catch (err) {
+          console.error("Errorea eskaera ezabatzean:", err);
+        }
+      }
+
+      async function garbituPrestatutakoak(event) {
+        if (event) event.stopPropagation();
+        if (!currentPrestOrders || currentPrestOrders.length === 0) {
+          alert("Ez dago eskaera prestatutarik garbitzeko.");
+          return;
+        }
+        if (
+          !confirm(
+            `Ziur zaude prestatuta dauden ${currentPrestOrders.length} eskaera guztiak aterata bezala markatu eta pantailatik kendu nahi dituzula?`,
+          )
+        )
+          return;
+
+        for (const o of currentPrestOrders) {
+          try {
+            await fetch(`${currentApiBase}/eskaerak/${o.id}/egoera`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ egoera: "Zerbitzatua" }),
+            });
+          } catch (e) {
+            console.error("Errorea garbitzean:", e);
+          }
+        }
+        loadOrdersFromApi();
+      }
+
+      async function erakutsiOsagaiak(platerId, platerIzena, event) {
+        if (event) event.stopPropagation();
+        if (!platerId || !currentApiBase) return;
+
+        const modal = document.getElementById("ingredientsModal");
+        const modalTitle = document.getElementById("modalDishTitle");
+        const modalCategory = document.getElementById("modalDishCategory");
+        const modalDesc = document.getElementById("modalDishDesc");
+        const modalAllergens = document.getElementById("modalDishAllergens");
+        const modalIngredientsList = document.getElementById("modalIngredientsList");
+        const modalLoading = document.getElementById("modalLoading");
+
+        modalTitle.textContent = platerIzena;
+        modalCategory.textContent = "Kargatzen...";
+        modalDesc.textContent = "";
+        modalAllergens.style.display = "none";
+        modalIngredientsList.innerHTML = "";
+        modalLoading.style.display = "block";
+        modal.classList.add("active");
+
+        try {
+          const [detailRes, eskandalloRes] = await Promise.all([
+            fetch(`${currentApiBase}/platerak/${platerId}`).then(r => r.ok ? r.json() : null).catch(() => null),
+            fetch(`${currentApiBase}/platerak/${platerId}/eskandalloa`).then(r => r.ok ? r.json() : null).catch(() => null)
+          ]);
+
+          modalLoading.style.display = "none";
+
+          if (detailRes && detailRes.data) {
+            const p = detailRes.data;
+            modalCategory.textContent = p.kategoria || "Orokorra";
+            modalDesc.textContent = p.deskribapena || "Ez dago deskribapenik erregistratuta.";
+            if (p.alergenoak && p.alergenoak.trim()) {
+              modalAllergens.style.display = "block";
+              modalAllergens.style.background = "rgba(239, 68, 68, 0.15)";
+              modalAllergens.style.borderColor = "#ef4444";
+              modalAllergens.style.color = "#fca5a5";
+              modalAllergens.innerHTML = `⚠️ <strong>Alergenoak:</strong> ${p.alergenoak}`;
+            } else {
+              modalAllergens.style.display = "block";
+              modalAllergens.style.background = "rgba(16, 185, 129, 0.15)";
+              modalAllergens.style.borderColor = "#10b981";
+              modalAllergens.style.color = "#6ee7b7";
+              modalAllergens.innerHTML = `✓ <strong>Alergenorik gabe</strong>`;
+            }
+          } else {
+            modalCategory.textContent = "Platera";
+          }
+
+          const osagaiak = (eskandalloRes && eskandalloRes.data && eskandalloRes.data.osagaiak) ? eskandalloRes.data.osagaiak : [];
+          if (osagaiak.length > 0) {
+            modalIngredientsList.innerHTML = `
+              <div style="font-weight:700; margin-bottom:8px; color:#94a3b8; font-size:14px; text-transform:uppercase;">
+                Errezetaren Osagaiak (${osagaiak.length}):
+              </div>
+              ${osagaiak.map(o => `
+                <div class="ingredient-item">
+                  <span style="font-weight:600; color:#f1f5f9;">🍴 ${o.lehengaiaIzena}</span>
+                  <span style="background:#0284c7; color:white; padding:3px 8px; border-radius:4px; font-size:13px; font-weight:bold;">
+                    ${o.kantitatea} ${o.unitatea}
+                  </span>
+                </div>
+              `).join("")}
+            `;
+          } else {
+            modalIngredientsList.innerHTML = `<div class="empty-state" style="padding:16px;">Ez dago osagairik erregistratuta plater honen errezetan.</div>`;
+          }
+        } catch (err) {
+          modalLoading.style.display = "none";
+          modalIngredientsList.innerHTML = `<div style="color:#ef4444; padding:12px;">Errorea osagaiak kargatzean: ${err.message}</div>`;
+        }
+      }
+
+      function itxiOsagaiakModal() {
+        const modal = document.getElementById("ingredientsModal");
+        if (modal) modal.classList.remove("active");
+      }
+
+      // ESC sakatzean modala itxi
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") itxiOsagaiakModal();
+      });
 
       async function loadOrdersFromApi() {
         const banner = document.getElementById("dbAlertBanner");

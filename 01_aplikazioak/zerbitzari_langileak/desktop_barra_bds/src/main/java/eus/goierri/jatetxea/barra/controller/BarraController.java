@@ -170,6 +170,11 @@ public class BarraController extends BaseEskaeraController {
     }
 
     @FXML
+    private void onEskaeraEgindaClick() {
+        onEdariakEgindaClick();
+    }
+
+    @FXML
     private void onEdariakEgindaClick() {
         Eskaera hautatua = tblEskaerak.getSelectionModel().getSelectedItem();
         if (hautatua == null) {
@@ -197,5 +202,35 @@ public class BarraController extends BaseEskaeraController {
                 });
             }
         }).start();
+    }
+
+    @FXML
+    private void onEdariaZaiClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu edari bat lehenik.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Eskatua");
+    }
+
+    @FXML
+    private void onEdariaMartxanClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu edari bat lehenik.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Prestatua");
+    }
+
+    @FXML
+    private void onEdariaEgindaClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu edari bat lehenik.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Zerbitzatuta");
     }
 }

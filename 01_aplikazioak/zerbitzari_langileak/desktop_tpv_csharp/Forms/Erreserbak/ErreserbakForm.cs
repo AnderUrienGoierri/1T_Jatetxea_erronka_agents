@@ -5,7 +5,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public class ErreserbakForm : Form
+public partial class ErreserbakForm : Form
 {
     private readonly LangileaDto _langilea;
     private readonly ApiService _api;
@@ -18,17 +18,6 @@ public class ErreserbakForm : Form
     private List<ErreserbaDto> _erreserbaGuztiak = new();
     private Dictionary<string, List<ErreserbaDto>> _erreserbakDataMap = new();
 
-    // UI Osagaiak
-    private readonly Label _lblMonthTitle;
-    private readonly FlowLayoutPanel _pnlMonthPills;
-    private readonly TableLayoutPanel _pnlDayGrid;
-    private readonly Label _lblCalendarFooter;
-
-    private readonly Panel _pnlRightDetails;
-    private readonly Label _lblSelectedDayTitle;
-    private readonly Label _lblSelectedDayStats;
-    private readonly FlowLayoutPanel _pnlTurnosContainer;
-
     private readonly (string Kodea, string Izena, string Ordutegia)[] _txandak = new[]
     {
         ("Bazkaria_1", "Bazkaria 1", "13:00 - 14:30"),
@@ -36,6 +25,13 @@ public class ErreserbakForm : Form
         ("Afaria_1", "Afaria 1", "20:30 - 22:00"),
         ("Afaria_2", "Afaria 2", "22:00 - 23:30")
     };
+
+    /// <summary>
+    /// Parameterless constructor for Visual Studio Form Designer.
+    /// </summary>
+    public ErreserbakForm() : this(new LangileaDto(), new ApiService(), new List<MahaiaDto>())
+    {
+    }
 
     public ErreserbakForm(LangileaDto langilea, ApiService api, List<MahaiaDto> mahaiak)
     {
@@ -47,122 +43,22 @@ public class ErreserbakForm : Form
         _bistaratzekoHilabetea = _momentukoHilabetea;
         _hautatutakoData = DateTime.Today;
 
-        Text = "T1 Jatetxea - Erreserben Kudeaketa Zentrala (TPV)";
-        Size = new Size(1250, 800);
-        MinimumSize = new Size(1050, 680);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Theme.Background;
-        Font = Theme.FontBody;
+        InitializeComponent();
 
-        // 1. Goiko goiburua
-        var pnlHeader = new Panel
+        if (!string.IsNullOrWhiteSpace(_langilea.Izena))
         {
-            Dock = DockStyle.Top,
-            Height = 72,
-            BackColor = Theme.AccentWine,
-            Padding = new Padding(24, 12, 24, 12)
-        };
+            lblSub.Text = $"Kudeatzailea: {_langilea.Izena} ({_langilea.Rola}) · Telefonoz eta Pertsonan jasotako erreserbak";
+        }
 
-        var lblTit = new Label
-        {
-            Text = "Erreserben Kudeaketa Zentrala (TPV)",
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-            Location = new Point(24, 10),
-            AutoSize = true
-        };
-
-        var lblSub = new Label
-        {
-            Text = $"Kudeatzailea: {_langilea.Izena} ({_langilea.Rola}) · Telefonoz eta Pertsonan jasotako erreserbak",
-            ForeColor = Color.FromArgb(254, 205, 211),
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
-            Location = new Point(25, 38),
-            AutoSize = true
-        };
-
-        var btnFreskatu = new Button
-        {
-            Text = "Freskatu",
-            Size = new Size(100, 42),
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            Location = new Point(pnlHeader.Width - 325, 14),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(159, 18, 57),
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-            Cursor = Cursors.Hand
-        };
-        btnFreskatu.FlatAppearance.BorderColor = Color.FromArgb(225, 29, 72);
         btnFreskatu.Click += async (s, e) => await KargatuErreserbakGuztiakAsync();
-
-        var btnBerriaTop = new Button
-        {
-            Text = "+ Erreserba Berria",
-            Size = new Size(190, 42),
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            Location = new Point(pnlHeader.Width - 215, 14),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(22, 163, 74),
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-            Cursor = Cursors.Hand
-        };
-        btnBerriaTop.FlatAppearance.BorderSize = 0;
         btnBerriaTop.Click += (s, e) => IrekiErreserbaBerria(_hautatutakoData);
 
-        pnlHeader.Resize += (s, e) =>
-        {
-            btnFreskatu.Location = new Point(pnlHeader.Width - 325, 14);
-            btnBerriaTop.Location = new Point(pnlHeader.Width - 215, 14);
-        };
-
-        pnlHeader.Controls.Add(lblTit);
-        pnlHeader.Controls.Add(lblSub);
-        pnlHeader.Controls.Add(btnFreskatu);
-        pnlHeader.Controls.Add(btnBerriaTop);
-
-        // 2. Edukiontzi Nagusia (Ezkerra: Kalendarioa | Eskuina: Eguneko Txandak)
-        var pnlMain = new Panel
-        {
-            Dock = DockStyle.Fill,
-            BackColor = Theme.Background
-        };
-
-        // 2.1 Ezkerreko Panela: Kalendario Interaktiboa (480px zabal)
-        var pnlLeftCalendar = new Panel
-        {
-            Dock = DockStyle.Left,
-            Width = 490,
-            BackColor = Color.White,
-            Padding = new Padding(16, 12, 16, 12)
-        };
         pnlLeftCalendar.Paint += (s, e) =>
         {
             using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
             e.Graphics.DrawLine(pen, pnlLeftCalendar.Width - 1, 0, pnlLeftCalendar.Width - 1, pnlLeftCalendar.Height);
         };
 
-        // 2.1.1 Hilabete hautatzailearen goiburua (Aurrekoa, Hilabete Izena, Hurrengoa)
-        var pnlMonthNav = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 44,
-            BackColor = Color.White
-        };
-
-        var btnPrevMonth = new Button
-        {
-            Text = "◀",
-            Size = new Size(38, 36),
-            Location = new Point(2, 4),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Color.FromArgb(71, 85, 105),
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-            Cursor = Cursors.Hand
-        };
-        btnPrevMonth.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnPrevMonth.Click += (s, e) =>
         {
             if (_bistaratzekoHilabetea > _momentukoHilabetea)
@@ -172,18 +68,6 @@ public class ErreserbakForm : Form
             }
         };
 
-        var btnNextMonth = new Button
-        {
-            Text = "▶",
-            Size = new Size(38, 36),
-            Location = new Point(416, 4),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Color.FromArgb(71, 85, 105),
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-            Cursor = Cursors.Hand
-        };
-        btnNextMonth.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnNextMonth.Click += (s, e) =>
         {
             if (_bistaratzekoHilabetea < _momentukoHilabetea.AddMonths(4))
@@ -192,46 +76,6 @@ public class ErreserbakForm : Form
                 EguneratuHilabeteIkuspegia();
             }
         };
-
-        _lblMonthTitle = new Label
-        {
-            Text = "",
-            TextAlign = ContentAlignment.MiddleCenter,
-            Font = new Font("Segoe UI", 12.5F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(15, 23, 42),
-            Location = new Point(46, 4),
-            Size = new Size(364, 36)
-        };
-
-        pnlMonthNav.Controls.Add(btnPrevMonth);
-        pnlMonthNav.Controls.Add(_lblMonthTitle);
-        pnlMonthNav.Controls.Add(btnNextMonth);
-
-        // 2.1.2 Hurrengo 4 hilabeteen botoi/tab azkarrak (5 hilabeteak guztira)
-        _pnlMonthPills = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            Height = 44,
-            BackColor = Color.FromArgb(248, 250, 252),
-            Padding = new Padding(2, 4, 2, 4),
-            WrapContents = false,
-            AutoScroll = false
-        };
-
-        // 2.1.3 Asteko Egunen Goiburua (Al, Ar, Az, Og, Or, Lr, Ig)
-        var pnlDayHeaders = new TableLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            Height = 30,
-            ColumnCount = 7,
-            RowCount = 1,
-            BackColor = Color.FromArgb(241, 245, 249),
-            Margin = new Padding(0, 8, 0, 0)
-        };
-        for (int i = 0; i < 7; i++)
-        {
-            pnlDayHeaders.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857f));
-        }
 
         string[] egunLaburrak = { "Al", "Ar", "Az", "Og", "Or", "Lr", "Ig" };
         for (int i = 0; i < 7; i++)
@@ -248,124 +92,13 @@ public class ErreserbakForm : Form
             pnlDayHeaders.Controls.Add(lbl, i, 0);
         }
 
-        // 2.1.4 Egunen Sareta (7 zutabe x 6 errenkada)
-        _pnlDayGrid = new TableLayoutPanel
-        {
-            Dock = DockStyle.Top,
-            Height = 310,
-            ColumnCount = 7,
-            RowCount = 6,
-            BackColor = Color.White,
-            Margin = new Padding(0)
-        };
-        for (int i = 0; i < 7; i++)
-        {
-            _pnlDayGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857f));
-        }
-        for (int i = 0; i < 6; i++)
-        {
-            _pnlDayGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6666f));
-        }
-
-        // 2.1.5 Kalendarioaren Oina (Legenda eta estatistika)
-        _lblCalendarFooter = new Label
-        {
-            Dock = DockStyle.Bottom,
-            Height = 58,
-            Font = new Font("Segoe UI", 8.5F, FontStyle.Regular),
-            ForeColor = Color.FromArgb(100, 116, 139),
-            TextAlign = ContentAlignment.MiddleCenter
-        };
-
-        pnlLeftCalendar.Controls.Add(_lblCalendarFooter);
-        pnlLeftCalendar.Controls.Add(_pnlDayGrid);
-        pnlLeftCalendar.Controls.Add(pnlDayHeaders);
-        pnlLeftCalendar.Controls.Add(_pnlMonthPills);
-        pnlLeftCalendar.Controls.Add(pnlMonthNav);
-
-        // 2.2 Eskuineko Panela: Hautatutako Eguneko Txandak eta Xehetasunak
-        _pnlRightDetails = new Panel
-        {
-            Dock = DockStyle.Fill,
-            BackColor = Theme.Background,
-            Padding = new Padding(24, 16, 24, 20)
-        };
-
-        // Eguneko goiburua
-        var pnlSelectedDayHeader = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 70,
-            BackColor = Color.White,
-            Padding = new Padding(20, 10, 20, 10)
-        };
         pnlSelectedDayHeader.Paint += (s, e) =>
         {
             using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
             e.Graphics.DrawRectangle(pen, 0, 0, pnlSelectedDayHeader.Width - 1, pnlSelectedDayHeader.Height - 1);
         };
 
-        _lblSelectedDayTitle = new Label
-        {
-            Text = "",
-            Font = new Font("Segoe UI", 13.5F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(15, 23, 42),
-            Location = new Point(18, 10),
-            AutoSize = true
-        };
-
-        _lblSelectedDayStats = new Label
-        {
-            Text = "",
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-            ForeColor = Theme.AccentWine,
-            Location = new Point(19, 38),
-            AutoSize = true
-        };
-
-        var btnEgunekoErreserba = new Button
-        {
-            Text = "+ Egun honetan erreserbatu",
-            Size = new Size(205, 38),
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            Location = new Point(pnlSelectedDayHeader.Width - 225, 16),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Theme.AccentWine,
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-            Cursor = Cursors.Hand
-        };
-        btnEgunekoErreserba.FlatAppearance.BorderSize = 0;
         btnEgunekoErreserba.Click += (s, e) => IrekiErreserbaBerria(_hautatutakoData);
-
-        pnlSelectedDayHeader.Resize += (s, e) =>
-        {
-            btnEgunekoErreserba.Location = new Point(pnlSelectedDayHeader.Width - 225, 16);
-        };
-
-        pnlSelectedDayHeader.Controls.Add(_lblSelectedDayTitle);
-        pnlSelectedDayHeader.Controls.Add(_lblSelectedDayStats);
-        pnlSelectedDayHeader.Controls.Add(btnEgunekoErreserba);
-
-        // Txanden edukiontzia (4 txandak)
-        _pnlTurnosContainer = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            AutoScroll = true,
-            BackColor = Theme.Background,
-            Padding = new Padding(0, 14, 0, 0),
-            FlowDirection = FlowDirection.TopDown,
-            WrapContents = false
-        };
-
-        _pnlRightDetails.Controls.Add(_pnlTurnosContainer);
-        _pnlRightDetails.Controls.Add(pnlSelectedDayHeader);
-
-        pnlMain.Controls.Add(_pnlRightDetails);
-        pnlMain.Controls.Add(pnlLeftCalendar);
-
-        Controls.Add(pnlMain);
-        Controls.Add(pnlHeader);
 
         Load += async (s, e) => await KargatuErreserbakGuztiakAsync();
     }

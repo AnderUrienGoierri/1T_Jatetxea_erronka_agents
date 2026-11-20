@@ -316,6 +316,40 @@ public class ApiService
     }
 
     /// <summary>
+    /// Platerik gabeko edo aktibo dagoen eskaera/kontu bat ezabatzen du (soft delete).
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua)> EzabatuEskaeraAsync(int eskaeraId)
+    {
+        try
+        {
+            var response = await _http.DeleteAsync($"eskaerak/{eskaeraId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                    {
+                        return (false, apiErr.Message);
+                    }
+                }
+                catch { }
+
+                var raw = await response.Content.ReadAsStringAsync();
+                return (false, !string.IsNullOrWhiteSpace(raw) ? raw : "Ezin izan da eskaera ezabatu.");
+            }
+
+            var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+            return (true, apiRes?.Message ?? "Eskaera arrakastaz ezabatu da.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"EzabatuEskaeraAsync errorea: {ex.Message}");
+            return (false, $"Konexio errorea: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Plater guztiak berreskuratzen ditu (aukeran kategoriaren arabera).
     /// </summary>
     public async Task<List<PlateraDto>> GetPlaterakAsync(string? kategoria = null)

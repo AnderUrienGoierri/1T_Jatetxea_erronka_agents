@@ -297,6 +297,23 @@ public class MahaiakController : BaseApiKontroladorea
             return BadRequestError($"Egoera ez da baliozkoa. Balio onargarriak: {string.Join(", ", baliozkoak)}");
 
         await using var kon = await SortuKonexioaAsync();
+
+        if (dto.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase))
+        {
+            const string sqlCheckPlaterak = @"
+                SELECT COUNT(*) 
+                FROM eskaerak e 
+                JOIN eskaera_lerroak el ON e.id = el.eskaera_id
+                WHERE e.mahaia_id = @id AND e.ezabatua = 0 AND e.egoera NOT IN ('Kobratua', 'Ezeztatua');";
+            await using var cmdCheckP = new MySqlCommand(sqlCheckPlaterak, kon);
+            cmdCheckP.Parameters.AddWithValue("@id", id);
+            long platerKop = Convert.ToInt64(await cmdCheckP.ExecuteScalarAsync());
+            if (platerKop > 0)
+            {
+                return ConflictError($"Mahaia ezin da 'Libre' jarri {platerKop} plater daudelako eskari aktiboetan. Platerak ezabatu edo kobratu behar dira lehenik.");
+            }
+        }
+
         const string sql = "UPDATE mahaiak SET egoera = @egoera WHERE id = @id AND ezabatua = 0;";
 
         await using var cmd = new MySqlCommand(sql, kon);

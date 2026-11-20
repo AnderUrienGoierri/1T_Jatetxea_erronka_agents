@@ -19,6 +19,11 @@ partial class MahaiaXehetasunakForm
         btnAtzera = new Button();
         lblMahaiaTit = new Label();
         lblZerbitzaria = new Label();
+        pnlEgoeraChanger = new Panel();
+        lblEgoeraEtiketa = new Label();
+        btnEgoeraLibre = new Button();
+        btnEgoeraOkupatuta = new Button();
+        btnEgoeraGarbitzen = new Button();
         pnlEskuina = new Panel();
         pnlSummaryCard = new Panel();
         lblEgoeraOrokorra = new Label();
@@ -42,6 +47,7 @@ partial class MahaiaXehetasunakForm
         pnlKontuakGoiburua = new Panel();
         flowKontuFitxak = new FlowLayoutPanel();
         pnlTopBar.SuspendLayout();
+        pnlEgoeraChanger.SuspendLayout();
         pnlEskuina.SuspendLayout();
         pnlSummaryCard.SuspendLayout();
         pnlActions.SuspendLayout();
@@ -54,13 +60,14 @@ partial class MahaiaXehetasunakForm
         // pnlTopBar (POS Tablet estiloko goiburu zabala - 88px)
         // 
         pnlTopBar.BackColor = Color.White;
+        pnlTopBar.Controls.Add(pnlEgoeraChanger);
         pnlTopBar.Controls.Add(lblZerbitzaria);
         pnlTopBar.Controls.Add(lblMahaiaTit);
         pnlTopBar.Controls.Add(btnAtzera);
         pnlTopBar.Dock = DockStyle.Top;
         pnlTopBar.Location = new Point(0, 0);
         pnlTopBar.Name = "pnlTopBar";
-        pnlTopBar.Size = new Size(1280, 88);
+        pnlTopBar.Size = new Size(1366, 88);
         pnlTopBar.TabIndex = 0;
         // 
         // btnAtzera ("< Mahaiak")
@@ -85,7 +92,7 @@ partial class MahaiaXehetasunakForm
         lblMahaiaTit.ForeColor = Color.FromArgb(136, 19, 55);
         lblMahaiaTit.Location = new Point(175, 20);
         lblMahaiaTit.Name = "lblMahaiaTit";
-        lblMahaiaTit.Size = new Size(360, 48);
+        lblMahaiaTit.Size = new Size(345, 48);
         lblMahaiaTit.TabIndex = 1;
         lblMahaiaTit.Text = "T1 Jatetxea - Mahaia 4";
         lblMahaiaTit.TextAlign = ContentAlignment.MiddleLeft;
@@ -95,12 +102,72 @@ partial class MahaiaXehetasunakForm
         lblZerbitzaria.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblZerbitzaria.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblZerbitzaria.ForeColor = Color.FromArgb(71, 85, 105);
-        lblZerbitzaria.Location = new Point(545, 20);
+        lblZerbitzaria.Location = new Point(530, 20);
         lblZerbitzaria.Name = "lblZerbitzaria";
-        lblZerbitzaria.Size = new Size(705, 48);
+        lblZerbitzaria.Size = new Size(340, 48);
         lblZerbitzaria.TabIndex = 2;
-        lblZerbitzaria.Text = "Zerbitzaria: Ane G. (4 pax) · Okupatuta";
+        lblZerbitzaria.Text = "Zerbitzaria: Ane G. (4 pax)";
         lblZerbitzaria.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // pnlEgoeraChanger
+        // 
+        pnlEgoeraChanger.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        pnlEgoeraChanger.BackColor = Color.White;
+        pnlEgoeraChanger.Controls.Add(btnEgoeraGarbitzen);
+        pnlEgoeraChanger.Controls.Add(btnEgoeraOkupatuta);
+        pnlEgoeraChanger.Controls.Add(btnEgoeraLibre);
+        pnlEgoeraChanger.Controls.Add(lblEgoeraEtiketa);
+        pnlEgoeraChanger.Location = new Point(880, 18);
+        pnlEgoeraChanger.Name = "pnlEgoeraChanger";
+        pnlEgoeraChanger.Size = new Size(465, 52);
+        pnlEgoeraChanger.TabIndex = 3;
+        // 
+        // lblEgoeraEtiketa
+        // 
+        lblEgoeraEtiketa.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblEgoeraEtiketa.ForeColor = Color.FromArgb(71, 85, 105);
+        lblEgoeraEtiketa.Location = new Point(0, 6);
+        lblEgoeraEtiketa.Name = "lblEgoeraEtiketa";
+        lblEgoeraEtiketa.Size = new Size(62, 40);
+        lblEgoeraEtiketa.TabIndex = 0;
+        lblEgoeraEtiketa.Text = "Egoera:";
+        lblEgoeraEtiketa.TextAlign = ContentAlignment.MiddleLeft;
+        // 
+        // btnEgoeraLibre
+        // 
+        btnEgoeraLibre.Cursor = Cursors.Hand;
+        btnEgoeraLibre.FlatStyle = FlatStyle.Flat;
+        btnEgoeraLibre.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnEgoeraLibre.Location = new Point(65, 4);
+        btnEgoeraLibre.Name = "btnEgoeraLibre";
+        btnEgoeraLibre.Size = new Size(115, 44);
+        btnEgoeraLibre.TabIndex = 1;
+        btnEgoeraLibre.Text = "Libre";
+        btnEgoeraLibre.UseVisualStyleBackColor = false;
+        // 
+        // btnEgoeraOkupatuta
+        // 
+        btnEgoeraOkupatuta.Cursor = Cursors.Hand;
+        btnEgoeraOkupatuta.FlatStyle = FlatStyle.Flat;
+        btnEgoeraOkupatuta.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnEgoeraOkupatuta.Location = new Point(188, 4);
+        btnEgoeraOkupatuta.Name = "btnEgoeraOkupatuta";
+        btnEgoeraOkupatuta.Size = new Size(125, 44);
+        btnEgoeraOkupatuta.TabIndex = 2;
+        btnEgoeraOkupatuta.Text = "Okupatuta";
+        btnEgoeraOkupatuta.UseVisualStyleBackColor = false;
+        // 
+        // btnEgoeraGarbitzen
+        // 
+        btnEgoeraGarbitzen.Cursor = Cursors.Hand;
+        btnEgoeraGarbitzen.FlatStyle = FlatStyle.Flat;
+        btnEgoeraGarbitzen.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnEgoeraGarbitzen.Location = new Point(321, 4);
+        btnEgoeraGarbitzen.Name = "btnEgoeraGarbitzen";
+        btnEgoeraGarbitzen.Size = new Size(130, 44);
+        btnEgoeraGarbitzen.TabIndex = 3;
+        btnEgoeraGarbitzen.Text = "Garbitzeko";
+        btnEgoeraGarbitzen.UseVisualStyleBackColor = false;
         // 
         // pnlEskuina (Ekintza botoiak eta laburpena - 440px)
         // 
@@ -386,6 +453,7 @@ partial class MahaiaXehetasunakForm
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Mahaiaren Xehetasunak";
         pnlTopBar.ResumeLayout(false);
+        pnlEgoeraChanger.ResumeLayout(false);
         pnlEskuina.ResumeLayout(false);
         pnlSummaryCard.ResumeLayout(false);
         pnlActions.ResumeLayout(false);
@@ -400,6 +468,11 @@ partial class MahaiaXehetasunakForm
     private Button btnAtzera;
     private Label lblMahaiaTit;
     private Label lblZerbitzaria;
+    private Panel pnlEgoeraChanger;
+    private Label lblEgoeraEtiketa;
+    private Button btnEgoeraLibre;
+    private Button btnEgoeraOkupatuta;
+    private Button btnEgoeraGarbitzen;
     private Panel pnlEskuina;
     private Panel pnlSummaryCard;
     private Label lblSummaryTitle;

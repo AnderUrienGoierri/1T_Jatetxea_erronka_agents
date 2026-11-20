@@ -29,7 +29,7 @@
     </HBox>
     <VBox spacing="8" styleClass="card" VBox.vgrow="ALWAYS">
         <Label text="Katalogoa" styleClass="section-title"/>
-        <TableView fx:id="menuTable" VBox.vgrow="ALWAYS">
+        <TableView fx:id="menuTable" VBox.vgrow="ALWAYS" prefHeight="220" minHeight="140">
             <columns>
                 <TableColumn fx:id="idColumn" text="ID" prefWidth="56"/>
                 <TableColumn fx:id="nameColumn" text="Platera" prefWidth="240"/>
@@ -38,7 +38,7 @@
                 <TableColumn fx:id="statusColumn" text="Aktiboa" prefWidth="90"/>
             </columns>
         </TableView>
-        <HBox spacing="10">
+        <HBox spacing="10" alignment="CENTER_LEFT">
             <Label fx:id="menuMessage" text="Menua kargatzen..." wrapText="true"
                    styleClass="inline-message" HBox.hgrow="ALWAYS"/>
             <Button fx:id="editButton" text="Hautatutakoa editatu" onAction="#editMenuItem"
@@ -73,16 +73,23 @@
                 <TextField fx:id="allergensField" promptText="Aukerakoa; adib. glutena, esnea"/>
             </VBox>
         </VBox>
-        <VBox prefWidth="340" spacing="10" styleClass="card">
+        <VBox prefWidth="420" minWidth="380" spacing="9" styleClass="card">
             <Label text="Errezetaren osagaiak" styleClass="section-title"/>
-            <HBox spacing="8">
-                <ComboBox fx:id="ingredientCombo" promptText="Osagaia aukeratu" HBox.hgrow="ALWAYS"/>
-                <TextField fx:id="recipeQuantityField" promptText="Kantitatea" prefWidth="95"/>
-                <Button text="Gehitu" onAction="#addRecipeIngredient" styleClass="secondary-button"/>
+            <VBox spacing="4">
+                <Label text="Osagaia" styleClass="field-label"/>
+                <ComboBox fx:id="ingredientCombo" promptText="Aukeratu osagaia..." maxWidth="Infinity"/>
+            </VBox>
+            <HBox spacing="8" alignment="BOTTOM_LEFT">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Kantitatea" styleClass="field-label"/>
+                    <TextField fx:id="recipeQuantityField" promptText="Adib. 0.05" prefWidth="90"/>
+                </VBox>
+                <Button text="Gehitu" onAction="#addRecipeIngredient"
+                        styleClass="secondary-button" minWidth="80" prefHeight="35"/>
+                <Button fx:id="removeRecipeIngredientButton" text="Kendu" onAction="#removeRecipeIngredient"
+                        styleClass="danger-button" minWidth="80" prefHeight="35"/>
             </HBox>
-            <ListView fx:id="recipeList" VBox.vgrow="ALWAYS" prefHeight="108"/>
-            <Button fx:id="removeRecipeIngredientButton" text="Hautatutako osagaia kendu"
-                    onAction="#removeRecipeIngredient" maxWidth="Infinity" styleClass="secondary-button"/>
+            <ListView fx:id="recipeList" minHeight="110" prefHeight="130" VBox.vgrow="ALWAYS"/>
             <Button fx:id="createButton" text="Platera eta errezeta sortu" onAction="#saveMenuItem"
                     maxWidth="Infinity" styleClass="primary-button"/>
             <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"

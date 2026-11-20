@@ -55,17 +55,23 @@ class SukaldeaViewModel : ViewModel() {
                 val erantzuna = RetrofitClient.apiService.lortuEskaerak()
                 val zerrenda = erantzuna.dataList ?: erantzuna.valueList ?: emptyList()
 
-                // Sukaldean interesgarri diren eskaerak soilik: Kobratu gabekoak
+                // Sukaldean interesgarri diren eskaerak soilik: Kobratu/Ezeztatu/Zerbitzatu gabekoak ETA platerak dituztenak
                 val aktiboak = mutableListOf<Eskaera>()
                 for (e in zerrenda) {
                     if (!e.egoera.equals("Kobratua", ignoreCase = true) &&
-                        !e.egoera.equals("Ezeztatua", ignoreCase = true)
+                        !e.egoera.equals("Ezeztatua", ignoreCase = true) &&
+                        !e.egoera.equals("Zerbitzatua", ignoreCase = true)
                     ) {
                         try {
                             val xehe = RetrofitClient.apiService.lortuEskaeraXehetasunak(e.id)
-                            aktiboak.add(xehe.data ?: e)
+                            val osoa = xehe.data ?: e
+                            if (osoa.lerroak.isNotEmpty()) {
+                                aktiboak.add(osoa)
+                            }
                         } catch (_: Exception) {
-                            aktiboak.add(e)
+                            if (e.lerroak.isNotEmpty()) {
+                                aktiboak.add(e)
+                            }
                         }
                     }
                 }
@@ -120,6 +126,19 @@ class SukaldeaViewModel : ViewModel() {
                 }
             } catch (ex: Exception) {
                 _uiState.update { it.copy(errorea = "Errorea eskaera eguneratzean: ${ex.message}") }
+            }
+        }
+    }
+
+    fun ezabatuEskaera(eskaeraId: Int) {
+        viewModelScope.launch {
+            try {
+                val res = RetrofitClient.apiService.ezabatuEskaera(eskaeraId)
+                if (res.isSuccessful) {
+                    kargatuEskaerak()
+                }
+            } catch (ex: Exception) {
+                _uiState.update { it.copy(errorea = "Errorea eskaera ezabatzean: ${ex.message}") }
             }
         }
     }

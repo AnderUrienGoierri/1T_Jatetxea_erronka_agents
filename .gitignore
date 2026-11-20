@@ -44,6 +44,10 @@ target/
 .project
 .classpath
 
+# Drawio backups
+*.bkp
+.*.bkp
+
 # 5. Flutter / Dart (Mobile Zerbitzaria eta Mobile Bezeroa)
 .dart_tool/
 .flutter-plugins

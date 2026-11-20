@@ -228,7 +228,7 @@ public class ApiZerbitzua {
         JsonObject json = new JsonObject();
         json.addProperty("egoera", egoeraBerria);
 
-        HttpRequest request = sortuRequestBuilder("/eskaera-lerroak/" + lerroId + "/egoera")
+        HttpRequest request = sortuRequestBuilder("/eskaerak/lerroak/" + lerroId + "/egoera")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json.toString()))
@@ -258,7 +258,7 @@ public class ApiZerbitzua {
         json.addProperty("albarana", albarana);
         json.addProperty("oharrak", oharrak);
 
-        HttpRequest request = sortuRequestBuilder("/lehengaiak/" + lehengaiaId + "/stock")
+        HttpRequest request = sortuRequestBuilder("/lehengaiak/sarrera")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))

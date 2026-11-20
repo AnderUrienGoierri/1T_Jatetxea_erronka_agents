@@ -150,6 +150,16 @@ public class BiltegiaController extends BaseController {
     }
 
     @FXML
+    private void onKargatuDatuakClick() {
+        kargatuDatuak();
+    }
+
+    @FXML
+    private void onSarreraErregistratuClick() {
+        onGordeSarreraClick();
+    }
+
+    @FXML
     private void onGarbituIragazkiakClick() {
         if (txtBilaketa != null) txtBilaketa.clear();
         if (chkAlertakSoilik != null) chkAlertakSoilik.setSelected(false);

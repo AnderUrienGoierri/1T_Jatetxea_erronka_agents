@@ -69,7 +69,7 @@ public class SukaldeaController extends BaseEskaeraController {
                     btnEginda.setStyle("-fx-font-size: 11px; -fx-padding: 3 8;");
                     btnEginda.setOnAction(event -> {
                         EskaeraLerroa lerroa = getTableView().getItems().get(getIndex());
-                        aldatuLerroaEgoera(lerroa, "Prestatuta");
+                        aldatuLerroaEgoera(lerroa, "Prestatua");
                     });
                 }
 
@@ -166,7 +166,7 @@ public class SukaldeaController extends BaseEskaeraController {
             try {
                 for (EskaeraLerroa l : hautatua.getLerroak()) {
                     if (!l.isEdaria()) {
-                        api.aldatuLerroEgoera(l.getId(), "Prestatuta");
+                        api.aldatuLerroEgoera(l.getId(), "Prestatua");
                     }
                 }
                 api.aldatuEskaeraEgoera(hautatua.getId(), "Prestatuta");
@@ -183,5 +183,35 @@ public class SukaldeaController extends BaseEskaeraController {
                 });
             }
         }).start();
+    }
+
+    @FXML
+    private void onPlateraZaiClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu plater bat lehenik eskuineko taulan.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Eskatua");
+    }
+
+    @FXML
+    private void onPlateraMartxanClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu plater bat lehenik eskuineko taulan.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Sukaldean");
+    }
+
+    @FXML
+    private void onPlateraEgindaClick() {
+        EskaeraLerroa lerroa = tblLerroak != null ? tblLerroak.getSelectionModel().getSelectedItem() : null;
+        if (lerroa == null) {
+            erakutsiAlerta("Hautapenik ez", "Hautatu plater bat lehenik eskuineko taulan.");
+            return;
+        }
+        aldatuLerroaEgoera(lerroa, "Prestatua");
     }
 }

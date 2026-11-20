@@ -4,6 +4,7 @@ import atlantafx.base.theme.PrimerLight;
 import eus.goierri.jatetxea.admin.api.ApiBezeroa;
 import eus.goierri.jatetxea.admin.controller.KontrolagailuFabrika;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,11 +23,11 @@ public final class JatetxeaKudeaketaAplikazioa extends Application {
         apiClient = ApiBezeroa.fromEnvironment();
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         stage.setTitle("T1 Jatetxea | Kudeaketa");
-        stage.setMinWidth(1080);
-        stage.setMinHeight(720);
+        stage.setMinWidth(1000);
+        stage.setMinHeight(680);
         showLogin();
-        stage.setMaximized(true);
         stage.show();
+        Platform.runLater(() -> stage.setMaximized(true));
     }
 
     public void showLogin() throws IOException {
@@ -41,8 +42,12 @@ public final class JatetxeaKudeaketaAplikazioa extends Application {
         FXMLLoader loader = new FXMLLoader(JatetxeaKudeaketaAplikazioa.class.getResource(resource));
         loader.setControllerFactory(new KontrolagailuFabrika(apiClient, stage, session));
         Parent root = loader.load();
-        Scene scene = new Scene(root, width, height);
-        stage.setScene(scene);
-        stage.setMaximized(true);
+        if (stage.getScene() == null) {
+            Scene scene = new Scene(root, width, height);
+            stage.setScene(scene);
+        } else {
+            stage.getScene().setRoot(root);
+        }
+        Platform.runLater(() -> stage.setMaximized(true));
     }
 }

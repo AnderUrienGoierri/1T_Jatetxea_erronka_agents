@@ -430,22 +430,47 @@ public class EskaerakController : BaseApiKontroladorea
     [HttpPut("{id:int}/egoera")]
     public async Task<IActionResult> EguneratuEgoera(int id, [FromBody] EskaeraEgoeraEguneratuDto dto)
     {
-        var baliozkoak = new[] { "Irekia", "Sukaldean", "Zerbitzatua", "Kobratua", "Ezeztatua" };
-        if (!baliozkoak.Contains(dto.Egoera))
+        string egoera = dto.Egoera?.Trim() ?? "";
+        if (egoera.Equals("Prestatuta", StringComparison.OrdinalIgnoreCase))
+            egoera = "Prestatua";
+
+        var baliozkoak = new[] { "Irekia", "Sukaldean", "Prestatua", "Zerbitzatua", "Kobratua", "Ezeztatua" };
+        if (!baliozkoak.Contains(egoera))
             return BadRequestError($"Egoera ez da baliozkoa. Balio onargarriak: {string.Join(", ", baliozkoak)}");
 
         await using var kon = await SortuKonexioaAsync();
+
+        // Sukaldean edo Prestatua jartzeko, egiaztatu platerak badituela (ezin da hutsik egon)
+        if (egoera == "Sukaldean" || egoera == "Prestatua")
+        {
+            const string sqlCheckLines = "SELECT COUNT(*) FROM eskaera_lerroak WHERE eskaera_id = @id;";
+            await using var cmdCheck = new MySqlCommand(sqlCheckLines, kon);
+            cmdCheck.Parameters.AddWithValue("@id", id);
+            long count = Convert.ToInt64(await cmdCheck.ExecuteScalarAsync());
+            if (count == 0)
+                return BadRequestError("Ezin da egoera aldatu: eskaerak gutxienez plater bat izan behar du.");
+        }
+
         const string sql = "UPDATE eskaerak SET egoera = @egoera WHERE id = @id AND ezabatua = 0;";
 
         await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@egoera", dto.Egoera);
+        cmd.Parameters.AddWithValue("@egoera", egoera);
         cmd.Parameters.AddWithValue("@id", id);
 
         int rows = await cmd.ExecuteNonQueryAsync();
         if (rows == 0) return NotFoundError($"Ez da aurkitu {id} ID-a duen eskaera aktiborik.");
 
+        // Prestatua bada, sukaldeko plater guztiak ere 'Prestatua' egoerara pasatzea
+        if (egoera == "Prestatua")
+        {
+            const string sqlLerroakPrestatu = "UPDATE eskaera_lerroak SET egoera = 'Prestatua' WHERE eskaera_id = @id AND egoera IN ('Eskatua', 'Sukaldean');";
+            await using var cmdP = new MySqlCommand(sqlLerroakPrestatu, kon);
+            cmdP.Parameters.AddWithValue("@id", id);
+            await cmdP.ExecuteNonQueryAsync();
+        }
+
         // Zerbitzatua bada, eskaerako platerak ere 'Zerbitzatua' egoerara pasatzea
-        if (dto.Egoera == "Zerbitzatua")
+        if (egoera == "Zerbitzatua")
         {
             const string sqlLerroakZerbitzatu = "UPDATE eskaera_lerroak SET egoera = 'Zerbitzatua' WHERE eskaera_id = @id AND egoera IN ('Sukaldean', 'Prestatua');";
             await using var cmdL = new MySqlCommand(sqlLerroakZerbitzatu, kon);
@@ -483,6 +508,16 @@ public class EskaerakController : BaseApiKontroladorea
     public async Task<IActionResult> BidaliSukaldera(int id)
     {
         await using var kon = await SortuKonexioaAsync();
+
+        // 0. Egiaztatu eskaerak platerak badituela sukaldera bidaltzeko
+        const string sqlCheck = "SELECT COUNT(*) FROM eskaera_lerroak WHERE eskaera_id = @id;";
+        await using (var cmdCheck = new MySqlCommand(sqlCheck, kon))
+        {
+            cmdCheck.Parameters.AddWithValue("@id", id);
+            long count = Convert.ToInt64(await cmdCheck.ExecuteScalarAsync());
+            if (count == 0)
+                return BadRequestError("Ezin da sukaldera bidali platerik ez duen eskaera huts bat.");
+        }
 
         // 1. Eskaera bera Sukaldean jarri
         const string sqlE = "UPDATE eskaerak SET egoera = 'Sukaldean' WHERE id = @id AND ezabatua = 0;";
@@ -531,7 +566,7 @@ public class EskaerakController : BaseApiKontroladorea
         string egoera = dto.Egoera?.Trim() ?? "";
         if (egoera.Equals("Zain", StringComparison.OrdinalIgnoreCase) || egoera.Equals("Zai", StringComparison.OrdinalIgnoreCase))
             egoera = "Eskatua";
-        else if (egoera.Equals("Prestatzen", StringComparison.OrdinalIgnoreCase) || egoera.Equals("Martxan", StringComparison.OrdinalIgnoreCase))
+        else if (egoera.Equals("Prestatzen", StringComparison.OrdinalIgnoreCase) || egoera.Equals("Martxan", StringComparison.OrdinalIgnoreCase) || egoera.Equals("Prestatuta", StringComparison.OrdinalIgnoreCase))
             egoera = "Prestatua";
         else if (egoera.Equals("Eginda", StringComparison.OrdinalIgnoreCase))
             egoera = "Prestatua";
@@ -549,6 +584,41 @@ public class EskaerakController : BaseApiKontroladorea
 
         int rows = await cmd.ExecuteNonQueryAsync();
         if (rows == 0) return NotFoundError($"Ez da aurkitu {lerroId} ID-a duen eskaera lerrorik.");
+
+        // Sukaldean jartzen bada, eskaera bera ere 'Sukaldean' egoerara pasatzea eta mahaia 'Okupatuta'
+        if (egoera == "Sukaldean")
+        {
+            const string sqlCheckKitchen = @"
+                UPDATE eskaerak e
+                SET e.egoera = 'Sukaldean'
+                WHERE e.id = (SELECT eskaera_id FROM eskaera_lerroak WHERE id = @lerroId)
+                  AND e.egoera = 'Irekia';
+                UPDATE mahaiak m
+                JOIN eskaerak e ON m.id = e.mahaia_id
+                SET m.egoera = 'Okupatuta'
+                WHERE e.id = (SELECT eskaera_id FROM eskaera_lerroak WHERE id = @lerroId)
+                  AND m.egoera != 'Garbitzen';";
+            await using var cmdKitchen = new MySqlCommand(sqlCheckKitchen, kon);
+            cmdKitchen.Parameters.AddWithValue("@lerroId", lerroId);
+            await cmdKitchen.ExecuteNonQueryAsync();
+        }
+
+        // Lerro guztiak Prestatua (edo Zerbitzatua) badaude, eskaera bera ere 'Prestatua' egoerara pasatzea
+        if (egoera == "Prestatua")
+        {
+            const string sqlCheckAllPrepared = @"
+                UPDATE eskaerak e
+                SET e.egoera = 'Prestatua'
+                WHERE e.id = (SELECT eskaera_id FROM eskaera_lerroak WHERE id = @lerroId)
+                  AND e.egoera IN ('Irekia', 'Sukaldean')
+                  AND NOT EXISTS (
+                      SELECT 1 FROM eskaera_lerroak el
+                      WHERE el.eskaera_id = e.id AND el.egoera NOT IN ('Prestatua', 'Zerbitzatua')
+                  );";
+            await using var cmdCheckP = new MySqlCommand(sqlCheckAllPrepared, kon);
+            cmdCheckP.Parameters.AddWithValue("@lerroId", lerroId);
+            await cmdCheckP.ExecuteNonQueryAsync();
+        }
 
         // Lerro guztiak Zerbitzatua badaude, eskaera bera ere 'Zerbitzatua' egoerara pasatzea
         if (dto.Egoera == "Zerbitzatua")
@@ -568,6 +638,129 @@ public class EskaerakController : BaseApiKontroladorea
         }
 
         return Success(new { lerroId, egoera = dto.Egoera }, 200, "Eskaera lerroaren egoera eguneratu da.");
+    }
+
+    /// <summary>
+    /// Sukaldera bidali gabeko eskaera-lerroa ezabatzen du eta deskontatutako stocka lehengaietara leheneratzen du.
+    /// </summary>
+    [HttpDelete("lerroak/{lerroId:int}")]
+    public async Task<IActionResult> EzabatuLerroa(int lerroId)
+    {
+        await using var kon = await SortuKonexioaAsync();
+        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+        try
+        {
+            // 1. Lerroaren datuak berreskuratu eta blokeatu
+            const string sqlLerroa = @"
+                SELECT el.id, el.eskaera_id, el.platera_id, el.kantitatea, el.unitate_prezioa, el.egoera,
+                       p.izena AS plater_izena
+                FROM eskaera_lerroak el
+                JOIN platerak p ON el.platera_id = p.id
+                WHERE el.id = @lerroId
+                FOR UPDATE;";
+
+            int eskaeraId;
+            int plateraId;
+            int kantitatea;
+            decimal unitatePrezioa;
+            string lerroEgoera;
+            string platerIzena;
+
+            await using (var cmdL = new MySqlCommand(sqlLerroa, kon, tx))
+            {
+                cmdL.Parameters.AddWithValue("@lerroId", lerroId);
+                await using var readerL = await cmdL.ExecuteReaderAsync();
+                if (!await readerL.ReadAsync())
+                {
+                    await tx.RollbackAsync();
+                    return NotFoundError($"Ez da aurkitu {lerroId} ID-a duen eskaera lerrorik.");
+                }
+
+                eskaeraId = readerL.GetInt32("eskaera_id");
+                plateraId = readerL.GetInt32("platera_id");
+                kantitatea = readerL.GetInt32("kantitatea");
+                unitatePrezioa = readerL.GetDecimal("unitate_prezioa");
+                lerroEgoera = readerL.GetString("egoera");
+                platerIzena = readerL.GetString("plater_izena");
+            }
+
+            // 2. Egiaztatu sukaldera bidali gabeko platera dela (Eskatua edo Zai)
+            if (!lerroEgoera.Equals("Eskatua", StringComparison.OrdinalIgnoreCase) &&
+                !lerroEgoera.Equals("Zai", StringComparison.OrdinalIgnoreCase) &&
+                !lerroEgoera.Equals("Zain", StringComparison.OrdinalIgnoreCase))
+            {
+                await tx.RollbackAsync();
+                return ConflictError($"'{platerIzena}' platera dagoeneko sukaldera bidalita edo prestatuta dago ({lerroEgoera}). Sukaldera bidali gabekoak soilik ezabatu daitezke.");
+            }
+
+            // 3. Errezetako lehengaien stocka berreskuratu (bueltatu) eta stock mugimendua erregistratu
+            const string sqlErrezeta = @"
+                SELECT po.lehengaia_id, po.kantitatea AS beharrezkoa_anoko, l.izena
+                FROM plater_osagaiak po
+                JOIN lehengaiak l ON po.lehengaia_id = l.id
+                WHERE po.platera_id = @plateraId AND l.ezabatua = 0;";
+
+            var osagaiak = new List<(int LehengaiaId, decimal Bueltatu, string Izena)>();
+            await using (var cmdErrezeta = new MySqlCommand(sqlErrezeta, kon, tx))
+            {
+                cmdErrezeta.Parameters.AddWithValue("@plateraId", plateraId);
+                await using var readerO = await cmdErrezeta.ExecuteReaderAsync();
+                while (await readerO.ReadAsync())
+                {
+                    osagaiak.Add((
+                        readerO.GetInt32("lehengaia_id"),
+                        readerO.GetDecimal("beharrezkoa_anoko") * kantitatea,
+                        readerO.GetString("izena")
+                    ));
+                }
+            }
+
+            foreach (var osagai in osagaiak)
+            {
+                const string sqlUpdateStock = @"
+                    UPDATE lehengaiak 
+                    SET uneko_stocka = uneko_stocka + @bueltatu 
+                    WHERE id = @lehengaiaId;
+
+                    INSERT INTO stock_mugimenduak (lehengaia_id, mota, kantitatea, eskaera_id, oharrak, data)
+                    VALUES (@lehengaiaId, 'Egokitzapena_Inbentarioa', @bueltatu, @eskaeraId, @oharra, CURRENT_TIMESTAMP);";
+
+                await using var cmdUpdStock = new MySqlCommand(sqlUpdateStock, kon, tx);
+                cmdUpdStock.Parameters.AddWithValue("@bueltatu", osagai.Bueltatu);
+                cmdUpdStock.Parameters.AddWithValue("@lehengaiaId", osagai.LehengaiaId);
+                cmdUpdStock.Parameters.AddWithValue("@eskaeraId", eskaeraId);
+                cmdUpdStock.Parameters.AddWithValue("@oharra", $"Plater ezabatzea: {platerIzena} x{kantitatea}");
+                await cmdUpdStock.ExecuteNonQueryAsync();
+            }
+
+            // 4. Kendu zenbatekoa eskaeraren guztirakotik
+            decimal kenduGuztira = unitatePrezioa * kantitatea;
+            const string sqlUpdGuztira = "UPDATE eskaerak SET guztira = GREATEST(0.00, guztira - @kendu) WHERE id = @eskaeraId;";
+            await using (var cmdUpdG = new MySqlCommand(sqlUpdGuztira, kon, tx))
+            {
+                cmdUpdG.Parameters.AddWithValue("@kendu", kenduGuztira);
+                cmdUpdG.Parameters.AddWithValue("@eskaeraId", eskaeraId);
+                await cmdUpdG.ExecuteNonQueryAsync();
+            }
+
+            // 5. Eskaera lerroa ezabatu
+            const string sqlDeleteLerroa = "DELETE FROM eskaera_lerroak WHERE id = @lerroId;";
+            await using (var cmdDel = new MySqlCommand(sqlDeleteLerroa, kon, tx))
+            {
+                cmdDel.Parameters.AddWithValue("@lerroId", lerroId);
+                await cmdDel.ExecuteNonQueryAsync();
+            }
+
+            await tx.CommitAsync();
+
+            return Success(new { lerroId, eskaeraId, mezua = $"'{platerIzena}' platera arrakastaz ezabatu da eta stocka leheneratu da." }, 200, "Platera ezabatu da.");
+        }
+        catch (Exception ex)
+        {
+            await tx.RollbackAsync();
+            return ServerError("Errorea plater lerroa ezabatzean: " + ex.Message);
+        }
     }
 
     /// <summary>
