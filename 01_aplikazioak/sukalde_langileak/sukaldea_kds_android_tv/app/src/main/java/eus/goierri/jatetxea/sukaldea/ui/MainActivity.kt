@@ -5,24 +5,33 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eus.goierri.jatetxea.sukaldea.data.api.RetrofitClient
 import eus.goierri.jatetxea.sukaldea.ui.components.EskaeraTxartela
 import eus.goierri.jatetxea.sukaldea.ui.components.GoiburuaBarra
 import eus.goierri.jatetxea.sukaldea.ui.theme.DarkBackground
@@ -47,6 +57,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RetrofitClient.hasieratu(applicationContext)
+        viewModel.sinkronizatuUrl()
+
         setContent {
             SukaldeaKdsTheme {
                 Surface(
@@ -63,6 +76,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
     val state by viewModel.uiState.collectAsState()
+    var showConfigDialog by remember { mutableStateOf(false) }
 
     // Filtroaren araberako zerrenda
     val filtratuak = when (state.unekoFiltroa.lowercase()) {
@@ -79,6 +93,8 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
             eskaeraKopurua = filtratuak.size,
             unekoFiltroa = state.unekoFiltroa,
             serverUrl = state.serverUrl,
+            showConfigExternal = showConfigDialog,
+            onDismissConfig = { showConfigDialog = false },
             onFiltroAldatu = { viewModel.aldatuFiltroa(it) },
             onFreskatu = { viewModel.kargatuEskaerak() },
             onServerUrlAldatu = { viewModel.aldatuServerUrl(it) }
@@ -86,18 +102,35 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
 
         // ERRORE BARRUA (Konexio arazorik balego)
         if (state.errorea != null && !state.isOnline) {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(RoseDark)
-                    .padding(horizontal = 24.dp, vertical = 6.dp)
+                    .clickable { showConfigDialog = true }
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Konexio errorea: ${state.errorea} - Egiaztatu API zerbitzaria martxan dagoen portu 5000n.",
+                    text = "Konexio errorea: ${state.errorea}\nEgiaztatu zerbitzariaren IP-a eta ataka (Docker: 5050 | Zuzenekoa: 5000).",
                     color = Color.White,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f)
                 )
+                Spacer(modifier = Modifier.width(12.dp))
+                Button(
+                    onClick = { showConfigDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = RosePrimary),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "⚙️ Aldatu Ataka / IP",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
+                }
             }
         }
 

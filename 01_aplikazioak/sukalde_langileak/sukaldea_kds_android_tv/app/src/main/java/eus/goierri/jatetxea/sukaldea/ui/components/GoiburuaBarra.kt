@@ -1,5 +1,6 @@
 package eus.goierri.jatetxea.sukaldea.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,11 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,8 +34,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eus.goierri.jatetxea.sukaldea.data.api.RetrofitClient
 import eus.goierri.jatetxea.sukaldea.ui.theme.DarkSurface
 import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldDark
 import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldLight
@@ -52,11 +58,14 @@ fun GoiburuaBarra(
     eskaeraKopurua: Int,
     unekoFiltroa: String,
     serverUrl: String,
+    showConfigExternal: Boolean = false,
+    onDismissConfig: () -> Unit = {},
     onFiltroAldatu: (String) -> Unit,
     onFreskatu: () -> Unit,
     onServerUrlAldatu: (String) -> Unit
 ) {
     var showIpDialog by remember { mutableStateOf(false) }
+    val shouldShowDialog = showIpDialog || showConfigExternal
 
     Column(
         modifier = Modifier
@@ -120,6 +129,7 @@ fun GoiburuaBarra(
                             if (isOnline) EmeraldSuccess else RosePrimary,
                             RoundedCornerShape(8.dp)
                         )
+                        .clickable { showIpDialog = true }
                         .padding(horizontal = 10.dp, vertical = 6.dp)
                 ) {
                     Box(
@@ -138,20 +148,19 @@ fun GoiburuaBarra(
                     )
                 }
 
-                // IP aldatzeko botoia
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF1E293B))
-                        .border(1.dp, Color(0xFF334155), RoundedCornerShape(8.dp))
-                        .clickable { showIpDialog = true }
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                // IP eta Ataka aldatzeko botoi nabarmena
+                Button(
+                    onClick = { showIpDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                    border = BorderStroke(1.dp, if (!isOnline) RosePrimary else Color(0xFF334155)),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "IP: $serverUrl",
-                        color = SkyInfo,
+                        text = "⚙️ $serverUrl",
+                        color = if (!isOnline) RoseLight else SkyInfo,
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -217,39 +226,171 @@ fun GoiburuaBarra(
         }
     }
 
-    if (showIpDialog) {
-        var newUrl by remember { mutableStateOf(serverUrl) }
+    if (shouldShowDialog) {
+        var host by remember(serverUrl) { mutableStateOf(RetrofitClient.lortuHost(serverUrl)) }
+        var portStr by remember(serverUrl) { mutableStateOf(RetrofitClient.lortuPort(serverUrl).toString()) }
+
+        val unekoPreviewUrl = remember(host, portStr) {
+            val p = portStr.toIntOrNull() ?: 5050
+            RetrofitClient.eraikiUrl(host, p)
+        }
+
         AlertDialog(
-            onDismissRequest = { showIpDialog = false },
-            title = { Text("Konfiguratu Backend API Helbidea", fontWeight = FontWeight.Bold) },
+            onDismissRequest = {
+                showIpDialog = false
+                onDismissConfig()
+            },
+            title = {
+                Text(
+                    text = "⚙️ Konfiguratu API Zerbitzaria eta Ataka",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = TextPrimary
+                )
+            },
             text = {
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "Android Emuladorean: http://10.0.2.2:5000/api/v1/\nTelebista fisikoan edo LANean: http://192.168.1.166:5000/api/v1/",
+                        text = "Aukeratu aurre-ezarpen azkar bat edo pertsonalizatu IP-a eta Ataka:",
                         fontSize = 12.sp,
                         color = TextSecondary
                     )
-                    Spacer(modifier = Modifier.size(10.dp))
+
+                    // 1. Aurre-ezarpen azkarrak (Presets)
+                    Text("Konfigurazio azkarrak:", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = SkyInfo)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                host = "172.16.243.102"
+                                portStr = "5050"
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (host == "172.16.243.102" && portStr == "5050") RosePrimary else Color(0xFF1E293B)
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("TV · 5050\n(Docker)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                        }
+                        Button(
+                            onClick = {
+                                host = "172.16.243.102"
+                                portStr = "5000"
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (host == "172.16.243.102" && portStr == "5000") RosePrimary else Color(0xFF1E293B)
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("TV · 5000\n(Zuzenekoa)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                        }
+                        Button(
+                            onClick = {
+                                host = "10.0.2.2"
+                                portStr = "5050"
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (host == "10.0.2.2") RosePrimary else Color(0xFF1E293B)
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("Emuladorea\n(10.0.2.2)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    // 2. IP / Ostalaria
+                    Text("Zerbitzariaren IP-a edo Ostalaria:", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
                     OutlinedTextField(
-                        value = newUrl,
-                        onValueChange = { newUrl = it },
-                        label = { Text("API Base URL") },
+                        value = host,
+                        onValueChange = { host = it },
+                        label = { Text("IP / Host") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
+
+                    // 3. Ataka (Portua)
+                    Text("API Ataka (Portua):", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = portStr,
+                            onValueChange = { if (it.all { ch -> ch.isDigit() }) portStr = it },
+                            label = { Text("Ataka") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Button(
+                            onClick = { portStr = "5050" },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (portStr == "5050") EmeraldDark else Color(0xFF1E293B)
+                            ),
+                            border = BorderStroke(1.dp, if (portStr == "5050") EmeraldSuccess else Color(0xFF334155)),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text("5050 (Docker)", fontSize = 11.sp)
+                        }
+                        Button(
+                            onClick = { portStr = "5000" },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (portStr == "5000") EmeraldDark else Color(0xFF1E293B)
+                            ),
+                            border = BorderStroke(1.dp, if (portStr == "5000") EmeraldSuccess else Color(0xFF334155)),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text("5000 (Zuzena)", fontSize = 11.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    // 4. URL Aurrebista
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFF0F172A))
+                            .border(1.dp, Color(0xFF334155), RoundedCornerShape(6.dp))
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = "Helbide Osoa: $unekoPreviewUrl",
+                            color = SkyInfo,
+                            fontSize = 11.sp,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    }
                 }
             },
             confirmButton = {
-                Button(onClick = {
-                    onServerUrlAldatu(newUrl.trim())
-                    showIpDialog = false
-                }) {
-                    Text("Gorde eta Konektatu")
+                Button(
+                    onClick = {
+                        val p = portStr.toIntOrNull() ?: 5050
+                        val berria = RetrofitClient.eraikiUrl(host, p)
+                        onServerUrlAldatu(berria)
+                        showIpDialog = false
+                        onDismissConfig()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldSuccess)
+                ) {
+                    Text("Gorde eta Konektatu", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showIpDialog = false }) {
-                    Text("Utzi")
+                TextButton(onClick = {
+                    showIpDialog = false
+                    onDismissConfig()
+                }) {
+                    Text("Utzi", color = TextSecondary)
                 }
             }
         )

@@ -36,7 +36,12 @@ class SukaldeaViewModel : ViewModel() {
     private val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     init {
+        _uiState.update { it.copy(serverUrl = RetrofitClient.serverBaseUrl) }
         hasieratuPolling()
+    }
+
+    fun sinkronizatuUrl() {
+        _uiState.update { it.copy(serverUrl = RetrofitClient.serverBaseUrl) }
     }
 
     fun hasieratuPolling() {
