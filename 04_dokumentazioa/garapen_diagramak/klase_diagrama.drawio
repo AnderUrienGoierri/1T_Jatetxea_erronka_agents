@@ -244,7 +244,7 @@
         <mxCell id="c_baseapikontroladorea_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_baseapikontroladorea">
           <mxGeometry y="58" width="350" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_baseapikontroladorea_methods" value="+ SortuKonexioaAsync(): Task<MySqlConnection>&#xa;+ Success(data: object): IActionResult&#xa;+ SuccessList(datalist: IEnumerable): IActionResult&#xa;+ CreatedResult(data: object): IActionResult&#xa;+ NotFoundError(detail: string): IActionResult&#xa;+ BadRequestError(message: string): IActionResult&#xa;+ ConflictError(message: string): IActionResult&#xa;+ ServerError(message: string): IActionResult" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_baseapikontroladorea">
+        <mxCell id="c_baseapikontroladorea_methods" value="+ SortuKonexioaAsync(): Task&lt;MySqlConnection&gt;&#xa;+ Success(data: object): IActionResult&#xa;+ SuccessList(datalist: IEnumerable): IActionResult&#xa;+ CreatedResult(data: object): IActionResult&#xa;+ NotFoundError(detail: string): IActionResult&#xa;+ BadRequestError(message: string): IActionResult&#xa;+ ConflictError(message: string): IActionResult&#xa;+ ServerError(message: string): IActionResult" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_baseapikontroladorea">
           <mxGeometry y="66" width="350" height="130" as="geometry" />
         </mxCell>
         <!-- FakturakController Klasea -->
@@ -257,7 +257,7 @@
         <mxCell id="c_fakturakcontroller_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_fakturakcontroller">
           <mxGeometry y="52" width="360" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_fakturakcontroller_methods" value="+ LortuGuztiak(mota, egoera): Task<IActionResult>&#xa;+ LortuIdBidez(id: int): Task<IActionResult>&#xa;+ LortuFinantzaLaburpena(): Task<IActionResult>&#xa;+ Sortu(dto: FakturaSortuDto): Task<IActionResult>&#xa;+ EguneratuEgoera(id: int, dto: FakturaEgoeraDto): Task<IActionResult>&#xa;+ Ezabatu(id: int, hard: bool): Task<IActionResult>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_fakturakcontroller">
+        <mxCell id="c_fakturakcontroller_methods" value="+ LortuGuztiak(mota, egoera): Task&lt;IActionResult&gt;&#xa;+ LortuIdBidez(id: int): Task&lt;IActionResult&gt;&#xa;+ LortuFinantzaLaburpena(): Task&lt;IActionResult&gt;&#xa;+ Sortu(dto: FakturaSortuDto): Task&lt;IActionResult&gt;&#xa;+ EguneratuEgoera(id: int, dto: FakturaEgoeraDto): Task&lt;IActionResult&gt;&#xa;+ Ezabatu(id: int, hard: bool): Task&lt;IActionResult&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_fakturakcontroller">
           <mxGeometry y="60" width="360" height="100" as="geometry" />
         </mxCell>
         <!-- EskaerakController Klasea -->
@@ -270,7 +270,7 @@
         <mxCell id="c_eskaerakcontroller_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_eskaerakcontroller">
           <mxGeometry y="52" width="360" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_eskaerakcontroller_methods" value="+ LortuGuztiak(egoera, mahaiaId): Task<IActionResult>&#xa;+ LortuIdBidez(id: int): Task<IActionResult>&#xa;+ Sortu(dto: EskaeraSortuDto): Task<IActionResult>&#xa;+ EguneratuEgoera(id: int, dto: EskaeraEgoeraDto): Task<IActionResult>&#xa;+ BidaliSukaldera(id: int): Task<IActionResult>&#xa;+ EzabatuPlaterLerroa(lerroId: int): Task<IActionResult>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_eskaerakcontroller">
+        <mxCell id="c_eskaerakcontroller_methods" value="+ LortuGuztiak(egoera, mahaiaId): Task&lt;IActionResult&gt;&#xa;+ LortuIdBidez(id: int): Task&lt;IActionResult&gt;&#xa;+ Sortu(dto: EskaeraSortuDto): Task&lt;IActionResult&gt;&#xa;+ EguneratuEgoera(id: int, dto: EskaeraEgoeraDto): Task&lt;IActionResult&gt;&#xa;+ BidaliSukaldera(id: int): Task&lt;IActionResult&gt;&#xa;+ EzabatuPlaterLerroa(lerroId: int): Task&lt;IActionResult&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_eskaerakcontroller">
           <mxGeometry y="60" width="360" height="100" as="geometry" />
         </mxCell>
         <!-- LangileakController Klasea -->
@@ -283,7 +283,7 @@
         <mxCell id="c_langileakcontroller_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_langileakcontroller">
           <mxGeometry y="52" width="350" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_langileakcontroller_methods" value="+ LortuGuztiak(rola: string): Task<IActionResult>&#xa;+ SaioaHasi(dto: SaioHasiDto): Task<IActionResult>&#xa;+ Sortu(dto: LangileSortuDto): Task<IActionResult>&#xa;+ Eguneratu(id: int, dto: LangileEguneratuDto): Task<IActionResult>&#xa;+ FitxaketaErregistratu(dto: FitxaketaDto): Task<IActionResult>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_langileakcontroller">
+        <mxCell id="c_langileakcontroller_methods" value="+ LortuGuztiak(rola: string): Task&lt;IActionResult&gt;&#xa;+ SaioaHasi(dto: SaioHasiDto): Task&lt;IActionResult&gt;&#xa;+ Sortu(dto: LangileSortuDto): Task&lt;IActionResult&gt;&#xa;+ Eguneratu(id: int, dto: LangileEguneratuDto): Task&lt;IActionResult&gt;&#xa;+ FitxaketaErregistratu(dto: FitxaketaDto): Task&lt;IActionResult&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_langileakcontroller">
           <mxGeometry y="60" width="350" height="85" as="geometry" />
         </mxCell>
         <!-- LehengaiakController Klasea -->
@@ -296,7 +296,7 @@
         <mxCell id="c_lehengaiakcontroller_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_lehengaiakcontroller">
           <mxGeometry y="52" width="360" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_lehengaiakcontroller_methods" value="+ LortuGuztiak(): Task<IActionResult>&#xa;+ ErosketaSarrera(dto: ErosketaDto): Task<IActionResult>&#xa;+ LortuAlertak(): Task<IActionResult>&#xa;+ LortuMugimenduak(lehengaiaId: int): Task<IActionResult>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_lehengaiakcontroller">
+        <mxCell id="c_lehengaiakcontroller_methods" value="+ LortuGuztiak(): Task&lt;IActionResult&gt;&#xa;+ ErosketaSarrera(dto: ErosketaDto): Task&lt;IActionResult&gt;&#xa;+ LortuAlertak(): Task&lt;IActionResult&gt;&#xa;+ LortuMugimenduak(lehengaiaId: int): Task&lt;IActionResult&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_lehengaiakcontroller">
           <mxGeometry y="60" width="360" height="70" as="geometry" />
         </mxCell>
         <!-- MahaiakController Klasea -->
@@ -309,7 +309,7 @@
         <mxCell id="c_mahaiakcontroller_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_mahaiakcontroller">
           <mxGeometry y="52" width="360" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_mahaiakcontroller_methods" value="+ LortuGuztiak(): Task<IActionResult>&#xa;+ LortuIdBidez(id: int): Task<IActionResult>&#xa;+ AldatuEgoera(id: int, dto: MahaiEgoeraDto): Task<IActionResult>&#xa;+ LortuMahaiarenEskaeraAktiboa(id: int): Task<IActionResult>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_mahaiakcontroller">
+        <mxCell id="c_mahaiakcontroller_methods" value="+ LortuGuztiak(): Task&lt;IActionResult&gt;&#xa;+ LortuIdBidez(id: int): Task&lt;IActionResult&gt;&#xa;+ AldatuEgoera(id: int, dto: MahaiEgoeraDto): Task&lt;IActionResult&gt;&#xa;+ LortuMahaiarenEskaeraAktiboa(id: int): Task&lt;IActionResult&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_mahaiakcontroller">
           <mxGeometry y="60" width="360" height="70" as="geometry" />
         </mxCell>
         <!-- AplikazioMonitoreZerbitzua Klasea -->
@@ -335,7 +335,7 @@
         <mxCell id="c_apibezeroa_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_apibezeroa">
           <mxGeometry y="68" width="380" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_apibezeroa_methods" value="+ checkHealth(): ApiHealth&#xa;+ login(erab: string, pass: string): KudeatzaileErabiltzailea&#xa;+ getFakturak(mota, egoera): List<Faktura>&#xa;+ getFinantzaLaburpena(): FinantzaLaburpena&#xa;+ sortuFaktura(faktura: Faktura): void&#xa;+ aldatuFakturaEgoera(id, egoera): void&#xa;+ getStaff(): List<Langilea>&#xa;+ getMenuItems(): List<Platera>&#xa;+ getIngredients(): List<Lehengaia>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_apibezeroa">
+        <mxCell id="c_apibezeroa_methods" value="+ checkHealth(): ApiHealth&#xa;+ login(erab: string, pass: string): KudeatzaileErabiltzailea&#xa;+ getFakturak(mota, egoera): List&lt;Faktura&gt;&#xa;+ getFinantzaLaburpena(): FinantzaLaburpena&#xa;+ sortuFaktura(faktura: Faktura): void&#xa;+ aldatuFakturaEgoera(id, egoera): void&#xa;+ getStaff(): List&lt;Langilea&gt;&#xa;+ getMenuItems(): List&lt;Platera&gt;&#xa;+ getIngredients(): List&lt;Lehengaia&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_apibezeroa">
           <mxGeometry y="76" width="380" height="145" as="geometry" />
         </mxCell>
         <!-- DiseinuNagusiaKontrolagailua Klasea -->
@@ -355,7 +355,7 @@
         <mxCell id="c_fakturakkontrolagailua" value="&lt;b&gt;FakturakKontrolagailua&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#db2777;swimlaneFillColor=#ffffff;strokeColor=#db2777;strokeWidth=2;fontColor=#ffffff;fontSize=12;rounded=1;arcSize=6;" vertex="1" parent="1">
           <mxGeometry x="2100" y="920" width="370" height="280" as="geometry" />
         </mxCell>
-        <mxCell id="c_fakturakkontrolagailua_attrs" value="- apiClient: ApiBezeroa&#xa;- masterList: ObservableList<Faktura>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_fakturakkontrolagailua">
+        <mxCell id="c_fakturakkontrolagailua_attrs" value="- apiClient: ApiBezeroa&#xa;- masterList: ObservableList&lt;Faktura&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_fakturakkontrolagailua">
           <mxGeometry y="28" width="370" height="40" as="geometry" />
         </mxCell>
         <mxCell id="c_fakturakkontrolagailua_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_fakturakkontrolagailua">
@@ -374,7 +374,7 @@
         <mxCell id="c_apizerbitzua_sep" value="" style="line;strokeWidth=1;fillColor=#ffffff;align=left;verticalAlign=middle;strokeColor=#cbd5e1;spacing=0;margin=0;" vertex="1" parent="c_apizerbitzua">
           <mxGeometry y="68" width="380" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="c_apizerbitzua_methods" value="+ egiaztatuOsasuna(): HealthResult&#xa;+ lortuLangileak(rola: string): List<Langilea>&#xa;+ saioaHasi(erab, pin): LoginErantzuna&#xa;+ lortuEskaeraAktiboak(): List<Eskaera>&#xa;+ eguneratuLerroEgoera(lerroId, egoera): bool&#xa;+ lortuLehengaiak(): List<Lehengaia>" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_apizerbitzua">
+        <mxCell id="c_apizerbitzua_methods" value="+ egiaztatuOsasuna(): HealthResult&#xa;+ lortuLangileak(rola: string): List&lt;Langilea&gt;&#xa;+ saioaHasi(erab, pin): LoginErantzuna&#xa;+ lortuEskaeraAktiboak(): List&lt;Eskaera&gt;&#xa;+ eguneratuLerroEgoera(lerroId, egoera): bool&#xa;+ lortuLehengaiak(): List&lt;Lehengaia&gt;" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;overflow=hidden;rotatable=0;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" vertex="1" parent="c_apizerbitzua">
           <mxGeometry y="76" width="380" height="100" as="geometry" />
         </mxCell>
         <!-- BaseLoginController Klasea -->
