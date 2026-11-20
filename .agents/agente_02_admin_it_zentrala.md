@@ -7,8 +7,13 @@ Agente honek **Admin IT Zentrala** kudeaketa-panela, Docker edukiontzien orkestr
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_02`
-- **Ardurapeko Proiektua:** `01_aplikazioak/admin/admin_IT_zentrala/server/Jatetxea.AdminZentrala/Jatetxea.AdminZentrala.csproj`
-- **Interfazea:** `wwwroot/index.html` (Sistema-ingeniaritzako panel iluna)
+- **Ardurapeko Proiektuak:** 
+  - `Admin_IT_Zentrala.exe` (Erroko abiarazlea eta hasierako konfigurazio morroia)
+  - `01_aplikazioak/admin/admin_IT_zentrala` (Zerbitzaria, portua: 5000)
+  - `01_aplikazioak/admin/admin_desktop_java` (Admin JavaFX kudeaketa-panela: fakturak, langileak, karta)
+  - `01_aplikazioak/admin/odoo_erp` (Odoo 17 ERP integrazioa)
+  - `01_aplikazioak/admin/admin_IT_zentrala/mobile_android` (Admin mugikorreko aplikazioa)
+- **Interfazea:** `wwwroot/index.html` (Sistema-ingeniaritzako panel iluna) eta `Admin_IT_Zentrala.exe` GUI morroia
 - **Ataka Finko Bakarra:** `5000` (debekatuta dago APIaren 5050 atakarekin nahastea).
 - **Orkestrazio Baliabideak:** Docker CLI / Engine, VirtualBox VBoxManage CLI, Sare-profilak.
 
@@ -16,7 +21,14 @@ Agente honek **Admin IT Zentrala** kudeaketa-panela, Docker edukiontzien orkestr
 
 ## 2. Erantzukizun Nagusiak
 
-1. **Dashboard Nagusiaren Kudeaketa (Portua 5000):**
+1. **Hasierako Konfigurazio Morroia (`Admin_IT_Zentrala.exe`):**
+   - Ikaskide edo instalazio berri batean sistemaren aurre-baldintzak egiaztatu (Docker, .NET SDK).
+   - Docker sareak (`jatetxea_net`) eta bolumenak (`jatetxea_db_data`, `odoo_...`) automatikoki sortu.
+   - Irudiak jaitsi eta eraiki (`docker compose build & pull`).
+   - C# REST API nagusia eta IT Zentrala konpilatu.
+   - Mahaigaineko lasterbide ofiziala sortu eta 5000 panela automatikoki abiarazi.
+
+2. **Dashboard Nagusiaren Kudeaketa (Portua 5000):**
    - Panel zentralizatu profesionala: zerbitzuen zerrenda, IPak, atakak, latentziak eta egoera semantikoak (ONLINE, DEGRADED, OFFLINE).
    - Tipografia: Inter (testu orokorrak) eta JetBrains Mono (IPak, portuak, latentziak).
    - Koloreak: Zinc-950/900 paleta monokromatikoa; koloreak soilik egoera-txapetarako (berdea, laranja, gorria).

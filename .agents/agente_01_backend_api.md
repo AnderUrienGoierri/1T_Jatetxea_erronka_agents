@@ -16,15 +16,22 @@ Agente honek **ASP.NET Core REST API nagusia** eta **MySQL 8.0 datu-basearen art
 
 ## 2. Erantzukizun Nagusiak
 
-1. **32 REST Endpoint-en Kudeaketa Integrala:**
+1. **REST Endpoint-en Kudeaketa Integrala (35+ Endpoint):**
    - Mahaiak: `GET`, `POST`, `PUT /egoera`, `DELETE`, `PUT /restore`.
    - Lehengaiak: `GET`, `POST`, `POST /sarrera`, `GET /alertak`, `DELETE`, `PUT /restore`.
    - Platerak: `GET`, `POST`, `GET /erabilgarritasuna`, `GET /eskandalloa`, `DELETE`.
    - Erreserbak: `GET`, `POST` (blokeo pesimistarekin), `DELETE`, `PUT /restore`.
-   - Eskaerak: `GET`, `POST`, `POST /lerroak`, `PUT /egoera`, `PUT /lerroak/{lerroId}/egoera` (KDS).
+   - Eskaerak: `GET`, `POST`, `POST /lerroak`, `PUT /egoera`, `PUT /lerroak/{lerroId}/egoera` (KDS / BDS).
+   - Fakturak & Finantzak (Kontabilitatea): `GET /api/v1/fakturak`, `GET /api/v1/fakturak/laburpena` (irabaziak, gastuak, etekin garbia), `POST /api/v1/fakturak` (salmentak eta hornitzaileen erosketa-fakturak), `GET /salmentak`, `GET /erosketak`.
    - Bezeroak: `GET`, `POST`, `PUT`, `DELETE`.
-   - Langileak: `GET`, `POST`, `POST /login` (PIN bidezko saio-hasiera).
+   - Langileak: `GET`, `POST`, `POST /login` (PIN bidezko saio-hasiera rolaren arabera).
    - Iritziak: `GET`, `POST`, `GET /estatistikak`, `DELETE`.
+   - Osasuna: `GET /api/v1/osasuna` (Health check eta bezeroen heartbeat).
+
+2. **Denbora Errealeko Aplikazio eta Konexio Monitorea (AplikazioMonitoreZerbitzua):**
+   - REST APIra konektatzen diren bezero aktiboen jarraipena egiten du (IP, azken eskaera ordua, eskaera kopurua).
+   - Terminalean rolka sailkatuta erakusten ditu: Admin, Sukaldea, Barra, Biltegia, TPV eta Web bezeroa.
+   - Flutter aplikazioak kenduta, mahaigaineko JavaFX (`desktop_biltegia_stock`, `desktop_sukaldea_kds`, `desktop_barra_bds`, `admin_desktop_java`) eta Android TV aplikazioak zerrendatzen ditu.
 
 2. **Konkurrentzia eta Blokeo Pesimistak (ACID):**
    - Erreserbetan eta lehengaien deskontuetan `SELECT ... FOR UPDATE` erabiltzea transakzio barruan, gainezkatzeak edo erreserba bikoitzak ekiditeko (HTTP 409 Conflict).

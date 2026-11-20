@@ -1,31 +1,46 @@
-# Agente 04: Desktop JavaFX KDS Diseinatzailea & Sukaldeko Kontroladorea
+# Agente 04: Desktop JavaFX Sistema Integrala (Admin, KDS, BDS, Stock & Core)
 
-Agente honek **JavaFX Sukaldea KDS (Kitchen Display System)** mahaigaineko aplikazioa, sukaldeko komanden bistaratzea eta FXML/Scene Builder osagaiak kudeatzen ditu.
+Agente honek **JavaFX mahaigaineko aplikazioen ekosistema osoa** kudeatzen du: sukaldeko KDS, barrako BDS, biltegiko Stock aplikazioa, kudeatzailearen Admin aplikazioa eta `desktop_javafx_core` modulu komuna.
 
 ---
 
 ## 1. Agentearen Identitatea eta Esparrua
 
 - **ID:** `agente_04`
-- **Ardurapeko Proiektua:** `01_aplikazioak/komunak/desktop_javafx_parent/pom.xml` (Sukaldea KDS, Barra BDS eta Biltegia Stock moduluak)
+- **Ardurapeko Proiektuak:**
+  - `01_aplikazioak/admin/admin_desktop_java`: Admin Kudeaketa (Langileak, Karta, Fakturak eta Finantzak, Erreserbak)
+  - `01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds`: Sukaldeko KDS (Kitchen Display System)
+  - `01_aplikazioak/zerbitzari_langileak/desktop_barra_bds`: Barrako BDS (Bar Display System)
+  - `01_aplikazioak/biltegi_langileak/desktop_biltegia_stock`: Biltegiko Stock & Hornitzaileak
+  - `01_aplikazioak/admin/komunak/desktop_javafx_core`: Oinarrizko liburutegi partekatua (Login kontroladore komuna, API bezero unibertsala, modeloak)
+  - `01_aplikazioak/admin/komunak/desktop_javafx_parent`: Maven Multi-Modulua
 - **Teknologia:** Java 21 (Temurin JDK), JavaFX 21, FXML, Scene Builder, Maven.
-- **Xede Ingurunea:** Sukaldeko pantaila handia (1920x1080 16:9 widescreen horizontala).
+- **Xede Ingurunea:** Terminal fisikoak (sukaldea, barra, biltegia, bulegoa) 1920x1080 eta ukimen-pantailak.
 
 ---
 
 ## 2. Erantzukizun Nagusiak
 
-1. **Sukaldeko Komanden Txartelak (KDS Multi-Column):**
-   - Eskaerak zutabe semantikoetan antolatu:
-     - Zain: Laranja (`#f59e0b`)
-     - Prestatzen: Urdina (`#38bdf8`)
-     - Bukatuta: Berdea (`#10b981`)
-     - Zerbitzatua: Artxibatua
-   - Txartel bakoitzean: Mahaiaren zenbakia, eskaera ordua, igarotako minutuak (timer) eta plater-lerroak bere oharrekin.
+1. **Rol Bidezko Saio-Hasiera Komuna (`BaseLoginController`):**
+   - Aplikazio bakoitzak dagokion rolaren arabera iragazten ditu langileak APIko `GET /api/v1/langileak` endpoint-etik:
+     - Sukaldea: Sukaldariak eta laguntzaileak
+     - Barra: Zerbitzariak eta barrako langileak
+     - Biltegia: Biltegizainak eta erosle arduradunak
+     - Admin: Administratzaileak eta kudeatzaileak
+   - PIN teklatu birtuala (4 digitu) eta avatar hautaketa.
+   - Goiburuan REST API osasuna denbora errealean egiaztatu (`GET /api/v1/osasuna`).
 
-2. **Egoera Aldaketa Botoiak eta REST Sinkronizazioa:**
-   - Sukaldariak botoi bidez plater bakoitzaren egoera eguneratzen du: `btnPrestatu`, `btnBukatu`.
-   - REST APIra deia: `PUT /api/v1/eskaerak/lerroak/{lerroId}/egoera`.
+2. **Sukaldeko KDS & Barrako BDS Komandak:**
+   - Zutabe semantikoetan antolatu (Zain: `#f59e0b`, Prestatzen: `#38bdf8`, Bukatuta: `#10b981`).
+   - Plateren eta edarien egoera-aldaketak: `PUT /api/v1/eskaerak/lerroak/{lerroId}/egoera`.
+
+3. **Biltegiko Stock & Hornitzaileak (`desktop_biltegia_stock`):**
+   - Lehengaien zerrenda, stock mailak, gutxieneko alertak (`GET /api/v1/lehengaiak/alertak`).
+   - Sarrerak erregistratu (`POST /api/v1/lehengaiak/sarrera`) eta hornitzaileen erosketa-fakturak sinkronizatu.
+
+4. **Admin Kudeaketa Mahaigainekoa (`admin_desktop_java`):**
+   - Langileen kudeaketa, Karta/Menua, Erreserbak.
+   - **Fakturak & Finantzak modulua:** Salmenten fakturak, gastu/erosketen fakturak, etekin garbiaren kalkulua eta finantza-laburpena (`FakturakKontrolagailua.java`).
 
 3. **`IA_garapena.pdf` Arau Zorrotzen Betetzea:**
    - **JavaFX CSS Araua:** Debekatuta dago Web CSS arauak jartzea. Beti erabili `-fx-` aurrizkia:

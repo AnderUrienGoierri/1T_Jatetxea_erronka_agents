@@ -8,10 +8,15 @@ Agente honek **Flutter bidezko mugikor-aplikazioak (Bezeroa eta Zerbitzaria)**, 
 
 - **ID:** `agente_06`
 - **Ardurapeko Proiektuak:**
-  - `01_aplikazioak/bezeroak/mobile_bezeroa_flutter` (Flutter - Dart)
+  - `01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv` (Android Jetpack Compose for TV - Kotlin, Gradle 8.13)
   - `01_aplikazioak/zerbitzari_langileak/mobile_zerbitzaria_flutter` (Flutter - Dart)
-  - `01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv` (Android Jetpack Compose - Kotlin)
-- **Konektatutako Gailuak:** Android mugikor fisikoak (USB arazketa / ADB), Android TV emuladoreak edo pantaila handiak.
+  - `01_aplikazioak/zerbitzari_langileak/zerbitzaria_komandera_android` (Native Android Kotlin Komandera)
+  - `01_aplikazioak/bezeroak/mobile_bezeroa_flutter` (Flutter - Dart)
+  - `01_aplikazioak/admin/admin_IT_zentrala/mobile_android` (Android Kotlin - Admin Webview / Native Monitor)
+- **Konektatutako Gailuak:** Android mugikor fisikoak (USB / WiFi arazketa ADB), Android TV pantaila fisikoak (Philips, Sony, Chromecast) edo emuladoreak.
+- **Instalazio Gidoiak:**
+  - `01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv/instalatu_android_tv.bat` (TV instalazio automatikoa)
+  - `01_aplikazioak/admin/admin_IT_zentrala/instalatu_mugikorrean.bat` (Mugikor instalazio automatikoa)
 
 ---
 

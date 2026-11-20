@@ -8,14 +8,52 @@ Dokumentu honek **1T Jatetxea Kudeaketa Sistema Integralaren** multi-agente egit
 
 | Agente ID | Agentearen Rola eta Izena | Azpisistema / Esparrua | Tekno-Pilaketa |
 | :--- | :--- | :--- | :--- |
-| `agente_01` | **Backend REST API Arkitektoa** | `01_aplikazioak/admin/backend_rest_api_csharp` | ASP.NET Core (.NET 10), MySQL 8.0, Docker (5050) |
-| `agente_02` | **Admin IT Zentralaren Ingeniaria** | `01_aplikazioak/admin/admin_IT_zentrala` | ASP.NET Core (.NET 11/10), Docker CLI, VBox (5000) |
-| `agente_03` | **Desktop C# TPV Ingeniaria** | `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp` | C# .NET 10 Windows Forms, ESC/POS Inprimagailua |
-| `agente_04` | **Desktop JavaFX KDS / BDS / Stock Diseinatzailea** | `01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds`, `zerbitzari_langileak/desktop_barra_bds`, `biltegi_langileak/desktop_biltegia_stock`, `komunak/desktop_javafx_*` | Java 21 Temurin, JavaFX, FXML, Scene Builder (Maven Multi-Modulua) |
-| `agente_05` | **Web PHP Garatzailea & DMZ Zaindaria** | `01_aplikazioak/bezeroak/web_php_bezeroak` | Apache, PHP 8.4, VLAN 20 DMZ (8085) |
-| `agente_06` | **Mugikor eta Android TV Garatzailea** | `mobile_*`, `sukaldea_kds_android_tv`| Flutter (Dart), Android Jetpack Compose, ADB |
-| `agente_07` | **Sare, Segurtasun eta DevSecOps Ingeniaria** | `02_azpiegitura_birtuala`, `03_laborategia` | OPNsense (8443), Cisco 2960 VLANak, CI/CD |
-| `agente_08` | **Figma UI/UX Ikuskatzaile eta Auditorea** | `gemini/`, Figma Educational Workspace | Figma Auto-Layout, Token Sistema, Inter / JetBrains |
+| `agente_01` | **Backend REST API Arkitektoa** | `01_aplikazioak/admin/backend_rest_api_csharp` | ASP.NET Core (.NET 10), MySQL 8.0, Docker (5050), Fakturak & Finantzak, Real-time Monitorea |
+| `agente_02` | **Admin IT Zentralaren Ingeniaria** | `01_aplikazioak/admin/admin_IT_zentrala`, `Admin_IT_Zentrala.exe`, `odoo_erp` | ASP.NET Core (.NET 11/10), C# WinForms/WPF Launcher, Docker CLI, Odoo 17 ERP (5000) |
+| `agente_03` | **Desktop C# TPV Ingeniaria** | `01_aplikazioak/zerbitzari_langileak/desktop_tpv_csharp` | C# .NET 10 Windows Forms, ESC/POS Inprimagailua, Mahai & Eskaera Kudeaketa |
+| `agente_04` | **Desktop JavaFX Sistema Integrala** | `admin_desktop_java`, `desktop_sukaldea_kds`, `desktop_barra_bds`, `desktop_biltegia_stock`, `komunak/desktop_javafx_*` | Java 21 Temurin, JavaFX 21, FXML, Scene Builder, Maven Multi-Modulua (Admin, KDS, BDS, Stock) |
+| `agente_05` | **Web PHP Garatzailea & DMZ Zaindaria** | `01_aplikazioak/bezeroak/web_php_bezeroak` | Apache, PHP 8.2/8.4, VLAN 20 DMZ (8085), cURL REST Client |
+| `agente_06` | **Mugikor eta Android TV Garatzailea** | `mobile_zerbitzaria_flutter`, `zerbitzaria_komandera_android`, `mobile_bezeroa_flutter`, `sukaldea_kds_android_tv` | Flutter (Dart), Android Jetpack Compose for TV, Kotlin, ADB Scripts |
+| `agente_07` | **Sare, Segurtasun eta DevSecOps Ingeniaria** | `02_azpiegitura_birtuala`, `03_laborategia` | OPNsense (8443), Cisco 2960 VLANak, WireGuard VPN, CI/CD |
+| `agente_08` | **Figma UI/UX Ikuskatzaile eta Auditorea** | `gemini/`, Figma Educational Workspace | Figma Auto-Layout, Token Sistema, Inter / JetBrains, Zinc Dark Mode |
+
+---
+
+## 1.1 Proiektuko Aplikazio Guztien Matrizea Rolen Arabera
+
+Proiektuak honako aplikazio eta modulu guztiak biltzen ditu:
+
+1. **Admin / Kudeaketa:**
+   - `Admin_IT_Zentrala.exe`: Erroko instalatzailea, konfigurazio morroia eta zerbitzuen abiarazle grafikoa.
+   - `admin_IT_zentrala` (Portua: 5000): Zerbitzuen egoera eta orkestrazio web-panela.
+   - `admin_desktop_java`: Kudeatzailearen JavaFX aplikazioa (Langileen kudeaketa, Karta/Menua, Fakturak eta Finantza Laburpena, Erreserbak).
+   - `backend_rest_api_csharp` (Portua: 5050): Sistemaren ASP.NET Core REST API nagusia.
+   - `odoo_erp` (Portua: 8069/8070): Enpresa Kudeaketa Integratua (ERP).
+   - `mobile_android`: Admin IT Zentralaren Android mugikorreko kontrol-panela.
+
+2. **Jangela / Zerbitzari Langileak:**
+   - `desktop_tpv_csharp`: Areto eta kutxako TPV mahaigainekoa (.NET Windows Forms).
+   - `mobile_zerbitzaria_flutter`: Zerbitzarien mugikor komandera azkarra (Flutter).
+   - `zerbitzaria_komandera_android`: Zerbitzarien komandera natiboa (Android Kotlin).
+
+3. **Barra Langileak:**
+   - `desktop_barra_bds`: Bar Display System (BDS) bezeroa edariak eta barrako eskaerak prestatu eta markatzeko (JavaFX).
+
+4. **Sukalde Langileak:**
+   - `desktop_sukaldea_kds`: Kitchen Display System (KDS) bezeroa sukaldeko komandak kontrolatzeko (JavaFX).
+   - `sukaldea_kds_android_tv`: Telebista handietarako KDS natiboa (Android TV Jetpack Compose, D-Pad kontrolarekin).
+   - `sukaldea_tv` (Portua: 8086): Docker web bidezko KDS telebista simulagailua.
+
+5. **Biltegi Langileak:**
+   - `desktop_biltegia_stock`: Lehengaien stock sarrera, irteera, gutxieneko alertak eta hornitzaileen erosketak kudeatzeko bezeroa (JavaFX).
+
+6. **Bezeroak:**
+   - `web_php_bezeroak` (Portua: 8085): Bezeroen webgune publikoa (karta, mahai-erreserbak, iritziak).
+   - `mobile_bezeroa_flutter`: Bezeroen mugikorretarako eskaera eta fidelizazio aplikazioa (Flutter).
+
+7. **Liburutegi Partekatua (Komunak):**
+   - `desktop_javafx_core`: JavaFX bezero guztientzako oinarri partekatua (PIN bidezko saio-hasiera rolaren arabera, REST API bezero unibertsala, modeloak, leiho-kudeatzailea).
+   - `desktop_javafx_parent`: Maven guraso proiektua mendekotasun guztiak bateratzeko.
 
 ---
 

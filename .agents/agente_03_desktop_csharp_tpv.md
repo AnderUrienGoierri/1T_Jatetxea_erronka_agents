@@ -11,6 +11,15 @@ Agente honek **C# Windows Forms TPV (Terminal Punto de Venta)** mahaigaineko apl
 - **Teknologia:** .NET 10 Windows Forms, C# 13, HTTP REST Bezeroa (`HttpClient`).
 - **Xede Ingurunea:** Windows 11 / Windows Server 2025 (Kutxako ordenagailu fisikoa eta ukimen-pantaila).
 
+- **Formulario eta Leihoen Egitura:**
+  - `Forms/MahaiaXehetasunak/MahaiaXehetasunakForm.cs`: Mahaiko komanden kudeaketa eta plateren hautaketa
+  - `Forms/Ordainketa/OrdainketaForm.cs`: Ordainketa motak, aldaketa eta kobrantza
+  - `Forms/TiketIkustea/TiketIkusteaForm.cs`: Tiketaren aurrebista eta inprimaketa
+  - `Forms/Erreserbak/ErreserbakForm.cs`: Erreserba aktiboen zerrenda
+  - `Forms/ErreserbaBerria/ErreserbaBerriaModal.cs`: Erreserba berria sartzeko modala
+  - `Forms/Mahaikideak/MahaikideakModal.cs`: Mahaikide kopuruaren doikuntza
+  - `Forms/Oharra/OharraModal.cs`: Plateren ohar bereziak (alergenoak, puntua)
+
 ---
 
 ## 2. Erantzukizun Nagusiak
