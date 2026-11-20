@@ -5,56 +5,47 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="eus.goierri.jatetxea.admin.controller.SaioHasieraKontrolagailua"
-           stylesheets="@../css/app.css"
-           styleClass="login-screen">
-    <HBox maxWidth="980" maxHeight="570" styleClass="login-card">
+<StackPane styleClass="login-screen" stylesheets="@../css/app.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eus.goierri.jatetxea.admin.controller.SaioHasieraKontrolagailua">
+    <HBox maxHeight="570" maxWidth="980" styleClass="login-card">
         <VBox prefWidth="430" spacing="22" styleClass="login-brand-panel">
             <padding>
-                <Insets top="46" right="42" bottom="42" left="42"/>
+                <Insets bottom="42" left="42" right="42" top="46" />
             </padding>
-            <Label text="T1" styleClass="brand-mark"/>
+            <Label styleClass="brand-mark" text="T1" />
             <VBox spacing="10">
-                <Label text="Jatetxea" styleClass="login-brand-title"/>
-                <Label text="Kudeaketa, xehetasunez." styleClass="login-brand-subtitle"/>
+                <Label styleClass="login-brand-title" text="Jatetxea" />
+                <Label styleClass="login-brand-subtitle" text="Kudeaketa, xehetasunez." />
+               <Label styleClass="brand-eyebrow" text="ITALO-EUSKAL SUKALDEA" />
             </VBox>
-            <Label text="Back-office plataforma&#10;Jabearentzat eta kudeatzaileentzat"
-                   wrapText="true" styleClass="login-brand-copy"/>
-            <Label text="ITALO-EUSKAL SUKALDEA" styleClass="brand-eyebrow"/>
+            <Label styleClass="login-brand-copy" text="Back-office plataforma&#10;Jabearentzat eta kudeatzaileentzat" wrapText="true" />
         </VBox>
         <VBox prefWidth="550" spacing="18" styleClass="login-form-panel">
             <padding>
-                <Insets top="58" right="64" bottom="52" left="64"/>
+                <Insets bottom="52" left="64" right="64" top="58" />
             </padding>
             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="api-status">
-                <Circle fx:id="apiStatusDot" radius="5" fill="#d97706"/>
-                <Label fx:id="apiStatusLabel" text="API egoera egiaztatzen..." styleClass="api-status-pending"
-                       HBox.hgrow="ALWAYS"/>
-                <Button fx:id="refreshApiButton" text="Berritu" onAction="#refreshApiStatus"
-                        styleClass="text-button"/>
+                <Circle fx:id="apiStatusDot" fill="#d97706" radius="5" />
+                <Label fx:id="apiStatusLabel" styleClass="api-status-pending" text="API egoera egiaztatzen..." HBox.hgrow="ALWAYS" />
+                <Button fx:id="refreshApiButton" onAction="#refreshApiStatus" styleClass="text-button" text="Berritu" />
             </HBox>
-            <Label text="Ongi etorri" styleClass="page-title"/>
-            <Label text="Hasi saioa zure kudeatzaile-kontuarekin." styleClass="muted-text"/>
+            <Label styleClass="page-title" text="Ongi etorri" />
+            <Label styleClass="muted-text" text="Hasi saioa zure kudeatzaile edo admin kontuarekin." />
             <VBox spacing="8">
-                <Label text="Erabiltzailea" styleClass="field-label"/>
-                <TextField fx:id="usernameField" promptText="Erabiltzaile-izena"/>
+                <Label styleClass="field-label" text="Erabiltzailea" />
+                <TextField fx:id="usernameField" promptText="Erabiltzaile-izena" />
             </VBox>
             <VBox spacing="8">
-                <Label text="PINa edo pasahitza" styleClass="field-label"/>
-                <PasswordField fx:id="pinField" promptText="Sartu PINa"/>
+                <Label styleClass="field-label" text="PIN" />
+                <PasswordField fx:id="pinField" promptText="Sartu PINa" />
             </VBox>
-            <Label fx:id="errorLabel" wrapText="true" styleClass="inline-message"/>
-            <Button fx:id="signInButton" text="Saioa hasi" onAction="#signIn"
-                    maxWidth="Infinity" styleClass="primary-button"/>
-            <Label text="Konexioa: REST API · Ez da datu-basera zuzenean konektatzen"
-                   wrapText="true" styleClass="fine-print"/>
+            <Label fx:id="errorLabel" styleClass="inline-message" wrapText="true" />
+            <Button fx:id="signInButton" maxWidth="Infinity" onAction="#signIn" styleClass="primary-button" text="Saioa hasi" />
+            <Label styleClass="fine-print" text="Konexioa: REST API · Ez da datu-basera zuzenean konektatzen" wrapText="true" />
         </VBox>
     </HBox>
 </StackPane>
