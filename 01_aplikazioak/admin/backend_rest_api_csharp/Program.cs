@@ -202,7 +202,7 @@ app.MapGet("/", () =>
 });
 
 // Health Check endpoint-ak: APIa eta Datu-basea martxan dauden egiaztatzeko
-app.MapGet("/health", () =>
+var osasunEgiaztapena = () =>
 {
     bool konektatuta = DatuBaseaMonitorZerbitzua.IsKonektatuta;
     string dbOharra = DatuBaseaMonitorZerbitzua.ZerbitzariaOharra;
@@ -212,6 +212,7 @@ app.MapGet("/health", () =>
         return Results.Ok(new
         {
             status = "Healthy",
+            egoera = "Konektatuta",
             database = "Connected",
             engine = "MySQL 8.0 InnoDB",
             server = dbOharra,
@@ -225,6 +226,7 @@ app.MapGet("/health", () =>
     return Results.Json(new
     {
         status = "Unhealthy",
+        egoera = "Deskonektatuta",
         database = "Disconnected",
         exceptionType = DatuBaseaMonitorZerbitzua.AzkenSalbuespenMota,
         server = dbOharra,
@@ -235,11 +237,15 @@ app.MapGet("/health", () =>
             : null,
         timestamp = DateTime.UtcNow
     }, statusCode: 503);
-});
+};
+
+app.MapGet("/health", osasunEgiaztapena);
+app.MapGet("/osasuna", osasunEgiaztapena);
+app.MapGet("/api/v1/health", osasunEgiaztapena);
+app.MapGet("/api/v1/osasuna", osasunEgiaztapena);
 
 // /api/v1 erroa informaziora bideratu
 app.MapGet("/api/v1", () => Results.Redirect("/"));
-app.MapGet("/api/v1/health", () => Results.Redirect("/health"));
 
 // Denbora errealean konektatutako aplikazioen zerrenda
 app.MapGet("/api/v1/aplikazioak-linean", () => Results.Ok(AplikazioMonitoreZerbitzua.LortuEgoeraLaburpena()));

@@ -83,6 +83,11 @@ public class LangileakController : BaseApiKontroladorea
     [HttpPost("login")]
     public async Task<IActionResult> SaioaHasi([FromBody] LangileLoginDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Pasahitza) && !string.IsNullOrWhiteSpace(dto.Pin))
+        {
+            dto.Pasahitza = dto.Pin;
+        }
+
         if (string.IsNullOrWhiteSpace(dto.Erabiltzailea) || string.IsNullOrWhiteSpace(dto.Pasahitza))
             return BadRequestError("Erabiltzailea/PIN eta pasahitza beharrezkoak dira.");
 

@@ -80,8 +80,9 @@ public class LangileLoginDto
     [Required]
     public string Erabiltzailea { get; set; } = string.Empty; // edo PIN kodea
 
-    [Required]
     public string Pasahitza { get; set; } = string.Empty;
+
+    public string? Pin { get; set; }
 }
 
 public class LoginEmaitzaDto

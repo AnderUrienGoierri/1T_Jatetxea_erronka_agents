@@ -70,6 +70,7 @@ public class ApiZerbitzua {
 
     public ApiZerbitzua() {
         this.bezeroa = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NORMAL)
                 .connectTimeout(Duration.ofSeconds(4))
                 .build();
         this.gson = new Gson();
@@ -99,6 +100,30 @@ public class ApiZerbitzua {
         return builder;
     }
 
+    private <T> List<T> parseList(String jsonStr, Type type) {
+        if (jsonStr == null || jsonStr.isBlank()) {
+            return Collections.emptyList();
+        }
+        try {
+            var element = com.google.gson.JsonParser.parseString(jsonStr);
+            if (element.isJsonArray()) {
+                return gson.fromJson(element, type);
+            }
+            if (element.isJsonObject()) {
+                var obj = element.getAsJsonObject();
+                if (obj.has("dataList") && obj.get("dataList").isJsonArray()) {
+                    return gson.fromJson(obj.get("dataList"), type);
+                }
+                if (obj.has("data") && obj.get("data").isJsonArray()) {
+                    return gson.fromJson(obj.get("data"), type);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[ApiZerbitzua] Errorea JSON zerrenda parseatzean: " + e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
     public HealthResult egiaztatuOsasuna() {
         try {
             HttpRequest request = sortuRequestBuilder("/osasuna")
@@ -109,6 +134,17 @@ public class ApiZerbitzua {
             if (response.statusCode() == 200) {
                 return new HealthResult(true, "APIa konektatuta (200 OK)");
             }
+
+            // Erreserbako proba: /health endpoint orokorra
+            HttpRequest fallbackRequest = sortuRequestBuilder("/health")
+                    .timeout(Duration.ofSeconds(3))
+                    .GET()
+                    .build();
+            HttpResponse<String> fallbackResponse = bezeroa.send(fallbackRequest, HttpResponse.BodyHandlers.ofString());
+            if (fallbackResponse.statusCode() == 200) {
+                return new HealthResult(true, "APIa konektatuta (200 OK)");
+            }
+
             return new HealthResult(false, "APIak egoera kode okerra itzuli du: " + response.statusCode());
         } catch (Exception e) {
             return new HealthResult(false, "Ezin da APIarekin konektatu (" + e.getClass().getSimpleName() + ")");
@@ -125,12 +161,13 @@ public class ApiZerbitzua {
             return Collections.emptyList();
         }
         Type zerrendaMota = new TypeToken<List<Langilea>>() {}.getType();
-        return gson.fromJson(response.body(), zerrendaMota);
+        return parseList(response.body(), zerrendaMota);
     }
 
     public LoginErantzuna saioaHasi(String erabiltzailea, String pin) throws IOException, InterruptedException {
         JsonObject json = new JsonObject();
         json.addProperty("erabiltzailea", erabiltzailea);
+        json.addProperty("pasahitza", pin);
         json.addProperty("pin", pin);
 
         HttpRequest request = sortuRequestBuilder("/langileak/login")
@@ -141,9 +178,13 @@ public class ApiZerbitzua {
 
         HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
-            JsonObject res = gson.fromJson(response.body(), JsonObject.class);
+            JsonObject root = gson.fromJson(response.body(), JsonObject.class);
+            JsonObject res = root;
+            if (root.has("data") && root.get("data").isJsonObject()) {
+                res = root.getAsJsonObject("data");
+            }
             boolean arrakasta = res.has("arrakasta") && res.get("arrakasta").getAsBoolean();
-            String mezua = res.has("mezua") ? res.get("mezua").getAsString() : "Ongi etorri";
+            String mezua = res.has("mezua") ? res.get("mezua").getAsString() : (root.has("message") ? root.get("message").getAsString() : "Ongi etorri");
             Langilea l = null;
             if (res.has("langilea") && !res.get("langilea").isJsonNull()) {
                 l = gson.fromJson(res.get("langilea"), Langilea.class);
@@ -166,7 +207,7 @@ public class ApiZerbitzua {
             return Collections.emptyList();
         }
         Type listType = new TypeToken<List<Eskaera>>() {}.getType();
-        return gson.fromJson(response.body(), listType);
+        return parseList(response.body(), listType);
     }
 
     public boolean aldatuEskaeraEgoera(int eskaeraId, String egoeraBerria) throws IOException, InterruptedException {
@@ -207,7 +248,7 @@ public class ApiZerbitzua {
             return Collections.emptyList();
         }
         Type listType = new TypeToken<List<Lehengaia>>() {}.getType();
-        return gson.fromJson(response.body(), listType);
+        return parseList(response.body(), listType);
     }
 
     public boolean gehituStockSarrera(int lehengaiaId, double kantitatea, String albarana, String oharrak) throws IOException, InterruptedException {
@@ -237,6 +278,6 @@ public class ApiZerbitzua {
             return Collections.emptyList();
         }
         Type listType = new TypeToken<List<Platera>>() {}.getType();
-        return gson.fromJson(response.body(), listType);
+        return parseList(response.body(), listType);
     }
 }
