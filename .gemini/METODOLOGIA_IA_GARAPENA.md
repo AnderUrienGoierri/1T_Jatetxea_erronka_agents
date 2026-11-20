@@ -2,6 +2,8 @@
 
 Dokumentu honek 1T Jatetxea erronkan adimen artifizialeko laguntzaileak (Gemini, Claude, GPT, Antigravity) erabiliz kalitate handiko softwarea eta interfazeak sortzeko lan-fluxua finkatzen du.
 
+> Eredu bakoitzaren (Gemini 4 Neon/Argon/Hydrogen, Orchestrator, Gemini 3.8 Flash) ezaugarriak eta erabilera-matrizea ikusteko, kontsultatu [MODELOEN_GIDA.md](file:///c:/Dev/GoierriEskola/1T_Jatetxea_erronka_agents/.gemini/MODELOEN_GIDA.md).
+
 ---
 
 ## 1. Oinarrizko Printzipioak
