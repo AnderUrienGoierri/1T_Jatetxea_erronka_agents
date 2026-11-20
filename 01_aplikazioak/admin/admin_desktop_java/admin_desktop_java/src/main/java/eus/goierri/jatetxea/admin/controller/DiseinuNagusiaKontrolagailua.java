@@ -53,6 +53,7 @@ public final class DiseinuNagusiaKontrolagailua {
     @FXML private void showMenu() { loadScreen("menua.fxml", "Menua eta errezetak"); }
     @FXML private void showIngredients() { loadScreen("osagaiak.fxml", "Osagaiak eta inbentarioa"); }
     @FXML private void showTables() { loadScreen("mahaiak.fxml", "Mahaiak"); }
+    @FXML private void showInvoices() { loadScreen("fakturak.fxml", "Fakturak eta Finantzak"); }
 
     @FXML
     private void refreshServiceStatus() {

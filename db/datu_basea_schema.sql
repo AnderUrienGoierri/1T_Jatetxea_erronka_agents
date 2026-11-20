@@ -192,7 +192,7 @@ CREATE TABLE eskaerak (
     id INT AUTO_INCREMENT PRIMARY KEY,
     mahaia_id INT NOT NULL,
     langilea_id INT NOT NULL,
-    egoera ENUM('Irekia', 'Sukaldean', 'Zerbitzatua', 'Kobratua', 'Ezeztatua') NOT NULL DEFAULT 'Irekia',
+    egoera ENUM('Irekia', 'Sukaldean', 'Prestatua', 'Zerbitzatua', 'Kobratua', 'Ezeztatua') NOT NULL DEFAULT 'Irekia',
     guztira DECIMAL(8,2) NOT NULL DEFAULT 0.00,
     ezabatua TINYINT(1) NOT NULL DEFAULT 0,
     ezabatze_data DATETIME NULL,
@@ -286,6 +286,40 @@ CREATE TABLE IF NOT EXISTS ordainketak (
         REFERENCES eskaerak(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     INDEX idx_ordainketa_eskaera (eskaera_id),
     INDEX idx_ordainketa_tiket (tiket_zenbakia)
+) ENGINE=InnoDB;
+
+-- 13. FAKTURAK TAULA (SALMENTA ETA GASTU/EROSKETA FAKTURAK - KONTABILITATEA)
+-- Bi mota nagusi:
+--  - 'Salmenta': Bezeroen ordainketenak (eskaera bati lotuta, sinplifikatua edo osoa)
+--  - 'Erosketa': Hornitzaileei erositako osagaien eta lehengaien fakturak (gastu operatiboak)
+CREATE TABLE IF NOT EXISTS fakturak (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    eskaera_id INT NULL,
+    faktura_zenbakia VARCHAR(50) NOT NULL UNIQUE,
+    mota ENUM('Salmenta', 'Erosketa') NOT NULL DEFAULT 'Salmenta',
+    azpimota ENUM('Sinplifikatua', 'Osoa') NOT NULL DEFAULT 'Sinplifikatua',
+    kontzeptua VARCHAR(255) NOT NULL,
+    hornitzailea VARCHAR(120) NULL,
+    hornitzaile_cif VARCHAR(20) NULL,
+    bezero_nif VARCHAR(20) NULL,
+    bezero_izena VARCHAR(120) NULL,
+    bezero_helbidea VARCHAR(200) NULL,
+    oinarri_zergagarria DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    bez_ehunekoa DECIMAL(4,2) NOT NULL DEFAULT 10.00,
+    bez_zenbatekoa DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    guztira DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    ordainketa_metodoa VARCHAR(50) NOT NULL DEFAULT 'Txartela',
+    egoera ENUM('Ordaindua', 'Zain', 'Ezeztatua') NOT NULL DEFAULT 'Ordaindua',
+    data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    epemuga_data DATE NULL,
+    oharrak TEXT NULL,
+    ezabatua TINYINT(1) NOT NULL DEFAULT 0,
+    ezabatze_data DATETIME NULL,
+    sortze_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_faktura_eskaera FOREIGN KEY (eskaera_id) REFERENCES eskaerak(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    INDEX idx_faktura_mota (mota, egoera, data),
+    INDEX idx_faktura_zenbakia (faktura_zenbakia),
+    INDEX idx_faktura_data (data)
 ) ENGINE=InnoDB;
 
 -- =====================================================================
@@ -698,3 +732,19 @@ INSERT INTO bezeroak (izena, abizena, telefonoa, emaila) VALUES
 INSERT INTO iritziak (bezeroa_id, balorazioa, testua) VALUES
 (1, 5, 'Txuleta zoragarria eta zerbitzu bikaina! Seguru itzuliko garela.'),
 (2, 4, 'Babarrun goxoak eta giro atsegina, baina postreetan aukera zabalagoa eskertuko litzateke.');
+
+-- Fakturak (Salmentak eta Hornitzaileen Erosketak / Gastuak)
+INSERT INTO fakturak 
+(faktura_zenbakia, mota, azpimota, kontzeptua, hornitzailea, hornitzaile_cif, bezero_nif, bezero_izena, bezero_helbidea, oinarri_zergagarria, bez_ehunekoa, bez_zenbatekoa, guztira, ordainketa_metodoa, egoera, data)
+VALUES
+('F2026-S001', 'Salmenta', 'Sinplifikatua', 'Jatetxe zerbitzua - Mahaia 1', NULL, NULL, NULL, 'Bezero Arrunta', NULL, 74.55, 10.00, 7.45, 82.00, 'Txartela', 'Ordaindua', '2026-11-17 14:30:00'),
+('F2026-S002', 'Salmenta', 'Sinplifikatua', 'Jatetxe zerbitzua - Mahaia 3', NULL, NULL, NULL, 'Bezero Arrunta', NULL, 122.73, 10.00, 12.27, 135.00, 'Txartela', 'Ordaindua', '2026-11-17 15:15:00'),
+('F2026-S003', 'Salmenta', 'Osoa', 'Enpresa bazkaria (12 mahaikide)', NULL, NULL, 'B75123987', 'CAF S.A. Enpresa', 'J.M. Iturrioz 26, Beasain', 436.36, 10.00, 43.64, 480.00, 'Transferentzia', 'Ordaindua', '2026-11-18 15:45:00'),
+('F2026-S004', 'Salmenta', 'Sinplifikatua', 'Barra eta menu kontsumoa', NULL, NULL, NULL, 'Bezero Arrunta', NULL, 45.45, 10.00, 4.55, 50.00, 'Eskudirua', 'Ordaindua', '2026-11-19 13:50:00'),
+('F2026-S005', 'Salmenta', 'Sinplifikatua', 'Jatetxe zerbitzua - Mahaia 2', NULL, NULL, NULL, 'Bezero Arrunta', NULL, 89.09, 10.00, 8.91, 98.00, 'Bizum', 'Ordaindua', '2026-11-19 22:10:00'),
+('F2026-S006', 'Salmenta', 'Osoa', 'Batzordearen afaria (8 lagun)', NULL, NULL, 'A20112233', 'Goierri Valley Elkartea', 'Arranbide 2, Ordizia', 290.91, 10.00, 29.09, 320.00, 'Txartela', 'Ordaindua', '2026-11-19 22:45:00'),
+('F2026-G001', 'Erosketa', 'Osoa', 'Txuleta eta haragi freskoen hornidura', 'Goierri Okela S.L.', 'B20123456', NULL, NULL, NULL, 450.00, 10.00, 45.00, 495.00, 'Transferentzia', 'Ordaindua', '2026-11-15 08:30:00'),
+('F2026-G002', 'Erosketa', 'Osoa', 'Legatz eta itsaski horniketa', 'Kantauri Arrainak S.A.', 'A20987654', NULL, NULL, NULL, 320.00, 10.00, 32.00, 352.00, 'Transferentzia', 'Ordaindua', '2026-11-16 09:15:00'),
+('F2026-G003', 'Erosketa', 'Osoa', 'Garaiko barazkiak, patatak eta entsaladak', 'Ordiziako Barazki Koop.', 'F20345678', NULL, NULL, NULL, 180.00, 10.00, 18.00, 198.00, 'Eskudirua', 'Ordaindua', '2026-11-17 07:45:00'),
+('F2026-G004', 'Erosketa', 'Osoa', 'Ardoak, sagardoa eta likoreak', 'Euskal Upeltegiak & Edariak', 'B20778899', NULL, NULL, NULL, 520.00, 21.00, 109.20, 629.20, 'Transferentzia', 'Ordaindua', '2026-11-18 11:00:00'),
+('F2026-G005', 'Erosketa', 'Osoa', 'Jatetxeko argindarra eta gas hornidura (Urria)', 'Iberdrola Energia', 'A48010615', NULL, NULL, NULL, 680.00, 21.00, 142.80, 822.80, 'Helbideratua', 'Ordaindua', '2026-11-10 12:00:00');

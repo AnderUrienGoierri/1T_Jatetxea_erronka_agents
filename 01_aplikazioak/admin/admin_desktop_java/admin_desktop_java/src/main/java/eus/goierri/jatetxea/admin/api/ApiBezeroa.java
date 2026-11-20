@@ -139,6 +139,26 @@ public final class ApiBezeroa {
         send("DELETE", path, null);
     }
 
+    public List<Faktura> getFakturak(String mota) throws IOException, InterruptedException {
+        String path = "/fakturak";
+        if (mota != null && !mota.isBlank() && !"Guztiak".equalsIgnoreCase(mota)) {
+            path += "?mota=" + mota;
+        }
+        return getList(path, Faktura.class);
+    }
+
+    public FinantzaLaburpena getFinantzaLaburpena() throws IOException, InterruptedException {
+        return getData("/fakturak/laburpena", FinantzaLaburpena.class);
+    }
+
+    public void sortuFaktura(Object body) throws IOException, InterruptedException {
+        post("/fakturak", body);
+    }
+
+    public void aldatuFakturaEgoera(int id, String egoera) throws IOException, InterruptedException {
+        put("/fakturak/" + id + "/egoera", Map.of("egoera", egoera));
+    }
+
     public ServiceStatus getServiceStatus() throws IOException, InterruptedException {
         JsonObject response = send("GET", "/system/service-status", null);
         JsonObject status = response.has("data") && response.get("data").isJsonObject()

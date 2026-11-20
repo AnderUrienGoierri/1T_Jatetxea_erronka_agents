@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="eus.goierri.jatetxea.admin.controller.FakturakKontrolagailua"
+      stylesheets="@../css/app.css"
+      spacing="16" styleClass="screen">
+    <padding>
+        <Insets top="2" right="2" bottom="2" left="2"/>
+    </padding>
+
+    <!-- Goiburua -->
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Fakturak eta Kontabilitatea" styleClass="page-title"/>
+            <Label text="Salmenta fakturak (bezeroak), erosketa fakturak (hornitzaileak) eta finantza balantzea." styleClass="muted-text"/>
+        </VBox>
+        <Button text="Berritu datuak" onAction="#refresh" styleClass="secondary-button"/>
+    </HBox>
+
+    <!-- Finantza KPI Txartelak (Irabaziak eta Gastuak) -->
+    <HBox spacing="14">
+        <!-- Salmentak -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="SALMENTAK GUZTIRA (SARRERAK)" styleClass="metric-caption"/>
+            <Label fx:id="totalSalesLabel" text="—" styleClass="metric-value"/>
+            <Label fx:id="salesCountLabel" text="Bezeroen ordainketak" styleClass="muted-text"/>
+        </VBox>
+
+        <!-- Gastuak -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card metric-card-warning">
+            <Label text="GASTUAK GUZTIRA (EROSKETAK)" styleClass="metric-caption"/>
+            <Label fx:id="totalExpensesLabel" text="—" styleClass="metric-value"/>
+            <Label fx:id="expensesCountLabel" text="Hornitzaileen albaranak eta hornidurak" styleClass="muted-text"/>
+        </VBox>
+
+        <!-- Mozkin Garbia -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="MOZKIN GARBIA (BALANTZEA)" styleClass="metric-caption"/>
+            <Label fx:id="netProfitLabel" text="—" styleClass="metric-value"/>
+            <Label fx:id="netProfitSubtitle" text="Salmentak - Gastuak" styleClass="muted-text"/>
+        </VBox>
+
+        <!-- BEZ Likidazioa -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="metric-card">
+            <Label text="BEZ LIKIDAZIOA (OGASUNA)" styleClass="metric-caption"/>
+            <Label fx:id="vatBalanceLabel" text="—" styleClass="metric-value"/>
+            <Label fx:id="vatDetailLabel" text="Jasotako BEZ vs Ordaindutako BEZ" styleClass="muted-text"/>
+        </VBox>
+    </HBox>
+
+    <!-- Fakturen Taula eta Iragazkiak -->
+    <VBox spacing="10" styleClass="card" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label text="Fakturen Zerrenda" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+            <Label text="Mota:" styleClass="field-label"/>
+            <ComboBox fx:id="filterTypeCombo" prefWidth="150"/>
+            <Label text="Bilatu:" styleClass="field-label"/>
+            <TextField fx:id="searchField" promptText="Zenbakia, kontzeptua, entitatea..." prefWidth="240"/>
+        </HBox>
+
+        <TableView fx:id="invoicesTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="numberColumn" text="Zenbakia" prefWidth="110"/>
+                <TableColumn fx:id="typeColumn" text="Mota" prefWidth="130"/>
+                <TableColumn fx:id="dateColumn" text="Data" prefWidth="130"/>
+                <TableColumn fx:id="entityColumn" text="Bezeroa / Hornitzailea" prefWidth="180"/>
+                <TableColumn fx:id="conceptColumn" text="Kontzeptua" prefWidth="220"/>
+                <TableColumn fx:id="baseColumn" text="Oinarria" prefWidth="95"/>
+                <TableColumn fx:id="vatColumn" text="BEZ" prefWidth="110"/>
+                <TableColumn fx:id="totalColumn" text="Guztira" prefWidth="95"/>
+                <TableColumn fx:id="methodColumn" text="Ordainbidea" prefWidth="110"/>
+                <TableColumn fx:id="statusColumn" text="Egoera" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label fx:id="invoiceMessage" text="Fakturak kargatzen..." wrapText="true"
+                   styleClass="inline-message" HBox.hgrow="ALWAYS"/>
+            <Button text="Ordainduta markatu" onAction="#markAsPaid" styleClass="secondary-button"/>
+            <Button text="Ezeztatu" onAction="#markAsCancelled" styleClass="danger-button"/>
+        </HBox>
+    </VBox>
+
+    <!-- Faktura Berria Sartzeko Formularioa -->
+    <VBox fx:id="formCard" spacing="10" styleClass="card">
+        <Label fx:id="formTitle" text="Faktura berria erregistratu (Hornitzailearen gastua edo Salmenta)" styleClass="section-title"/>
+        <HBox spacing="10">
+            <VBox spacing="4" prefWidth="130">
+                <Label text="Mota" styleClass="field-label"/>
+                <ComboBox fx:id="formTypeCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="130">
+                <Label text="Azpimota" styleClass="field-label"/>
+                <ComboBox fx:id="formSubtypeCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Kontzeptua / Deskribapena" styleClass="field-label"/>
+                <TextField fx:id="formConceptField" promptText="Adib. Barazki freskoen horniketa azaroa"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="180">
+                <Label text="Hornitzailea / Bezeroa" styleClass="field-label"/>
+                <TextField fx:id="formEntityField" promptText="Enpresaren izena"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="110">
+                <Label text="CIF / NIF" styleClass="field-label"/>
+                <TextField fx:id="formCifField" promptText="B12345678"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="10">
+            <VBox spacing="4" prefWidth="130">
+                <Label text="Oinarri Zergagarria (€)" styleClass="field-label"/>
+                <TextField fx:id="formBaseField" promptText="0.00"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="100">
+                <Label text="BEZ %" styleClass="field-label"/>
+                <ComboBox fx:id="formVatPercentCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="140">
+                <Label text="Ordainketa Metodoa" styleClass="field-label"/>
+                <ComboBox fx:id="formMethodCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" prefWidth="120">
+                <Label text="Egoera" styleClass="field-label"/>
+                <ComboBox fx:id="formStatusCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Oharrak (Aukerakoa)" styleClass="field-label"/>
+                <TextField fx:id="formNotesField" promptText="Albaran zenbakia, ordainketa oharrak..."/>
+            </VBox>
+            <VBox spacing="4" alignment="BOTTOM_CENTER">
+                <HBox spacing="8">
+                    <Button fx:id="saveInvoiceButton" text="Gorde faktura" onAction="#saveInvoice" styleClass="primary-button"/>
+                    <Button text="Garbitu" onAction="#clearForm" styleClass="secondary-button"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</VBox>

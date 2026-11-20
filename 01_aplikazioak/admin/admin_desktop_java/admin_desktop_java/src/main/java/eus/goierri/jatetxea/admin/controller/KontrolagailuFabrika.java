@@ -42,6 +42,9 @@ public final class KontrolagailuFabrika implements javafx.util.Callback<Class<?>
         if (controllerType == MahaiakKontrolagailua.class) {
             return new MahaiakKontrolagailua(apiClient, session);
         }
+        if (controllerType == FakturakKontrolagailua.class) {
+            return new FakturakKontrolagailua(apiClient, session);
+        }
         try {
             return controllerType.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {

@@ -196,7 +196,15 @@ app.MapGet("/", () =>
             "GET    /api/v1/iritziak (?barneEzabatuak=false) - Iritzi guztien zerrenda",
             "GET    /api/v1/iritziak/estatistikak - Iritzien estatistika orokorrak eta batez besteko balorazioa",
             "POST   /api/v1/iritziak - Bezeroaren iritzi berria (0-5 izar)",
-            "DELETE /api/v1/iritziak/{id} (?hard=false) - Iritzia ezabatu"
+            "DELETE /api/v1/iritziak/{id} (?hard=false) - Iritzia ezabatu",
+
+            // 9. Fakturak eta Finantzak (/api/v1/fakturak)
+            "GET    /api/v1/fakturak (?mota=Salmenta|Erosketa&egoera=...) - Salmenta eta gastu fakturen zerrenda",
+            "GET    /api/v1/fakturak/laburpena - Finantza laburpena: diru-sarrerak, gastuak, mozkin garbia eta BEZa",
+            "GET    /api/v1/fakturak/{id} - Faktura bakarra ID bidez",
+            "POST   /api/v1/fakturak - Faktura berria erregistratu (salmenta edo hornitzaile gastua)",
+            "PUT    /api/v1/fakturak/{id}/egoera - Fakturaren egoera aldatu (Ordaindua, Zain, Ezeztatua)",
+            "DELETE /api/v1/fakturak/{id} - Faktura ezabatu"
         }
     });
 });
