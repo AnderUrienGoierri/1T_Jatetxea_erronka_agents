@@ -184,14 +184,14 @@ public abstract class BaseLoginController {
     }
 
     @FXML
-    protected void onPinBotoiaClick(ActionEvent event) {
+    public void onPinBotoiaClick(ActionEvent event) {
         Button btn = (Button) event.getSource();
         String balioa = btn.getText().trim();
         gehituPinDigitoa(balioa);
     }
 
     @FXML
-    protected void onKeyClick(ActionEvent event) {
+    public void onKeyClick(ActionEvent event) {
         onPinBotoiaClick(event);
     }
 
@@ -207,7 +207,7 @@ public abstract class BaseLoginController {
     }
 
     @FXML
-    protected void onPinAtzeraClick() {
+    public void onPinAtzeraClick() {
         if (pinBuffer.length() > 0) {
             pinBuffer.deleteCharAt(pinBuffer.length() - 1);
             freskatuPinDots();
@@ -215,7 +215,7 @@ public abstract class BaseLoginController {
     }
 
     @FXML
-    protected void onPinGarbituClick() {
+    public void onPinGarbituClick() {
         pinBuffer.setLength(0);
         freskatuPinDots();
         if (lblErrorea != null) lblErrorea.setText("");
@@ -239,7 +239,7 @@ public abstract class BaseLoginController {
     }
 
     @FXML
-    protected void onLoginClick() {
+    public void onLoginClick() {
         if (aukeratutakoLangilea == null) {
             if (lblErrorea != null) lblErrorea.setText("Hautatu langile bat lehenik.");
             return;

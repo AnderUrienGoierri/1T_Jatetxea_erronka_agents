@@ -16,10 +16,17 @@ if exist "C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot\bin\javaw.exe"
 if exist "%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe" set "JAVA_BIN=%USERPROFILE%\.jdks\ms-17.0.21.0.2\bin\javaw.exe"
 if defined JAVA_HOME if exist "%JAVA_HOME%\bin\javaw.exe" set "JAVA_BIN=%JAVA_HOME%\bin\javaw.exe"
 
-if exist "target\classes" if exist "target\lib\javafx-controls-21.0.2-win.jar" (
+if exist "target\classes" if exist "target\lib\javafx-controls-21.0.2-win.jar" if exist "target\lib\desktop-javafx-core-1.0.0.jar" (
     echo Aplikazioaren interfaze grafikoa natiboki abiarazten...
     start "" "%JAVA_BIN%" --module-path "target\classes;target\lib" --add-modules ALL-MODULE-PATH --module eus.goierri.jatetxea.biltegia/eus.goierri.jatetxea.biltegia.Launcher
     exit /b 0
+)
+
+if not exist "%USERPROFILE%\.m2\repository\eus\goierri\jatetxea\desktop-javafx-core\1.0.0\desktop-javafx-core-1.0.0.jar" (
+    echo [INFO] JavaFX Core liburutegi komuna konpilatzen eta instalatzen...
+    pushd "..\..\admin\komunak\desktop_javafx_parent"
+    call .\mvnw.cmd install -DskipTests -pl :desktop-javafx-core -am
+    popd
 )
 
 echo Maven Wrapper bidez konpilatzen eta abiarazten...
