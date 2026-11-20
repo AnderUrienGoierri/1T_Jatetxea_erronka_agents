@@ -37,6 +37,19 @@ public class ApiService
         return http;
     }
 
+    public void EzarriUnekoLangilea(string? izena, string? erabiltzailea, string? rola)
+    {
+        _http.DefaultRequestHeaders.Remove("X-Langilea");
+        _http.DefaultRequestHeaders.Remove("X-Erabiltzailea");
+        _http.DefaultRequestHeaders.Remove("X-Rola");
+        if (!string.IsNullOrWhiteSpace(izena))
+            _http.DefaultRequestHeaders.Add("X-Langilea", izena.Trim());
+        if (!string.IsNullOrWhiteSpace(erabiltzailea))
+            _http.DefaultRequestHeaders.Add("X-Erabiltzailea", erabiltzailea.Trim());
+        if (!string.IsNullOrWhiteSpace(rola))
+            _http.DefaultRequestHeaders.Add("X-Rola", rola.Trim());
+    }
+
     private void EguneratuBaseUrl(string baseUrl)
     {
         if (string.Equals(_baseUrl, baseUrl, StringComparison.OrdinalIgnoreCase))
@@ -229,16 +242,76 @@ public class ApiService
     /// </summary>
     public async Task<bool> EguneratuMahaiarenEgoeraAsync(int mahaiaId, string egoera)
     {
+        var (arrakasta, _) = await AldatuMahaiarenEgoeraAsync(mahaiaId, egoera);
+        return arrakasta;
+    }
+
+    /// <summary>
+    /// Mahaiaren egoera aldatzen du eta APIren erantzun-mezua (edo errore-mezua) itzultzen du.
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua)> AldatuMahaiarenEgoeraAsync(int mahaiaId, string egoera)
+    {
         try
         {
             var payload = new { egoera };
             var response = await _http.PutAsJsonAsync($"mahaiak/{mahaiaId}/egoera", payload);
-            return response.IsSuccessStatusCode;
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                    {
+                        return (false, apiErr.Message);
+                    }
+                }
+                catch { }
+
+                var raw = await response.Content.ReadAsStringAsync();
+                return (false, !string.IsNullOrWhiteSpace(raw) ? raw : "Ezin izan da mahaiaren egoera eguneratu.");
+            }
+
+            var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+            return (true, apiRes?.Message ?? "Mahaiaren egoera eguneratu da.");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"EguneratuMahaiarenEgoeraAsync errorea: {ex.Message}");
-            return false;
+            System.Diagnostics.Debug.WriteLine($"AldatuMahaiarenEgoeraAsync errorea: {ex.Message}");
+            return (false, $"Konexio errorea: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Sukaldera bidali gabeko plater-lerroa ezabatzen du eta stocka leheneratzen du.
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua)> EzabatuEskaeraLerroaAsync(int lerroId)
+    {
+        try
+        {
+            var response = await _http.DeleteAsync($"eskaerak/lerroak/{lerroId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                    {
+                        return (false, apiErr.Message);
+                    }
+                }
+                catch { }
+
+                var raw = await response.Content.ReadAsStringAsync();
+                return (false, !string.IsNullOrWhiteSpace(raw) ? raw : "Ezin izan da platera ezabatu.");
+            }
+
+            var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+            return (true, apiRes?.Message ?? "Platera eskaritik ezabatu da.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"EzabatuEskaeraLerroaAsync errorea: {ex.Message}");
+            return (false, $"Konexio errorea: {ex.Message}");
         }
     }
 

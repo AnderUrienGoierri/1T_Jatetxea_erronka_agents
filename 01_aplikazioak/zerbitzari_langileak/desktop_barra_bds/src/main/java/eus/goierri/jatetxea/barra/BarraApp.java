@@ -12,6 +12,7 @@ public class BarraApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        eus.goierri.jatetxea.core.api.ApiZerbitzua.setAppId("desktop_barra_bds");
         FXMLLoader loader = new FXMLLoader(BarraApp.class.getResource("login-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1180, 750);

@@ -837,6 +837,7 @@ public partial class LoginForm : Form
         if (arrakasta && langilea != null)
         {
             var sesioLangilea = _aukeratutakoLangilea ?? langilea;
+            _api.EzarriUnekoLangilea(sesioLangilea.Izena, sesioLangilea.Erabiltzailea, sesioLangilea.Rola);
             _pin = string.Empty;
             FreskatuPinDots();
 
@@ -845,6 +846,7 @@ public partial class LoginForm : Form
             var mahaiakForm = new MahaiakForm(sesioLangilea, _api);
             mahaiakForm.FormClosed += async (s, e) =>
             {
+                _api.EzarriUnekoLangilea(null, null, null);
                 Show();
                 _pin = string.Empty;
                 FreskatuPinDots();

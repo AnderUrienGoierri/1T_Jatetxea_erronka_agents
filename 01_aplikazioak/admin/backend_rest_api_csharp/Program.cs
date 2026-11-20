@@ -46,7 +46,21 @@ app.Use(async (context, next) =>
     {
         string appId = AplikazioMonitoreZerbitzua.IdentifikatuAplikazioa(context);
         string ip = context.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
-        AplikazioMonitoreZerbitzua.ErregistratuEskaera(appId, ip, $"{context.Request.Method} {path}");
+
+        string? erabiltzailea = null;
+        var headers = context.Request.Headers;
+        if (headers.TryGetValue("X-Langilea", out var lVal) && !string.IsNullOrWhiteSpace(lVal))
+            erabiltzailea = lVal.ToString();
+        else if (headers.TryGetValue("X-Erabiltzailea", out var eVal) && !string.IsNullOrWhiteSpace(eVal))
+            erabiltzailea = eVal.ToString();
+        else if (headers.TryGetValue("X-User-Name", out var unVal) && !string.IsNullOrWhiteSpace(unVal))
+            erabiltzailea = unVal.ToString();
+        else if (headers.TryGetValue("X-User", out var uVal) && !string.IsNullOrWhiteSpace(uVal))
+            erabiltzailea = uVal.ToString();
+        else if (headers.TryGetValue("X-Admin-User", out var auVal) && !string.IsNullOrWhiteSpace(auVal))
+            erabiltzailea = auVal.ToString();
+
+        AplikazioMonitoreZerbitzua.ErregistratuEskaera(appId, ip, $"{context.Request.Method} {path}", erabiltzailea);
     }
 
     await next();
@@ -161,7 +175,7 @@ app.MapGet("/", () =>
             "GET    /api/v1/eskaerak/{id} - Eskaera osoa lerroekin eta plateren xehetasunekin",
             "POST   /api/v1/eskaerak - Komanda berria ireki mahaian",
             "POST   /api/v1/eskaerak/{id}/lerroak - Platera gehitu komandara eta lehengaiak blokeatu/deskontatu FOR UPDATE transakzioan",
-            "PUT    /api/v1/eskaerak/{id}/egoera - Eskaeraren egoera eguneratu (Irekia, Sukaldean, Zerbitzatua, Kobratua)",
+            "PUT    /api/v1/eskaerak/{id}/egoera - Eskaeraren egoera eguneratu (Irekia, Sukaldean, Prestatua, Zerbitzatua, Kobratua)",
             "PUT    /api/v1/eskaerak/lerroak/{lerroId}/egoera - KDS sukaldeko pantailarako lerroaren egoera eguneratu",
             "DELETE /api/v1/eskaerak/{id} - Eskaera ezabatu",
 

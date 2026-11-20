@@ -12,6 +12,7 @@ public class SukaldeaApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        eus.goierri.jatetxea.core.api.ApiZerbitzua.setAppId("desktop_sukaldea_kds");
         FXMLLoader loader = new FXMLLoader(SukaldeaApp.class.getResource("login-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1180, 750);

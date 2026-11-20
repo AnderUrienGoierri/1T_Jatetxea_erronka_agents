@@ -7,6 +7,7 @@ import eus.goierri.jatetxea.core.model.Eskaera;
 import eus.goierri.jatetxea.core.model.Langilea;
 import eus.goierri.jatetxea.core.model.Lehengaia;
 import eus.goierri.jatetxea.core.model.Platera;
+import eus.goierri.jatetxea.core.session.Sesioa;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -15,17 +16,37 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ApiZerbitzua {
     private static final String BASE_URL = hasieratuBaseUrl();
+    private static String appId = null;
+
     private final HttpClient bezeroa;
     private final Gson gson;
 
     public static String getBaseUrl() {
         return BASE_URL;
+    }
+
+    public static void setAppId(String id) {
+        appId = id;
+    }
+
+    public static String getAppId() {
+        if (appId != null && !appId.isBlank()) return appId;
+        String prop = System.getProperty("app.id");
+        if (prop != null && !prop.isBlank()) return prop;
+        String cmd = System.getProperty("sun.java.command");
+        if (cmd != null) {
+            String lower = cmd.toLowerCase();
+            if (lower.contains("sukaldea")) return "desktop_sukaldea_kds";
+            if (lower.contains("barra")) return "desktop_barra_bds";
+            if (lower.contains("biltegi")) return "desktop_biltegia_stock";
+            if (lower.contains("admin")) return "desktop_admin_kudeaketa";
+        }
+        return "desktop_javafx";
     }
 
     private static String hasieratuBaseUrl() {
@@ -64,10 +85,23 @@ public class ApiZerbitzua {
         }
     }
 
+    private HttpRequest.Builder sortuRequestBuilder(String subpath) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + subpath))
+                .header("X-App-Id", getAppId())
+                .timeout(Duration.ofSeconds(5));
+
+        if (Sesioa.getUnekoLangilea() != null) {
+            builder.header("X-Langilea", Sesioa.getUnekoLangilea().getIzena());
+            builder.header("X-Erabiltzailea", Sesioa.getUnekoLangilea().getErabiltzailea());
+            builder.header("X-Rola", Sesioa.getUnekoLangilea().getRola());
+        }
+        return builder;
+    }
+
     public HealthResult egiaztatuOsasuna() {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/osasuna"))
+            HttpRequest request = sortuRequestBuilder("/osasuna")
                     .timeout(Duration.ofSeconds(3))
                     .GET()
                     .build();
@@ -82,8 +116,7 @@ public class ApiZerbitzua {
     }
 
     public List<Langilea> lortuLangileak() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/langileak"))
+        HttpRequest request = sortuRequestBuilder("/langileak")
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
@@ -100,8 +133,7 @@ public class ApiZerbitzua {
         json.addProperty("erabiltzailea", erabiltzailea);
         json.addProperty("pin", pin);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/langileak/login"))
+        HttpRequest request = sortuRequestBuilder("/langileak/login")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
@@ -125,8 +157,7 @@ public class ApiZerbitzua {
     }
 
     public List<Eskaera> lortuEskaeraAktiboak() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/eskaerak"))
+        HttpRequest request = sortuRequestBuilder("/eskaerak")
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
@@ -142,8 +173,7 @@ public class ApiZerbitzua {
         JsonObject json = new JsonObject();
         json.addProperty("egoera", egoeraBerria);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/eskaerak/" + eskaeraId + "/egoera"))
+        HttpRequest request = sortuRequestBuilder("/eskaerak/" + eskaeraId + "/egoera")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json.toString()))
@@ -157,8 +187,7 @@ public class ApiZerbitzua {
         JsonObject json = new JsonObject();
         json.addProperty("egoera", egoeraBerria);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/eskaera-lerroak/" + lerroId + "/egoera"))
+        HttpRequest request = sortuRequestBuilder("/eskaera-lerroak/" + lerroId + "/egoera")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json.toString()))
@@ -169,8 +198,7 @@ public class ApiZerbitzua {
     }
 
     public List<Lehengaia> lortuLehengaiak() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/lehengaiak"))
+        HttpRequest request = sortuRequestBuilder("/lehengaiak")
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
@@ -189,8 +217,7 @@ public class ApiZerbitzua {
         json.addProperty("albarana", albarana);
         json.addProperty("oharrak", oharrak);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/lehengaiak/" + lehengaiaId + "/stock"))
+        HttpRequest request = sortuRequestBuilder("/lehengaiak/" + lehengaiaId + "/stock")
                 .timeout(Duration.ofSeconds(5))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
@@ -201,8 +228,7 @@ public class ApiZerbitzua {
     }
 
     public List<Platera> lortuPlaterak() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/platerak"))
+        HttpRequest request = sortuRequestBuilder("/platerak")
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();

@@ -101,10 +101,10 @@ while ($true) {
         Write-Host "================================================================================" -ForegroundColor Yellow
     }
 
-    # 4. KONEKTATUTAKO APLIKAZIOAK (DENBORA ERREALEAN APIA ERABILTZEN)
+    # 4. KONEKTATUTAKO APLIKAZIOAK (ERABILTZAILE ROLEN ARABERA KLASIFIKATUTA)
     Write-Host ""
-    Write-Host "Konektatutako Aplikazioak (Denbora Errealean APIa Erabiltzen):" -ForegroundColor Cyan
-    Write-Host "--------------------------------------------------------------------------------" -ForegroundColor DarkGray
+    Write-Host "Konektatutako Aplikazioak (Erabiltzaile Rolen Arabera Klasifikatuta):" -ForegroundColor Cyan
+    Write-Host "================================================================================" -ForegroundColor DarkGray
 
     try {
         $appsReq = [System.Net.HttpWebRequest]::Create($appsOnlineUrl)
@@ -120,27 +120,48 @@ while ($true) {
         $appsData = $appsJson | ConvertFrom-Json
 
         if ($appsData -and $appsData.aplikazioak) {
-            foreach ($app in $appsData.aplikazioak) {
-                # Formatua: [EGOERA] Izena | IP | Azkena: ...
-                $izenaZabal = ($app.izena).PadRight(31)
+            $rolakDef = @("Admin", "Jangela", "Barra", "Sukaldea", "Biltokia", "Kanpokoa / Web Publikoa")
 
-                if ($app.egoera -eq "AKTIBO") {
-                    Write-Host "  [AKTIBO]     " -ForegroundColor Green -NoNewline
-                    Write-Host "$izenaZabal " -ForegroundColor White -NoNewline
-                    Write-Host "| IP: $($app.ip) | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor Green
-                }
-                elseif ($app.egoera -eq "ISILIK") {
-                    Write-Host "  [ISILIK]     " -ForegroundColor Yellow -NoNewline
-                    Write-Host "$izenaZabal " -ForegroundColor Gray -NoNewline
-                    Write-Host "| IP: $($app.ip) | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkYellow
-                }
-                else {
-                    Write-Host "  [DESKONEKT.] " -ForegroundColor DarkGray -NoNewline
-                    Write-Host "$izenaZabal " -ForegroundColor DarkGray -NoNewline
-                    if ($app.azkenOrdua -and $app.azkenOrdua -ne "Ez da konektatu") {
-                        Write-Host "| Deskonektatuta (Azkena: $($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkGray
-                    } else {
-                        Write-Host "| Ez da oraindik konektatu" -ForegroundColor DarkGray
+            foreach ($rol in $rolakDef) {
+                $taldea = @($appsData.aplikazioak | Where-Object { $_.rola -eq $rol })
+                if ($taldea.Count -eq 0) { continue }
+
+                # Rol goiburua
+                Write-Host ""
+                Write-Host "  [$rol] " -ForegroundColor Yellow -NoNewline
+                Write-Host ("-" * (74 - $rol.Length)) -ForegroundColor DarkGray
+
+                foreach ($app in $taldea) {
+                    $izenaZabal = ($app.izena).PadRight(32)
+
+                    # Erabiltzaile konektatuak lortu
+                    $erabiltzaileTestua = ""
+                    if ($app.erabiltzaileak -and $app.erabiltzaileak.Count -gt 0) {
+                        if ($app.erabiltzaileak.Count -eq 1) {
+                            $erabiltzaileTestua = " | Erabiltzailea: " + $app.erabiltzaileak[0]
+                        } else {
+                            $erabiltzaileTestua = " | Erabiltzaileak: " + ($app.erabiltzaileak -join ", ") + " ($($app.erabiltzaileak.Count) langile)"
+                        }
+                    }
+
+                    if ($app.egoera -eq "AKTIBO") {
+                        Write-Host "    [AKTIBO]     " -ForegroundColor Green -NoNewline
+                        Write-Host "$izenaZabal " -ForegroundColor White -NoNewline
+                        Write-Host "| IP: $($app.ip)$erabiltzaileTestua | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor Green
+                    }
+                    elseif ($app.egoera -eq "ISILIK") {
+                        Write-Host "    [ISILIK]     " -ForegroundColor Yellow -NoNewline
+                        Write-Host "$izenaZabal " -ForegroundColor Gray -NoNewline
+                        Write-Host "| IP: $($app.ip)$erabiltzaileTestua | Azkena: $($app.azkenEskaera) ($($app.azkenOrdua)) | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkYellow
+                    }
+                    else {
+                        Write-Host "    [DESKONEKT.] " -ForegroundColor DarkGray -NoNewline
+                        Write-Host "$izenaZabal " -ForegroundColor DarkGray -NoNewline
+                        if ($app.azkenOrdua -and $app.azkenOrdua -ne "Ez da konektatu") {
+                            Write-Host "| Deskonektatuta (Azkena: $($app.azkenOrdua))$erabiltzaileTestua | $($app.eskaerakGuztira) eskaera" -ForegroundColor DarkGray
+                        } else {
+                            Write-Host "| Ez da oraindik konektatu" -ForegroundColor DarkGray
+                        }
                     }
                 }
             }
@@ -152,7 +173,8 @@ while ($true) {
         Write-Host "  (Ezin izan da aplikazioen egoera lortu - REST APIa ez dago erabilgarri)" -ForegroundColor DarkGray
     }
 
-    Write-Host "--------------------------------------------------------------------------------" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "================================================================================" -ForegroundColor DarkGray
 
     # 5. Azken API Logak eta Bezeroen Eskaerak (docker logs)
     Write-Host ""

@@ -12,6 +12,7 @@ public class BiltegiaApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        eus.goierri.jatetxea.core.api.ApiZerbitzua.setAppId("desktop_biltegia_stock");
         FXMLLoader loader = new FXMLLoader(BiltegiaApp.class.getResource("login-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1180, 750);

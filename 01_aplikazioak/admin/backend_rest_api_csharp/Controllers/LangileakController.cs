@@ -1,6 +1,7 @@
 using System.Data;
 using Jatetxea.Api.DTO;
 using Jatetxea.Api.Helpers;
+using Jatetxea.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 
@@ -150,6 +151,10 @@ public class LangileakController : BaseApiKontroladorea
             Mezua = $"Ongi etorri, {langileaDto.Izena} ({langileaDto.Rola})!",
             Langilea = langileaDto
         };
+
+        // Monitore zentralean konektatutako erabiltzailea erregistratu
+        string appId = AplikazioMonitoreZerbitzua.IdentifikatuAplikazioa(HttpContext);
+        AplikazioMonitoreZerbitzua.ErregistratuErabiltzailea(appId, langileaDto.Izena);
 
         return Success(loginEmaitza, 200, "Saioa arrakastaz hasi da.");
     }
