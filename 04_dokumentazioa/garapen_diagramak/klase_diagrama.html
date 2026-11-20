@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1T Jatetxea - Klase Diagrama Osoa</title>
+<style>
+@page { size: 3600px 2250px; margin: 0; }
+body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; width: 3600px; height: 2250px; position: relative; overflow: hidden; }
+.canvas-title { position: absolute; left: 50px; top: 30px; width: 3430px; height: 65px; background: #0f172a; border-radius: 12px; color: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.canvas-title h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.canvas-title p { margin: 4px 0 0 0; font-size: 13px; color: #94a3b8; font-style: italic; }
+.section-banner { position: absolute; border-radius: 8px; color: #ffffff; font-size: 13px; font-weight: 700; display: flex; align-items: center; padding-left: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.class-card { position: absolute; background: #ffffff; border-radius: 8px; border: 2px solid; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); display: flex; flex-direction: column; overflow: hidden; }
+.class-header { color: #ffffff; font-size: 14px; font-weight: 800; text-align: center; padding: 7px 10px; letter-spacing: 0.3px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.class-attrs { padding: 8px 12px; font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; color: #1e293b; line-height: 1.45; background: #ffffff; }
+.class-sep { height: 1px; background: #e2e8f0; margin: 0; }
+.class-methods { padding: 8px 12px; font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; color: #0f172a; font-weight: 500; line-height: 1.45; background: #ffffff; flex-grow: 1; }
+.edge-label { position: absolute; transform: translate(-50%, -50%); background: #ffffff; border: 1.5px solid #94a3b8; border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 700; color: #0f172a; box-shadow: 0 1px 4px rgba(0,0,0,0.1); white-space: nowrap; z-index: 20; }
+.svg-layer { position: absolute; left: 0; top: 0; width: 3600px; height: 2250px; pointer-events: none; z-index: 10; }
+</style>
+</head>
+<body>
+<div class='canvas-title'>
+  <h1>1T JATETXEA - SISTEMAREN KLASE DIAGRAMA OSOA (UML CLASS DIAGRAM)</h1>
+  <p>Arkitektura Modularra: Datu-basea (MySQL) • REST API Zerbitzaria (C# ASP.NET Core) • Bezero Aplikazioak (JavaFX / WinForms / Android)</p>
+</div>
+<div class='section-banner' style='left: 50px; top: 125px; width: 790px; height: 38px; background: #1e3a8a;'>1. GIZA BALIABIDEAK ETA LANGILEAK</div>
+<div class='section-banner' style='left: 890px; top: 125px; width: 790px; height: 38px; background: #0284c7;'>2. ARETOA, MAHAIAK, ERRESERBAK ETA BEZEROAK</div>
+<div class='section-banner' style='left: 1750px; top: 125px; width: 840px; height: 38px; background: #059669;'>3. ESKAERAK, FAKTURAK ETA FINANTZAK</div>
+<div class='section-banner' style='left: 2660px; top: 125px; width: 790px; height: 38px; background: #d97706;'>4. SUKALDEA, KARTA ETA STOCK BILTEGIA</div>
+<div class='section-banner' style='left: 50px; top: 1120px; width: 1860px; height: 38px; background: #7c3aed;'>5. REST API ZERBITZARIA (ASP.NET CORE C# CONTROLLERS &amp; SERVICES)</div>
+<div class='section-banner' style='left: 1940px; top: 1120px; width: 1540px; height: 38px; background: #db2777;'>6. BEZERO APLIKAZIOAK (JAVAFX ADMIN &amp; TERMINALAK)</div>
+<div class='class-card' style='left: 70px; top: 190px; width: 340px; height: 410px; border-color: #1e3a8a;'>
+  <div class='class-header' style='background: #1e3a8a;'>Langilea</div>
+  <div class='class-attrs'>+ id: int<br>+ erabiltzailea: string<br>+ izena: string<br>+ abizena: string<br>+ nanDni: string<br>+ emaila: string<br>+ telefonoa: string<br>+ rola: string<br>+ saila: string<br>+ kargua: string<br>+ pasahitzaHash: string<br>+ aktibo: bool<br>+ ezabatua: bool</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ getIzenOsoa(): string<br>+ getInitialak(): string<br>+ isManager(): bool<br>+ egiaztatuPin(pin: string): bool<br>+ aldatuAktibo(egoera: bool): void</div>
+</div>
+<div class='class-card' style='left: 490px; top: 190px; width: 330px; height: 280px; border-color: #1e3a8a;'>
+  <div class='class-header' style='background: #1e3a8a;'>LangileKontratua</div>
+  <div class='class-attrs'>+ id: int<br>+ langileaId: int<br>+ kontratuZenbakia: string<br>+ mota: string<br>+ lanJarduna: string<br>+ hasieraData: DateTime<br>+ amaieraData: DateTime?<br>+ soldataGordina: decimal<br>+ lanpostua: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ isIndarrean(): bool<br>+ kalkulatuHilekoSoldataGarbia(): decimal<br>+ lortuIraupenaHilabeteetan(): int</div>
+</div>
+<div class='class-card' style='left: 490px; top: 510px; width: 330px; height: 260px; border-color: #1e3a8a;'>
+  <div class='class-header' style='background: #1e3a8a;'>LangileFitxaketa</div>
+  <div class='class-attrs'>+ id: int<br>+ langileaId: int<br>+ sarreraData: DateTime<br>+ irteeraData: DateTime?<br>+ lanOrduak: decimal<br>+ metodoa: string<br>+ egoera: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kalkulatuLanOrduak(): decimal<br>+ amaituTxanda(irteera: DateTime): void<br>+ isIreki(): bool</div>
+</div>
+<div class='class-card' style='left: 70px; top: 660px; width: 340px; height: 260px; border-color: #1e3a8a;'>
+  <div class='class-header' style='background: #1e3a8a;'>LangileBaja</div>
+  <div class='class-attrs'>+ id: int<br>+ langileaId: int<br>+ mota: string<br>+ hasieraData: DateTime<br>+ amaieraData: DateTime?<br>+ egunKopurua: int<br>+ egoera: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ isAktibo(): bool<br>+ kalkulatuEgunak(): int<br>+ itxiBaja(altaData: DateTime): void</div>
+</div>
+<div class='class-card' style='left: 920px; top: 190px; width: 320px; height: 280px; border-color: #0284c7;'>
+  <div class='class-header' style='background: #0284c7;'>Mahaia</div>
+  <div class='class-attrs'>+ id: int<br>+ zenbakia: int<br>+ edukiera: int<br>+ kokapena: string<br>+ egoera: string<br>+ ezabatua: bool</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ isLibre(): bool<br>+ aldatuEgoera(berria: string): void<br>+ okupatu(): void<br>+ askatu(): void</div>
+</div>
+<div class='class-card' style='left: 1330px; top: 190px; width: 330px; height: 310px; border-color: #0284c7;'>
+  <div class='class-header' style='background: #0284c7;'>Erreserba</div>
+  <div class='class-attrs'>+ id: int<br>+ mahaiaId: int<br>+ bezeroaId: int?<br>+ bezeroIzena: string<br>+ bezeroTelefonoa: string<br>+ pertsonaKopurua: int<br>+ data: DateTime<br>+ txanda: string<br>+ egoera: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ konfirmatu(): void<br>+ ezeztatu(): void<br>+ esleituMahaia(mahaiaId: int): void<br>+ isGaurkoa(): bool</div>
+</div>
+<div class='class-card' style='left: 1330px; top: 560px; width: 330px; height: 270px; border-color: #0284c7;'>
+  <div class='class-header' style='background: #0284c7;'>Bezeroa</div>
+  <div class='class-attrs'>+ id: int<br>+ izena: string<br>+ abizena: string<br>+ telefonoa: string<br>+ emaila: string<br>+ fidelizazioPuntuak: int</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ getIzenOsoa(): string<br>+ gehituPuntuak(kopurua: int): void<br>+ erabiliPuntuak(kopurua: int): bool</div>
+</div>
+<div class='class-card' style='left: 920px; top: 540px; width: 320px; height: 260px; border-color: #0284c7;'>
+  <div class='class-header' style='background: #0284c7;'>Iritzia</div>
+  <div class='class-attrs'>+ id: int<br>+ bezeroaId: int<br>+ balorazioa: int<br>+ testua: string<br>+ data: DateTime</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ getIzarrak(): string<br>+ isPositiboa(): bool</div>
+</div>
+<div class='class-card' style='left: 1780px; top: 190px; width: 360px; height: 320px; border-color: #059669;'>
+  <div class='class-header' style='background: #059669;'>Eskaera</div>
+  <div class='class-attrs'>+ id: int<br>+ mahaiaId: int<br>+ langileaId: int<br>+ egoera: string<br>+ guztira: decimal<br>+ sortzeData: DateTime<br>+ ezabatua: bool</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kalkulatuGuztira(): decimal<br>+ aldatuEgoera(berria: string): void<br>+ gehituLerroa(lerroa: EskaeraLerroa): void<br>+ kenduLerroa(lerroId: int): void<br>+ itxiEskaera(): void</div>
+</div>
+<div class='class-card' style='left: 2220px; top: 190px; width: 350px; height: 300px; border-color: #059669;'>
+  <div class='class-header' style='background: #059669;'>EskaeraLerroa</div>
+  <div class='class-attrs'>+ id: int<br>+ eskaeraId: int<br>+ plateraId: int<br>+ kantitatea: int<br>+ prezioUnitarioa: decimal<br>+ egoera: string<br>+ oharrak: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ getSubtotala(): decimal<br>+ aldatuEgoera(berria: string): void<br>+ isSukaldean(): bool<br>+ isZerbitzatuta(): bool</div>
+</div>
+<div class='class-card' style='left: 2220px; top: 570px; width: 350px; height: 280px; border-color: #059669;'>
+  <div class='class-header' style='background: #059669;'>Ordainketa</div>
+  <div class='class-attrs'>+ id: int<br>+ eskaeraId: int<br>+ fakturaId: int?<br>+ tiketZenbakia: string<br>+ mota: string<br>+ zenbatekoa: decimal<br>+ operazioKodea: string<br>+ egoera: string<br>+ data: DateTime</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ prozesatuOrdainketa(): bool<br>+ inprimatuTiketa(): string<br>+ ezeztatuOrdainketa(): void</div>
+</div>
+<div class='class-card' style='left: 1780px; top: 570px; width: 360px; height: 460px; border-color: #059669;'>
+  <div class='class-header' style='background: #059669;'>Faktura</div>
+  <div class='class-attrs'>+ id: int<br>+ eskaeraId: int?<br>+ fakturaZenbakia: string<br>+ mota: string<br>+ azpimota: string<br>+ kontzeptua: string<br>+ hornitzailea: string<br>+ hornitzaileCif: string<br>+ bezeroNif: string<br>+ bezeroIzena: string<br>+ bezeroHelbidea: string<br>+ oinarriZergagarria: decimal<br>+ bezEhunekoa: decimal<br>+ bezZenbatekoa: decimal<br>+ guztira: decimal<br>+ ordainketaMetodoa: string<br>+ egoera: string<br>+ data: DateTime</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kalkulatuBez(): void<br>+ kalkulatuGuztira(): decimal<br>+ markatuOrdainduta(): void<br>+ isSalmenta(): bool<br>+ isErosketa(): bool<br>+ sortuPDF(): byte[]</div>
+</div>
+<div class='class-card' style='left: 2690px; top: 190px; width: 330px; height: 300px; border-color: #d97706;'>
+  <div class='class-header' style='background: #d97706;'>Platera</div>
+  <div class='class-attrs'>+ id: int<br>+ izena: string<br>+ deskribapena: string<br>+ kategoria: string<br>+ prezioa: decimal<br>+ alergenoak: string<br>+ aktibo: bool<br>+ ezabatua: bool</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kalkulatuKostua(osagaiak: List): decimal<br>+ aldatuAktibo(egoera: bool): void<br>+ dituAlergenoa(alergenoa: string): bool</div>
+</div>
+<div class='class-card' style='left: 3100px; top: 190px; width: 330px; height: 240px; border-color: #d97706;'>
+  <div class='class-header' style='background: #d97706;'>PlaterOsagaia</div>
+  <div class='class-attrs'>+ plateraId: int<br>+ lehengaiaId: int<br>+ kantitatea: decimal<br>+ unitatea: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kalkulatuKostua(kostuUnitarioa: decimal): decimal</div>
+</div>
+<div class='class-card' style='left: 2690px; top: 550px; width: 330px; height: 300px; border-color: #d97706;'>
+  <div class='class-header' style='background: #d97706;'>Lehengaia</div>
+  <div class='class-attrs'>+ id: int<br>+ izena: string<br>+ unitatea: string<br>+ unekoStocka: decimal<br>+ gutxienekoStocka: decimal<br>+ kostuUnitarioa: decimal<br>+ hornitzailea: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ isStockAlerta(): bool<br>+ eguneratuStocka(kantitatea: decimal, sarrera: bool): void<br>+ kalkulatuBalioTotala(): decimal</div>
+</div>
+<div class='class-card' style='left: 3100px; top: 510px; width: 330px; height: 260px; border-color: #d97706;'>
+  <div class='class-header' style='background: #d97706;'>StockMugimendua</div>
+  <div class='class-attrs'>+ id: int<br>+ lehengaiaId: int<br>+ mota: string<br>+ kantitatea: decimal<br>+ albarana: string<br>+ data: DateTime<br>+ arrazoia: string</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ isSarrera(): bool<br>+ isIrteera(): bool<br>+ lortuXehetasunak(): string</div>
+</div>
+<div class='class-card' style='left: 70px; top: 1200px; width: 420px; height: 320px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>BaseApiKontroladorea</div>
+  <div class='class-attrs'># _config: IConfiguration</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ SortuKonexioaAsync(): Task<MySqlConnection><br>+ Success(data: object): IActionResult<br>+ SuccessList(datalist: IEnumerable): IActionResult<br>+ CreatedResult(data: object): IActionResult<br>+ NotFoundError(detail: string): IActionResult<br>+ BadRequestError(message: string): IActionResult<br>+ ConflictError(message: string): IActionResult<br>+ ServerError(message: string): IActionResult</div>
+</div>
+<div class='class-card' style='left: 550px; top: 1200px; width: 420px; height: 280px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>FakturakController</div>
+  <div class='class-attrs'><span style='color:#94a3b8;font-style:italic;'>(ez dago atributu publikorik)</span></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ LortuGuztiak(mota, egoera): Task<IActionResult><br>+ LortuIdBidez(id: int): Task<IActionResult><br>+ LortuFinantzaLaburpena(): Task<IActionResult><br>+ Sortu(dto: FakturaSortuDto): Task<IActionResult><br>+ EguneratuEgoera(id: int, dto: FakturaEgoeraDto): Task<IActionResult><br>+ Ezabatu(id: int, hard: bool): Task<IActionResult></div>
+</div>
+<div class='class-card' style='left: 1030px; top: 1200px; width: 420px; height: 280px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>EskaerakController</div>
+  <div class='class-attrs'><span style='color:#94a3b8;font-style:italic;'>(ez dago atributu publikorik)</span></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ LortuGuztiak(egoera, mahaiaId): Task<IActionResult><br>+ LortuIdBidez(id: int): Task<IActionResult><br>+ Sortu(dto: EskaeraSortuDto): Task<IActionResult><br>+ EguneratuEgoera(id: int, dto: EskaeraEgoeraDto): Task<IActionResult><br>+ BidaliSukaldera(id: int): Task<IActionResult><br>+ EzabatuPlaterLerroa(lerroId: int): Task<IActionResult></div>
+</div>
+<div class='class-card' style='left: 1510px; top: 1200px; width: 380px; height: 280px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>LangileakController</div>
+  <div class='class-attrs'><span style='color:#94a3b8;font-style:italic;'>(ez dago atributu publikorik)</span></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ LortuGuztiak(rola: string): Task<IActionResult><br>+ SaioaHasi(dto: SaioHasiDto): Task<IActionResult><br>+ Sortu(dto: LangileSortuDto): Task<IActionResult><br>+ Eguneratu(id: int, dto: LangileEguneratuDto): Task<IActionResult><br>+ FitxaketaErregistratu(dto: FitxaketaDto): Task<IActionResult></div>
+</div>
+<div class='class-card' style='left: 550px; top: 1560px; width: 420px; height: 260px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>LehengaiakController</div>
+  <div class='class-attrs'><span style='color:#94a3b8;font-style:italic;'>(ez dago atributu publikorik)</span></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ LortuGuztiak(): Task<IActionResult><br>+ ErosketaSarrera(dto: ErosketaDto): Task<IActionResult><br>+ LortuAlertak(): Task<IActionResult><br>+ LortuMugimenduak(lehengaiaId: int): Task<IActionResult></div>
+</div>
+<div class='class-card' style='left: 1030px; top: 1560px; width: 420px; height: 260px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>MahaiakController</div>
+  <div class='class-attrs'><span style='color:#94a3b8;font-style:italic;'>(ez dago atributu publikorik)</span></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ LortuGuztiak(): Task<IActionResult><br>+ LortuIdBidez(id: int): Task<IActionResult><br>+ AldatuEgoera(id: int, dto: MahaiEgoeraDto): Task<IActionResult><br>+ LortuMahaiarenEskaeraAktiboa(id: int): Task<IActionResult></div>
+</div>
+<div class='class-card' style='left: 70px; top: 1560px; width: 420px; height: 270px; border-color: #7c3aed;'>
+  <div class='class-header' style='background: #7c3aed;'>AplikazioMonitoreZerbitzua</div>
+  <div class='class-attrs'>- _apps: ConcurrentDictionary</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ IdentifikatuAplikazioa(context: HttpContext): string<br>+ ErregistratuEskaera(appId, ip, endpoint): void<br>+ ErregistratuErabiltzailea(appId, izena): void<br>+ LortuEgoeraLaburpena(): object<br>+ GarbituKonexioZaharrak(): void</div>
+</div>
+<div class='class-card' style='left: 1960px; top: 1200px; width: 420px; height: 320px; border-color: #db2777;'>
+  <div class='class-header' style='background: #db2777;'>ApiBezeroa</div>
+  <div class='class-attrs'>- baseUrl: string<br>- httpClient: HttpClient</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ checkHealth(): ApiHealth<br>+ login(erab: string, pass: string): KudeatzaileErabiltzailea<br>+ getFakturak(mota, egoera): List<Faktura><br>+ getFinantzaLaburpena(): FinantzaLaburpena<br>+ sortuFaktura(faktura: Faktura): void<br>+ aldatuFakturaEgoera(id, egoera): void<br>+ getStaff(): List<Langilea><br>+ getMenuItems(): List<Platera><br>+ getIngredients(): List<Lehengaia></div>
+</div>
+<div class='class-card' style='left: 2450px; top: 1200px; width: 420px; height: 290px; border-color: #db2777;'>
+  <div class='class-header' style='background: #db2777;'>DiseinuNagusiaKontrolagailua</div>
+  <div class='class-attrs'>- apiClient: ApiBezeroa<br>- session: KudeatzaileSaioa</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ showDashboard(): void<br>+ showStaff(): void<br>+ showMenu(): void<br>+ showIngredients(): void<br>+ showTables(): void<br>+ showInvoices(): void<br>+ handleLogout(): void</div>
+</div>
+<div class='class-card' style='left: 2940px; top: 1200px; width: 440px; height: 320px; border-color: #db2777;'>
+  <div class='class-header' style='background: #db2777;'>FakturakKontrolagailua</div>
+  <div class='class-attrs'>- apiClient: ApiBezeroa<br>- masterList: ObservableList<Faktura></div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ initialize(): void<br>+ refresh(): void<br>+ filterByType(mota: string): void<br>+ filterByStatus(egoera: string): void<br>+ saveInvoice(): void<br>+ markAsPaid(): void<br>+ markAsCancelled(): void<br>+ updateKpiCards(laburpena): void</div>
+</div>
+<div class='class-card' style='left: 1960px; top: 1560px; width: 420px; height: 270px; border-color: #db2777;'>
+  <div class='class-header' style='background: #db2777;'>ApiZerbitzua</div>
+  <div class='class-attrs'>- BASE_URL: string<br>- bezeroa: HttpClient</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ egiaztatuOsasuna(): HealthResult<br>+ lortuLangileak(rola: string): List<Langilea><br>+ saioaHasi(erab, pin): LoginErantzuna<br>+ lortuEskaeraAktiboak(): List<Eskaera><br>+ eguneratuLerroEgoera(lerroId, egoera): bool<br>+ lortuLehengaiak(): List<Lehengaia></div>
+</div>
+<div class='class-card' style='left: 2450px; top: 1560px; width: 420px; height: 260px; border-color: #db2777;'>
+  <div class='class-header' style='background: #db2777;'>BaseLoginController</div>
+  <div class='class-attrs'># api: ApiZerbitzua<br># aukeratutakoLangilea: Langilea</div>
+  <div class='class-sep'></div>
+  <div class='class-methods'>+ kargatuLangileak(): void<br>+ onLangileaSelected(langilea): void<br>+ onPinDigit(digitoa: int): void<br>+ onClearPin(): void<br>+ onLoginClick(): void</div>
+</div>
+<svg class='svg-layer'>
+  <defs>
+    <marker id='diamond-fill' markerWidth='14' markerHeight='14' refX='7' refY='7'>
+      <polygon points='7,1 13,7 7,13 1,7' fill='#1e293b' stroke='#1e293b' stroke-width='1.5'/>
+    </marker>
+    <marker id='diamond-empty' markerWidth='14' markerHeight='14' refX='7' refY='7'>
+      <polygon points='7,1 13,7 7,13 1,7' fill='#ffffff' stroke='#1e293b' stroke-width='2'/>
+    </marker>
+    <marker id='arrow-block' markerWidth='10' markerHeight='10' refX='8' refY='5' orient='auto'>
+      <polygon points='0,1 9,5 0,9' fill='#334155'/>
+    </marker>
+    <marker id='inherits-triangle' markerWidth='14' markerHeight='14' refX='12' refY='7' orient='auto'>
+      <polygon points='1,1 13,7 1,13' fill='#ffffff' stroke='#4338ca' stroke-width='2'/>
+    </marker>
+    <marker id='dashed-arrow' markerWidth='10' markerHeight='10' refX='8' refY='5' orient='auto'>
+      <polyline points='1,1 9,5 1,9' fill='none' stroke='#db2777' stroke-width='2'/>
+    </marker>
+  </defs>
+  <path d='M 410 292 H 450 V 260 H 490' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 410 497 H 450 V 588 H 490' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 240 600 V 660' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 1240 274 H 1285 V 283 H 1330' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-empty)'/>
+  <path d='M 1495 560 V 500' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 1330 695 H 1285 V 670 H 1240' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 1240 386 H 1285 V 450 H 1730 V 254 H 1780' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-empty)'/>
+  <path d='M 2140 286 H 2180 V 280 H 2220' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 1960 510 V 570' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 2140 731 H 2180 V 668 H 2220' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 2570 295 H 2690' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 3020 280 H 3060 V 262 H 3100' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 2855 490 V 550' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 3020 670 H 3060 V 614 H 3100' fill='none' stroke='#1e293b' stroke-width='2'   marker-start='url(#diamond-fill)'/>
+  <path d='M 550 1284 H 490' fill='none' stroke='#4338ca' stroke-width='2'  marker-end='url(#inherits-triangle)' />
+  <path d='M 1030 1340 H 990 V 1180 H 510 V 1340 H 490' fill='none' stroke='#4338ca' stroke-width='2'  marker-end='url(#inherits-triangle)' />
+  <path d='M 1510 1340 H 1470 V 1165 H 510 V 1340 H 490' fill='none' stroke='#4338ca' stroke-width='2'  marker-end='url(#inherits-triangle)' />
+  <path d='M 550 1620 H 460 V 1520' fill='none' stroke='#4338ca' stroke-width='2'  marker-end='url(#inherits-triangle)' />
+  <path d='M 1030 1620 H 990 V 1540 H 470 V 1520' fill='none' stroke='#4338ca' stroke-width='2'  marker-end='url(#inherits-triangle)' />
+  <path d='M 2450 1301 H 2380' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+  <path d='M 2870 1301 H 2940' fill='none' stroke='#db2777' stroke-width='2' stroke-dasharray='6,4' marker-end='url(#dashed-arrow)' />
+  <path d='M 2450 1690 H 2380' fill='none' stroke='#334155' stroke-width='2'  marker-end='url(#arrow-block)' />
+</svg>
+<div class='edge-label' style='left: 450px; top: 245px;'>dauka</div>
+<div class='edge-label' style='left: 450px; top: 540px;'>erregistratzen du</div>
+<div class='edge-label' style='left: 240px; top: 630px;'>eskatzen du</div>
+<div class='edge-label' style='left: 1285px; top: 265px;'>erreserbatzen du</div>
+<div class='edge-label' style='left: 1495px; top: 530px;'>egiten du</div>
+<div class='edge-label' style='left: 1285px; top: 675px;'>idazten du</div>
+<div class='edge-label' style='left: 1730px; top: 235px;'>esleitzen da</div>
+<div class='edge-label' style='left: 2180px; top: 265px;'>osatzen du</div>
+<div class='edge-label' style='left: 1960px; top: 540px;'>sortzen da</div>
+<div class='edge-label' style='left: 2180px; top: 690px;'>ordaintzen du</div>
+<div class='edge-label' style='left: 2630px; top: 280px;'>erreferentzia</div>
+<div class='edge-label' style='left: 3060px; top: 250px;'>osagaiak ditu</div>
+<div class='edge-label' style='left: 2855px; top: 520px;'>osatuta dago</div>
+<div class='edge-label' style='left: 3060px; top: 635px;'>mugimenduak</div>
+<div class='edge-label' style='left: 520px; top: 1270px;'>heredatzen du</div>
+<div class='edge-label' style='left: 750px; top: 1165px;'>heredatzen du</div>
+<div class='edge-label' style='left: 1250px; top: 1150px;'>heredatzen du</div>
+<div class='edge-label' style='left: 460px; top: 1570px;'>heredatzen du</div>
+<div class='edge-label' style='left: 730px; top: 1525px;'>heredatzen du</div>
+<div class='edge-label' style='left: 2415px; top: 1285px;'>erabiltzen du</div>
+<div class='edge-label' style='left: 2905px; top: 1285px;'>irekitzen du</div>
+<div class='edge-label' style='left: 2415px; top: 1675px;'>erabiltzen du</div>
+</body>
+</html>
