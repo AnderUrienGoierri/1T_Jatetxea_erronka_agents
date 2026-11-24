@@ -546,7 +546,10 @@ public class EskaerakController : BaseApiKontroladorea
             SET el.egoera = 'Sukaldean'
             WHERE el.eskaera_id = @id 
               AND el.egoera = 'Eskatua'
-              AND LOWER(p.kategoria) NOT IN ('edariak', 'kafeak', 'barra');";
+              AND LOWER(p.kategoria) NOT IN (
+                  'urak', 'freskagarriak', 'garagardoak', 'sagardoak', 'ardoak',
+                  'kafeak', 'infusioak', 'likoreak', 'konbinatuak', 'koktailak'
+              );";
         int aldatuak;
         await using (var cmdL = new MySqlCommand(sqlL, kon))
         {

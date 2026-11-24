@@ -298,7 +298,8 @@ public class MahaiakController : BaseApiKontroladorea
 
         await using var kon = await SortuKonexioaAsync();
 
-        if (dto.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase))
+        if (dto.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase) ||
+            dto.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase))
         {
             const string sqlCheckPlaterak = @"
                 SELECT COUNT(*) 
@@ -310,7 +311,7 @@ public class MahaiakController : BaseApiKontroladorea
             long platerKop = Convert.ToInt64(await cmdCheckP.ExecuteScalarAsync());
             if (platerKop > 0)
             {
-                return ConflictError($"Mahaia ezin da 'Libre' jarri {platerKop} plater daudelako eskari aktiboetan. Platerak ezabatu edo kobratu behar dira lehenik.");
+                return ConflictError($"Mahaia ezin da '{dto.Egoera}' jarri {platerKop} produktu daudelako kobratzeko eskari aktiboan. Kontua kobratu edo produktuak ezabatu behar dira lehenik.");
             }
         }
 
