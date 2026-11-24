@@ -7,27 +7,32 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -69,7 +74,7 @@ fun KontuaEskatuDialog(
                 .fillMaxWidth(0.94f)
                 .fillMaxHeight(0.90f),
             shape = RoundedCornerShape(16.dp),
-            color = DarkSurface,
+            color = MaterialTheme.colorScheme.surface,
             tonalElevation = 8.dp
         ) {
             Column(
@@ -86,9 +91,9 @@ fun KontuaEskatuDialog(
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                imageVector = Icons.Default.ReceiptLong,
+                                imageVector = Icons.AutoMirrored.Filled.ReceiptLong,
                                 contentDescription = null,
-                                tint = AmberPrimary,
+                                tint = AmberAccent,
                                 modifier = Modifier.size(26.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -96,22 +101,22 @@ fun KontuaEskatuDialog(
                                 text = "KONTUA ESKATU · PROFORMA",
                                 fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Text(
                             text = "Mahaia ${mahaia.zenbakia} (${mahaia.kokapena}) · Eskaera #${eskaera.id}",
                             fontSize = 12.sp,
-                            color = TextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Itxi", tint = TextSecondary)
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Itxi", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = DarkSurfaceVariant)
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
 
                 // Tiket proforma termikoaren simulazio papera
                 Card(
@@ -129,17 +134,25 @@ fun KontuaEskatuDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "1T JATETXEA",
-                            fontSize = 18.sp,
+                            text = "T1 JATETXEA",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            fontFamily = FontFamily.Monospace
+                            color = EspressoInk,
+                            fontFamily = CinzelFont,
+                            letterSpacing = 2.sp
                         )
                         Text(
-                            text = "Goierri Kalea 1, Ordizia\nIFZ: B-20123456 · Tel: 943 12 34 56",
+                            text = "OSTERIA & PARRILLA · GOIERRI",
                             fontSize = 10.sp,
-                            color = Color.DarkGray,
-                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold,
+                            color = AntiqueGold,
+                            letterSpacing = 1.6.sp
+                        )
+                        Text(
+                            text = "Goierri Kalea 1, Ordizia · IFZ: B-20123456 · Tel: 943 12 34 56",
+                            fontSize = 10.sp,
+                            color = WarmSlate,
+                            fontFamily = JetBrainsMono,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -275,10 +288,8 @@ fun KontuaEskatuDialog(
                             .weight(1f)
                             .height(48.dp),
                         shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
-                        border = ButtonDefaults.outlinedButtonBorder.copy(
-                            brush = androidx.compose.ui.graphics.SolidColor(TextMuted)
-                        )
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     ) {
                         Icon(imageVector = Icons.Default.Print, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(6.dp))
@@ -291,11 +302,11 @@ fun KontuaEskatuDialog(
                             .weight(1.3f)
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = StatusFree),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(imageVector = Icons.Default.Payment, contentDescription = null, tint = DarkBackground, modifier = Modifier.size(18.dp))
+                        Icon(imageVector = Icons.Default.Payment, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Kobratu Orain", color = DarkBackground, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text("Kobratu Orain", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     }
                 }
             }
@@ -350,7 +361,7 @@ fun OrdainketaPantailaDialog(
                 .fillMaxWidth(0.95f)
                 .fillMaxHeight(0.92f),
             shape = RoundedCornerShape(18.dp),
-            color = DarkSurface,
+            color = MaterialTheme.colorScheme.surface,
             tonalElevation = 10.dp
         ) {
             Column(
@@ -369,17 +380,17 @@ fun OrdainketaPantailaDialog(
                             text = "KONTUA KOBRATU · MAHAIA ${mahaia.zenbakia}",
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Eskaera #${eskaera.id} · ${eskaera.lerroak.sumOf { it.kantitatea }} plater · Zerbitzaria: ${zerbitzaria.izena}",
                             fontSize = 12.sp,
-                            color = TextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
                     IconButton(onClick = onDismiss, enabled = !ordaintzen) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Itxi", tint = TextSecondary)
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Itxi", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
 
@@ -417,7 +428,7 @@ fun OrdainketaPantailaDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // 2. Fitxak (Tabs): Eskudirua, Txartela, Bizum
+                // 2. Fitxak (Tabs): Eskudirua, Txartela, Bizum (Warm Hospitality Light & Dark)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -428,10 +439,10 @@ fun OrdainketaPantailaDialog(
                             onClick = { hautatutakoMota = mota },
                             modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (aktibo) AmberPrimary else DarkSurfaceVariant
+                                containerColor = if (aktibo) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
                             ),
-                            shape = RoundedCornerShape(8.dp),
-                            contentPadding = PaddingValues(vertical = 10.dp)
+                            shape = RoundedCornerShape(12.dp),
+                            contentPadding = PaddingValues(vertical = 12.dp)
                         ) {
                             Text(
                                 text = when (mota) {
@@ -441,7 +452,7 @@ fun OrdainketaPantailaDialog(
                                 },
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (aktibo) DarkBackground else TextPrimary
+                                color = if (aktibo) Color.White else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -449,21 +460,28 @@ fun OrdainketaPantailaDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // 3. Gorputza aukeratutako motaren arabera
-                Box(
+                // 3. Gorputza aukeratutako motaren arabera (animazioarekin)
+                AnimatedContent(
+                    targetState = hautatutakoMota,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(1f),
+                    transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) },
+                    label = "paymentMethodTab"
+                ) { mota ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    when (hautatutakoMota) {
+                    when (mota) {
                         "Eskudirua" -> {
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Text(
                                     text = "Bezeroak emandako dirua (Jasotakoa):",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
 
@@ -472,25 +490,26 @@ fun OrdainketaPantailaDialog(
                                     onValueChange = { jasotakoaText = it },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                     textStyle = LocalTextStyle.current.copy(
-                                        fontSize = 20.sp,
+                                        fontFamily = JetBrainsMono,
+                                        fontSize = 22.sp,
                                         fontWeight = FontWeight.Bold,
                                         textAlign = TextAlign.End
                                     ),
-                                    trailingIcon = { Text("€", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AmberPrimary) },
+                                    trailingIcon = { Text("€", fontFamily = JetBrainsMono, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = AmberPrimary,
-                                        unfocusedBorderColor = DarkSurfaceVariant,
-                                        focusedTextColor = TextPrimary,
-                                        unfocusedTextColor = TextPrimary,
-                                        focusedContainerColor = DarkBackground,
-                                        unfocusedContainerColor = DarkBackground
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                                     ),
+                                    shape = RoundedCornerShape(14.dp),
                                     modifier = Modifier.fillMaxWidth()
                                 )
 
                                 Spacer(modifier = Modifier.height(10.dp))
 
-                                // Botoi azkarrak (C# TPV bezala: Zehatza, +5€, +10€, 20€, 50€, 100€)
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -508,33 +527,36 @@ fun OrdainketaPantailaDialog(
                                                 jasotakoaText = String.format(Locale.ROOT, "%.2f", balioa)
                                             },
                                             modifier = Modifier.weight(1f),
-                                            shape = RoundedCornerShape(6.dp),
-                                            contentPadding = PaddingValues(horizontal = 2.dp, vertical = 6.dp)
+                                            shape = RoundedCornerShape(10.dp),
+                                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                            contentPadding = PaddingValues(horizontal = 2.dp, vertical = 8.dp)
                                         ) {
-                                            Text(etiketa, fontSize = 10.sp, color = TextPrimary)
+                                            Text(etiketa, fontFamily = JetBrainsMono, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                         }
                                     }
                                 }
 
                                 Spacer(modifier = Modifier.height(14.dp))
 
-                                // Kanbioaren Kutxa (Berdea nahikoa bada, Gorria falta bada)
+                                val kanbioKolorea by animateColorAsState(
+                                    targetValue = if (eskudiruaNahikoa) StatusFree else StatusBusy,
+                                    animationSpec = tween(250),
+                                    label = "changeBoxColor"
+                                )
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(containerColor = DarkBackground),
-                                    shape = RoundedCornerShape(10.dp),
-                                    border = ButtonDefaults.outlinedButtonBorder.copy(
-                                        brush = androidx.compose.ui.graphics.SolidColor(
-                                            if (eskudiruaNahikoa) StatusFree else StatusBusy
-                                        )
-                                    )
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (eskudiruaNahikoa) StatusFree.copy(alpha = 0.12f) else StatusBusy.copy(alpha = 0.12f)
+                                    ),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.5.dp, kanbioKolorea.copy(alpha = 0.5f))
                                 ) {
                                     Column(modifier = Modifier.padding(14.dp)) {
                                         Text(
-                                            text = "BEZEROARI ITZULI BEHARREKO KANBIOA / BUELTA:",
+                                            text = "BEZEROARI ITZULI BEHARREKO KANBIOA:",
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = TextSecondary
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
@@ -543,9 +565,10 @@ fun OrdainketaPantailaDialog(
                                             } else {
                                                 String.format(Locale.ROOT, "Falta dira: %.2f €", eskaera.guztira - jasotakoaBalioa)
                                             },
+                                            fontFamily = JetBrainsMono,
                                             fontSize = 24.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = if (eskudiruaNahikoa) StatusFree else StatusBusy
+                                            color = kanbioKolorea
                                         )
                                     }
                                 }
@@ -558,7 +581,7 @@ fun OrdainketaPantailaDialog(
                                     text = "Kreditu / Zordunketa Txartela (EMV / Contactless):",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -566,12 +589,12 @@ fun OrdainketaPantailaDialog(
                                     value = txartelZenbakia,
                                     onValueChange = { txartelZenbakia = it },
                                     label = { Text("Txartel Zenbakia") },
-                                    leadingIcon = { Icon(Icons.Default.CreditCard, contentDescription = null, tint = AmberPrimary) },
+                                    leadingIcon = { Icon(Icons.Default.CreditCard, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedTextColor = TextPrimary,
-                                        unfocusedTextColor = TextPrimary,
-                                        focusedContainerColor = DarkBackground,
-                                        unfocusedContainerColor = DarkBackground
+                                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -588,10 +611,10 @@ fun OrdainketaPantailaDialog(
                                         label = { Text("Iraungitzea") },
                                         modifier = Modifier.weight(1f),
                                         colors = OutlinedTextFieldDefaults.colors(
-                                            focusedTextColor = TextPrimary,
-                                            unfocusedTextColor = TextPrimary,
-                                            focusedContainerColor = DarkBackground,
-                                            unfocusedContainerColor = DarkBackground
+                                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                                            unfocusedContainerColor = MaterialTheme.colorScheme.background
                                         )
                                     )
                                     OutlinedTextField(
@@ -600,10 +623,10 @@ fun OrdainketaPantailaDialog(
                                         label = { Text("CVV") },
                                         modifier = Modifier.weight(1f),
                                         colors = OutlinedTextFieldDefaults.colors(
-                                            focusedTextColor = TextPrimary,
-                                            unfocusedTextColor = TextPrimary,
-                                            focusedContainerColor = DarkBackground,
-                                            unfocusedContainerColor = DarkBackground
+                                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                                            unfocusedContainerColor = MaterialTheme.colorScheme.background
                                         )
                                     )
                                 }
@@ -616,10 +639,10 @@ fun OrdainketaPantailaDialog(
                                     label = { Text("Titularra") },
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedTextColor = TextPrimary,
-                                        unfocusedTextColor = TextPrimary,
-                                        focusedContainerColor = DarkBackground,
-                                        unfocusedContainerColor = DarkBackground
+                                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                                     )
                                 )
 
@@ -627,7 +650,7 @@ fun OrdainketaPantailaDialog(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Default.Nfc, contentDescription = null, tint = StatusFree, modifier = Modifier.size(18.dp))
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text("POS / Datofono kontaktugabea prest dago.", fontSize = 11.sp, color = TextSecondary)
+                                    Text("POS / Datofono kontaktugabea prest dago.", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -638,7 +661,7 @@ fun OrdainketaPantailaDialog(
                                     text = "Bizum Berehalako Ordainketa:",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -646,13 +669,13 @@ fun OrdainketaPantailaDialog(
                                     value = bizumTelefonoa,
                                     onValueChange = { if (it.all { ch -> ch.isDigit() || ch == ' ' }) bizumTelefonoa = it },
                                     label = { Text("Bezeroaren Telefonoa (9 digitu)") },
-                                    leadingIcon = { Icon(Icons.Default.PhoneAndroid, contentDescription = null, tint = AmberPrimary) },
+                                    leadingIcon = { Icon(Icons.Default.PhoneAndroid, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedTextColor = TextPrimary,
-                                        unfocusedTextColor = TextPrimary,
-                                        focusedContainerColor = DarkBackground,
-                                        unfocusedContainerColor = DarkBackground
+                                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -671,21 +694,23 @@ fun OrdainketaPantailaDialog(
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(containerColor = DarkBackground),
-                                    shape = RoundedCornerShape(8.dp)
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                    shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Column(modifier = Modifier.padding(12.dp)) {
-                                        Text("Bizum Segurua", color = AmberPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                        Text("Bizum Segurua", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                         Text(
                                             "Bezeroak bere bankuko aplikazioan jakinarazpena jasoko du eta baieztatzean transakzioa berehala itxiko da.",
                                             fontSize = 11.sp,
-                                            color = TextSecondary
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                 }
                             }
                         }
                     }
+                }
                 }
 
                 if (ordainketaErrorea != null) {
@@ -757,8 +782,8 @@ fun OrdainketaPantailaDialog(
                         modifier = Modifier
                             .weight(2f)
                             .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF881337)), // C# TPV kolorea
-                        shape = RoundedCornerShape(10.dp)
+                        colors = ButtonDefaults.buttonColors(containerColor = StatusFree),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         if (ordaintzen) {
                             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(22.dp))
@@ -801,7 +826,7 @@ fun TiketFiskalaDialog(
                 .fillMaxWidth(0.94f)
                 .fillMaxHeight(0.92f),
             shape = RoundedCornerShape(16.dp),
-            color = DarkSurface,
+            color = MaterialTheme.colorScheme.surface,
             tonalElevation = 8.dp
         ) {
             Column(
@@ -1041,4 +1066,18 @@ private fun sortuFallbackTiketTestua(o: OrdainketaErantzunaDto): String {
              Eskerrik asko zure bisitagatik!
         ========================================
     """.trimIndent()
+}
+
+@Preview(showBackground = true, name = "OrdainketaPantailaDialog")
+@Composable
+fun OrdainketaPantailaDialogPreview() {
+    KomanderaTheme(darkTheme = true) {
+        OrdainketaPantailaDialog(
+            mahaia = MahaiaDto(1, 1, 4, "Jantoki Nagusia", "Okupatuta"),
+            eskaera = EskaeraDto(id = 42, mahaiaId = 1, mahaiZenbakia = 1, pertsonaKopurua = 2, guztira = 38.50),
+            zerbitzaria = LangileaDto(1, "ane", "Ane Etxeberria", "Zerbitzaria"),
+            onOrdainketaBurutua = {},
+            onDismiss = {}
+        )
+    }
 }

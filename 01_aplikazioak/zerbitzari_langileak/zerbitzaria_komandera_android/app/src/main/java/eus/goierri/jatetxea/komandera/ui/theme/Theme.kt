@@ -1,6 +1,5 @@
 package eus.goierri.jatetxea.komandera.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -8,53 +7,54 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val T1DarkColorScheme = darkColorScheme(
-    primary = ChiantiPrimary,
+    primary = ChiantiDark,
     onPrimary = TextOnBrand,
-    primaryContainer = PomodoroHover,
-    onPrimaryContainer = TextPrimary,
-    secondary = AmberAccent,
-    onSecondary = DeepBackground,
-    secondaryContainer = BurgundyDark,
+    primaryContainer = BurgundyDark,
+    onPrimaryContainer = AmberLight,
+    secondary = GoldBorder,
+    onSecondary = EveningEspresso,
+    secondaryContainer = WarmGraphite,
     onSecondaryContainer = AmberLight,
-    background = DeepBackground,
-    onBackground = TextPrimary,
-    surface = SurfaceDark,
-    onSurface = TextPrimary,
-    surfaceVariant = SurfaceVariantDark,
+    background = EveningEspresso,
+    onBackground = WarmLinen,
+    surface = CharcoalWine,
+    onSurface = WarmLinen,
+    surfaceVariant = WarmGraphite,
     onSurfaceVariant = TextSecondary,
-    outline = SurfaceBorder,
-    error = StatusOccupied,
-    onError = TextOnBrand
+    outline = DarkHairline,
+    error = StatusOccupiedDark,
+    onError = EveningEspresso
 )
 
 private val T1LightColorScheme = lightColorScheme(
     primary = ChiantiPrimary,
     onPrimary = TextOnBrand,
-    primaryContainer = PomodoroHover,
-    onPrimaryContainer = TextPrimary,
-    secondary = AmberAccent,
+    primaryContainer = ChiantiTint,
+    onPrimaryContainer = BurgundyDark,
+    secondary = AntiqueGold,
     onSecondary = Color.White,
-    secondaryContainer = AmberLight,
+    secondaryContainer = GoldTint,
     onSecondaryContainer = BurgundyDark,
-    background = Color(0xFFF8FAFC),      // Irina Zuria
-    onBackground = Color(0xFF1E293B),    // Arbel Iluna
-    surface = Color(0xFFFFFFFF),         // Zuri Garbia
-    onSurface = Color(0xFF1E293B),
-    surfaceVariant = Color(0xFFE2E8F0),
-    onSurfaceVariant = Color(0xFF475569),
-    outline = Color(0xFFCBD5E1),
+    background = WarmLinen,
+    onBackground = EspressoInk,
+    surface = MarbleWhite,
+    onSurface = EspressoInk,
+    surfaceVariant = StoneMist,
+    onSurfaceVariant = WarmSlate,
+    outline = WarmTaupe,
     error = StatusOccupied,
     onError = TextOnBrand
 )
 
 @Composable
 fun KomanderaTheme(
-    darkTheme: Boolean = true,
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) T1DarkColorScheme else T1LightColorScheme
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = KomanderaTypography,
         content = content
     )
 }

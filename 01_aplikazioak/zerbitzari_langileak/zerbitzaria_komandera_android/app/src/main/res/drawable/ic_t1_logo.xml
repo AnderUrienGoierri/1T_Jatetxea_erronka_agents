@@ -1,67 +1,41 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="120dp"
-    android:height="120dp"
-    android:viewportWidth="120"
-    android:viewportHeight="120">
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
 
-    <!-- Zirkulu Nagusia: Ardo Gradientea -->
+    <!-- Logo B: Monograma Arkitektonikoa (Warm Hospitality Light) -->
+    <!-- Kanpoko Squircle: Liho Epela + Chianti ertz fina -->
     <path
-        android:pathData="M 60,12 A 48,48 0 1,0 60,108 A 48,48 0 1,0 60,12 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:type="linear"
-                android:startX="0"
-                android:startY="0"
-                android:endX="120"
-                android:endY="120">
-                <item android:color="#FF9F1239" android:offset="0.0" />
-                <item android:color="#FF881337" android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-
-    <!-- Urrezko Kanpoko Ertza -->
-    <path
-        android:pathData="M 60,12 A 48,48 0 1,0 60,108 A 48,48 0 1,0 60,12 Z"
-        android:strokeWidth="2.5"
-        android:strokeColor="#FCD34D" />
-
-    <!-- Barruko Eraztun Punteatua / Zuria -->
-    <path
-        android:pathData="M 60,17 A 43,43 0 1,0 60,103 A 43,43 0 1,0 60,17 Z"
-        android:strokeWidth="1.2"
-        android:strokeColor="#55FFFFFF" />
-
-    <!-- 'T' Letra Behar bezala Diseinatua Serif Klasikoarekin -->
-    <!-- Goiko barra horizontal dotorea -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 40,43 L 57,43 L 57,47 L 50.5,47 L 50.5,69 L 46.5,69 L 46.5,47 L 40,47 Z" />
-
-    <!-- '1' Zenbakia Dotorea Serif-arekin -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 65,49 L 71,43 L 75,43 L 75,69 L 70.5,69 L 70.5,48.5 L 66,52 Z" />
-
-    <!-- Oinarriko euskarri txikia 1-arentzat -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 67,67 L 78,67 L 78,69 L 67,69 Z" />
-
-    <!-- Koroa / Arku Urreztatua behean -->
-    <path
-        android:pathData="M 40,84 C 48,91 72,91 80,84"
+        android:fillColor="#FAF7F2"
+        android:strokeColor="#881337"
         android:strokeWidth="2.8"
-        android:strokeColor="#F59E0B"
-        android:strokeLineCap="round" />
+        android:pathData="M44,10 H116 A34,34 0 0,1 150,44 V116 A34,34 0 0,1 116,150 H44 A34,34 0 0,1 10,116 V44 A34,34 0 0,1 44,10 Z" />
 
-    <!-- Oliba/Albahaka Berde Xehetasunak -->
+    <!-- Barruko urrezko ertz arkitektonikoa -->
     <path
-        android:pathData="M 52,86 A 2.6,2.6 0 1,0 52,91.2 A 2.6,2.6 0 1,0 52,86 Z"
-        android:fillColor="#15803D" />
-    <path
-        android:pathData="M 68,86 A 2.6,2.6 0 1,0 68,91.2 A 2.6,2.6 0 1,0 68,86 Z"
-        android:fillColor="#15803D" />
+        android:fillColor="#00000000"
+        android:strokeColor="#D4A359"
+        android:strokeWidth="1.4"
+        android:pathData="M45,19 H115 A26,26 0 0,1 141,45 V115 A26,26 0 0,1 115,141 H45 A26,26 0 0,1 19,115 V45 A26,26 0 0,1 45,19 Z" />
 
+    <!-- 'T' Serif Klasikoa (Chianti) -->
+    <path
+        android:fillColor="#881337"
+        android:pathData="M36,48 H84 V59 H80 C79,55 76.5,53.5 72,53.5 H66 V99 C66,102 68,103.5 72,103.5 H73.5 V107 H46.5 V103.5 H48 C52,103.5 54,102 54,99 V53.5 H48 C43.5,53.5 41,55 40,59 H36 V48 Z" />
+
+    <!-- '1' Serif Klasikoa (Espresso Arbel) -->
+    <path
+        android:fillColor="#1C1917"
+        android:pathData="M91,58 L104.5,48 H110.5 V99 C110.5,102 112.5,103.5 116.5,103.5 H119 V107 H91 V103.5 H93.5 C97.5,103.5 99.5,102 99.5,99 V59.5 L93,64 L91,58 Z" />
+
+    <!-- Urrezko lerro arkitektonikoa + Chianti puntu zentratua -->
+    <path
+        android:strokeColor="#D4A359"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M42,119 L118,119" />
+    <path
+        android:fillColor="#881337"
+        android:pathData="M80,115.5 A3.5,3.5 0 1,0 80,122.5 A3.5,3.5 0 1,0 80,115.5 Z" />
 </vector>

@@ -81,8 +81,10 @@ object NetworkProfiles {
                 }
             }
 
+            @Suppress("DEPRECATION")
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
             if (wifiManager != null) {
+                @Suppress("DEPRECATION")
                 val wifiInfo = wifiManager.connectionInfo
                 if (wifiInfo != null) {
                     val ssid = wifiInfo.ssid
@@ -127,7 +129,19 @@ object NetworkProfiles {
         return null
     }
 
+    private fun daEmuladorea(): Boolean =
+        Build.FINGERPRINT.startsWith("generic") ||
+            Build.FINGERPRINT.lowercase().contains("emulator") ||
+            Build.MODEL.contains("Emulator") ||
+            Build.MODEL.contains("Android SDK built for") ||
+            Build.PRODUCT.contains("sdk_gphone") ||
+            Build.HARDWARE.contains("ranchu") ||
+            Build.HARDWARE.contains("goldfish")
+
     fun lortuGomendatutakoProfila(context: Context): NetworkProfile {
+        if (daEmuladorea()) {
+            return PROFILAK.firstOrNull { it.id == "emuladorea" } ?: PROFILAK.last()
+        }
         val unekoSsid = lortuUnekoWifiIzena(context)
         if (!unekoSsid.isNullOrBlank()) {
             val batDatorrena = PROFILAK.firstOrNull { profil ->

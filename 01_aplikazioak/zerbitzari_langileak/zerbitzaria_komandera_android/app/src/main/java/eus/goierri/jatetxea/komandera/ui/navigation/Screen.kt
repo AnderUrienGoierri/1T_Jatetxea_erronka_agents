@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
     object MahaiaXehetasunak : Screen("mahaia_xehetasunak/{mahaiId}") {
         fun sortuRuta(mahaiId: Int) = "mahaia_xehetasunak/$mahaiId"
     }
-    object Eskaera : Screen("eskaera/{eskaeraId}/{mahaiId}") {
-        fun sortuRuta(eskaeraId: Int, mahaiId: Int) = "eskaera/$eskaeraId/$mahaiId"
+    object Eskaera : Screen("eskaera/{eskaeraId}/{mahaiId}/{pax}") {
+        fun sortuRuta(eskaeraId: Int, mahaiId: Int, pax: Int = 2) = "eskaera/$eskaeraId/$mahaiId/$pax"
     }
 }

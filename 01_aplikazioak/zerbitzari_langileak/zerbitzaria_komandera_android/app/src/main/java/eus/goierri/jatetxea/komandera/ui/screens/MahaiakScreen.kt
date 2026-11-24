@@ -1,52 +1,50 @@
 package eus.goierri.jatetxea.komandera.ui.screens
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
-import eus.goierri.jatetxea.komandera.ui.components.ErreserbakDialog
-import eus.goierri.jatetxea.komandera.ui.components.EzarpenakDialog
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eus.goierri.jatetxea.komandera.data.api.ApiClient
 import eus.goierri.jatetxea.komandera.data.model.LangileaDto
 import eus.goierri.jatetxea.komandera.data.model.MahaiaDto
-import eus.goierri.jatetxea.komandera.ui.theme.AmberAccent
-import eus.goierri.jatetxea.komandera.ui.theme.AmberPrimary
-import eus.goierri.jatetxea.komandera.ui.theme.ChiantiPrimary
-import eus.goierri.jatetxea.komandera.ui.theme.DarkBackground
-import eus.goierri.jatetxea.komandera.ui.theme.DarkSurface
-import eus.goierri.jatetxea.komandera.ui.theme.StatusBusy
-import eus.goierri.jatetxea.komandera.ui.theme.StatusCleaning
-import eus.goierri.jatetxea.komandera.ui.theme.StatusFree
-import eus.goierri.jatetxea.komandera.ui.theme.StatusPending
-import eus.goierri.jatetxea.komandera.ui.theme.TextMuted
-import eus.goierri.jatetxea.komandera.ui.theme.TextPrimary
-import eus.goierri.jatetxea.komandera.ui.theme.TextSecondary
+import eus.goierri.jatetxea.komandera.ui.components.ErreserbakDialog
+import eus.goierri.jatetxea.komandera.ui.components.EzarpenakDialog
+import eus.goierri.jatetxea.komandera.ui.state.AppPreferences
+import eus.goierri.jatetxea.komandera.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MahaiakScreen(
     zerbitzaria: LangileaDto,
@@ -58,11 +56,9 @@ fun MahaiakScreen(
     var mahaiak by remember { mutableStateOf<List<MahaiaDto>>(emptyList()) }
     var kargatzen by remember { mutableStateOf(true) }
     var erroreMezua by remember { mutableStateOf<String?>(null) }
-    var eremuFiltroa by remember { mutableStateOf("Guztiak") }
+    var eremuFiltroa by rememberSaveable { mutableStateOf("Guztiak") }
     var ezarpenakIrekita by remember { mutableStateOf(false) }
     var erreserbakIrekita by remember { mutableStateOf(false) }
-
-    val eremuak = listOf("Guztiak", "Jantoki Nagusia", "Barra", "Terraza", "VIP")
 
     fun kargatuMahaiak(erakutsiKargatzen: Boolean = true) {
         scope.launch {
@@ -70,13 +66,14 @@ fun MahaiakScreen(
             try {
                 val res = ApiClient.service.getMahaiak()
                 if (res.isSuccessful && res.body()?.dataList != null) {
-                    val zerrenda = res.body()!!.dataList!!
-                    mahaiak = zerrenda
+                    mahaiak = res.body()!!.dataList!!
                     erroreMezua = null
-                } else {
-                    if (mahaiak.isEmpty()) {
-                        erroreMezua = "Ezin izan dira mahaiak kargatu API zerbitzaritik."
-                    }
+                } else if (mahaiak.isEmpty()) {
+                    erroreMezua = AppPreferences.tr(
+                        "Ezin izan dira mahaiak kargatu API zerbitzaritik.",
+                        "No se pudieron cargar las mesas del servidor.",
+                        "Could not load tables from server."
+                    )
                 }
             } catch (e: Exception) {
                 if (mahaiak.isEmpty()) {
@@ -88,7 +85,6 @@ fun MahaiakScreen(
         }
     }
 
-    // Hasierako karga eta aldizkako auto-freskatzea (5 segundoro)
     LaunchedEffect(Unit) {
         kargatuMahaiak()
         while (true) {
@@ -97,91 +93,161 @@ fun MahaiakScreen(
         }
     }
 
-    val filtratuak = if (eremuFiltroa == "Guztiak") {
-        mahaiak
-    } else {
-        mahaiak.filter { it.kokapena.equals(eremuFiltroa, ignoreCase = true) }
+    MahaiakScreenContent(
+        zerbitzaria = zerbitzaria,
+        mahaiak = mahaiak,
+        kargatzen = kargatzen,
+        erroreMezua = erroreMezua,
+        eremuFiltroa = eremuFiltroa,
+        onEremuFiltroaAldatu = { eremuFiltroa = it },
+        onMahaiaAukeratua = onMahaiaAukeratua,
+        onSaioaItxi = onSaioaItxi,
+        onFreskatu = { kargatuMahaiak(erakutsiKargatzen = true) },
+        onIrekiErreserbak = { erreserbakIrekita = true },
+        onIrekiEzarpenak = { ezarpenakIrekita = true },
+        modifier = modifier
+    )
+
+    if (ezarpenakIrekita) {
+        EzarpenakDialog(
+            zerbitzaria = zerbitzaria,
+            onDismiss = { ezarpenakIrekita = false },
+            onApiConfigAldatua = { kargatuMahaiak(erakutsiKargatzen = true) }
+        )
+    }
+
+    if (erreserbakIrekita) {
+        ErreserbakDialog(
+            mahaiak = mahaiak,
+            onDismiss = { erreserbakIrekita = false },
+            onErreserbaSortua = { kargatuMahaiak(erakutsiKargatzen = false) }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MahaiakScreenContent(
+    zerbitzaria: LangileaDto,
+    mahaiak: List<MahaiaDto>,
+    kargatzen: Boolean,
+    erroreMezua: String?,
+    eremuFiltroa: String,
+    onEremuFiltroaAldatu: (String) -> Unit,
+    onMahaiaAukeratua: (MahaiaDto) -> Unit,
+    onSaioaItxi: () -> Unit,
+    onFreskatu: () -> Unit,
+    onIrekiErreserbak: () -> Unit,
+    onIrekiEzarpenak: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val isDark = AppPreferences.isDarkTheme
+    val eremuak = listOf("Guztiak", "Jantoki Nagusia", "Barra", "Terraza", "VIP")
+    val filtratuak = remember(mahaiak, eremuFiltroa) {
+        if (eremuFiltroa == "Guztiak") mahaiak
+        else mahaiak.filter { it.kokapena.equals(eremuFiltroa, ignoreCase = true) }
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = "Aretoko Mahaiak",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "${zerbitzaria.izena} (${zerbitzaria.rola})",
-                            fontSize = 12.sp,
-                            color = AmberAccent
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onSaioaItxi) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = "Saioa Itxi",
-                            tint = StatusBusy
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { erreserbakIrekita = true }) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "Erreserbak",
-                            tint = AmberAccent
-                        )
-                    }
-                    IconButton(onClick = { ezarpenakIrekita = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Ezarpenak",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    IconButton(onClick = { kargatuMahaiak(erakutsiKargatzen = true) }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Freskatu",
-                            tint = AmberPrimary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
-            )
+            Surface(
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 0.dp
+            ) {
+                Column {
+                    TopAppBar(
+                        title = {
+                            Column {
+                                Text(
+                                    text = AppPreferences.tr("Aretoko Mahaiak", "Mesas de Sala", "Dining Tables"),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "${zerbitzaria.izena} · ${zerbitzaria.rola}",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            Box(modifier = Modifier.padding(start = 12.dp, end = 4.dp)) {
+                                Surface(
+                                    onClick = onSaioaItxi,
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = if (isDark) Color(0xFF2D1214) else StatusOccupiedLight
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                        contentDescription = AppPreferences.tr("Saioa Itxi", "Cerrar Sesión", "Sign Out"),
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(9.dp).size(18.dp)
+                                    )
+                                }
+                            }
+                        },
+                        actions = {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                modifier = Modifier.padding(end = 12.dp)
+                            ) {
+                                Surface(
+                                    onClick = onIrekiErreserbak,
+                                    shape = RoundedCornerShape(11.dp),
+                                    color = MaterialTheme.colorScheme.background,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CalendarMonth,
+                                        contentDescription = AppPreferences.tr("Erreserbak", "Reservas", "Reservations"),
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        modifier = Modifier.padding(8.dp).size(18.dp)
+                                    )
+                                }
+                                Surface(
+                                    onClick = onIrekiEzarpenak,
+                                    shape = RoundedCornerShape(11.dp),
+                                    color = MaterialTheme.colorScheme.background,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = AppPreferences.tr("Ezarpenak", "Ajustes", "Settings"),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(8.dp).size(18.dp)
+                                    )
+                                }
+                                Surface(
+                                    onClick = onFreskatu,
+                                    shape = RoundedCornerShape(11.dp),
+                                    color = MaterialTheme.colorScheme.background,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        contentDescription = AppPreferences.tr("Freskatu", "Actualizar", "Refresh"),
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(8.dp).size(18.dp)
+                                    )
+                                }
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f))
+                }
+            }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        if (ezarpenakIrekita) {
-            EzarpenakDialog(
-                zerbitzaria = zerbitzaria,
-                onDismiss = { ezarpenakIrekita = false }
-            )
-        }
-
-        if (erreserbakIrekita) {
-            ErreserbakDialog(
-                mahaiak = mahaiak,
-                onDismiss = { erreserbakIrekita = false },
-                onErreserbaSortua = {
-                    kargatuMahaiak(erakutsiKargatzen = false)
-                }
-            )
-        }
-
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
-            // Eremuen botoi-filtroa (Horizontalki mugikorra - testurik inoiz ez mozteko)
+            // Eremuen pill filtroak
             val scrollState = rememberScrollState()
             Row(
                 modifier = Modifier
@@ -191,112 +257,120 @@ fun MahaiakScreen(
             ) {
                 eremuak.forEach { eremua ->
                     val hautatua = eremuFiltroa == eremua
-                    FilterChip(
-                        selected = hautatua,
-                        onClick = { eremuFiltroa = eremua },
-                        label = {
-                            Text(
-                                text = eremua,
-                                fontSize = 12.sp,
-                                fontWeight = if (hautatua) FontWeight.Bold else FontWeight.Normal,
-                                maxLines = 1,
-                                softWrap = false
-                            )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            selectedContainerColor = ChiantiPrimary,
-                            selectedLabelColor = Color.White
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            borderColor = if (hautatua) ChiantiPrimary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                            selectedBorderColor = ChiantiPrimary,
-                            enabled = true,
-                            selected = hautatua
+                    val eremuEtiketa = if (eremua == "Guztiak") {
+                        AppPreferences.tr("Guztiak", "Todas", "All")
+                    } else eremua
+
+                    Surface(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(999.dp))
+                            .clickable { onEremuFiltroaAldatu(eremua) },
+                        shape = RoundedCornerShape(999.dp),
+                        color = if (hautatua) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(
+                            1.dp,
+                            if (hautatua) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                         )
+                    ) {
+                        Text(
+                            text = eremuEtiketa,
+                            fontSize = 12.sp,
+                            fontWeight = if (hautatua) FontWeight.Bold else FontWeight.Medium,
+                            color = if (hautatua) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            softWrap = false,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 4-zutabeko KPI Barra Modernoa (JetBrains Mono zenbakiekin)
+            val libreKop = mahaiak.count { it.egoera.equals("Libre", ignoreCase = true) }
+            val okupatuKop = mahaiak.count { it.egoera.equals("Okupatuta", ignoreCase = true) }
+            val erreserbaKop = mahaiak.count { it.egoera.equals("Erreserbatuta", ignoreCase = true) }
+            val garbitzenKop = mahaiak.count { it.egoera.equals("Garbitzen", ignoreCase = true) }
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    KpiStatItem(
+                        kopurua = libreKop,
+                        etiketa = AppPreferences.tr("Libre", "Libres", "Free"),
+                        kolorea = if (isDark) StatusFreeDark else StatusFree,
+                        modifier = Modifier.weight(1f)
+                    )
+                    KpiStatItem(
+                        kopurua = okupatuKop,
+                        etiketa = AppPreferences.tr("Okupatuta", "Ocupadas", "Busy"),
+                        kolorea = if (isDark) StatusOccupiedDark else StatusOccupied,
+                        modifier = Modifier.weight(1f)
+                    )
+                    KpiStatItem(
+                        kopurua = erreserbaKop,
+                        etiketa = AppPreferences.tr("Erreserba", "Reserva", "Booked"),
+                        kolorea = if (isDark) GoldBorder else AntiqueGold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    KpiStatItem(
+                        kopurua = garbitzenKop,
+                        etiketa = AppPreferences.tr("Garbitzen", "Limpieza", "Clean"),
+                        kolorea = if (isDark) StatusCleaningDark else StatusCleaning,
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Estatistikak barra laburra
-            val libreKop = mahaiak.count { it.egoera.equals("Libre", ignoreCase = true) }
-            val okupatuKop = mahaiak.count { it.egoera.equals("Okupatuta", ignoreCase = true) }
-            val erreserbaKop = mahaiak.count { it.egoera.equals("Erreserbatuta", ignoreCase = true) }
-            val garbitzenKop = mahaiak.count { it.egoera.equals("Garbitzen", ignoreCase = true) }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "Guztira: ${mahaiak.size}",
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "Libre: $libreKop",
-                    fontSize = 11.sp,
-                    color = StatusFree,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Okupatuta: $okupatuKop",
-                    fontSize = 11.sp,
-                    color = StatusBusy,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Erreserbak: $erreserbaKop",
-                    fontSize = 11.sp,
-                    color = StatusPending,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Garbitzen: $garbitzenKop",
-                    fontSize = 11.sp,
-                    color = StatusCleaning,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            if (kargatzen && mahaiak.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = AmberPrimary)
+            when {
+                kargatzen && mahaiak.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
                 }
-            } else if (erroreMezua != null && mahaiak.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = erroreMezua!!, color = StatusBusy, textAlign = TextAlign.Center)
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Button(
-                            onClick = { kargatuMahaiak(erakutsiKargatzen = true) },
-                            colors = ButtonDefaults.buttonColors(containerColor = AmberPrimary)
-                        ) {
-                            Text("Saiatu Berriro", color = DarkBackground)
+                erroreMezua != null && mahaiak.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = erroreMezua, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = onFreskatu,
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Text(
+                                    AppPreferences.tr("Saiatu Berriro", "Reintentar", "Retry"),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
                         }
                     }
                 }
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(filtratuak) { mahaia ->
-                        MahaiaTxartela(
-                            mahaia = mahaia,
-                            onClick = { onMahaiaAukeratua(mahaia) }
-                        )
+                else -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 165.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(filtratuak, key = { it.id }) { mahaia ->
+                            MahaiaTxartela(
+                                mahaia = mahaia,
+                                onClick = { onMahaiaAukeratua(mahaia) }
+                            )
+                        }
                     }
                 }
             }
@@ -305,103 +379,225 @@ fun MahaiakScreen(
 }
 
 @Composable
+private fun KpiStatItem(
+    kopurua: Int,
+    etiketa: String,
+    kolorea: Color,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "$kopurua",
+            fontFamily = JetBrainsMono,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = kolorea
+        )
+        Text(
+            text = etiketa,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
 fun MahaiaTxartela(
     mahaia: MahaiaDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val egoeraKolorea = when (mahaia.egoera.lowercase()) {
-        "libre" -> StatusFree
-        "okupatuta" -> StatusBusy
-        "erreserbatuta" -> StatusPending
-        "garbitzen" -> StatusCleaning
-        else -> StatusPending
+    val isDark = AppPreferences.isDarkTheme
+    val egoeraLower = mahaia.egoera.lowercase()
+
+    val egoeraKolorea by animateColorAsState(
+        targetValue = when (egoeraLower) {
+            "libre" -> if (isDark) StatusFreeDark else StatusFree
+            "okupatuta" -> if (isDark) StatusOccupiedDark else StatusOccupied
+            "erreserbatuta" -> if (isDark) GoldBorder else AntiqueGold
+            "garbitzen" -> if (isDark) StatusCleaningDark else StatusCleaning
+            else -> StatusPending
+        },
+        animationSpec = tween(300),
+        label = "tableStatusColor"
+    )
+
+    val pillBg = when (egoeraLower) {
+        "libre" -> if (isDark) Color(0xFF102819) else StatusFreeLight
+        "okupatuta" -> if (isDark) Color(0xFF2D1214) else StatusOccupiedLight
+        "erreserbatuta" -> if (isDark) Color(0xFF2B170B) else GoldTint
+        "garbitzen" -> if (isDark) Color(0xFF0C2233) else StatusCleaningLight
+        else -> MaterialTheme.colorScheme.surfaceVariant
     }
 
-    Card(
+    val egoeraIkonoa = when (egoeraLower) {
+        "libre" -> Icons.Default.Check
+        "okupatuta" -> Icons.Default.Restaurant
+        "erreserbatuta" -> Icons.Default.EventAvailable
+        "garbitzen" -> Icons.Default.CleaningServices
+        else -> Icons.Default.Restaurant
+    }
+
+    Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(16.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(1.dp, egoeraKolorea.copy(alpha = if (isDark) 0.32f else 0.28f))
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Mahaia ${mahaia.zenbakia}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-
-                Spacer(modifier = Modifier.width(4.dp))
-
-                // Egoera puntua eta txapa (lerro bakarrean)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(egoeraKolorea)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = mahaia.egoera,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = egoeraKolorea,
-                        maxLines = 1,
-                        softWrap = false
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "${mahaia.kokapena} · ${mahaia.edukiera} pax",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+        ) {
+            // Ezkerreko 4dp egoera-marra bertikala (Figma cardMahaia)
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+                    .background(egoeraKolorea)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Beheko informazioa (okupatuta badago zenbatekoa)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = "Geh. ${mahaia.edukiera}",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                        text = "${AppPreferences.tr("Mahaia", "Mesa", "Table")} ${mahaia.zenbakia}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    // WCAG 2.2 POUR egoera-txapa (Ikonoa + Testua)
+                    Surface(
+                        color = pillBg,
+                        shape = RoundedCornerShape(999.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(3.dp)
+                        ) {
+                            Icon(
+                                imageVector = egoeraIkonoa,
+                                contentDescription = null,
+                                tint = egoeraKolorea,
+                                modifier = Modifier.size(11.dp)
+                            )
+                            Text(
+                                text = mahaia.egoera,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = egoeraKolorea,
+                                maxLines = 1,
+                                softWrap = false
+                            )
+                        }
+                    }
                 }
 
-                Text(
-                    text = "Kudeatu ->",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AmberAccent
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = mahaia.kokapena,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Text(
+                            text = "${mahaia.edukiera} pax",
+                            fontFamily = JetBrainsMono,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, name = "MahaiakScreen - Argia")
+@Composable
+fun MahaiakScreenLightPreview() {
+    KomanderaTheme(darkTheme = false) {
+        MahaiakScreenContent(
+            zerbitzaria = LangileaDto(1, "maite_zerb", "Maite Etxebarria", "Zerbitzaria"),
+            mahaiak = listOf(
+                MahaiaDto(1, 1, 2, "Jantoki Nagusia", "Okupatuta"),
+                MahaiaDto(2, 2, 4, "Jantoki Nagusia", "Libre"),
+                MahaiaDto(3, 5, 8, "VIP", "Erreserbatuta"),
+                MahaiaDto(4, 6, 4, "Terraza", "Garbitzen")
+            ),
+            kargatzen = false,
+            erroreMezua = null,
+            eremuFiltroa = "Guztiak",
+            onEremuFiltroaAldatu = {},
+            onMahaiaAukeratua = {},
+            onSaioaItxi = {},
+            onFreskatu = {},
+            onIrekiErreserbak = {},
+            onIrekiEzarpenak = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "MahaiakScreen - Iluna")
+@Composable
+fun MahaiakScreenDarkPreview() {
+    KomanderaTheme(darkTheme = true) {
+        MahaiakScreenContent(
+            zerbitzaria = LangileaDto(1, "maite_zerb", "Maite Etxebarria", "Zerbitzaria"),
+            mahaiak = listOf(
+                MahaiaDto(1, 1, 2, "Jantoki Nagusia", "Okupatuta"),
+                MahaiaDto(2, 2, 4, "Jantoki Nagusia", "Libre")
+            ),
+            kargatzen = false,
+            erroreMezua = null,
+            eremuFiltroa = "Guztiak",
+            onEremuFiltroaAldatu = {},
+            onMahaiaAukeratua = {},
+            onSaioaItxi = {},
+            onFreskatu = {},
+            onIrekiErreserbak = {},
+            onIrekiEzarpenak = {}
+        )
     }
 }

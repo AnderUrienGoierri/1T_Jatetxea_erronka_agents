@@ -1,11 +1,13 @@
 package eus.goierri.jatetxea.komandera.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +23,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -154,10 +157,16 @@ fun EzarpenakDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (fitxaAktiboa == "PREF") {
+                AnimatedContent(
+                    targetState = fitxaAktiboa,
+                    modifier = Modifier.weight(1f),
+                    transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) },
+                    label = "settingsTab"
+                ) { tab ->
+                if (tab == "PREF") {
                     Column(
                         modifier = Modifier
-                            .weight(1f)
+                            .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
                         // 1. ERABILTZAILEAREN DATUAK
@@ -259,7 +268,7 @@ fun EzarpenakDialog(
 
                             Switch(
                                 checked = AppPreferences.isDarkTheme,
-                                onCheckedChange = { AppPreferences.isDarkTheme = it },
+                                onCheckedChange = { AppPreferences.setDarkTheme(context, it) },
                                 modifier = Modifier.scale(0.85f),
                                 colors = SwitchDefaults.colors(
                                     checkedThumbColor = Color.White,
@@ -293,7 +302,7 @@ fun EzarpenakDialog(
                                     modifier = Modifier
                                         .weight(1f)
                                         .clip(RoundedCornerShape(10.dp))
-                                        .clickable { AppPreferences.hizkuntza = kod },
+                                        .clickable { AppPreferences.setHizkuntza(context, kod) },
                                     color = if (aktibo) ChiantiPrimary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
                                     border = androidx.compose.foundation.BorderStroke(
                                         1.dp,
@@ -324,7 +333,7 @@ fun EzarpenakDialog(
                     // SAREA & API IP KONFIGURAZIOA
                     Column(
                         modifier = Modifier
-                            .weight(1f)
+                            .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
                         Surface(
@@ -505,6 +514,7 @@ fun EzarpenakDialog(
                         }
                     }
                 }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -516,12 +526,23 @@ fun EzarpenakDialog(
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Text(
-                        "Itxi",
+                        AppPreferences.tr("Itxi", "Cerrar", "Close"),
                         color = if (fitxaAktiboa == "PREF") Color.White else MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, name = "EzarpenakDialog")
+@Composable
+fun EzarpenakDialogPreview() {
+    KomanderaTheme(darkTheme = true) {
+        EzarpenakDialog(
+            zerbitzaria = LangileaDto(1, "ane", "Ane Etxeberria", "Zerbitzaria"),
+            onDismiss = {}
+        )
     }
 }

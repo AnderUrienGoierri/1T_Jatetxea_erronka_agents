@@ -160,3 +160,34 @@ data class ErreserbaSortuDto(
     @SerializedName("bezeroEmaila") val bezeroEmaila: String,
     @SerializedName("bezeroTelefonoa") val bezeroTelefonoa: String? = "-"
 )
+
+object KategoriaLaguntzailea {
+    val BARRAKO_KATEGORIAK = listOf(
+        "Urak",
+        "Freskagarriak",
+        "Garagardoak",
+        "Sagardoak",
+        "Ardoak",
+        "Kafeak",
+        "Infusioak",
+        "Likoreak",
+        "Konbinatuak",
+        "Koktailak"
+    )
+
+    val SUKALDEKO_KATEGORIAK = listOf(
+        "Sarrerakoa",
+        "Lehena",
+        "Bigarrena",
+        "Postrea"
+    )
+
+    fun daBarrakoProduktua(kategoria: String): Boolean =
+        BARRAKO_KATEGORIAK.any { it.equals(kategoria.trim(), ignoreCase = true) }
+
+    fun ordenaIndizea(kategoria: String): Int {
+        val guztiak = SUKALDEKO_KATEGORIAK + BARRAKO_KATEGORIAK
+        val idx = guztiak.indexOfFirst { it.equals(kategoria.trim(), ignoreCase = true) }
+        return if (idx >= 0) idx else Int.MAX_VALUE
+    }
+}

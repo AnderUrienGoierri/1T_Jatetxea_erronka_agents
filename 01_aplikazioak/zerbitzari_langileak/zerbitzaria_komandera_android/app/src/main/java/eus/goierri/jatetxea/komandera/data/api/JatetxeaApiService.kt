@@ -61,6 +61,12 @@ interface JatetxeaApiService {
         @Body req: EgoeraEguneratuRequest
     ): Response<ApiResponse<Any>>
 
+    @DELETE("eskaerak/lerroak/{lerroId}")
+    suspend fun ezabatuLerroa(@Path("lerroId") lerroId: Int): Response<ApiResponse<Any>>
+
+    @DELETE("eskaerak/{id}")
+    suspend fun ezabatuEskaera(@Path("id") eskaeraId: Int): Response<ApiResponse<Any>>
+
     @POST("ordainketak")
     suspend fun prozesatuOrdainketa(@Body req: OrdainketaEskaeraDto): Response<ApiResponse<OrdainketaErantzunaDto>>
 
@@ -98,6 +104,8 @@ object ApiClient {
 
     fun saveBaseUrl(context: android.content.Context, url: String) {
         baseUrl = garbituUrl(url)
+        cachedUrl = null
+        cachedService = null
         val prefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_BASE_URL, baseUrl).apply()
     }
@@ -128,9 +136,30 @@ object ApiClient {
         .readTimeout(10, TimeUnit.SECONDS)
         .build()
 
-    val service: JatetxeaApiService by lazy {
-        createService()
-    }
+    @Volatile
+    private var cachedUrl: String? = null
+
+    @Volatile
+    private var cachedService: JatetxeaApiService? = null
+
+    val service: JatetxeaApiService
+        get() {
+            val currentUrl = baseUrl
+            val existing = cachedService
+            if (existing != null && cachedUrl == currentUrl) {
+                return existing
+            }
+            return synchronized(this) {
+                if (cachedService != null && cachedUrl == currentUrl) {
+                    cachedService!!
+                } else {
+                    createService(currentUrl).also {
+                        cachedUrl = currentUrl
+                        cachedService = it
+                    }
+                }
+            }
+        }
 
     fun createService(url: String = baseUrl): JatetxeaApiService {
         val cleanUrl = if (url.endsWith("/")) url else "$url/"

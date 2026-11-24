@@ -1,64 +1,37 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-
-    <!-- Zirkulu Nagusia: Ardo Gradientea (Zentroan kokatua: cx=54, cy=54, r=36) -->
-    <path
-        android:pathData="M 54,18 A 36,36 0 1,0 54,90 A 36,36 0 1,0 54,18 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:type="linear"
-                android:startX="18"
-                android:startY="18"
-                android:endX="90"
-                android:endY="90">
-                <item android:color="#FF9F1239" android:offset="0.0" />
-                <item android:color="#FF881337" android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-
-    <!-- Urrezko Kanpoko Ertza -->
-    <path
-        android:pathData="M 54,18 A 36,36 0 1,0 54,90 A 36,36 0 1,0 54,18 Z"
-        android:strokeWidth="2.2"
-        android:strokeColor="#FCD34D" />
-
-    <!-- Barruko Eraztun Punteatua / Zuria -->
-    <path
-        android:pathData="M 54,22 A 32,32 0 1,0 54,86 A 32,32 0 1,0 54,22 Z"
-        android:strokeWidth="1.0"
-        android:strokeColor="#55FFFFFF" />
-
-    <!-- 'T' Letra Serif Zuria -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 39,41 L 52,41 L 52,44 L 47,44 L 47,61 L 44,61 L 44,44 L 39,44 Z" />
-
-    <!-- '1' Zenbakia Serif Zuria -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 58,45.5 L 62.5,41 L 65.5,41 L 65.5,61 L 62.5,61 L 62.5,45 L 59,47.5 Z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M 60,59.5 L 68,59.5 L 68,61 L 60,61 Z" />
-
-    <!-- Koroa / Arku Urreztatua behean -->
-    <path
-        android:pathData="M 39,72 C 45,77.5 63,77.5 69,72"
-        android:strokeWidth="2.2"
-        android:strokeColor="#F59E0B"
-        android:strokeLineCap="round" />
-
-    <!-- Oliba/Albahaka Berde Xehetasunak -->
-    <path
-        android:pathData="M 48,74 A 2,2 0 1,0 48,78 A 2,2 0 1,0 48,74 Z"
-        android:fillColor="#15803D" />
-    <path
-        android:pathData="M 60,74 A 2,2 0 1,0 60,78 A 2,2 0 1,0 60,74 Z"
-        android:fillColor="#15803D" />
-
+    <group
+        android:translateX="18"
+        android:translateY="18"
+        android:scaleX="0.45"
+        android:scaleY="0.45">
+        <!-- Logo B Adaptive Launcher Foreground -->
+        <path
+            android:fillColor="#FAF7F2"
+            android:strokeColor="#881337"
+            android:strokeWidth="3.6"
+            android:pathData="M44,10 H116 A34,34 0 0,1 150,44 V116 A34,34 0 0,1 116,150 H44 A34,34 0 0,1 10,116 V44 A34,34 0 0,1 44,10 Z" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#D4A359"
+            android:strokeWidth="1.8"
+            android:pathData="M45,19 H115 A26,26 0 0,1 141,45 V115 A26,26 0 0,1 115,141 H45 A26,26 0 0,1 19,115 V45 A26,26 0 0,1 45,19 Z" />
+        <path
+            android:fillColor="#881337"
+            android:pathData="M36,48 H84 V59 H80 C79,55 76.5,53.5 72,53.5 H66 V99 C66,102 68,103.5 72,103.5 H73.5 V107 H46.5 V103.5 H48 C52,103.5 54,102 54,99 V53.5 H48 C43.5,53.5 41,55 40,59 H36 V48 Z" />
+        <path
+            android:fillColor="#1C1917"
+            android:pathData="M91,58 L104.5,48 H110.5 V99 C110.5,102 112.5,103.5 116.5,103.5 H119 V107 H91 V103.5 H93.5 C97.5,103.5 99.5,102 99.5,99 V59.5 L93,64 L91,58 Z" />
+        <path
+            android:strokeColor="#D4A359"
+            android:strokeWidth="2.2"
+            android:strokeLineCap="round"
+            android:pathData="M42,119 L118,119" />
+        <path
+            android:fillColor="#881337"
+            android:pathData="M80,115.5 A3.5,3.5 0 1,0 80,122.5 A3.5,3.5 0 1,0 80,115.5 Z" />
+    </group>
 </vector>
