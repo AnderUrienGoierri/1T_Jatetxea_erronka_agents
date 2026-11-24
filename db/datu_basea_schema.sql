@@ -35,7 +35,11 @@ CREATE TABLE platerak (
     id INT AUTO_INCREMENT PRIMARY KEY,
     izena VARCHAR(100) NOT NULL,
     deskribapena TEXT NULL,
-    kategoria ENUM('Sarrerakoa', 'Lehena', 'Bigarrena', 'Postrea', 'Edaria') NOT NULL,
+    kategoria ENUM(
+        'Sarrerakoa', 'Lehena', 'Bigarrena', 'Postrea',
+        'Urak', 'Freskagarriak', 'Garagardoak', 'Sagardoak', 'Ardoak',
+        'Kafeak', 'Infusioak', 'Likoreak', 'Konbinatuak', 'Koktailak'
+    ) NOT NULL,
     prezioa DECIMAL(6,2) NOT NULL,
     alergenoak VARCHAR(200) NULL,
     aktibo TINYINT(1) NOT NULL DEFAULT 1,
