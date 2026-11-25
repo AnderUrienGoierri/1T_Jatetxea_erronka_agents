@@ -460,10 +460,18 @@ public class EskaerakController : BaseApiKontroladorea
         int rows = await cmd.ExecuteNonQueryAsync();
         if (rows == 0) return NotFoundError($"Ez da aurkitu {id} ID-a duen eskaera aktiborik.");
 
-        // Prestatua bada, sukaldeko plater guztiak ere 'Prestatua' egoerara pasatzea
+        // Prestatua bada, sukaldeko plater guztiak ere 'Prestatua' egoerara pasatzea (edariak eta barrakoak ukitu gabe)
         if (egoera == "Prestatua")
         {
-            const string sqlLerroakPrestatu = "UPDATE eskaera_lerroak SET egoera = 'Prestatua' WHERE eskaera_id = @id AND egoera IN ('Eskatua', 'Sukaldean');";
+            const string sqlLerroakPrestatu = @"
+                UPDATE eskaera_lerroak el
+                JOIN platerak p ON el.platera_id = p.id
+                SET el.egoera = 'Prestatua'
+                WHERE el.eskaera_id = @id AND el.egoera IN ('Eskatua', 'Sukaldean')
+                  AND LOWER(p.kategoria) NOT IN (
+                      'urak', 'freskagarriak', 'garagardoak', 'sagardoak', 'ardoak',
+                      'kafeak', 'infusioak', 'likoreak', 'konbinatuak', 'koktailak'
+                  );";
             await using var cmdP = new MySqlCommand(sqlLerroakPrestatu, kon);
             cmdP.Parameters.AddWithValue("@id", id);
             await cmdP.ExecuteNonQueryAsync();
@@ -606,7 +614,7 @@ public class EskaerakController : BaseApiKontroladorea
             await cmdKitchen.ExecuteNonQueryAsync();
         }
 
-        // Lerro guztiak Prestatua (edo Zerbitzatua) badaude, eskaera bera ere 'Prestatua' egoerara pasatzea
+        // Sukaldeko lerro guztiak Prestatua (edo Zerbitzatua) badaude, eskaera bera ere 'Prestatua' egoerara pasatzea
         if (egoera == "Prestatua")
         {
             const string sqlCheckAllPrepared = @"
@@ -616,7 +624,13 @@ public class EskaerakController : BaseApiKontroladorea
                   AND e.egoera IN ('Irekia', 'Sukaldean')
                   AND NOT EXISTS (
                       SELECT 1 FROM eskaera_lerroak el
-                      WHERE el.eskaera_id = e.id AND el.egoera NOT IN ('Prestatua', 'Zerbitzatua')
+                      JOIN platerak p ON el.platera_id = p.id
+                      WHERE el.eskaera_id = e.id 
+                        AND el.egoera NOT IN ('Prestatua', 'Zerbitzatua')
+                        AND LOWER(p.kategoria) NOT IN (
+                            'urak', 'freskagarriak', 'garagardoak', 'sagardoak', 'ardoak',
+                            'kafeak', 'infusioak', 'likoreak', 'konbinatuak', 'koktailak'
+                        )
                   );";
             await using var cmdCheckP = new MySqlCommand(sqlCheckAllPrepared, kon);
             cmdCheckP.Parameters.AddWithValue("@lerroId", lerroId);
