@@ -1,49 +1,103 @@
-# Helbideratze eta Segmentazio Plana (Fisikoa eta Birtuala)
+# Helbideratze, Segmentazio, Suebaki eta Kredentzialen Plana (Egoera Erreala)
 
-Sare fisikoan eta birtualean aplikatuko den IP helbide, azpisare eta suebaki-arauen diseinu integratua.
+Goierri Eskolako laborategi fisikoan aplikatutako IP helbide, VLAN, bideratze, suebaki-arau eta sarbide-kredentzialen dokumentazio osoa.
 
 ---
 
-## 1. Azpisareen eta VLANen Taula Orokorra
+## 1. Azpisareen eta VLANen Taula Erreala
 
-| VLAN ID | Izena | Sarea / CIDR | Defektuzko Pasabidea (Gateway - OPNsense) | DHCP Barrutia | Xedea / Funtzioa |
+| VLAN ID | Izena | Sarea / CIDR | Gateway | DHCP / Esleipena | Xedea / Funtzioa |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **VLAN 10** | `LAN_JATETXEA` | `192.168.10.0/24` | `192.168.10.1` | `192.168.10.100 - .200` | Barne ekipoak: WinServer, DB, TPV, KDS, Inprimagailua |
-| **VLAN 20** | `DMZ_WEB` | `192.168.20.0/24` | `192.168.20.1` | Finkoak (Ez dago DHCPrik) | Web zerbitzari publikoa (Ubuntu Apache / PHP ataria) |
-| **VLAN 30** | `WIFI_BEZEROAK` | `192.168.30.0/24` | `192.168.30.1` | `192.168.30.50 - .250` | Bezeroen gailuak (Karta ikusi, mahaitik eskatu) |
-| **VLAN 99** | `KUDEAKETA` | `192.168.99.0/24` | `192.168.99.1` | Finkoak | Switch SVI, OPNsense WebGUI, SSH administrazioa |
+| **VLAN 10** | `LAN` | `192.168.10.0/24` | `192.168.10.1` (`OPNsense re1`) | Estatikoak / OPNsense DHCP | Barne zerbitzariak (Windows Server 2025), Admin eta taldekideen portatilak |
+| **VLAN 20** | `DMZ` (`OPT1`) | `192.168.20.0/24` | `192.168.20.1` (`OPNsense re0`) | Estatikoa (`192.168.20.10`) | Ubuntu Web zerbitzaria (`1taldea-dmz`), LANetik isolatuta |
+| **VLAN 30** | `WAN` (Goierri) | `192.168.115.0/24` | `192.168.115.254` (Fortinet) | Eskolako DHCP (`192.168.115.254`) | Kanpoko sarea eta Interneterako irteera |
+| **VLAN 1** | `MGMT` (Switch) | `192.168.1.0/24` | — | Estatikoa (`192.168.1.254`) | Cisco SG200-50 mahai gaineko switch-aren WebGUI kudeaketa |
 
 ---
 
-## 2. IP Helbide Estatikoen Esleipena (Erreserbak)
+## 2. IP Helbideen Inbentario Osoa (MAC eta Ostalariak)
 
-### 2.1. VLAN 10 (LAN)
-- `192.168.10.1`: OPNsense Gateway (Subinterfazea `vlan0.10`).
-- `192.168.10.10`: Windows Server 2025 (Active Directory, DNS, MySQL DB, .NET Core API).
-- `192.168.10.20`: Odoo 17 ERP zerbitzaria (Portu 8069).
-- `192.168.10.30`: TPV C# Desktop Kutxa (Barra).
-- `192.168.10.40`: KDS Sukaldeko PC / Pantaila (JavaFX).
-- `192.168.10.50`: Ticket Inprimagailu Termikoa (ESC/POS Ethernet).
+### 2.1. VLAN 30 — WAN (`192.168.115.0/24`)
+- `192.168.115.254` — Goierri Eskolako Fortinet Gateway & DHCP (`00-09-0f-09-00-0d`)
+- `192.168.115.159` — OPNsense `WAN (re2)` (`00-18-e7-16-65-0c`, DHCP bidez jasoa)
 
-### 2.2. VLAN 20 (DMZ)
-- `192.168.20.1`: OPNsense Gateway (Subinterfazea `vlan0.20`).
-- `192.168.20.10`: Ubuntu Server 24.04 (Apache Web, PHP 8.2 bezero ataria).
+### 2.2. VLAN 10 — LAN (`192.168.10.0/24`)
+- `192.168.10.1` — OPNsense `LAN (re1)` Gateway & WebGUI (`bc-ee-7b-77-22-ec`)
+- `192.168.10.19` — Windows Server 2025 `WIN-U1CN1H8S33S` (`00-e0-4c-43-24-63`, estatikoa, GW `192.168.10.1`, DNS `192.168.10.1`)
+- `192.168.10.99` — Admin Portatila `ANDER-SGB5PRO` (`34-99-71-E4-43-ED`, estatikoa)
+- `192.168.10.101 - .109` — Taldekideen portatilak (Cisco SG200-50 `LAN` ataketan)
+- *(Hurrengo fasea: `.30` TPV, `.40` KDS, `.50` Inprimagailua)*
 
-### 2.3. VLAN 99 (Kudeaketa)
-- `192.168.99.1`: OPNsense Gateway kudeaketa.
-- `192.168.99.2`: Cisco Catalyst 2960 Switch-aren SVI (`interface vlan 99`).
-- `192.168.99.10`: Administratzailearen Lanpostua (Admin PC).
+### 2.3. VLAN 20 — DMZ / OPT1 (`192.168.20.0/24`)
+- `192.168.20.1` — OPNsense `OPT1 (re0)` Gateway (`00-e0-ff-68-0f-ff`)
+- `192.168.20.10` — Ubuntu Server 26.04.1 LTS `1taldea-dmz` (`00-e0-4c-22-a0-9c`, Netplan estatikoa, GW `192.168.20.1`, DNS `1.1.1.1`, `192.168.20.1`)
 
 ---
 
-## 3. OPNsense Suebaki Fisikoaren Trafiko Matrizea (Zero-Trust)
+## 3. Kredentzialen eta Sarbideen Taula (Erabiltzaileak eta Pasahitzak)
 
-| Jatorria | Helburua | Protokoloa / Ataka | Ekintza | Arrazoia |
-| :--- | :--- | :--- | :--- | :--- |
-| **WAN / Internet** | DMZ (`192.168.20.10`) | TCP 80, 443 | **ONARTU (PASS)** | Bezeroek kanpotik webgunera sartzeko |
-| **WAN / Internet** | LAN (`192.168.10.0/24`)| Edozein | **UKATU (BLOCK)** | Kanpotik ezin da barne sarera sartu |
-| **DMZ (`192.168.20.10`)** | LAN API (`192.168.10.10`) | TCP 5000 | **ONARTU (PASS)** | Webguneak APIari kontsultak egiteko |
-| **DMZ (`192.168.20.10`)** | LAN DB (`192.168.10.10`)  | TCP 3306 | **UKATU (BLOCK)** | Webak EZ du zuzenean DB ikusten (API bidez soilik) |
-| **VLAN 30 (WiFi Bezeroak)**| DMZ (`192.168.20.10`) | TCP 80, 443 | **ONARTU (PASS)** | Jatetxean dauden bezeroek atarira jotzeko |
-| **VLAN 30 (WiFi Bezeroak)**| LAN (`192.168.10.0/24`)| Edozein | **UKATU (BLOCK)** | Bezeroek ezin dituzte zerbitzari/TPVak ikusi |
-| **VLAN 10 (LAN Langileak)**| Edozein | Edozein | **ONARTU (PASS)** | Langileek eta zerbitzariek komunikazio osoa dute |
+| Sistema | IP / URL | Portua | Erabiltzailea | Pasahitza | Konexio Komandoa / Metodoa |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **OPNsense 25.7** | `https://192.168.10.1` | TCP `443` | `root` | `opnsense` | Nabigatzailea (LANetik) |
+| **Windows Server 2025** | `192.168.10.19` | TCP `3389` / `22` | `WIN-U1CN1H8S33S\Administrador` | `2MG31taldea` | `mstsc` (RDP) / `ssh Administrador@192.168.10.19` |
+| **MySQL 8.4 (`jatetxea_db`)** | `192.168.10.19` | TCP `3306` | `root` / `jatetxea_user` | `2MG32026` / `Jatetxea2026!` | `jatetxea_user` soilik `192.168.20.10`-etik baimendua |
+| **Ubuntu Server DMZ** | `192.168.20.10` | TCP `22` | `taldea1` | `1Taldea1` | `ssh taldea1@192.168.20.10` |
+| **Web Publikoa (Apache/PHP 8.4)** | `http://192.168.20.10` / `http://192.168.115.159` | TCP `80` | — | — | Docker `jatetxea_web_dmz` (LAN eta WAN NAT) |
+| **REST API (.NET 10)** | `http://192.168.20.10:5050` / `http://192.168.115.159:5050` | TCP `5050` | `anderu` (PIN `0001`) | `Admin1234!` | Docker `jatetxea_api_dmz` (LAN eta WAN NAT) |
+| **Cisco SG200-50** | `http://192.168.1.254` | TCP `80/443` | `cisco` | `cisco` | Nabigatzailea (VLAN 1 atakatik) |
+
+---
+
+## 4. OPNsense Suebaki-Arauak eta NAT Publikoa (Aplikatuta)
+
+| Interfazea | Ordena | Ekintza | Protokoloa | Jatorria (Source) | Helburua (Destination) | Deskribapena |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **OPT1 (DMZ)** | 1 | **PASS** | `IPv4 TCP` | `192.168.20.10/32` | `192.168.10.19/32 : 3306` | `Baimendu DMZ API -> LAN MySQL (3306)` |
+| **OPT1 (DMZ)** | 2 | **BLOCK** | `IPv4 *` | `OPT1 net` | `LAN net` | `Blokeatu DMZ -> LAN` (gainerako LAN osoa blokeatuta) |
+| **OPT1 (DMZ)** | 3 | **PASS** | `IPv4 *` | `OPT1 net` | `* (any)` | `Baimendu DMZ -> Internet` (eguneraketak/Docker) |
+| **LAN** | 1 | **PASS** | `IPv4 *` | `LAN net` | `* (any)` | `Default allow LAN to any` (LAN -> DMZ eta Internet) |
+| **WAN (NAT)** | 1 | **PORT FWD** | `IPv4 TCP` | `*` | `WAN address : 80` -> `192.168.20.10:80` | `Web Publikoa DMZ (80)` |
+| **WAN (NAT)** | 2 | **PORT FWD** | `IPv4 TCP` | `*` | `WAN address : 5050` -> `192.168.20.10:5050` | `REST API DMZ (5050)` |
+
+---
+
+## 5. Erabilitako Konfigurazio Komandoak (Erreferentzia)
+
+### 5.1. Windows Server 2025 (PowerShell)
+```powershell
+netsh interface ip set address name="Ethernet" static 192.168.10.19 255.255.255.0 192.168.10.1
+netsh interface ip set dns name="Ethernet" static 192.168.10.1
+net user Administrador 2MG31taldea
+```
+
+### 5.2. Ubuntu Server DMZ (`/etc/netplan/00-installer-config.yaml`)
+```bash
+sudo tee /etc/netplan/00-installer-config.yaml << 'EOF'
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      addresses:
+        - 192.168.20.10/24
+      routes:
+        - to: default
+          via: 192.168.20.1
+      nameservers:
+        addresses: [1.1.1.1, 192.168.20.1]
+EOF
+sudo chmod 600 /etc/netplan/00-installer-config.yaml
+sudo netplan apply
+sudo systemctl enable --now ssh
+```
+
+### 5.3. Admin / Taldekideen Portatila (Windows PowerShell Administratzailea)
+```powershell
+# LAN IPa gehitu eta DMZ (192.168.20.0/24) OPNsense-ra bideratu
+netsh interface ip add address name="Ethernet 5" 192.168.10.99 255.255.255.0
+route add 192.168.20.0 mask 255.255.255.0 192.168.10.1
+
+# Amaitzean DHCP automatikora itzultzeko:
+netsh interface ip set address name="Ethernet 5" dhcp
+netsh interface ip set dns name="Ethernet 5" dhcp
+```

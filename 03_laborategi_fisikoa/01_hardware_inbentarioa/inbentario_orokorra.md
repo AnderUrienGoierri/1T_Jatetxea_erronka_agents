@@ -1,61 +1,53 @@
 # Hardware Inbentario Fisikoa - Goierri Eskola Laborategia
 
-Jatetxearen azpiegitura erreala laborategian muntatzeko erabiliko diren gailu fisikoen fitxa teknikoa.
+Jatetxearen azpiegitura erreala laborategian muntatzeko erabilitako eta egiaztatutako gailu fisikoen fitxa teknikoa.
 
 ---
 
-## 1. Sareko Ekipamendua (Networking)
+## 1. Sareko Ekipamendua (Networking — Muntatuta eta Aktibo)
 
 ### 1.1. Suebaki / Bideratzaile Nagusia (Firewall / Router)
-- **Gailua:** OPNsense Hardware Appliance / Mini PC dedikatua (edo PC dorre 3 NIC txartelekin).
-- **Interfaze Fisikoak:**
-  - `NIC 1 (WAN)`: Goierri Eskolako laborategiko sare nagusira (DHCP bidez Interneteko sarbidea).
-  - `NIC 2 (LAN/DMZ Trunk)`: 802.1Q trunk kablea Cisco Switch-eko GigabitEthernet 0/1 portura.
-  - `NIC 3 (Kudeaketa Zuzena / Failover)`: Larrialdietarako konexio zuzena (192.168.1.1).
-- **Sistema Eragilea:** OPNsense 24.x / FreeBSD 14.
+- **Ostalari-izena:** `OPNsense.internal`
+- **Sistema Eragilea:** `OPNsense 25.7 (amd64)` / `FreeBSD 14.3-RELEASE-p1`
+- **Interfaze Fisikoak (3 NIC independente rack-eko switch-era):**
+  - `WAN (re2)`: `192.168.115.159/24` (DHCP Goierri Eskolatik) | MAC: `00-18-e7-16-65-0c` (Cameo Communications) -> **VLAN 30 (WAN)**
+  - `LAN (re1)`: `192.168.10.1/24` (Estatikoa, Gateway LAN) | MAC: `bc-ee-7b-77-22-ec` (ASUSTek) -> **VLAN 10 (LAN)**
+  - `OPT1 (re0)`: `192.168.20.1/24` (Estatikoa, Gateway DMZ) | MAC: `00-e0-ff-68-0f-ff` (Security Dynamics) -> **VLAN 20 (DMZ)**
 
-### 1.2. Kommutadore Kudeatua (Managed Switch)
-- **Eredua:** Cisco Catalyst 2960-X / 2960-Plus (24 edo 48 portu 10/100/1000 + 2 SFP).
-- **Funtzioak:**
-  - IEEE 802.1Q VLAN Trunking.
-  - Port Security (MAC helbideen iragazketa eraso fisikoak ekiditeko).
-  - Spanning Tree Protocol (STP / Rapid-PVST+) bukleak saihesteko.
-  - DHCP Snooping eta Dynamic ARP Inspection (DAI) spoofing ekiditeko.
+### 1.2. Mahai Gaineko Kommutadorea (1. Switch-a)
+- **Eredua:** **Cisco SG200-50** (*50-Port Gigabit Smart Switch*)
+- **Kudeaketa:** WebGUI bakarrik (ez du SSH/CLIrik). IP lehenetsia: `192.168.1.254` (VLAN 1), kredentzialak `cisco` / `cisco`.
+- **Etiketatutako Portu-Taldeak:**
+  - `LAN`: Ezkerreko blokea (1–6 / 25–30) -> **VLAN 10** (Admin eta taldekideen portatilak).
+  - `DMZ`: Erdiko blokea (7–12 / 31–36) -> **VLAN 20**.
+  - `WAN`: Eskuineko blokea (13–20 / 37–43) -> **VLAN 30** (Pareteko Ethernet hartunerako lotura).
 
-### 1.3. Haririk gabeko Sarbide-Puntua (Wireless Access Point)
-- **Eredua:** Cisco Aironet / Ubiquiti UniFi AP / TP-Link Omada EAP (VLAN gaitasuna duena).
-- **SSID-ak:**
-  - `Jatetxea_Langileak`: WPA2/WPA3 Enterprise (edo PSK sendoa), VLAN 10-era bideratua. Zerbitzarien PDA eta tabletentzat.
-  - `Jatetxea_Bezeroak`: WPA2/WPA3 Personal (edo Open Captive Portal), VLAN 30 (Guest). DMZ edo Internetera soilik baimendua, LAN sarbiderik gabe.
+### 1.3. Gelako Rack-eko Kommutadorea (2. Switch-a)
+- **Kokapena:** Gelako rack-ean (`SW`).
+- **Funtzioa:** Goierri Eskolako switch nagusia (`SW Goierri`), pareteko hartunea, OPNsense-ren 3 NICak, Windows Server 2025 (LAN) eta Ubuntu Server (DMZ) elkarlotzen ditu VLAN bidez (`VLAN 10`, `VLAN 20`, `VLAN 30` eta `Trunk`).
 
----
-
-## 2. Zerbitzariak eta Lanpostu Fisikoak (Compute Endpoints)
-
-| Gailu Zenbakia | Rola Jatetxean | OS / Software Nagusia | Sare Portua (Switch) | IP Fisikoa |
-| :--- | :--- | :--- | :--- | :--- |
-| **PC-01 (LAN Server)** | Windows Server 2025: AD, DNS, DHCP, MySQL DB, .NET API | Windows Server 2025 Standard | FastEthernet 0/2 (VLAN 10) | `192.168.10.10` |
-| **PC-02 (DMZ Server)** | Web Zerbitzaria (Apache, PHP 8.2 web ataria) | Ubuntu Server 24.04 LTS | FastEthernet 0/10 (VLAN 20) | `192.168.20.10` |
-| **PC-03 (TPV Kutxa)** | Barrako Kutxa / TPV (C# WinForms TPV aplikazioa) | Windows 11 Pro | FastEthernet 0/3 (VLAN 10) | `192.168.10.30` |
-| **PC-04 (Sukaldea KDS)** | Sukaldeko Pantaila (JavaFX KDS aplikazioa) | Ubuntu / Windows 11 | FastEthernet 0/4 (VLAN 10) | `192.168.10.40` |
-| **PC-05 (Kudeaketa/Admin)** | Sistemen administratzailearen lanpostua | Windows / Linux | FastEthernet 0/24 (VLAN 99) | `192.168.99.10` |
+### 1.4. Goierri Eskolako Sare Nagusia (Uplink)
+- **Gateway / DHCP:** `192.168.115.254` | MAC: `00-09-0f-09-00-0d` (Fortinet).
 
 ---
 
-## 3. Jatetxeko Hardware Berezia eta Periferikoak
+## 2. Zerbitzariak eta Lanpostuak (Egiaztatutakoak)
 
-### 3.1. Ticket Inprimagailu Termikoa (POS Printer)
-- **Mota:** 80mm ESC/POS inprimagailu termikoa (Epson TM-T20III edo antzekoa).
-- **Konexioa:** Ethernet (IP finkoa LANean) edo USB konexio zuzena PC-03 TPV kutxara.
-- **Inprimatze funtzioa:** C# WinForms eta Flutter Bezeroak sortutako ESC/POS formatuko tiketak inprimatzea ordainketa burutzean.
+| Ekipoa / Hostname | Rola Laborategian | Sistema Eragilea | Interfazea / MAC | VLAN / Sarea | IP Fisikoa |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`WIN-U1CN1H8S33S`** (MiniPC Rack) | Barne Zerbitzaria (AD, DNS, DB, .NET API, RDP) | Windows Server 2025 (ES) | `Ethernet` (`00-e0-4c-43-24-63`, Realtek) | VLAN 10 (`LAN`) | `192.168.10.19/24` |
+| **`1taldea-dmz`** (Rack) | DMZ Web Zerbitzaria (SSH aktibo, Apache/PHP) | Ubuntu Server 26.04.1 LTS (Linux 7.0.0) | `enp1s0` (`00-e0-4c-22-a0-9c`)<br>`wlp2s0` (`f4-3c-3b-b4-99-5f`, DOWN) | VLAN 20 (`DMZ`) | `192.168.20.10/24` |
+| **`ANDER-SGB5PRO`** (Admin Portatila) | Kudeaketa eta Garapen Lanpostua | Windows 11 | `Ethernet 5` — Realtek USB GbE #3 (`34-99-71-E4-43-ED`, 1 Gbps) | VLAN 10 (`LAN`) | `192.168.10.99/24` |
+| **Taldekideen Portatilak** | Garapen eta Proba Lanpostuak | Windows / Linux | Ethernet (Cisco SG200-50 `LAN` atakak) | VLAN 10 (`LAN`) | `192.168.10.101 - .109` |
 
-### 3.2. PDA / Tableta Mugikorrak (Zerbitzariak eta Bezeroak)
-- **Gailu Erreala:** Samsung Galaxy (ADB bidez konektatutako probako gailua: `RZGL4074D2A`).
-- **Aplikazioak instalatuta:**
-  - `mobile_zerbitzaria.apk`: Mahaiak ireki, eskaerak hartu, egoerak ikusi.
-  - `mobile_bezeroa.apk`: Menua ikusi, mahaiak erreserbatu, norberak ordaindu.
-- **Konexioa:** `Jatetxea_Langileak` WiFi sarera (VLAN 10).
+---
 
-### 3.3. Sukaldeko TV Pantaila (KDS Display)
-- **Gailua:** HDMI telebista / monitore handia sukaldeko horman.
-- **Konexioa:** PC-04-ren HDMI irteeratik, edo Android TV Box bat WiFi bidez Nginx KDS atarira konektatua (`http://192.168.10.10:8086`).
+## 3. Hurrengo Fasea: Jatetxeko Hardware Berezia eta Periferikoak (Aurreikusitakoak)
+
+| Gailua | Rola Jatetxean | Konexioa / VLAN | Aurreikusitako IPa |
+| :--- | :--- | :--- | :--- |
+| **WiFi Access Point (AP)** | `Jatetxea_Langileak` (VLAN 10) / `Jatetxea_Bezeroak` (Guest) | Trunk / PoE | — |
+| **TPV Kutxa (PC-03)** | Barrako Kutxa (C# WinForms TPV) | VLAN 10 (`LAN`) | `192.168.10.30` |
+| **Sukaldeko KDS (PC-04 / TV)** | Sukaldeko Pantaila (JavaFX / Nginx KDS) | VLAN 10 (`LAN`) | `192.168.10.40` |
+| **Ticket Inprimagailu Termikoa** | 80mm ESC/POS tiketak | VLAN 10 (`LAN`) / USB | `192.168.10.50` |
+| **PDA / Mugikorra (Samsung)** | `mobile_zerbitzaria.apk` / `mobile_bezeroa.apk` (`RZGL4074D2A`) | WiFi VLAN 10 | DHCP |

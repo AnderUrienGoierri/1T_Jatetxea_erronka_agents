@@ -1,61 +1,67 @@
-# Rack Diseinua eta Kableatu Egituratua - Goierri Eskola Laborategia
+# Rack Diseinua, Switch-ak eta Kableatu Egituratua - Goierri Eskola Laborategia
 
-Fisikoki laborategian muntatuko den rack-aren banaketa, patch panelen esleipena eta kableatuaren kolore-kodeen araudia.
+Laborategian benetan muntatuta dagoen kableatuaren, bi switch-en (mahai gainekoa eta rack-ekoa), pareteko hartunearen eta zerbitzarien arteko lotura fisikoen dokumentazio zehatza.
 
 ---
 
-## 1. Rack-aren Unitateen Banaketa (19" Rack - 12U/24U)
+## 1. Kableatu Fisikoaren Katea (End-to-End)
 
 ```text
-+--------------------------------------------------------------+
-| U12: Pasaharra / PDU (Kableen kudeatzailea)                 |
-+--------------------------------------------------------------+
-| U11: OPNsense Firewall Hardware / Router Nagusia             |
-+--------------------------------------------------------------+
-| U10: Pasaharra horizontal (Kable antolatzailea)              |
-+--------------------------------------------------------------+
-| U09: Cisco Catalyst 2960 Kudeatutako Switch-a                |
-+--------------------------------------------------------------+
-| U08: Patch Panel Nagusia (24 portu RJ45 Cat 6)               |
-+--------------------------------------------------------------+
-| U07: Pasaharra horizontal                                    |
-+--------------------------------------------------------------+
-| U05-U06: Apalategia / Shelf (Mini PCak / NUCak)              |
-|          - PC 2: Ubuntu Server (DMZ)                         |
-|          - WiFi PoE Injektorea                               |
-+--------------------------------------------------------------+
-| U01-U04: Dorrea / Zerbitzari Nagusia                         |
-|          - PC 1: Windows Server 2025 (LAN Core)              |
-|          - UPS / SAI (Elikatze-iturri etengabea)             |
-+--------------------------------------------------------------+
+[ Goierri Eskola: SW Goierri (Fortinet 192.168.115.254) ]
+                        |
+         (Uplink Kablea -> VLAN 30 / WAN)
+                        v
++---------------------------------------------------------------+
+| GELAKO RACK-A (2. Switch-a: SW + Zerbitzariak + OPNsense)     |
+|                                                               |
+|  [ Rack Switch (SW) ]                                         |
+|    ├── VLAN 30 (WAN) ───> OPNsense WAN (re2: 192.168.115.159) |
+|    ├── VLAN 10 (LAN) ───> OPNsense LAN (re1: 192.168.10.1)    |
+|    ├── VLAN 10 (LAN) ───> Windows Server 2025 (192.168.10.19) |
+|    ├── VLAN 20 (DMZ) ───> OPNsense OPT1 (re0: 192.168.20.1)   |
+|    ├── VLAN 20 (DMZ) ───> Ubuntu Server DMZ (192.168.20.10)   |
+|    └── Gelako Kableatu Egituratua (Pareteko Hartunera)        |
++---------------------------------------------------------------+
+                        |
+          (Pareteko Ethernet Hartunea - Hembra)
+                        |
+              (Kable Beltza Cat 6)
+                        v
++---------------------------------------------------------------+
+| MAHAI GAINEKO SWITCH-A (1. Switch-a: Cisco SG200-50)          |
+|   ├── LAN  (1–6 / 25–30)  ──> Portu 1 (Kable Urdina): Admin   |
+|   │                           Portuak 2–6: Taldekideak        |
+|   ├── DMZ  (7–12 / 31–36) ──> VLAN 20 (erreserban)            |
+|   └── WAN  (13–20 / 37–43)──> Portu 18/42 (Kable Beltza):     |
+|                               Pareteko Ethernet Hartunea      |
++---------------------------------------------------------------+
 ```
 
 ---
 
-## 2. Kableatuaren Kolore-Kodeak (TIA/EIA-568-B Araua)
+## 2. Erabilitako Kableak eta Portuen Esleipena
 
-Laborategian bisualki erraz identifikatu eta akatsak saihesteko, kable koloreen estandarra finkatu da:
-
-| Kolorea | Erabilera / VLAN | Deskribapena |
-| :--- | :--- | :--- |
-| **Horia** | WAN / Uplink | Interneteko sarbidea (Eskolako saretik OPNsensera) |
-| **Gorria** | 802.1Q Trunk | OPNsense eta Cisco Switch arteko trunking nagusia |
-| **Urdina** | VLAN 10 (LAN) | Barne zerbitzariak, TPV kutxa, Sukaldeko KDS |
-| **Laranja** | VLAN 20 (DMZ) | Ubuntu Web zerbitzaria (Apache / PHP) |
-| **Berdea** | VLAN 30 (WiFi/Guest)| Haririk gabeko Access Point-era doan lotura |
-| **Grisa** | VLAN 99 (Kudeaketa)| Kontsolako kableak eta kudeaketa ataka dedikatuak |
+| Lotura / Kablea | Jatorria | Helburua | Kable Mota / Kolorea | VLAN / Sarea |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin Portatila -> Mahaiko SW** | `ANDER-SGB5PRO` (`Ethernet 5`, USB-GbE) | Cisco SG200-50 **Portu 1 (`LAN`)** | Cat 5e/6 **Urdina** | VLAN 10 (`LAN`) |
+| **Mahaiko SW -> Pareteko Hartunea** | Cisco SG200-50 **WAN taldea (Portu 18/42)** | Pareteko Ethernet Hembra | Cat 6 **Beltza** (`KabelDirekt`) | Uplink / Gelako sarea |
+| **Pareteko Hartunea -> Rack SW** | Pareteko kableatu egituratua | Gelako Rack-eko Switch-a (`SW`) | Kableatu egituratua | Gelako lotura |
+| **Eskola -> Rack SW** | Goierri Eskola (`SW Goierri`) | Rack Switch (`VLAN 30` taldea) | Ethernet Uplink | VLAN 30 (`WAN`) |
+| **Rack SW -> OPNsense WAN** | Rack Switch (`VLAN 30` taldea) | OPNsense `re2` (`WAN`) | Ethernet | VLAN 30 (`192.168.115.159`) |
+| **Rack SW -> OPNsense LAN** | Rack Switch (`VLAN 10` taldea) | OPNsense `re1` (`LAN`) | Ethernet | VLAN 10 (`192.168.10.1`) |
+| **Rack SW -> OPNsense OPT1** | Rack Switch (`VLAN 20` taldea) | OPNsense `re0` (`OPT1/DMZ`) | Ethernet | VLAN 20 (`192.168.20.1`) |
+| **Rack SW -> Windows Server** | Rack Switch (`VLAN 10` taldea) | `WIN-U1CN1H8S33S` (`Ethernet`) | Ethernet | VLAN 10 (`192.168.10.19`) |
+| **Rack SW -> Ubuntu Server** | Rack Switch (`VLAN 20` taldea) | `1taldea-dmz` (`enp1s0`) | Ethernet | VLAN 20 (`192.168.20.10`) |
 
 ---
 
-## 3. Patch Panel Portuen Esleipen Matrizea
+## 3. Arbeleko Kolore-Kodea eta Switch Etiketak (`irudiak/sareak.png`)
 
-| Patch Portua | Konektatutako Ekipoa | Switch Portua | VLAN Esleitua |
-| :--- | :--- | :--- | :--- |
-| **P-01** | OPNsense LAN NIC (Trunk) | GigabitEthernet 0/1 | Trunk (VLAN 10,20,30,99) |
-| **P-02** | Windows Server 2025 (NIC 1) | FastEthernet 0/1 | VLAN 10 (LAN) |
-| **P-03** | TPV Kutxa (Barra) | FastEthernet 0/2 | VLAN 10 (LAN) |
-| **P-04** | Sukaldeko KDS Pantaila | FastEthernet 0/3 | VLAN 10 (LAN) |
-| **P-05** | Ticket Inprimagailu Ethernet | FastEthernet 0/4 | VLAN 10 (LAN) |
-| **P-09** | Ubuntu Server (DMZ Apache) | FastEthernet 0/9 | VLAN 20 (DMZ) |
-| **P-17** | WiFi Access Point (PoE) | FastEthernet 0/17 | Trunk (VLAN 10,30) |
-| **P-24** | Kudeaketa Lanpostua (Admin) | FastEthernet 0/24 | VLAN 99 (Kudeaketa) |
+Laborategian erabilitako benetako VLAN eta kolore-banaketa:
+
+| Eremua | VLAN ID | Azpisarea | Etiketa (Cisco SG200-50) | Funtzioa |
+| :--- | :--- | :--- | :--- | :--- |
+| **LAN** | `VLAN 10` | `192.168.10.0/24` | `LAN` (ezkerreko portuak) | Windows Server 2025, OPNsense WebGUI, Admin/Taldekideak |
+| **DMZ** | `VLAN 20` | `192.168.20.0/24` | `DMZ` (erdiko portuak) | Ubuntu Server (`1taldea-dmz`) web zerbitzari isolatua |
+| **WAN** | `VLAN 30` | `192.168.115.0/24` | `WAN` (eskuineko portuak) | Goierri Eskolako sare nagusia eta Interneterako irteera |
+| **Trunk** | `802.1Q` | — | Rack Switch Trunk portua | Switch arteko VLAN trafiko etiketatua |

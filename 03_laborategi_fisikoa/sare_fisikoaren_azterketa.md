@@ -1,12 +1,10 @@
 # Sare Fisikoaren Azterketa Osoa eta Topologia Dokumentazioa
 
-Dokumentu honek Goierri Eskolako laborategi fisikoan une honetan muntatuta dagoen sare-azpiegitura errealaren azterketa teknikoa, gailuen inbentarioa, helbideratzea, trafiko-fluxuak eta arkitektura-diagrama profesionala jasotzen ditu.
+Dokumentu honek Goierri Eskolako laborategi fisikoan eraikitako eta egiaztatutako sare-azpiegitura osoaren arkitektura, kableatua, helbideratzea, suebaki-arauak, sarbide-kredentzialak eta urruneko kudeaketa gida jasotzen ditu.
 
 ---
 
-## 1. Sarearen Topologia Diagrama Profesionala
-
-Ondorengo diagramak konektibitate fisiko osoa (kableatua eta switch-ak) zein logikoa (VLANak, IP azpisareak eta bideratzea) erakusten ditu:
+## 1. Sarearen Topologia Diagrama Profesionala (Egoera Erreala)
 
 ```mermaid
 flowchart TB
@@ -21,29 +19,31 @@ flowchart TB
     end
 
     %% Mahai Gaineko Lanpostua
-    subgraph MAHAIA["Mahai Gaineko Lanpostua (WAN Bezeroa)"]
+    subgraph MAHAIA["Mahai Gaineko Eremua (Lanpostuak eta Switch-a)"]
         direction TB
-        LAPTOP["Portatila: ANDER-SGB5PRO\nNIC: Realtek USB GbE #3 (1 Gbps)\nIP: 192.168.115.158/24 (DHCP)\nMAC: 34-99-71-E4-43-ED"]
-        SW_DESK["1. Switch-a (Mahai Gaineko Switch-a)"]
+        LAPTOP["Admin Portatila: ANDER-SGB5PRO\nNIC: Realtek USB GbE #3 (1 Gbps)\nIP: 192.168.10.99/24 (LAN) + Ruta 192.168.20.0/24\nMAC: 34-99-71-E4-43-ED"]
+        TEAM["Taldekideen Portatilak\n192.168.10.101 - .109/24 (LAN)"]
+        SW_DESK["1. Switch-a: Cisco SG200-50 (50-Port Smart Switch)\nEtiketak: LAN (1-6) | DMZ (7-12) | WAN (13-20)"]
         WALL["Pareteko Ethernet Hartunea (Hembra)"]
-        LAPTOP <-- "Ethernet Kablea" --> SW_DESK
-        SW_DESK <-- "Ethernet Kablea" --> WALL
+        LAPTOP <-- "Kable Urdina (Portu 1 - LAN)" --> SW_DESK
+        TEAM <-- "LAN Portuak (2-6)" --> SW_DESK
+        SW_DESK <-- "Kable Beltza (WAN / Uplink)" --> WALL
     end
 
     %% Gelako Rack-a
     subgraph RACK["Gelako Rack-a (1T Jatetxea Laborategia)"]
         direction TB
-        SW_RACK["2. Switch-a (Gelako Rack-eko Switch-a)\nVLAN 30: WAN | VLAN 10: LAN | VLAN 20: DMZ | Trunk"]
+        SW_RACK["2. Switch-a (Gelako Rack-eko Switch-a)\nVLAN 10: LAN | VLAN 20: DMZ | VLAN 30: WAN | Trunk"]
 
-        subgraph OPN["OPNsense Suebakia / Bideratzailea (OPNsense 25.7 amd64)"]
+        subgraph OPN["OPNsense 25.7 (amd64) - OPNsense.internal"]
             direction LR
             OPN_WAN["WAN (re2)\n192.168.115.159/24\nMAC: 00-18-e7-16-65-0c"]
-            OPN_LAN["LAN (re1)\n192.168.10.1/24"]
-            OPN_OPT1["OPT1 / DMZ (re0)\n192.168.20.1/24"]
+            OPN_LAN["LAN (re1)\n192.168.10.1/24\nMAC: bc-ee-7b-77-22-ec"]
+            OPN_OPT1["OPT1 / DMZ (re0)\n192.168.20.1/24\nMAC: 00-e0-ff-68-0f-ff"]
         end
 
-        WIN["Windows Server 2025\nVLAN 10 (LAN: 192.168.10.0/24)\nAD / DNS / DB / API"]
-        UBU["Ubuntu Server\nVLAN 20 (DMZ: 192.168.20.0/24)\nWeb Zerbitzaria"]
+        WIN["Windows Server 2025 (WIN-U1CN1H8S33S)\nIP: 192.168.10.19/24 | GW: 192.168.10.1\nMAC: 00-e0-4c-43-24-63 | RDP: TCP 3389"]
+        UBU["Ubuntu Server 26.04.1 LTS (1taldea-dmz)\nIP: 192.168.20.10/24 | GW: 192.168.20.1\nMAC: 00-e0-4c-22-a0-9c | SSH: TCP 22"]
 
         SW_RACK <-- "VLAN 30 (WAN)" --> OPN_WAN
         SW_RACK <-- "VLAN 10 (LAN)" --> OPN_LAN
@@ -59,70 +59,79 @@ flowchart TB
 
 ---
 
-## 2. Geruza Fisikoaren eta Loturaren Azterketa (L1 / L2)
+## 2. Sare Logikoa, VLANak eta IP Helbideratzea (Egiaztatua)
 
-Konektibitate fisikoaren ibilbidea bi adar nagusitan banatzen da, gelako rack-eko switch-ean elkartzen direnak:
-
-1. **Portatiletik Rack-era (WAN Sarbidea):**
-   - `ANDER-SGB5PRO` portatila (`Realtek USB GbE Family Controller #3`, **1 Gbps**) Ethernet kable bidez **mahai gaineko lehenengo switch-era** konektatuta dago.
-   - Mahai gaineko switch hori **pareteko Ethernet hartunera (hembra)** konektatuta dago.
-   - Pareteko hartunetik kableatu egituratua **gelako rack-eko switch-era** iristen da (WAN / VLAN 30 portu-taldera).
-2. **Eskolako Saretik Rack-era (Uplink Nagusia):**
-   - Goierri Eskolako switch nagusia (`SW Goierri`) gelako rack-eko switch-eko **WAN (VLAN 30)** ataka-taldera konektatuta dago, laborategiari Interneterako irteera eta `192.168.115.0/24` sareko DHCP zerbitzua emanez.
-3. **Rack Barruko Banaketa (Switch <-> Zerbitzariak eta Suebakia):**
-   - Arbeleko eskemaren (`irudiak/sare_fisikoa.png`) arabera, gelako rack-eko switch-ak **3 portu-talde bereizi** (eta Trunk portu bat) ditu:
-     - **WAN taldea (VLAN 30):** Eskolako Uplink-a, pareteko hartunetik datorren portatila, eta OPNsense-ren `WAN (re2)` interfazea.
-     - **LAN taldea (VLAN 10):** OPNsense-ren `LAN (re1)` interfazea eta **Windows Server 2025**.
-     - **DMZ taldea (VLAN 20):** OPNsense-ren `OPT1 (re0)` interfazea eta **Ubuntu Server**.
+| Segmentua | VLAN ID | Azpisarea | Gateway | Gailu Aktiboak (IP eta MAC) |
+| :--- | :--- | :--- | :--- | :--- |
+| **WAN (Goierri Eskola)** | **VLAN 30** | `192.168.115.0/24` | `192.168.115.254` | • `192.168.115.254` — Fortinet Gateway/DHCP (`00-09-0f-09-00-0d`)<br>• `192.168.115.159` — OPNsense `WAN (re2)` (`00-18-e7-16-65-0c`) |
+| **LAN (Barne Sarea)** | **VLAN 10** | `192.168.10.0/24` | `192.168.10.1` | • `192.168.10.1` — OPNsense `LAN (re1)` (`bc-ee-7b-77-22-ec`)<br>• `192.168.10.19` — Windows Server 2025 `WIN-U1CN1H8S33S` (`00-e0-4c-43-24-63`)<br>• `192.168.10.99` — Admin Portatila `ANDER-SGB5PRO` (`34-99-71-E4-43-ED`) |
+| **DMZ (Zerbitzari Publikoa)** | **VLAN 20** | `192.168.20.0/24` | `192.168.20.1` | • `192.168.20.1` — OPNsense `OPT1 (re0)` (`00-e0-ff-68-0f-ff`)<br>• `192.168.20.10` — Ubuntu Server `1taldea-dmz` (`00-e0-4c-22-a0-9c`) |
 
 ---
 
-## 3. Sare Logikoa eta IP Helbideratzea (L3)
+## 3. Erabiltzaileak, Pasahitzak eta Urruneko Sarbidea
 
-Zuzeneko diagnostikoetatik (`ipconfig`, `arp`, `tracert`) eta OPNsense kontsolako (`irudiak/opnsense.jpg`) zein arbeleko (`irudiak/sareak.png`) datuetatik jasotako helbideratze erreala:
+> [!CAUTION]
+> Laborategi akademiko itxirako kredentzialak dira. Ekoizpenera pasatzean pasahitz guztiak aldatu eta SSH giltzak erabili behar dira.
 
-| Sarea / Segmentua | VLAN ID | Azpisarea (CIDR) | Gateway / Bideratzailea | Gailuak eta IP Helbideak | Egoera / Oharra |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **WAN (Goierri Eskola)** | **VLAN 30** | `192.168.115.0/24` | `192.168.115.254` (Fortinet) | • `192.168.115.158` — Portatila (`ANDER-SGB5PRO`, DHCP)<br>• `192.168.115.159` — OPNsense `WAN (re2)` (DHCP)<br>• `192.168.115.254` — Eskolako Gateway & DHCP | **Aktibo eta egiaztatuta** |
-| **LAN (Barne Sarea)** | **VLAN 10** | `192.168.10.0/24` | `192.168.10.1` (`OPNsense re1`) | • `192.168.10.1` — OPNsense LAN Gateway / DHCP<br>• Windows Server 2025 (DHCP edo `192.168.10.10`) | **Konfiguratuta rack-ean** |
-| **DMZ (Zerbitzari Publikoa)** | **VLAN 20** | `192.168.20.0/24` | `192.168.20.1` (`OPNsense re0`) | • `192.168.20.1` — OPNsense OPT1 Gateway / DHCP<br>• Ubuntu Server (DHCP edo `192.168.20.10`) | **Konfiguratuta rack-ean** |
-
----
-
-## 4. Diagnostiko Errealaren Emaitzak (Portatiletik Egiaztatua)
-
-Portatiletik egindako probek honako egoera erakutsi dute:
-
-- **Portatilaren Interfaze Aktiboa (`Ethernet 5`):**
-  - IPv4: `192.168.115.158` | Azpisare-maskara: `255.255.255.0`
-  - Gateway eta DHCP zerbitzaria: `192.168.115.254`
-  - DNS zerbitzariak: `1.1.1.1`, `1.0.0.1`
-  - Lotura-abiadura: `1 Gbps` | MAC: `34-99-71-E4-43-ED`
-- **ARP Taula (`192.168.115.0/24` domeinuan ikusgai):**
-  - `192.168.115.254` -> `00-09-0f-09-00-0d` (Fortinet — Eskolako Gateway-a; `ping` erantzuna `<1 ms`, 0% galera).
-  - `192.168.115.159` -> `00-18-e7-16-65-0c` (OPNsense WAN interfazea; L2 mailan ARP erantzuten du, baina L3 mailan ICMP `ping`-ak blokeatuta daude OPNsense-ren WAN suebakiaren arau lehenetsiagatik).
-- **Interneterako Bideratzea (`tracert -d 8.8.8.8`):**
-  1. `192.168.115.254` (`<1 ms`) — Goierri Eskolako sare-pasabidea
-  2. `192.168.3.1` (`1 ms`) — Eskolako barne-bideratzailea
-  3. `10.187.3.77` (`2 ms`) — Kanpoko lotura / operadorearen sarea
-  4. `10.143.80.4` (`13 ms`) — Operadorearen core sarea
-  5. `81.45.103.33` (`14–47 ms`) — Internet irteera publikoa
+| Zerbitzua / Ekipoa | Helbidea / Portua | Erabiltzailea | Pasahitza | Oharra |
+| :--- | :--- | :--- | :--- | :--- |
+| **OPNsense WebGUI** | `https://192.168.10.1` (`TCP 443`) | `root` | `opnsense` | LAN (`VLAN 10`) saretik soilik |
+| **Windows Server 2025 (RDP)** | `192.168.10.19` (`TCP 3389`) | `WIN-U1CN1H8S33S\Administrador` | `2MG31taldea` | `mstsc` bidez (*Más opciones > Usar otra cuenta*) |
+| **Ubuntu Server DMZ (SSH)** | `192.168.20.10` (`TCP 22`) | `taldea1` | `1Taldea1` | `ssh taldea1@192.168.20.10` |
+| **Cisco SG200-50 Switch** | `http://192.168.1.254` (`TCP 80/443`) | `cisco` *(lehenetsia)* | `cisco` *(lehenetsia)* | VLAN 1 kudeaketa-atakatik |
 
 ---
 
-## 5. Segurtasun Analisia eta Aurreko Planarekiko Desberdintasunak
+## 4. Aplikatutako Suebaki-Arauak eta Konfigurazioak
 
-### 5.1. Portatilaren Kokapenaren Inplikazioak (WAN Segmentua)
-Portatila `192.168.115.0/24` sarean (WAN) konektatuta dagoenez, **kanpoko sare baten posizio berean** dago OPNsense-rekiko:
-- **Ikusgarritasuna:** Portatilak L2 mailan OPNsense-ren WAN (`192.168.115.159`) eta eskolako gateway-a (`192.168.115.254`) ikusten ditu, eta Internetera irteera zuzena du.
-- **Isolamendua:** OPNsense-k ez du baimenduko WAN-etik (`192.168.115.158`) LAN-era (`192.168.10.0/24`) edo OPNsense WebGUI-ra (`https://192.168.10.1`) zuzenean sartzea, Port Forwarding (NAT) edo WAN arau espliziturik sortzen ez bada.
-- **Kudeaketarako Gomendioa:** OPNsense administratzeko (`https://192.168.10.1`) edo Windows Server 2025-era sartzeko, portatila VLAN 10 (LAN) ataka batera konektatu behar da; DMZ zerbitzuak (Ubuntu Web) probatzeko, berriz, WAN-etik (`192.168.115.159`) NAT bidezko atzipena (80/443 portuak) konfiguratu behar da.
+### 4.1. OPNsense Suebaki-Arauak (`Firewall > Rules > OPT1`)
+1. **1. Araua (Goian — Segurtasuna):** `Block` | `IPv4 *` | `Source: OPT1 net` | `Destination: LAN net` | Deskribapena: `Blokeatu DMZ -> LAN`.
+2. **2. Araua (Behean — Internet):** `Pass` | `IPv4 *` | `Source: OPT1 net` | `Destination: * (any)` | Deskribapena: `Baimendu DMZ -> Internet`.
+3. **LAN (`Firewall > Rules > LAN`):** `Default allow LAN to any` aktibo (LAN-etik DMZ-ra eta Internetera sarbide osoa).
 
-### 5.2. Hasierako Dokumentazioaren eta Muntaketa Errealaren Arteko Aldeak
+### 4.2. Windows Server 2025 (`WIN-U1CN1H8S33S`)
+- Sare estatikoa aplikatuta:
+  ```powershell
+  netsh interface ip set address name="Ethernet" static 192.168.10.19 255.255.255.0 192.168.10.1
+  netsh interface ip set dns name="Ethernet" static 192.168.10.1
+  ```
+- Pasahitza ezarrita: `net user Administrador 2MG31taldea`
+- Egiaztapena: `ping 8.8.8.8` -> `0% perdidos` (`15 ms`).
 
-| Ezaugarria | Hasierako Plana (`01`-`04` karpetak) | Muntaketa Erreala (Rack & Arbelak) |
-| :--- | :--- | :--- |
-| **OPNsense Konexioa** | *Router-on-a-Stick* (Trunk bakarra `Gig0/1`-era) | **3 NIC fisiko bereizi** (`re2` WAN, `re1` LAN, `re0` OPT1/DMZ) |
-| **VLAN 30** | `WIFI_BEZEROAK` (`192.168.30.0/24`) | **WAN / Goierri Eskola** (`192.168.115.0/24`) |
-| **LAN & DMZ IP Banaketa** | IP estatiko finkoak (`.10`, `.20`, `.30`...) | OPNsense-k **DHCP** aktibatuta du LAN (`re1`) eta DMZ (`re0`) sareetarako |
-| **Switch Kudeaketa** | VLAN 99 (`192.168.99.0/24`) | Oraingoz VLAN 10, 20 eta 30 erabiltzen ari dira rack-eko switch-ean |
+### 4.3. Ubuntu Server 26.04.1 LTS (`1taldea-dmz`)
+- `openssh-server` instalatuta eta gaituta (`sudo systemctl enable --now ssh`).
+- Netplan konfigurazioa (`/etc/netplan/00-installer-config.yaml`, `chmod 600`):
+  ```yaml
+  network:
+    version: 2
+    ethernets:
+      enp1s0:
+        dhcp4: false
+        addresses:
+          - 192.168.20.10/24
+        routes:
+          - to: default
+            via: 192.168.20.1
+        nameservers:
+          addresses: [1.1.1.1, 192.168.20.1]
+  ```
+- Egiaztapena: `ifconfig` -> `enp1s0: 192.168.20.10 / 255.255.255.0`.
+
+### 4.4. Admin Portatila (`ANDER-SGB5PRO`) eta Taldekideak
+- Portatilaren `Ethernet 5` konfiguratuta (`192.168.10.99/24` + DMZ ibilbidea):
+  ```powershell
+  route add 192.168.20.0 mask 255.255.255.0 192.168.10.1
+  ```
+- Windows Terminal profila (`Erronka - Ubuntu (SSH)`): `ssh taldea1@192.168.20.10`.
+- Taldekideentzat: mahai gaineko Cisco SG200-50 switch-eko `LAN` ataka libre batera konektatu eta IP estatikoak esleitu (`192.168.10.101`, `.102`, `.103`... maskara `255.255.255.0`, eta DMZ-rako `route add 192.168.20.0 mask 255.255.255.0 192.168.10.1`).
+
+---
+
+## 5. Interneterako Bideratze-Katea (`tracert -d 8.8.8.8`)
+
+1. `192.168.115.254` (`<1 ms`) — Goierri Eskolako Fortinet pasabidea
+2. `192.168.3.1` (`1 ms`) — Eskolako barne-bideratzailea
+3. `10.187.3.77` (`2 ms`) — Operadorearen sarrera-lotura
+4. `10.143.80.4` (`13 ms`) — Operadorearen core sarea
+5. `81.45.103.33` (`14–47 ms`) — Internet irteera publikoa

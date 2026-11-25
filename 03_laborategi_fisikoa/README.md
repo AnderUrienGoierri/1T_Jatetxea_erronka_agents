@@ -1,49 +1,48 @@
 # Goierri Eskola - Laborategi Fisikoa: 1T Jatetxea Muntaketa Erreala
 
-Dokumentu honek Goierri Eskolako zibersegurtasun eta sare laborategian gauzatuko den azpiegitura fisikoaren hedapena zehazten du. Proiektu honek ingurune birtualeko arkitektura (OPNsense, Ubuntu DMZ eta Windows Server LAN) laborategiko ekipo eta kableatu errealetara eramaten du.
+Dokumentu honek Goierri Eskolako zibersegurtasun eta sare laborategian gauzatutako azpiegitura fisikoaren egoera erreala, kableatua, ekipoak, helbideratzea, suebaki-arauak eta sarbide-kredentzialak jasotzen ditu.
 
 ---
 
-## 1. Helburua eta Ikuspegi Orokorra
+## 1. Helburua eta Egungo Egoera (2026-11-25)
 
-Simulazio birtualean (VirtualBox eta Docker bidez) garatutako eta balioztatutako jatetxe-sistema osoa laborategiko ekipo fisikoetan hedatzea:
-- **Router-on-a-Stick eta Segmentazio Fisikoa:** Kudeatutako Cisco switch eta suebaki fisiko baten bidez VLANen trunking-a eta sarbide-portuak konfiguratzea.
-- **Puntu Amaierako Gailu Errealak (Endpoints):**
-  - Zerbitzari fisikoak / Laborategiko PCak.
-  - TPV lanpostu fisikoa (C# WinForms aplikazioa + Ticket inprimagailua).
-  - Sukaldeko pantaila / TV KDS (Android TV edo HDMI pantaila).
-  - PDA / Mugikor errealak zerbitzarientzat (Samsung gailua ADB bidez probatua).
-  - Bezeroen WiFi sarbidea (AP fisikoa) erreserbak eta eskaerak mugikorretik egiteko.
+Ingurune birtualeko arkitektura (OPNsense, Windows Server 2025 LAN eta Ubuntu DMZ) laborategiko hardware errealera eraman da eta **erabat operatibo** dago:
+
+- **OPNsense 25.7 (amd64):** 3 NIC fisiko bereizirekin (`re2` WAN, `re1` LAN, `re0` OPT1/DMZ) bideratzea, NAT eta Zero-Trust segmentazioa kudeatzen.
+- **Windows Server 2025 (`WIN-U1CN1H8S33S`):** VLAN 10 (`192.168.10.19/24`) barne-sarean konektatuta, Interneterako irteerarekin eta RDP bidez kudeagarri.
+- **Ubuntu Server 26.04.1 LTS (`1taldea-dmz`):** VLAN 20 (`192.168.20.10/24`) DMZ sarean isolatuta (LAN blokeatuta, Internet baimenduta), SSH bidez kudeagarri.
+- **Bi Switch Fisiko:** Gelako Rack-eko Switch nagusia (`SW`) eta mahai gaineko **Cisco SG200-50** Smart Switch-a (`LAN`, `DMZ`, `WAN` ataka-taldeekin).
 
 ---
 
 ## 2. Direktorioen Antolaketa
 
 ```text
-laborategi_fisikoa/
-├── README.md                                    # Gida nagusia (fitxategi hau)
-├── 01_hardware_inbentarioa/                     # Ekipo fisikoen fitxa teknikoak eta serialak
+03_laborategi_fisikoa/
+├── README.md                                        # Gida nagusia eta laburpena (fitxategi hau)
+├── sare_fisikoaren_azterketa.md                     # Sare osoaren azterketa, Mermaid diagrama eta diagnostikoa
+├── 01_hardware_inbentarioa/                         # Ekipo fisikoen fitxa teknikoak, MACak eta OSak
 │   └── inbentario_orokorra.md
-├── 02_cisco_packet_tracer/                      # Simulazioa eta gailuen CLI scriptak
-│   ├── README.md                                # Packet Tracer gida eta topologia
-│   └── konfigurazio_scriptak_ios/               # Cisco Switch eta Router konfigurazioak (.cfg / .txt)
-│       ├── switch_cisco_catalyst_konfigurazioa.cfg
-│       └── router_opnsense_interfazeak.txt
-├── 03_kableatu_eta_rack/                        # Kableatua, patch panelak eta rack antolaketa
+├── 02_cisco_packet_tracer/                          # Simulazioa eta Cisco IOS erreferentzia-scriptak
+│   ├── README.md
+│   └── konfigurazio_scriptak_ios/
+│       └── switch_cisco_catalyst_konfigurazioa.cfg
+├── 03_kableatu_eta_rack/                            # Kableatua, switch-ak, portuak eta rack antolaketa
 │   └── rack_eta_kableatu_egituratua.md
-└── 04_ip_eta_vlan_plana/                        # Sare fisikoaren segmentazioa eta segurtasuna
-    └── helbideratze_eta_segmentazio_plana.md
+├── 04_ip_eta_vlan_plana/                            # IP/VLAN plana, suebaki-arauak, komandoak eta kredentzialak
+│   └── helbideratze_eta_segmentazio_plana.md
+└── irudiak/                                         # Arbeleko eskemak eta OPNsense pantaila-argazkiak
 ```
 
 ---
 
-## 3. Ekipoen Banaketa Eremuka (Laborategia vs. Jatetxe Erreala)
+## 3. Muntaketa Errealaren Laburpen Taula
 
-| Eremua | Ekipo Fisikoak | VLAN | Funtzioa |
-| :--- | :--- | :--- | :--- |
-| **Sare Nukleoa (Rack)** | Cisco Catalyst Switch + Suebaki Fisikoa (MiniPC / APU OPNsenserekin) | VLAN 99 (Mgmt), Trunk | Bideratzea, suebakia, VLAN etiketatzea (802.1Q) |
-| **Zerbitzarien Gunea (LAN)** | PC 1 (Windows Server 2025) + PC 2 (Ubuntu Server) | VLAN 10 (LAN), VLAN 20 (DMZ) | Datu-baseak, APIak, Active Directory, Odoo |
-| **Barra eta Kutxa (LAN)** | PC 3 (C# TPV) + Ticket inprimagailu termikoa + Bar-kode irakurgailua | VLAN 10 (LAN) | Mahaiaren kudeaketa, fakturazioa, ordainketak |
-| **Sukaldea (LAN/BDS)** | PC 4 / NUC / Android TV pantaila (JavaFX KDS) | VLAN 10 (LAN) | Plateren prestaketa, sukaldeko eta barrako bistaratzailea |
-| **Jantokia eta Zerbitzariak** | WiFi Access Point 1 (SSID: `Jatetxea_Langileak`) + PDA/Tablet mugikorrak | VLAN 10 (LAN) | Zerbitzarien eskaerak mahaietan hartzeko |
-| **Bezero Publikoak** | WiFi Access Point 2 edo VAP (SSID: `Jatetxea_Bezeroak_Free`) | VLAN 30 (Guest/WiFi) | Karta digitala ikusi, mahaitik eskatu eta ordaindu |
+| Ekipoa / Gailua | Eremua / VLAN | IP Helbidea | Gateway | Sarbidea / Protokoloa |
+| :--- | :--- | :--- | :--- | :--- |
+| **Goierri Eskola Gateway** | WAN (`VLAN 30`) | `192.168.115.254/24` | `192.168.3.1` | Fortinet DHCP / Internet irteera |
+| **OPNsense 25.7 (`OPNsense.internal`)** | WAN (`VLAN 30`) / LAN (`VLAN 10`) / DMZ (`VLAN 20`) | `192.168.115.159` (WAN)<br>`192.168.10.1` (LAN)<br>`192.168.20.1` (OPT1) | `192.168.115.254` | WebGUI: `https://192.168.10.1` (`root` / `opnsense`) |
+| **Windows Server 2025 (`WIN-U1CN1H8S33S`)** | LAN (`VLAN 10`) | `192.168.10.19/24` | `192.168.10.1` | RDP (`3389`): `WIN-U1CN1H8S33S\Administrador` / `2MG31taldea` |
+| **Ubuntu Server 26.04.1 (`1taldea-dmz`)** | DMZ (`VLAN 20`) | `192.168.20.10/24` | `192.168.20.1` | SSH (`22`): `ssh taldea1@192.168.20.10` (`taldea1` / `1Taldea1`) |
+| **Cisco SG200-50 (Mahai Gaineko Switch)** | Kudeaketa (`VLAN 1`) + `VLAN 10/20/30` | `192.168.1.254` *(lehenetsia)* | — | WebGUI (`http://192.168.1.254`, `cisco` / `cisco`) |
+| **Admin Portatila (`ANDER-SGB5PRO`)** | LAN (`VLAN 10`) | `192.168.10.99/24` *(+ ruta `192.168.20.0/24`)* | `192.168.115.254` *(edo `192.168.10.1`)* | OPNsense + RDP + SSH kudeaketa osoa |

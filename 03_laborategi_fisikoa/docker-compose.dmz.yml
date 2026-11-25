@@ -1,0 +1,42 @@
+name: 1T_Jatetxea_DMZ_Fisikoa
+
+services:
+  # 1. C# ASP.NET Core REST API Nagusia (.NET 10) -> Windows Server MySQL (192.168.10.19:3306)
+  jatetxea-api:
+    build:
+      context: ./01_aplikazioak
+      dockerfile: ./../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/api/Dockerfile
+    container_name: jatetxea_api_dmz
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DB_CONNECTION_STRING=Server=192.168.10.19;Port=3306;Database=jatetxea_db;Uid=jatetxea_user;Pwd=Jatetxea2026!;AllowUserVariables=True;
+      - ConnectionStrings__Jatetxea=Server=192.168.10.19;Port=3306;Database=jatetxea_db;Uid=jatetxea_user;Pwd=Jatetxea2026!;AllowUserVariables=True;
+      - ConnectionStrings__JatetxeaRoot=Server=192.168.10.19;Port=3306;Database=jatetxea_db;Uid=jatetxea_user;Pwd=Jatetxea2026!;AllowUserVariables=True;
+    ports:
+      - "5050:5000"
+    networks:
+      - dmz_net
+
+  # 2. Apache 2.4 + PHP 8.4 Web Publikoa (web_php_bezeroak) -> Port 80
+  jatetxea-web:
+    build:
+      context: ./01_aplikazioak/bezeroak/web_php_bezeroak
+      dockerfile: ./../../../02_azpiegitura_birtuala/1T_Jatetxea_Entorno_Birtuala/docker/web/Dockerfile
+    container_name: jatetxea_web_dmz
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./01_aplikazioak/bezeroak/web_php_bezeroak:/var/www/html
+    environment:
+      - API_BASE_URL=http://jatetxea-api:5000/api/v1
+    depends_on:
+      - jatetxea-api
+    networks:
+      - dmz_net
+
+networks:
+  dmz_net:
+    driver: bridge
