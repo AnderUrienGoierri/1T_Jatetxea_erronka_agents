@@ -62,14 +62,15 @@ Grabazioari `REC` eman aurretik, egiaztatu zerrenda hau lehen hartualdian garbi 
 - **Pantailan:** Aplikazioa zuzenean.
 - **Ekintzak pausoz pauso:**
   1. **Maiterekin:** Klikatu **Mahaia 1** → **"Sortu Eskaera Berria"** (`2` pax) → **"Gehitu Platerak Katalogoatik"**.
-  2. Erakutsi Maitek **karta osoa** ikusten duela (`Sarrerakoa`, `Lehena`, `Bigarrena`, `Postrea` + edariak) eta probatu segundo 3z **bilatzailea** (testuz edo mikrofono 🎤 ikonoarekin ahots bidez!). Gehitu 2 plater (`Gildak` + `Idiazabal Gazta`, ikusi stocka eta beheko saski barra animatua) → **"Gehitu Eskaerara"** → sakatu **"Bidali Sukaldera"**.
-  3. Itzuli atzera eta **Saioa Itxi** (goiko ezkerreko ikonoa) → orain sartu **Gorka (`Barrakoa`)** erabiltzailearekin (**PIN `2001`**)!
-  4. Klikatu **Mahaia 1** → seinalatu beheko botoiak **"Edariak"** dioela → sakatu **"Edariak"**.
-  5. **Momentu izarra (`Barra Katalogoa`):** Erakutsi **`BARRA MODUA · Edariak, kafeak, infusioak eta koktailak soilik`** bannerra eta 10 kategoria zehatzak (`Urak`, `Freskagarriak`, `Garagardoak`, `Sagardoak`, `Ardoak`, `Kafeak`, `Infusioak`, `Likoreak`, `Konbinatuak`, `Koktailak`) — **platerik ez da agertzen!** Gehitu `Aperol Spritz` edo `Cappuccino` bat → **"Gehitu Eskaerara"**.
-  6. Sakatu **"Kontua"** (80mm proforma) → **"Kobratu Orain"** → `Eskudirua` fitxan sakatu `50€` (kanbio berdea animatua) → **"KOBRATU ETA TIKETA SORTU"** → erakutsi **Tiket Fiskala** (`.txt` / Inprimatu) eta itxi (`Garbitzen` egoera).
+  2. Erakutsi Maitek **karta osoa** ikusten duela (`Sarrerakoa`, `Lehena`, `Bigarrena`, `Postrea` + edariak) eta probatu segundo 3z **bilatzailea** (testuz edo mikrofono ikonoarekin ahots bidez!). **Gehitu** 2 plater (`Gildak` + `Idiazabal Gazta`, ikusi stocka eta beheko saski barra animatua) → **"Gehitu Eskaerara"**.
+  3. **Ezabatu + Aldatu (CRUD osoa erakusteko!):** `MahaiaXehetasunak`-en sakatu plater bateko **`Ezabatu`** botoi gorria (ezkerrean, `Zerbitzatu`-tik urrunduta — stocka automatikoki leheneratzen da!), eta ondoren sakatu **"Bidali Sukaldera"** (egoera aldaketa).
+  4. Itzuli atzera eta **Saioa Itxi** (goiko ezkerreko ikonoa) → orain sartu **Gorka (`Barrakoa`)** erabiltzailearekin (**PIN `2001`**)!
+  5. Klikatu **Mahaia 1** → seinalatu beheko botoiak **"Edariak"** dioela → sakatu **"Edariak"**.
+  6. **Momentu izarra (`Barra Katalogoa`):** Erakutsi **`BARRA MODUA · Edariak, kafeak, infusioak eta koktailak soilik`** bannerra eta 10 kategoria zehatzak (`Urak`, `Freskagarriak`, `Garagardoak`, `Sagardoak`, `Ardoak`, `Kafeak`, `Infusioak`, `Likoreak`, `Konbinatuak`, `Koktailak`) — **platerik ez da agertzen!** Gehitu `Aperol Spritz` edo `Cappuccino` bat → **"Gehitu Eskaerara"** → sakatu **`Zerbitzatu`** (berdea, eskuinean).
+  7. Sakatu **"Kontua"** (80mm proforma) → **"Kobratu Orain"** → `Eskudirua` fitxan sakatu `50€` (kanbio berdea animatua) → **"KOBRATU ETA TIKETA SORTU"** → erakutsi **Tiket Fiskala** (`.txt` / Inprimatu) eta itxi (`Garbitzen` egoera).
 - **Esateko gidoia:**
-  > _"Maiterekin 1. mahaian eskaera ireki eta bi sarrerako gehitzen ditugu karta osotik, stocka denbora errealean egiaztatuta, eta **Sukaldera bidaltzen** ditugu._
-  > _Orain saioa itxi eta **Gorka barrako zerbitzariarekin** sartuko gara (`2001` PINa). Mahaia berean **Edariak** sakatzean, aplikazioak automatikoki **Barra Modua** aktibatzen du: Gorkak ez ditu sukaldeko platerak ikusten, baizik eta datu-basean zabaldutako **10 kategoria zehatzak** (Urak, Freskagarriak, Garagardoak, Sagardoak, Ardoak, Kafeak, Infusioak, Likoreak, Konbinatuak eta Koktailak). Edari bat gehitu, proforma eta eskudiruko ordainketa kanbioarekin burutu, eta **80mm-ko tiket fiskala** sortzen da."_
+  > _"Maiterekin 1. mahaian eskaera ireki eta bi sarrerako **gehitzen** ditut karta osotik, stocka denbora errealean egiaztatuta. Mahaian bertan plater bat **ezabatu** dezaket sukaldera bidali aurretik (stocka automatikoki itzuliz), eta bestea **Sukaldera bidaltzen** dut._
+  > _Orain saioa itxi eta **Gorka barrako zerbitzariarekin** sartuko naiz (`2001` PINa). Mahaia berean **Edariak** sakatzean, aplikazioak automatikoki **Barra Modua** aktibatzen du: Gorkak ez ditu sukaldeko platerak ikusten, baizik eta datu-basean zabaldutako **10 kategoria zehatzak**. Edari bat gehitu, zuzenean **zerbitzatu**, proforma eta eskudiruko ordainketa kanbioarekin burutu, eta **80mm-ko tiket fiskala** sortzen da."_
 
 ---
 

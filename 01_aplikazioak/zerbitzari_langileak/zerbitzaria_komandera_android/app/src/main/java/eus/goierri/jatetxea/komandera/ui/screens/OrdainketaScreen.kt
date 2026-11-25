@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -896,53 +897,92 @@ fun TiketFiskalaDialog(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Ekintza botoiak: Gorde (.txt), Inprimatu (ESC/POS) eta Itxi
-                Row(
+                // Ekintza botoiak: 1. lerroa (Gorde .txt + Inprimatu 80mm), 2. lerroa (Itxi)
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    OutlinedButton(
-                        onClick = {
-                            gordeTiketaFitxategian(context, ordainketa)
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(8.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(imageVector = Icons.Default.Save, contentDescription = null, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Gorde (.txt)", fontSize = 11.sp)
-                    }
-
-                    Button(
-                        onClick = {
-                            inprimatuHTML(
-                                context = context,
-                                lanIzena = "Tiket_${ordainketa.tiketZenbakia}",
-                                html = sortuTiketHtml(ordainketa)
+                        OutlinedButton(
+                            onClick = {
+                                gordeTiketaFitxategian(context, ordainketa)
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(46.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Save,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
                             )
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF881337)),
-                        modifier = Modifier
-                            .weight(1.3f)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Icon(imageVector = Icons.Default.Print, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Inprimatu (80mm)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Gorde (.txt)",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                softWrap = false,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                inprimatuHTML(
+                                    context = context,
+                                    lanIzena = "Tiket_${ordainketa.tiketZenbakia}",
+                                    html = sortuTiketHtml(ordainketa)
+                                )
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF881337)),
+                            modifier = Modifier
+                                .weight(1.15f)
+                                .height(46.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Print,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Inprimatu (80mm)",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                maxLines = 1,
+                                softWrap = false,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
 
                     Button(
                         onClick = onItxi,
                         colors = ButtonDefaults.buttonColors(containerColor = DarkSurfaceVariant),
                         modifier = Modifier
-                            .weight(0.9f)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(8.dp)
+                            .fillMaxWidth()
+                            .height(46.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
                     ) {
-                        Text("Itxi", fontSize = 12.sp, color = TextPrimary)
+                        Text(
+                            text = "Itxi",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextPrimary,
+                            maxLines = 1,
+                            softWrap = false
+                        )
                     }
                 }
             }

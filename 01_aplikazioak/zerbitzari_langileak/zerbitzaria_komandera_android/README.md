@@ -29,9 +29,20 @@
 
 ## Pantaila-Argazkiak (v2.0 · Warm Hospitality)
 
-| Saio-hasiera (3 Bloke & PIN) | Mahaien Mapa (Maite) | Plater Katalogoa (Ahotsa & Bilaketa) | Barra Modua (Gorka · 10 Kategoria) |
-| :---: | :---: | :---: | :---: |
-| <img src="img/01_login_screen.png" width="210" alt="Login" /> | <img src="img/03_mahaiak_screen.png" width="210" alt="Mahaiak" /> | <img src="img/05_eskaera_maite.png" width="210" alt="Katalogoa" /> | <img src="img/06_barra_gorka.png" width="210" alt="Barra Modua" /> |
+<table width="100%">
+  <tr>
+    <th width="25%" align="center">Saio-hasiera</th>
+    <th width="25%" align="center">Mahaien Mapa</th>
+    <th width="25%" align="center">Plater Katalogoa</th>
+    <th width="25%" align="center">Barra Modua</th>
+  </tr>
+  <tr>
+    <td width="25%" align="center"><img src="img/01_login_screen.png" width="195" alt="Saio-hasiera (3 Bloke & PIN)" /></td>
+    <td width="25%" align="center"><img src="img/03_mahaiak_screen.png" width="195" alt="Mahaien Mapa (Maite)" /></td>
+    <td width="25%" align="center"><img src="img/05_eskaera_maite.png" width="195" alt="Plater Katalogoa (Ahotsa & Bilaketa)" /></td>
+    <td width="25%" align="center"><img src="img/06_barra_gorka.png" width="195" alt="Barra Modua (Gorka · 10 Kategoria)" /></td>
+  </tr>
+</table>
 
 ---
 
