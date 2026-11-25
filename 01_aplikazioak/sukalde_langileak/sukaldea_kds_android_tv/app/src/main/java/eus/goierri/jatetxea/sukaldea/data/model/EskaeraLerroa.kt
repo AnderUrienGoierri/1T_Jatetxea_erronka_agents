@@ -32,4 +32,15 @@ data class EskaeraLerroa(
 
     val isZerbitzatua: Boolean
         get() = egoera.equals("Zerbitzatua", ignoreCase = true)
+
+    val isSukaldekoa: Boolean
+        get() {
+            val kat = (kategoria ?: "").lowercase().trim()
+            val ezSukaldekoak = setOf(
+                "urak", "freskagarriak", "garagardoak", "sagardoak", "ardoak",
+                "kafeak", "infusioak", "likoreak", "konbinatuak", "koktailak",
+                "edariak", "edaria", "kafea", "barra", "bds"
+            )
+            return kat.isNotEmpty() && !ezSukaldekoak.contains(kat)
+        }
 }

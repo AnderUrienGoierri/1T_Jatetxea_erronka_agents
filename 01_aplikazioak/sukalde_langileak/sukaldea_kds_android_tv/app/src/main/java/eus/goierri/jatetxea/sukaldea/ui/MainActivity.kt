@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,16 +36,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eus.goierri.jatetxea.sukaldea.R
 import eus.goierri.jatetxea.sukaldea.data.api.RetrofitClient
 import eus.goierri.jatetxea.sukaldea.ui.components.EskaeraTxartela
 import eus.goierri.jatetxea.sukaldea.ui.components.GoiburuaBarra
-import eus.goierri.jatetxea.sukaldea.ui.theme.DarkBackground
-import eus.goierri.jatetxea.sukaldea.ui.theme.RoseDark
-import eus.goierri.jatetxea.sukaldea.ui.theme.RosePrimary
+import eus.goierri.jatetxea.sukaldea.ui.theme.BurgundyDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.ChiantiDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.EveningEspresso
+import eus.goierri.jatetxea.sukaldea.ui.theme.PlusJakartaSans
 import eus.goierri.jatetxea.sukaldea.ui.theme.SukaldeaKdsTheme
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextMuted
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextPrimary
@@ -64,7 +68,7 @@ class MainActivity : ComponentActivity() {
             SukaldeaKdsTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = DarkBackground
+                    color = EveningEspresso
                 ) {
                     SukaldeaKdsScreen(viewModel)
                 }
@@ -78,36 +82,50 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
     val state by viewModel.uiState.collectAsState()
     var showConfigDialog by remember { mutableStateOf(false) }
 
-    // Filtroaren araberako zerrenda
+    val isHistorialMode = state.unekoFiltroa.equals("Historiala", ignoreCase = true)
+
+    val prestatuaKopurua = state.eskaerak.count { e ->
+        e.egoera.equals("Prestatua", ignoreCase = true) ||
+            (e.lerroak.isNotEmpty() && e.lerroak.all { it.isEginda })
+    }
+
     val filtratuak = when (state.unekoFiltroa.lowercase()) {
-        "sukaldean" -> state.eskaerak.filter { !it.egoera.equals("Prestatua", ignoreCase = true) }
-        "prestatua" -> state.eskaerak.filter { it.egoera.equals("Prestatua", ignoreCase = true) }
+        "sukaldean" -> state.eskaerak.filter { e ->
+            !e.egoera.equals("Prestatua", ignoreCase = true) &&
+                !(e.lerroak.isNotEmpty() && e.lerroak.all { it.isEginda })
+        }
+        "prestatua" -> state.eskaerak.filter { e ->
+            e.egoera.equals("Prestatua", ignoreCase = true) ||
+                (e.lerroak.isNotEmpty() && e.lerroak.all { it.isEginda })
+        }
+        "historiala" -> state.historiala
         else -> state.eskaerak
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // GOIBURUKO BARRA
         GoiburuaBarra(
             isOnline = state.isOnline,
             azkenOrdua = state.azkenFreskatzea,
             eskaeraKopurua = filtratuak.size,
+            prestatuaKopurua = prestatuaKopurua,
+            historialaKopurua = state.historiala.size,
             unekoFiltroa = state.unekoFiltroa,
             serverUrl = state.serverUrl,
             showConfigExternal = showConfigDialog,
             onDismissConfig = { showConfigDialog = false },
             onFiltroAldatu = { viewModel.aldatuFiltroa(it) },
+            onGarbituPrestatutakoak = { viewModel.garbituPrestatutakoak() },
             onFreskatu = { viewModel.kargatuEskaerak() },
             onServerUrlAldatu = { viewModel.aldatuServerUrl(it) }
         )
 
-        // ERRORE BARRUA (Konexio arazorik balego)
         if (state.errorea != null && !state.isOnline) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(RoseDark)
+                    .background(BurgundyDark)
                     .clickable { showConfigDialog = true }
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -115,17 +133,18 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
                     text = "Konexio errorea: ${state.errorea}\nEgiaztatu zerbitzariaren IP-a eta ataka (Docker: 5050 | Zuzenekoa: 5000).",
                     color = Color.White,
                     fontSize = 12.sp,
+                    fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Button(
                     onClick = { showConfigDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = RosePrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = ChiantiDark),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "⚙️ Aldatu Ataka / IP",
+                        text = "Aldatu Ataka / IP",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
@@ -134,22 +153,22 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
             }
         }
 
-        // ESKAEREN ZERRENDA NAGUSIA (HORIZONTAL SCROLL TV REMOTE-RAKO)
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp, bottom = 16.dp),
+                .padding(top = 18.dp, bottom = 18.dp),
             contentAlignment = Alignment.Center
         ) {
             when {
                 state.isLoading && state.eskaerak.isEmpty() -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(color = RosePrimary, strokeWidth = 3.dp)
+                        CircularProgressIndicator(color = ChiantiDark, strokeWidth = 3.dp)
                         Spacer(modifier = Modifier.height(14.dp))
                         Text(
                             text = "Eskaerak kargatzen...",
                             color = TextSecondary,
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
+                            fontFamily = PlusJakartaSans
                         )
                     }
                 }
@@ -159,31 +178,33 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(64.dp)
-                                .background(Color(0xFF1E293B), shape = androidx.compose.foundation.shape.CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "KDS",
-                                color = TextMuted,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_t1_logo_dark),
+                            contentDescription = "T1 Logo",
+                            modifier = Modifier.size(72.dp)
+                        )
                         Spacer(modifier = Modifier.height(14.dp))
                         Text(
-                            text = "Ez dago eskaera aktiborik une honetan.",
+                            text = if (isHistorialMode) {
+                                "Ez dago eskaerarik historialean."
+                            } else {
+                                "Ez dago eskaera aktiborik une honetan."
+                            },
                             color = TextPrimary,
-                            fontSize = 16.sp,
+                            fontSize = 17.sp,
+                            fontFamily = PlusJakartaSans,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Zerbitzariek eskaera berriak sartu ahala hemen agertuko dira automatikoki.",
+                            text = if (isHistorialMode) {
+                                "Garbitutako edo zerbitzatutako eskaerak hemen agertuko dira."
+                            } else {
+                                "Zerbitzariek eskaera berriak sartu ahala hemen agertuko dira automatikoki."
+                            },
                             color = TextMuted,
                             fontSize = 13.sp,
+                            fontFamily = PlusJakartaSans,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -198,11 +219,18 @@ fun SukaldeaKdsScreen(viewModel: SukaldeaViewModel) {
                         items(filtratuak, key = { it.id }) { eskaera ->
                             EskaeraTxartela(
                                 eskaera = eskaera,
+                                isHistorialMode = isHistorialMode,
                                 onMarkatuLerroa = { lerroId ->
                                     viewModel.markatuLerroaEginda(lerroId)
                                 },
                                 onMarkatuEskaera = { eskaeraId ->
                                     viewModel.markatuEskaeraEginda(eskaeraId)
+                                },
+                                onMarkatuZerbitzatua = { eskaeraId ->
+                                    viewModel.markatuEskaeraEginda(eskaeraId, "Zerbitzatua")
+                                },
+                                onBerreskuratu = { eskaeraId ->
+                                    viewModel.berreskuratuEskaera(eskaeraId)
                                 }
                             )
                         }

@@ -20,10 +20,11 @@ import java.util.Locale
 data class SukaldeaUiState(
     val isLoading: Boolean = false,
     val eskaerak: List<Eskaera> = emptyList(),
+    val historiala: List<Eskaera> = emptyList(),
     val isOnline: Boolean = false,
     val errorea: String? = null,
     val azkenFreskatzea: String = "--:--:--",
-    val unekoFiltroa: String = "Guztiak", // "Guztiak", "Sukaldean", "Prestatua"
+    val unekoFiltroa: String = "Guztiak", // "Guztiak", "Sukaldean", "Prestatua", "Historiala"
     val serverUrl: String = RetrofitClient.serverBaseUrl
 )
 
@@ -49,7 +50,7 @@ class SukaldeaViewModel : ViewModel() {
         pollingJob = viewModelScope.launch {
             while (isActive) {
                 kargatuEskaerak()
-                delay(4000) // 4 segundoz behin freskatu automatikoki
+                delay(4000)
             }
         }
     }
@@ -60,24 +61,29 @@ class SukaldeaViewModel : ViewModel() {
                 val erantzuna = RetrofitClient.apiService.lortuEskaerak()
                 val zerrenda = erantzuna.dataList ?: erantzuna.valueList ?: emptyList()
 
-                // Sukaldean interesgarri diren eskaerak soilik: Kobratu/Ezeztatu/Zerbitzatu gabekoak ETA platerak dituztenak
                 val aktiboak = mutableListOf<Eskaera>()
+                val historialaList = mutableListOf<Eskaera>()
+
                 for (e in zerrenda) {
-                    if (!e.egoera.equals("Kobratua", ignoreCase = true) &&
-                        !e.egoera.equals("Ezeztatua", ignoreCase = true) &&
-                        !e.egoera.equals("Zerbitzatua", ignoreCase = true)
+                    if (e.egoera.equals("Ezeztatua", ignoreCase = true)) continue
+
+                    val osoa = try {
+                        val xehe = RetrofitClient.apiService.lortuEskaeraXehetasunak(e.id)
+                        xehe.data ?: e
+                    } catch (_: Exception) {
+                        e
+                    }
+
+                    val sukaldekoLerroak = osoa.lerroak.filter { it.isSukaldekoa }
+                    if (sukaldekoLerroak.isEmpty()) continue
+
+                    val sukaldeEskaera = osoa.copy(lerroak = sukaldekoLerroak)
+                    if (e.egoera.equals("Zerbitzatua", ignoreCase = true) ||
+                        e.egoera.equals("Kobratua", ignoreCase = true)
                     ) {
-                        try {
-                            val xehe = RetrofitClient.apiService.lortuEskaeraXehetasunak(e.id)
-                            val osoa = xehe.data ?: e
-                            if (osoa.lerroak.isNotEmpty()) {
-                                aktiboak.add(osoa)
-                            }
-                        } catch (_: Exception) {
-                            if (e.lerroak.isNotEmpty()) {
-                                aktiboak.add(e)
-                            }
-                        }
+                        historialaList.add(sukaldeEskaera)
+                    } else {
+                        aktiboak.add(sukaldeEskaera)
                     }
                 }
 
@@ -86,6 +92,7 @@ class SukaldeaViewModel : ViewModel() {
                     it.copy(
                         isLoading = false,
                         eskaerak = aktiboak,
+                        historiala = historialaList.sortedByDescending { h -> h.id },
                         isOnline = true,
                         errorea = null,
                         azkenFreskatzea = ordua
@@ -133,6 +140,29 @@ class SukaldeaViewModel : ViewModel() {
                 _uiState.update { it.copy(errorea = "Errorea eskaera eguneratzean: ${ex.message}") }
             }
         }
+    }
+
+    fun garbituPrestatutakoak() {
+        viewModelScope.launch {
+            val prestatuak = _uiState.value.eskaerak.filter { e ->
+                e.egoera.equals("Prestatua", ignoreCase = true) ||
+                    (e.lerroak.isNotEmpty() && e.lerroak.all { it.isEginda })
+            }
+            for (e in prestatuak) {
+                try {
+                    RetrofitClient.apiService.eguneratuEskaeraEgoera(
+                        eskaeraId = e.id,
+                        body = EgoeraUpdateRequest("Zerbitzatua")
+                    )
+                } catch (_: Exception) {
+                }
+            }
+            kargatuEskaerak()
+        }
+    }
+
+    fun berreskuratuEskaera(eskaeraId: Int) {
+        markatuEskaeraEginda(eskaeraId, "Prestatua")
     }
 
     fun ezabatuEskaera(eskaeraId: Int) {

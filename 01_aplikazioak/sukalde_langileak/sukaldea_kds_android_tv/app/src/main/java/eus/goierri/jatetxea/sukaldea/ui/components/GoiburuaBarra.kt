@@ -1,6 +1,7 @@
 package eus.goierri.jatetxea.sukaldea.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,46 +33,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eus.goierri.jatetxea.sukaldea.R
 import eus.goierri.jatetxea.sukaldea.data.api.RetrofitClient
-import eus.goierri.jatetxea.sukaldea.ui.theme.DarkSurface
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldDark
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldLight
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldSuccess
-import eus.goierri.jatetxea.sukaldea.ui.theme.RoseDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.BurgundyDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.CharcoalWine
+import eus.goierri.jatetxea.sukaldea.ui.theme.ChiantiDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.ChiantiTintDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.CinzelFont
+import eus.goierri.jatetxea.sukaldea.ui.theme.DarkHairline
+import eus.goierri.jatetxea.sukaldea.ui.theme.EveningEspresso
+import eus.goierri.jatetxea.sukaldea.ui.theme.GoldBorder
+import eus.goierri.jatetxea.sukaldea.ui.theme.JetBrainsMono
+import eus.goierri.jatetxea.sukaldea.ui.theme.PlusJakartaSans
 import eus.goierri.jatetxea.sukaldea.ui.theme.RoseLight
-import eus.goierri.jatetxea.sukaldea.ui.theme.RosePrimary
-import eus.goierri.jatetxea.sukaldea.ui.theme.SkyInfo
-import eus.goierri.jatetxea.sukaldea.ui.theme.TextMuted
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFree
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFreeBright
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFreeDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusInfoBright
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextPrimary
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextSecondary
+import eus.goierri.jatetxea.sukaldea.ui.theme.WarmGraphite
 
 @Composable
 fun GoiburuaBarra(
     isOnline: Boolean,
     azkenOrdua: String,
     eskaeraKopurua: Int,
+    prestatuaKopurua: Int,
+    historialaKopurua: Int,
     unekoFiltroa: String,
     serverUrl: String,
     showConfigExternal: Boolean = false,
     onDismissConfig: () -> Unit = {},
     onFiltroAldatu: (String) -> Unit,
+    onGarbituPrestatutakoak: () -> Unit,
     onFreskatu: () -> Unit,
     onServerUrlAldatu: (String) -> Unit
 ) {
     var showIpDialog by remember { mutableStateOf(false) }
+    var showClearConfirmDialog by remember { mutableStateOf(false) }
     val shouldShowDialog = showIpDialog || showConfigExternal
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(DarkSurface)
-            .border(width = 1.dp, color = Color(0xFF1E293B))
+            .background(CharcoalWine)
+            .border(width = 1.dp, color = DarkHairline)
             .padding(horizontal = 24.dp, vertical = 14.dp)
     ) {
         Row(
@@ -79,64 +92,74 @@ fun GoiburuaBarra(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Ezkerrean: Titulua eta Ikonoa
+            // Ezkerrean: T1 Logo B eta Marka Titulua (Cinzel)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(RoseDark)
-                        .border(1.dp, RosePrimary, RoundedCornerShape(10.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "KDS",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_t1_logo_dark),
+                    contentDescription = "T1 Jatetxea Logo",
+                    modifier = Modifier.size(46.dp)
+                )
                 Spacer(modifier = Modifier.width(14.dp))
                 Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "T1 JATETXEA · KDS",
+                            color = TextPrimary,
+                            fontSize = 20.sp,
+                            fontFamily = CinzelFont,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.2.sp
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(ChiantiDark)
+                                .padding(horizontal = 10.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = "SUKALDEA TV",
+                                color = Color.White,
+                                fontSize = 10.sp,
+                                fontFamily = PlusJakartaSans,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 0.8.sp
+                            )
+                        }
+                    }
                     Text(
-                        text = "1T JATETXEA · SUKALDEKO KDS PANTAILA",
-                        color = TextPrimary,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 0.5.sp
-                    )
-                    Text(
-                        text = "Goierri Eskola · Android TV Pantaila Interaktiboa",
+                        text = "Osteria & Parrilla · Android TV Pantaila Interaktiboa",
                         color = TextSecondary,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        fontFamily = PlusJakartaSans
                     )
                 }
             }
 
-            // Eskuinean: Konexio Egoera, Freskatze Ordua eta Zerbitzariaren IP
+            // Eskuinean: Konexio Egoera, IP, Erlojua eta Freskatu
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Konexio Badge
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(if (isOnline) EmeraldDark else RoseDark)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(if (isOnline) StatusFreeDark else BurgundyDark)
                         .border(
                             1.dp,
-                            if (isOnline) EmeraldSuccess else RosePrimary,
-                            RoundedCornerShape(8.dp)
+                            if (isOnline) StatusFree else ChiantiDark,
+                            RoundedCornerShape(999.dp)
                         )
                         .clickable { showIpDialog = true }
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(if (isOnline) EmeraldLight else RoseLight)
+                            .background(if (isOnline) StatusFreeBright else RoseLight)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -144,86 +167,210 @@ fun GoiburuaBarra(
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = JetBrainsMono
                     )
                 }
 
-                // IP eta Ataka aldatzeko botoi nabarmena
+                // IP eta Ataka aldatzeko botoia
                 Button(
                     onClick = { showIpDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
-                    border = BorderStroke(1.dp, if (!isOnline) RosePrimary else Color(0xFF334155)),
-                    shape = RoundedCornerShape(8.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = WarmGraphite),
+                    border = BorderStroke(1.dp, if (!isOnline) ChiantiDark else DarkHairline),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
                     Text(
-                        text = "⚙️ $serverUrl",
-                        color = if (!isOnline) RoseLight else SkyInfo,
+                        text = serverUrl,
+                        color = if (!isOnline) RoseLight else GoldBorder,
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = JetBrainsMono,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                // Erloju ordua
-                Text(
-                    text = azkenOrdua,
-                    color = TextMuted,
-                    fontSize = 13.sp,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.SemiBold
-                )
+                // Erloju ordua (Gold JetBrains Mono)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(WarmGraphite)
+                        .border(1.dp, DarkHairline, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = azkenOrdua,
+                        color = GoldBorder,
+                        fontSize = 14.sp,
+                        fontFamily = JetBrainsMono,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 // Freskatu botoia
                 Button(
                     onClick = onFreskatu,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF334155)),
-                    shape = RoundedCornerShape(8.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = WarmGraphite),
+                    border = BorderStroke(1.dp, DarkHairline),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text("Freskatu", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Freskatu",
+                        color = TextPrimary,
+                        fontSize = 12.sp,
+                        fontFamily = PlusJakartaSans,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Behean: Filtro Txipak eta Eskaera Kopurua
+        // Behean: Filtro Txipak (Guztiak, Sukaldean, Prestatua, Historiala) + Garbitu + Kontagailua
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 listOf("Guztiak", "Sukaldean", "Prestatua").forEach { filtro ->
                     val isSelected = unekoFiltroa.equals(filtro, ignoreCase = true)
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(if (isSelected) RosePrimary else Color(0xFF1E293B))
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(if (isSelected) ChiantiDark else WarmGraphite)
                             .border(
                                 1.dp,
-                                if (isSelected) RoseDark else Color(0xFF334155),
-                                RoundedCornerShape(20.dp)
+                                if (isSelected) GoldBorder else DarkHairline,
+                                RoundedCornerShape(999.dp)
                             )
                             .clickable { onFiltroAldatu(filtro) }
-                            .padding(horizontal = 14.dp, vertical = 5.dp)
+                            .padding(horizontal = 16.dp, vertical = 6.dp)
                     ) {
                         Text(
                             text = filtro,
                             color = if (isSelected) Color.White else TextSecondary,
                             fontSize = 12.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                            fontFamily = PlusJakartaSans,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                // HISTORIALA Txip berezia (kontagailuarekin)
+                val isHistoriala = unekoFiltroa.equals("Historiala", ignoreCase = true)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(if (isHistoriala) ChiantiDark else ChiantiTintDark)
+                        .border(
+                            1.dp,
+                            if (isHistoriala) GoldBorder else ChiantiDark,
+                            RoundedCornerShape(999.dp)
+                        )
+                        .clickable { onFiltroAldatu("Historiala") }
+                        .padding(horizontal = 14.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = "Historiala",
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontFamily = PlusJakartaSans,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(GoldBorder)
+                            .padding(horizontal = 7.dp, vertical = 1.dp)
+                    ) {
+                        Text(
+                            text = "$historialaKopurua",
+                            color = EveningEspresso,
+                            fontSize = 11.sp,
+                            fontFamily = JetBrainsMono,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
             }
 
-            Text(
-                text = "$eskaeraKopurua eskaera aktibo",
-                color = SkyInfo,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (prestatuaKopurua > 0 && !unekoFiltroa.equals("Historiala", ignoreCase = true)) {
+                    Button(
+                        onClick = { showClearConfirmDialog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = StatusFree),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Garbitu prestatuak ($prestatuaKopurua)",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontFamily = PlusJakartaSans,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                Text(
+                    text = if (unekoFiltroa.equals("Historiala", ignoreCase = true)) {
+                        "$eskaeraKopurua eskaera historialean"
+                    } else {
+                        "$eskaeraKopurua eskaera aktibo"
+                    },
+                    color = if (unekoFiltroa.equals("Historiala", ignoreCase = true)) StatusInfoBright else GoldBorder,
+                    fontSize = 13.sp,
+                    fontFamily = JetBrainsMono,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
+    }
+
+    if (showClearConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearConfirmDialog = false },
+            containerColor = CharcoalWine,
+            title = {
+                Text(
+                    text = "Prestatutakoak garbitu?",
+                    fontFamily = CinzelFont,
+                    fontWeight = FontWeight.Bold,
+                    color = GoldBorder,
+                    fontSize = 18.sp
+                )
+            },
+            text = {
+                Text(
+                    text = "Prestatuta dauden $prestatuaKopurua eskaerak zerbitzatuta bezala markatu eta 'Historiala' atalera mugituko dira.",
+                    color = TextPrimary,
+                    fontFamily = PlusJakartaSans,
+                    fontSize = 14.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onGarbituPrestatutakoak()
+                        showClearConfirmDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = StatusFree)
+                ) {
+                    Text("Mugitu historialera", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearConfirmDialog = false }) {
+                    Text("Utzi", color = TextSecondary)
+                }
+            }
+        )
     }
 
     if (shouldShowDialog) {
@@ -240,12 +387,14 @@ fun GoiburuaBarra(
                 showIpDialog = false
                 onDismissConfig()
             },
+            containerColor = CharcoalWine,
             title = {
                 Text(
-                    text = "⚙️ Konfiguratu API Zerbitzaria eta Ataka",
+                    text = "Konfiguratu API Zerbitzaria eta Ataka",
+                    fontFamily = CinzelFont,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = TextPrimary
+                    color = GoldBorder
                 )
             },
             text = {
@@ -256,37 +405,36 @@ fun GoiburuaBarra(
                         color = TextSecondary
                     )
 
-                    // 1. Aurre-ezarpen azkarrak (Presets)
-                    Text("Konfigurazio azkarrak:", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = SkyInfo)
+                    Text("Konfigurazio azkarrak:", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = GoldBorder)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Button(
                             onClick = {
-                                host = "172.16.243.102"
+                                host = "10.100.30.112"
                                 portStr = "5050"
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (host == "172.16.243.102" && portStr == "5050") RosePrimary else Color(0xFF1E293B)
+                                containerColor = if (host == "10.100.30.112" && portStr == "5050") ChiantiDark else WarmGraphite
                             ),
-                            shape = RoundedCornerShape(6.dp),
+                            shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("TV · 5050\n(Docker)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                            Text("Innovatek\n5050", fontSize = 11.sp, textAlign = TextAlign.Center)
                         }
                         Button(
                             onClick = {
-                                host = "172.16.243.102"
-                                portStr = "5000"
+                                host = "172.16.243.150"
+                                portStr = "5050"
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (host == "172.16.243.102" && portStr == "5000") RosePrimary else Color(0xFF1E293B)
+                                containerColor = if (host == "172.16.243.150" && portStr == "5050") ChiantiDark else WarmGraphite
                             ),
-                            shape = RoundedCornerShape(6.dp),
+                            shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("TV · 5000\n(Zuzenekoa)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                            Text("Eskola\n5050", fontSize = 11.sp, textAlign = TextAlign.Center)
                         }
                         Button(
                             onClick = {
@@ -294,18 +442,15 @@ fun GoiburuaBarra(
                                 portStr = "5050"
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (host == "10.0.2.2") RosePrimary else Color(0xFF1E293B)
+                                containerColor = if (host == "10.0.2.2") ChiantiDark else WarmGraphite
                             ),
-                            shape = RoundedCornerShape(6.dp),
+                            shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Emuladorea\n(10.0.2.2)", fontSize = 11.sp, textAlign = TextAlign.Center)
+                            Text("Emuladorea\n10.0.2.2", fontSize = 11.sp, textAlign = TextAlign.Center)
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    // 2. IP / Ostalaria
                     Text("Zerbitzariaren IP-a edo Ostalaria:", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
                     OutlinedTextField(
                         value = host,
@@ -315,7 +460,6 @@ fun GoiburuaBarra(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // 3. Ataka (Portua)
                     Text("API Ataka (Portua):", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -333,40 +477,38 @@ fun GoiburuaBarra(
                         Button(
                             onClick = { portStr = "5050" },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (portStr == "5050") EmeraldDark else Color(0xFF1E293B)
+                                containerColor = if (portStr == "5050") StatusFreeDark else WarmGraphite
                             ),
-                            border = BorderStroke(1.dp, if (portStr == "5050") EmeraldSuccess else Color(0xFF334155)),
-                            shape = RoundedCornerShape(6.dp)
+                            border = BorderStroke(1.dp, if (portStr == "5050") StatusFree else DarkHairline),
+                            shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("5050 (Docker)", fontSize = 11.sp)
                         }
                         Button(
                             onClick = { portStr = "5000" },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (portStr == "5000") EmeraldDark else Color(0xFF1E293B)
+                                containerColor = if (portStr == "5000") StatusFreeDark else WarmGraphite
                             ),
-                            border = BorderStroke(1.dp, if (portStr == "5000") EmeraldSuccess else Color(0xFF334155)),
-                            shape = RoundedCornerShape(6.dp)
+                            border = BorderStroke(1.dp, if (portStr == "5000") StatusFree else DarkHairline),
+                            shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("5000 (Zuzena)", fontSize = 11.sp)
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    // 4. URL Aurrebista
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFF0F172A))
-                            .border(1.dp, Color(0xFF334155), RoundedCornerShape(6.dp))
-                            .padding(8.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(EveningEspresso)
+                            .border(1.dp, DarkHairline, RoundedCornerShape(8.dp))
+                            .padding(10.dp)
                     ) {
                         Text(
                             text = "Helbide Osoa: $unekoPreviewUrl",
-                            color = SkyInfo,
+                            color = GoldBorder,
                             fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = JetBrainsMono
                         )
                     }
                 }
@@ -380,7 +522,7 @@ fun GoiburuaBarra(
                         showIpDialog = false
                         onDismissConfig()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldSuccess)
+                    colors = ButtonDefaults.buttonColors(containerColor = StatusFree)
                 ) {
                     Text("Gorde eta Konektatu", fontWeight = FontWeight.Bold, color = Color.White)
                 }

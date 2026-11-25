@@ -1,0 +1,38 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+
+    <!-- Logo B: Monograma Arkitektonikoa (Evening Espresso Dark) -->
+    <path
+        android:fillColor="#1A1618"
+        android:strokeColor="#D4A359"
+        android:strokeWidth="2.8"
+        android:pathData="M44,10 H116 A34,34 0 0,1 150,44 V116 A34,34 0 0,1 116,150 H44 A34,34 0 0,1 10,116 V44 A34,34 0 0,1 44,10 Z" />
+
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#99BE123C"
+        android:strokeWidth="1.4"
+        android:pathData="M45,19 H115 A26,26 0 0,1 141,45 V115 A26,26 0 0,1 115,141 H45 A26,26 0 0,1 19,115 V45 A26,26 0 0,1 45,19 Z" />
+
+    <!-- 'T' Warm Linen -->
+    <path
+        android:fillColor="#FAF7F2"
+        android:pathData="M36,48 H84 V59 H80 C79,55 76.5,53.5 72,53.5 H66 V99 C66,102 68,103.5 72,103.5 H73.5 V107 H46.5 V103.5 H48 C52,103.5 54,102 54,99 V53.5 H48 C43.5,53.5 41,55 40,59 H36 V48 Z" />
+
+    <!-- '1' Antique Gold -->
+    <path
+        android:fillColor="#D4A359"
+        android:pathData="M91,58 L104.5,48 H110.5 V99 C110.5,102 112.5,103.5 116.5,103.5 H119 V107 H91 V103.5 H93.5 C97.5,103.5 99.5,102 99.5,99 V59.5 L93,64 L91,58 Z" />
+
+    <path
+        android:strokeColor="#D4A359"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M42,119 L118,119" />
+    <path
+        android:fillColor="#BE123C"
+        android:pathData="M80,115.5 A3.5,3.5 0 1,0 80,122.5 A3.5,3.5 0 1,0 80,115.5 Z" />
+</vector>

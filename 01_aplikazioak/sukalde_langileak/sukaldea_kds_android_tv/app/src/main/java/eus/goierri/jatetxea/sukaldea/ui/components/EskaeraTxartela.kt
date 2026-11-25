@@ -28,51 +28,63 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eus.goierri.jatetxea.sukaldea.data.model.Eskaera
 import eus.goierri.jatetxea.sukaldea.data.model.EskaeraLerroa
-import eus.goierri.jatetxea.sukaldea.ui.theme.AmberDark
-import eus.goierri.jatetxea.sukaldea.ui.theme.AmberLight
-import eus.goierri.jatetxea.sukaldea.ui.theme.AmberWarning
-import eus.goierri.jatetxea.sukaldea.ui.theme.CardBackground
-import eus.goierri.jatetxea.sukaldea.ui.theme.CardBorder
-import eus.goierri.jatetxea.sukaldea.ui.theme.DarkSurface
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldDark
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldLight
-import eus.goierri.jatetxea.sukaldea.ui.theme.EmeraldSuccess
-import eus.goierri.jatetxea.sukaldea.ui.theme.RoseDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.AntiqueGold
+import eus.goierri.jatetxea.sukaldea.ui.theme.CharcoalWine
+import eus.goierri.jatetxea.sukaldea.ui.theme.ChiantiDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.ChiantiPrimary
+import eus.goierri.jatetxea.sukaldea.ui.theme.DarkHairline
+import eus.goierri.jatetxea.sukaldea.ui.theme.EveningEspresso
+import eus.goierri.jatetxea.sukaldea.ui.theme.GoldBorder
+import eus.goierri.jatetxea.sukaldea.ui.theme.GoldTintDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.JetBrainsMono
+import eus.goierri.jatetxea.sukaldea.ui.theme.PlusJakartaSans
 import eus.goierri.jatetxea.sukaldea.ui.theme.RoseLight
-import eus.goierri.jatetxea.sukaldea.ui.theme.RosePrimary
-import eus.goierri.jatetxea.sukaldea.ui.theme.SkyInfo
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFree
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFreeBright
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusFreeDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusInfo
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusInfoBright
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusInfoDark
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusPendingBright
+import eus.goierri.jatetxea.sukaldea.ui.theme.StatusPendingDark
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextMuted
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextPrimary
 import eus.goierri.jatetxea.sukaldea.ui.theme.TextSecondary
+import eus.goierri.jatetxea.sukaldea.ui.theme.WarmGraphite
 
 @Composable
 fun EskaeraTxartela(
     eskaera: Eskaera,
+    isHistorialMode: Boolean = false,
     onMarkatuLerroa: (Int) -> Unit,
-    onMarkatuEskaera: (Int) -> Unit
+    onMarkatuEskaera: (Int) -> Unit,
+    onMarkatuZerbitzatua: (Int) -> Unit = {},
+    onBerreskuratu: (Int) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
+    val isKobratua = eskaera.egoera.equals("Kobratua", ignoreCase = true)
     val isGuztiakEginda = eskaera.egoera.equals("Prestatua", ignoreCase = true) ||
         (eskaera.lerroak.isNotEmpty() && eskaera.lerroak.all { it.isEginda })
+
     val borderColor = when {
-        isFocused -> RosePrimary
-        isGuztiakEginda -> EmeraldSuccess
-        else -> CardBorder
+        isFocused -> GoldBorder
+        isHistorialMode -> if (isKobratua) StatusFree else StatusInfo
+        isGuztiakEginda -> StatusFree
+        else -> DarkHairline
     }
 
     Box(
         modifier = Modifier
-            .width(340.dp)
+            .width(356.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(CardBackground)
+            .background(CharcoalWine)
             .border(
                 width = if (isFocused) 2.5.dp else 1.dp,
                 color = borderColor,
@@ -80,11 +92,11 @@ fun EskaeraTxartela(
             )
             .onFocusChanged { isFocused = it.isFocused }
             .focusable()
-            .padding(14.dp)
+            .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            // TXARTELAREN GOIBURUA: Mahaia, Eskaera ID eta Egoera
+            // TXARTELAREN GOIBURUA: ID, Mahaia eta Egoera
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -94,7 +106,7 @@ fun EskaeraTxartela(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
-                            .background(RoseDark)
+                            .background(ChiantiDark)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
@@ -102,31 +114,37 @@ fun EskaeraTxartela(
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = JetBrainsMono
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = eskaera.mahaiaErakutsi,
                         color = TextPrimary,
-                        fontSize = 16.sp,
+                        fontSize = 17.sp,
+                        fontFamily = PlusJakartaSans,
                         fontWeight = FontWeight.ExtraBold
                     )
                 }
 
                 // Egoera Txipa
-                val badgeBg = if (isGuztiakEginda) EmeraldDark else AmberDark
-                val badgeText = if (isGuztiakEginda) EmeraldLight else AmberLight
+                val (badgeBg, badgeText, badgeLabel) = when {
+                    isHistorialMode && isKobratua -> Triple(StatusFreeDark, StatusFreeBright, "KOBRATUA")
+                    isHistorialMode -> Triple(StatusInfoDark, StatusInfoBright, "ZERBITZATUA")
+                    isGuztiakEginda -> Triple(StatusFreeDark, StatusFreeBright, "PRESTATUA")
+                    else -> Triple(StatusPendingDark, StatusPendingBright, eskaera.egoera.uppercase())
+                }
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
                         .background(badgeBg)
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = if (isGuztiakEginda) "PRESTATUA" else eskaera.egoera.uppercase(),
+                        text = badgeLabel,
                         color = badgeText,
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
+                        fontFamily = JetBrainsMono,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -137,23 +155,33 @@ fun EskaeraTxartela(
             // Datu Lagungarriak: Zerbitzaria eta Ordua
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Zerbitzaria: ${eskaera.langileaErakutsi}",
                     color = TextSecondary,
-                    fontSize = 11.sp
+                    fontSize = 12.sp,
+                    fontFamily = PlusJakartaSans
                 )
-                Text(
-                    text = eskaera.orduaErakutsi,
-                    color = TextMuted,
-                    fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(GoldTintDark)
+                        .padding(horizontal = 7.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = eskaera.orduaErakutsi.ifBlank { "--:--" },
+                        color = GoldBorder,
+                        fontSize = 11.sp,
+                        fontFamily = JetBrainsMono,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Divider(color = Color(0xFF334155), thickness = 0.8.dp)
+            Divider(color = DarkHairline, thickness = 1.dp)
             Spacer(modifier = Modifier.height(10.dp))
 
             // PLATEREN ZERRENDA
@@ -171,6 +199,7 @@ fun EskaeraTxartela(
                     eskaera.lerroak.forEach { lerroa ->
                         PlaterLerroItem(
                             lerroa = lerroa,
+                            isReadOnly = isHistorialMode,
                             onEgindaKlik = { onMarkatuLerroa(lerroa.id) }
                         )
                     }
@@ -179,23 +208,54 @@ fun EskaeraTxartela(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // BEHEKO BOTOIA: Eskaera Osoa Prestatuta Jarri
-            Button(
-                onClick = { onMarkatuEskaera(eskaera.id) },
-                enabled = !isGuztiakEginda,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isGuztiakEginda) Color(0xFF334155) else EmeraldSuccess,
-                    disabledContainerColor = Color(0xFF1E293B)
-                ),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = if (isGuztiakEginda) "Eskaera Prestatuta Dago" else "Eskaera Osoa Eginda",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isGuztiakEginda) TextMuted else Color.White
-                )
+            // BEHEKO EKINTZA BOTOIA
+            if (isHistorialMode) {
+                if (!isKobratua) {
+                    Button(
+                        onClick = { onBerreskuratu(eskaera.id) },
+                        colors = ButtonDefaults.buttonColors(containerColor = AntiqueGold),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Berreskuratu pantailara",
+                            fontSize = 12.sp,
+                            fontFamily = PlusJakartaSans,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+            } else if (isGuztiakEginda) {
+                Button(
+                    onClick = { onMarkatuZerbitzatua(eskaera.id) },
+                    colors = ButtonDefaults.buttonColors(containerColor = StatusInfo),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "✓ Aterata (Historialera)",
+                        fontSize = 12.sp,
+                        fontFamily = PlusJakartaSans,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            } else {
+                Button(
+                    onClick = { onMarkatuEskaera(eskaera.id) },
+                    colors = ButtonDefaults.buttonColors(containerColor = StatusFree),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Eskaera Osoa Eginda",
+                        fontSize = 12.sp,
+                        fontFamily = PlusJakartaSans,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -204,22 +264,23 @@ fun EskaeraTxartela(
 @Composable
 fun PlaterLerroItem(
     lerroa: EskaeraLerroa,
+    isReadOnly: Boolean = false,
     onEgindaKlik: () -> Unit
 ) {
-    val isEginda = lerroa.isEginda
-    val bg = if (isEginda) DarkSurface.copy(alpha = 0.5f) else DarkSurface
+    val isEginda = lerroa.isEginda || isReadOnly
+    val bg = if (isEginda) EveningEspresso.copy(alpha = 0.65f) else WarmGraphite
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(bg)
             .border(
                 1.dp,
-                if (isEginda) EmeraldDark else Color(0xFF334155),
-                RoundedCornerShape(8.dp)
+                if (isEginda) StatusFree else DarkHairline,
+                RoundedCornerShape(10.dp)
             )
-            .padding(8.dp),
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -227,72 +288,83 @@ fun PlaterLerroItem(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Kantitate zirkulua
             Box(
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(26.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(if (isEginda) EmeraldDark else RoseDark),
+                    .background(if (isEginda) StatusFree else ChiantiPrimary),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "${lerroa.kantitatea}",
+                    text = "${lerroa.kantitatea}x",
                     color = Color.White,
+                    fontFamily = JetBrainsMono,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
+                    fontSize = 11.sp
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
             Column {
                 Text(
                     text = lerroa.platerIzena,
-                    color = if (isEginda) TextMuted else TextPrimary,
-                    fontSize = 13.sp,
+                    color = if (isEginda) TextSecondary else TextPrimary,
+                    fontSize = 14.sp,
+                    fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 if (!lerroa.oharrak.isNullOrBlank()) {
-                    Text(
-                        text = "Oharra: ${lerroa.oharrak}",
-                        color = AmberWarning,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(5.dp))
+                            .background(StatusPendingDark)
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "Oharra: ${lerroa.oharrak}",
+                            color = StatusPendingBright,
+                            fontSize = 11.sp,
+                            fontFamily = PlusJakartaSans,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Ekintza Botoia
         if (isEginda) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .background(EmeraldDark)
+                    .background(StatusFreeDark)
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "Eginda",
-                    color = EmeraldLight,
+                    text = "✓ Eginda",
+                    color = StatusFreeBright,
                     fontSize = 11.sp,
+                    fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.Bold
                 )
             }
         } else {
             Button(
                 onClick = onEgindaKlik,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
-                shape = RoundedCornerShape(6.dp),
-                modifier = Modifier.border(1.dp, RoseDark, RoundedCornerShape(6.dp))
+                colors = ButtonDefaults.buttonColors(containerColor = CharcoalWine),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.border(1.dp, ChiantiDark, RoundedCornerShape(8.dp))
             ) {
                 Text(
                     text = "Eginda",
                     color = RoseLight,
                     fontSize = 11.sp,
+                    fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.Bold
                 )
             }
