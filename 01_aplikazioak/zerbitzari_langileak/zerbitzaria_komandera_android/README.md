@@ -1,73 +1,92 @@
-# 1T Jatetxea — Zerbitzaria Komandera (Android Jetpack Compose)
+<div align="center">
 
-**Egileak:** `[Zure Izena / Bikotearen Izenak]` · **Goierri Eskola (PR 4.15)**
+<img src="img/logo_t1_b.svg" alt="T1 Jatetxea Logo" width="96" />
 
-**Kotlin** eta **Jetpack Compose (Material 3)** erabiliz garatutako Android aplikazio natiboa (XML diseinurik gabea), 1T Jatetxeko (*Osteria & Parrilla*) zerbitzariek eta barrako langileek mahaiak, komandak, erreserbak eta ordainketak denbora errealean kudeatzeko.
+# T1 Jatetxea — Zerbitzaria Komandera
+
+**Osteria & Parrilla · Android Komandera Mugikorra (Jetpack Compose)**  
+*Egilea: **Ander Urien Telleria** · Goierri Eskola (PR 4.15)*
+
+<p>
+  <img src="https://img.shields.io/badge/Kotlin-2.2.10-881337?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
+  <img src="https://img.shields.io/badge/Jetpack_Compose-Material_3-B45309?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+  <img src="https://img.shields.io/badge/Retrofit-2.11_REST_API-15803D?style=for-the-badge&logo=android&logoColor=white" alt="Retrofit" />
+  <img src="https://img.shields.io/badge/Android-API_26+-1C1917?style=for-the-badge&logo=android&logoColor=white" alt="Android" />
+</p>
+
+<p>
+  <a href="https://www.figma.com/design/F4azLhQtLVxyvu2WDcPnU8">
+    <img src="https://img.shields.io/badge/Figma-Smartphone_UI_v2.0-881337?style=flat-square&logo=figma&logoColor=white" alt="Figma Smartphone" />
+  </a>
+  <a href="https://www.figma.com/design/s6dk3RNbbDMEIDiD3BOq8Y">
+    <img src="https://img.shields.io/badge/Figma-Tablet_POS_v2.0-B45309?style=flat-square&logo=figma&logoColor=white" alt="Figma Tablet" />
+  </a>
+</p>
+
+</div>
+
+---
+
+## Pantaila-Argazkiak (v2.0 · Warm Hospitality)
+
+| Saio-hasiera (3 Bloke & PIN) | Mahaien Mapa (Maite) | Plater Katalogoa (Ahotsa & Bilaketa) | Barra Modua (Gorka · 10 Kategoria) |
+| :---: | :---: | :---: | :---: |
+| <img src="img/01_login_screen.png" width="210" alt="Login" /> | <img src="img/03_mahaiak_screen.png" width="210" alt="Mahaiak" /> | <img src="img/05_eskaera_maite.png" width="210" alt="Katalogoa" /> | <img src="img/06_barra_gorka.png" width="210" alt="Barra Modua" /> |
 
 ---
 
 ## 1. Ideia eta Funtzionalitate Nagusiak
 
-Aplikazioak **4 pantaila** nagusi (`NavHost` + pantaila arteko trantsizio animatuak) eta dialog modularrak ditu, **rolaren araberako ikuspegiarekin**:
+**Kotlin** eta **Jetpack Compose (Material 3)** erabiliz garatutako Android aplikazio natiboa (XML UI diseinurik gabea), **T1 Jatetxea (*Osteria & Parrilla*)** jatetxeko zerbitzariek eta barrako langileek mahaiak, komandak, erreserbak eta ordainketak denbora errealean kudeatzeko (`NavHost` + 4 pantaila nagusi + 5 dialog modular):
 
-1. **Saio-hasiera (`LoginScreen`):** Langileen zerrenda (`LazyColumn`), 4 zifrako PIN teklatu animatua (**Maite — Zerbitzaria: `1002`** · **Gorka — Barrakoa: `2001`**), Wi-Fi detekzioa eta API/DB `/health` egoera-adierazlea.
-2. **Mahaien Mapa (`MahaiakScreen`):** Sare moldagarria (`LazyVerticalGrid` — `GridCells.Adaptive`), eremu-iragazkiak (`rememberSaveable`), 5 segundoro auto-freskatzea, **Erreserbak** (hilabeteko egutegi interaktiboa egun markatuekin) eta **Ezarpenak** (Modu Argia lehenetsita / Iluna, Hizkuntza EU/ES/EN, Sare profilak).
-3. **Mahaiaren Xehetasunak (`MahaiaXehetasunakScreen`):** Mahai-egoera aldatzea, eskaera irekitzea, lerroak (`LazyColumn`) sukaldera bidaltzea edo zerbitzatzea, **Kontua Proforma**, **Ordainketa** (Eskudirua + kanbioa, Txartela, Bizum) eta **80mm Tiket Fiskala** (`.txt` + Android `PrintManager`).
-4. **Plater eta Barra Katalogoa (`EskaeraScreen`):** **Testu eta ahots bidezko bilatzailea** (`RecognizerIntent` — `Intent` bidez), kategoria karusela (`LazyRow`), denbora errealeko stock-muga eta saski barra animatua (`AnimatedVisibility` + `derivedStateOf`).
-   - **Zerbitzariak (Maite):** Karta osoa ikusten du (`Sarrerakoa`, `Lehena`, `Bigarrena`, `Postrea` + edari guztiak).
-   - **Barrakoak (Gorka):** **Barra Modua** aktibatzen da automatikoki — platerak ezkutatu eta **10 edari-kategoria zehatz** soilik ikusten ditu (`Urak`, `Freskagarriak`, `Garagardoak`, `Sagardoak`, `Ardoak`, `Kafeak`, `Infusioak`, `Likoreak`, `Konbinatuak`, `Koktailak`).
-
----
-
-## 2. Pantaila-Argazkiak (Emuladorean Exekutatuta)
-
-| Saio-hasiera (API & PIN) | Mahaien Mapa (Maite) | Plater Katalogoa (Maite) | Barra Modua (Gorka) |
-| :---: | :---: | :---: | :---: |
-| ![Login](img/01_login_screen.png) | ![Mahaiak](img/03_mahaiak_screen.png) | ![Platerak](img/05_eskaera_maite.png) | ![Barra](img/06_barra_gorka.png) |
+| Pantaila / Modulua | Funtzionalitate Nagusiak |
+| :--- | :--- |
+| **Saio-hasiera (`LoginScreen`)** | Langileak 3 bloketan (`Jantokia`, `Barra`, `Admin`), 4 digituko PIN teklatu animatua, `/health` API/DB egoera-adierazlea eta **Tablet Split-Pane** diseinu moldagarria (`≥ 800dp`). |
+| **Mahaien Mapa (`MahaiakScreen`)** | `LazyVerticalGrid` moldagarria (`GridCells.Adaptive`), 4 zutabeko KPI barra, eremu-iragazkiak (`rememberSaveable`), 5 segundoro auto-freskatzea, **hilabeteko egutegidun Erreserbak** eta **Ezarpenak** (`EU/ES/EN`, Modu Argia/Iluna, Sare profilak). |
+| **Mahaiaren Xehetasunak (`MahaiaXehetasunakScreen`)** | Eskaeren kudeaketa, lerroak sukaldera bidali / zerbitzatu / ezabatu (*Fitts* banaketa seguruarekin), kobratu gabeko mahaiaren blokeoa, **Kontua Proforma**, **3 ordainketa mota** (Eskudirua + kanbioa, Txartela, Bizum) eta **80mm Tiket Fiskala** (`.txt` + `PrintManager`). |
+| **Katalogoa & Barra Modua (`EskaeraScreen`)** | **Testu eta ahots bidezko bilaketa** (`RecognizerIntent`), stock-kontrola denbora errealean, saski barra animatua (`derivedStateOf`) eta **Barra Modua** (`Gorka` barrakoak 10 edari-kategoria soilik ikusten ditu). |
 
 ---
 
-## 3. UI/UX Diseinu Sistema v2.0 eta Figma
+## 2. Aukeratutako Erronkak & UI/UX Diseinu Sistema v2.0
 
-Aplikazioaren interfazea **Figma**-n diseinatu da lehenik (*Warm Hospitality* Modu Argia lehenetsita + *Evening Espresso* Modu Iluna, **Logo B Monograma Arkitektonikoa**, `Cinzel` + `Plus Jakarta Sans` + `JetBrains Mono` letra-tipoak `res/font/`-en txertatuta, WCAG 2.2 POUR kontrasteak eta Fitts ≥ 48dp ukipen-eremuak):
-
-- **Figma — Smartphone Diseinua (`390×844` + 3 Logo Proposamenak + Design Tokens + Components):** https://www.figma.com/design/F4azLhQtLVxyvu2WDcPnU8
-- **Figma — Tablet POS Diseinua (`1194×834` Landscape Master-Detail):** https://www.figma.com/design/s6dk3RNbbDMEIDiD3BOq8Y
-
----
-
-## 4. Aukeratutako Erronkak
-
-- **Komunikazioa (REST API — Nagusia):** Retrofit 2.11 + OkHttp + Gson (`JatetxeaApiService.kt`, 17 endpoint) C# backend-era konektatuta (`5050` ataka), HTTP goiburu pertsonalizatuekin eta emuladore/Wi-Fi detekzio automatikoarekin (`NetworkProfiles.kt`).
-- **Datuak gorde (`SharedPreferences`):** APIaren Base URL-a, Gai Iluna/Argia eta Hizkuntza iraunkorki gordetzen dira (`ApiClient`, `AppPreferences`).
-- **Itxura eta Animazioak:** Material 3 *Dark & Light Mode* osoa, `NavHost` trantsizioak, `AnimatedVisibility`, `AnimatedContent`, `animateColorAsState`, `animateDpAsState` eta `@Preview` pantaila guztietan.
+| Erronka | Inplementazioa |
+| :--- | :--- |
+| **REST API Komunikazioa (Nagusia)** | **Retrofit 2.11 + OkHttp + Gson** (`JatetxeaApiService.kt`, 19 endpoint) C# backend-era konektatuta (`5050` ataka), mDNS (`ANDER-SGB5PRO.local`) eta emuladore (`10.0.2.2`) detekzio automatikoarekin. |
+| **Datu-iraunkortasuna (`SharedPreferences`)** | API URL-a, Modu Argia/Iluna eta Hizkuntza (`EU/ES/EN`) iraunkorki gordetzen dira (`ApiClient`, `AppPreferences`). |
+| **UI/UX v2.0, Figma & Animazioak** | **Figma** diseinu-sistema ([Smartphone](https://www.figma.com/design/F4azLhQtLVxyvu2WDcPnU8) & [Tablet](https://www.figma.com/design/s6dk3RNbbDMEIDiD3BOq8Y)), **Logo B** bektoriala + Adaptive App Icon, 3 letra-tipo (`Cinzel`, `Plus Jakarta Sans`, `JetBrains Mono`), *Warm Hospitality Light* & *Evening Espresso Dark*, `NavHost` trantsizioak, `AnimatedVisibility`, `AnimatedContent`, `animateColorAsState` eta `@Preview` pantaila guztietan. |
+| **Android Intent & Gailu Fisikoa** | Ahots-bilaketa (`RecognizerIntent`), 80mm inprimaketa (`PrintManager`), eta **Samsung SM-A376B** mugikor fisikoan zein emuladorean probatua. |
 
 ---
 
-## 4. Hartutako Diseinu-Erabakiak
+## 3. Hartutako Diseinu-Erabakiak
 
-1. **Rolaren araberako iragazkia (`KategoriaLaguntzailea`):** `Barrakoa` rolak edari-kategoriak soilik ikustea (eta edariak zuzenean zerbitzatzea sukaldetik pasa gabe) barrako lana bizkortu eta erroreak saihesten ditu.
-2. **Stateless UI (`*Content`) + `@Preview` eredua:** Pantaila bakoitzaren UIa API deietatik bereizita dago, `@Preview` funtzioek Android Studio-n zuzenean eta fidagarritasunez errendatzeko.
-3. **Sare-profil automatikoak (`NetworkProfiles`):** Emuladorea (`10.0.2.2:5050`) edo tokiko Wi-Fia automatikoki detektatzen du, eta `ApiClient.service` dinamikoki eguneratzen da.
-
----
-
-## 5. IAren Erabilera
-
-Garapenean IA pausoz pauso erabili da, kode guztia berrikusiz eta ulertuz:
-- **Zertarako:** `NavHost` nabigazio parametrizatua eta pantaila-trantsizioak, Retrofit REST bezeroa, datu-baseko edari-kategorien zabalkuntza (`zabaldu_edari_kategoriak.sql`), rol-iragazkia, `@Preview`-ak eta Material 3 UI txartelak.
-- **Prompt lagungarriak:**
-  - *"Sortu Jetpack Compose-ko `NavHost` bat `sealed class Screen` erabiliz, `mahaiId` parametroarekin eta slide/fade trantsizioekin."*
-  - *"Zabaldu MySQL datu-baseko `Edaria` kategoria (`Urak`, `Ardoak`, `Freskagarriak`, `Garagardoak`, `Kafeak`, `Infusioak`, `Likoreak`, `Koktailak`) eta iragazi `EskaeraScreen` `Barrakoa` rolak edariak soilik ikusteko."*
-  - *"Banatu pantailak Composable txikiagoetan (`LangileaItem`, `PlateraItem`) eta gehitu `AnimatedVisibility` eta `@Preview`-ak."*
+1. **Rolaren araberako ikuspegia (`KategoriaLaguntzailea`):** `Barrakoa` rolak 10 edari-kategoriak soilik ikusteak eta sukaldetik pasa gabe zuzenean zerbitzatzeak barrako zerbitzua bizkortzen du.
+2. **Stateless `*Content` + `@Preview` arkitektura:** Pantaila bakoitzaren UIa API logikatik bereizita dago, `@Preview` Light/Dark bertsioak Android Studio-n fidagarritasunez errendatzeko.
+3. **Ergonomia eta akatsen prebentzioa (*WCAG 2.2 + Norman Constraints*):** Egoera guztiek ikonoa + testua daramate (inoiz ez kolore hutsez), `Ezabatu` eta `Zerbitzatu` fisikoki bananduta daude, eta kobratu gabeko mahaia ezin da `Libre`/`Garbitzen` jarri.
 
 ---
 
-## 6. Nola Exekutatu
+## 4. IAren Erabilera
 
-- **Teknologiak:** Kotlin `2.2.10` · Jetpack Compose (BOM `2024.06.00`) · Material 3 · Navigation Compose `2.7.7` · Retrofit `2.11.0`.
+Garapenean IA laguntzaile gisa erabili da pausoz pauso, kode eta diseinu guztia berrikusiz, ulertuz eta gailu errealean probatuz (`NavHost` nabigazioa, Retrofit bezeroa, MySQL edari-kategorien zabalkuntza, `@Preview`-ak eta Figma v2.0 diseinu-sistema).
+
+<details>
+<summary><strong>Ikusi erabilitako prompt adibideak</strong></summary>
+
+- *"Sortu Jetpack Compose-ko `NavHost` bat `sealed class Screen` erabiliz, `mahaiId` parametroarekin eta slide/fade trantsizioekin."*
+- *"Zabaldu MySQL datu-baseko `Edaria` kategoria 10 edari-kategoriatan eta iragazi `EskaeraScreen` `Barrakoa` rolak edariak soilik ikusteko."*
+- *"Sortu Figman Warm Hospitality paleta eta Logo B diseinu-sistema Smartphone eta Tablet-erako, eta migratu Jetpack Compose pantailak tipografia pertsonalizatuarekin."*
+
+</details>
+
+---
+
+## 5. Nola Exekutatu
+
+- **Teknologiak:** Kotlin `2.2.10` · Jetpack Compose BOM `2024.06.00` · Material 3 · Navigation Compose `2.7.7` · Retrofit `2.11.0`.
 - **Pausoak:**
-  1. Ireki **Android Studio** → `Open` → `01_aplikazioak/zerbitzari_langileak/zerbitzaria_komandera_android`.
-  2. Utzi Gradleri sinkronizatzen eta abiarazi jatetxeko backend REST APIa (`5050` atakan, Docker `jatetxea_api` + `jatetxea_mysql`).
-  3. Sakatu **Run (`Shift + F10`)** emuladorean (`10.0.2.2:5050` automatikoki detektatzen da) edo mugikorrean (`adb reverse tcp:5050 tcp:5050`).
+  1. Ireki **Android Studio** → `Open` → `zerbitzaria_komandera_android`.
+  2. Abiarazi jatetxeko REST API backend-a (`5050` atakan, Docker `jatetxea_api` + `jatetxea_mysql`).
+  3. Sakatu **Run (`Shift + F10`)** emuladorean (`10.0.2.2:5050` automatikoa) edo mugikor fisikoan (`ANDER-SGB5PRO.local:5050` mDNS automatikoa Wi-Fi lokalean, edo `adb reverse tcp:5050 tcp:5050` USB bidez).
   4. **Demo erabiltzaileak:** **Maite** (`Zerbitzaria`, PIN: `1002`) · **Gorka** (`Barrakoa`, PIN: `2001`).

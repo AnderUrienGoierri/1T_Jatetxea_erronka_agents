@@ -499,37 +499,66 @@ fun EzarpenakDialog(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Button(
-                            onClick = {
-                                ApiClient.saveBaseUrl(context, behinBehinekoUrl)
-                                onApiConfigAldatua?.invoke()
-                                onDismiss()
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = ChiantiPrimary),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text("Gorde Sare Ezarpenak", color = Color.White, fontWeight = FontWeight.Bold)
-                        }
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
                 }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // ITXI BOTOIA
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = if (fitxaAktiboa == "PREF") ChiantiPrimary else MaterialTheme.colorScheme.surfaceVariant),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text(
-                        AppPreferences.tr("Itxi", "Cerrar", "Close"),
-                        color = if (fitxaAktiboa == "PREF") Color.White else MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold
-                    )
+                // BEHEKO BOTOIAK (Beti ikusgai — inoiz ez moztuta!)
+                if (fitxaAktiboa == "SAREA") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(0.9f)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                AppPreferences.tr("Itxi", "Cerrar", "Close"),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                ApiClient.saveBaseUrl(context, behinBehinekoUrl)
+                                onApiConfigAldatua?.invoke()
+                                onDismiss()
+                            },
+                            modifier = Modifier
+                                .weight(1.4f)
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = ChiantiPrimary),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                AppPreferences.tr("Gorde eta Aplikatu", "Guardar y Aplicar", "Save & Apply"),
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = ChiantiPrimary),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            AppPreferences.tr("Itxi", "Cerrar", "Close"),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

@@ -45,10 +45,18 @@ object NetworkProfiles {
         NetworkProfile(
             id = "innovatek",
             izena = "Innovatek Beasain",
-            wifiSsid = "ASUS",
-            baseUrl = "http://192.168.5.166:5050/api/v1/",
-            kokapena = "Beasain (Innovatek)",
-            deskribapena = "192.168.5.166:5050 (Router ASUS)"
+            wifiSsid = "INN-WPRIVATE",
+            baseUrl = "http://10.100.30.112:5050/api/v1/",
+            kokapena = "Beasain (INN-WPRIVATE)",
+            deskribapena = "10.100.30.112:5050 (INN-WPRIVATE)"
+        ),
+        NetworkProfile(
+            id = "pc_mdns",
+            izena = "PC Izena (mDNS · Beti Berdina)",
+            wifiSsid = null,
+            baseUrl = "http://ANDER-SGB5PRO.local:5050/api/v1/",
+            kokapena = "Wi-Fi Lokala (IP aldaketarik gabe)",
+            deskribapena = "ANDER-SGB5PRO.local:5050 (mDNS)"
         ),
         NetworkProfile(
             id = "usb_localhost",
@@ -101,8 +109,8 @@ object NetworkProfiles {
                     return "euskaltel_urite (IP: $ipLokala)"
                 } else if (ipLokala.startsWith("172.16.")) {
                     return "GOI_Ikasleak (IP: $ipLokala)"
-                } else if (ipLokala.startsWith("192.168.5.")) {
-                    return "ASUS (IP: $ipLokala)"
+                } else if (ipLokala.startsWith("192.168.5.") || ipLokala.startsWith("10.100.30.")) {
+                    return "INN-WPRIVATE (IP: $ipLokala)"
                 }
                 return "Wi-Fi Lokala ($ipLokala)"
             }
@@ -142,14 +150,9 @@ object NetworkProfiles {
         if (daEmuladorea()) {
             return PROFILAK.firstOrNull { it.id == "emuladorea" } ?: PROFILAK.last()
         }
-        val unekoSsid = lortuUnekoWifiIzena(context)
-        if (!unekoSsid.isNullOrBlank()) {
-            val batDatorrena = PROFILAK.firstOrNull { profil ->
-                profil.wifiSsid != null && profil.wifiSsid.equals(unekoSsid, ignoreCase = true)
-            }
-            if (batDatorrena != null) return batDatorrena
-        }
-        // Lehenetsia: Ikaztegieta Etxea (gaur egungo garapen ingurunea)
+        // Gailu fisikoetan: mDNS (ANDER-SGB5PRO.local) beti ebazten du IPa automatikoki edozein Wi-Fitan!
+        val mdnsProfila = PROFILAK.firstOrNull { it.id == "pc_mdns" }
+        if (mdnsProfila != null) return mdnsProfila
         return PROFILAK.first()
     }
 }

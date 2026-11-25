@@ -475,7 +475,7 @@ fun MahaiaTxartela(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${AppPreferences.tr("Mahaia", "Mesa", "Table")} ${mahaia.zenbakia}",
+                        text = "M${mahaia.zenbakia}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,

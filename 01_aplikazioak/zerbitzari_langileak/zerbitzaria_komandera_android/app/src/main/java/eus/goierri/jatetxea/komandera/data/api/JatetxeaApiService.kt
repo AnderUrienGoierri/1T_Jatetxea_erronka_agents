@@ -87,18 +87,29 @@ object ApiClient {
     private const val PREFS_NAME = "komandera_prefs"
     private const val KEY_BASE_URL = "api_base_url"
 
-    // Lehenetsia: Ikaztegieta Etxea (192.168.1.134:5050) edo Tokikoa
-    var baseUrl: String = "http://192.168.1.134:5050/api/v1/"
+    // Lehenetsia: mDNS (ANDER-SGB5PRO.local:5050) — IP aldakorrik gabe
+    var baseUrl: String = "http://ANDER-SGB5PRO.local:5050/api/v1/"
 
     fun init(context: android.content.Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE)
         val gordetakoUrl = prefs.getString(KEY_BASE_URL, null)
-        if (!gordetakoUrl.isNullOrBlank()) {
-            baseUrl = garbituUrl(gordetakoUrl)
-        } else {
-            val gomendatua = eus.goierri.jatetxea.komandera.data.network.NetworkProfiles.lortuGomendatutakoProfila(context)
-            baseUrl = gomendatua.baseUrl
+        val networkProfiles = eus.goierri.jatetxea.komandera.data.network.NetworkProfiles
+        val recommendedProfile = networkProfiles.lortuGomendatutakoProfila(context)
+        val savedUrl = gordetakoUrl?.trimEnd('/')
+        val zaharkitutakoUrlak = setOf(
+            "http://192.168.5.166:5050/api/v1",
+            "http://10.100.30.101:5050/api/v1",
+            "http://172.16.243.221:5050/api/v1",
+            "http://192.168.1.134:5050/api/v1"
+        )
+        val daZaharkitua = savedUrl in zaharkitutakoUrlak ||
+            (savedUrl == "http://10.0.2.2:5050/api/v1" && recommendedProfile.id != "emuladorea")
+
+        if (gordetakoUrl.isNullOrBlank() || daZaharkitua) {
+            baseUrl = recommendedProfile.baseUrl
             prefs.edit().putString(KEY_BASE_URL, baseUrl).apply()
+        } else {
+            baseUrl = garbituUrl(gordetakoUrl)
         }
     }
 
