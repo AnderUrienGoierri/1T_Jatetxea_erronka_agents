@@ -86,7 +86,7 @@
 .barra-hutsik {
     flex: 1;
     height: 10px;
-    background-color: #f1f5f9;
+    background-color: var(--kolore-surface-variant);
     border-radius: 999px;
     overflow: hidden;
     position: relative;

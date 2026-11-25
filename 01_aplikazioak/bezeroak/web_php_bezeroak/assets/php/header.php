@@ -28,15 +28,32 @@ if (!empty($client_api_env)) {
     <title>T1 Jatetxea · Osteria &amp; Parrilla | Italiar-Euskaldun Gastronomia</title>
     <link rel="icon" type="image/svg+xml" href="assets/img/t1_isotipoa.svg">
     
-    <!-- Google Fonts: Cinzel (Titulu artistikoak) eta Inter (UI garbia) -->
+    <!-- Google Fonts: Cinzel, Plus Jakarta Sans eta JetBrains Mono (T1 v2.0) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="assets/css/style.css">
     <script>
         // Bezeroaren JavaScript logikari API helbidea pasa (nabigatzailetik erabilgarria)
         window.API_BASE_URL = "<?php echo htmlspecialchars($client_api_url, ENT_QUOTES, 'UTF-8'); ?>";
+        (function() {
+            var savedTheme = localStorage.getItem('t1_web_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+        function toggleWebTheme() {
+            var cur = document.documentElement.getAttribute('data-theme') || 'light';
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('t1_web_theme', next);
+            var btn = document.getElementById('webThemeBtn');
+            if (btn) btn.textContent = next === 'dark' ? 'Modu Argia' : 'Modu Iluna';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var cur = document.documentElement.getAttribute('data-theme') || 'light';
+            var btn = document.getElementById('webThemeBtn');
+            if (btn) btn.textContent = cur === 'dark' ? 'Modu Argia' : 'Modu Iluna';
+        });
     </script>
 </head>
 <body>
@@ -47,7 +64,7 @@ if (!empty($client_api_env)) {
             <!-- Ezkerrean: Jatetxearen Izena eta Nortasuna -->
             <div class="logo-area">
                 <a href="index.php" class="header-brand-wrap" title="T1 Jatetxea - Hasierara Itzuli">
-                    <img src="assets/img/t1_isotipoa.svg" alt="T1 Isotipoa" class="header-logo-icon">
+                    <img src="assets/img/t1_logo_dark.svg" alt="T1 Logo B" class="header-logo-icon">
                     <div class="brand-text-block">
                         <h1>T1 JATETXEA</h1>
                         <span class="brand-subtitle">OSTERIA &amp; PARRILLA · ITALO-EUSKALDUNA</span>
@@ -65,8 +82,11 @@ if (!empty($client_api_env)) {
                 </ul>
             </nav>
 
-            <!-- Eskuinaldean: API egoera eta Laguntza -->
+            <!-- Eskuinaldean: Gaia + API egoera -->
             <div class="header-right">
+                <button type="button" id="webThemeBtn" class="theme-toggle-btn" onclick="toggleWebTheme()" title="Aldatu Warm Hospitality / Evening Espresso gaia">
+                    Modu Iluna
+                </button>
                 <div class="api-status-wrapper">
                     <?php if (!empty($api_online) && !empty($db_online)): ?>
                         <span id="api-status" class="api-status-badge online" title="REST API eta MySQL Datu-basea konektatuta daude">

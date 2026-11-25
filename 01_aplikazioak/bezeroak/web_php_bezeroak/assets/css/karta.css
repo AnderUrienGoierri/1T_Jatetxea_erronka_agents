@@ -83,7 +83,7 @@
 
 .plater-card.agortuta {
     opacity: 0.7;
-    background-color: #fafafa;
+    background-color: var(--kolore-surface-variant);
     border-style: dashed;
 }
 
@@ -110,9 +110,9 @@
 }
 
 .plater-prezioa {
-    font-family: var(--font-title);
-    font-size: 1.35rem;
-    font-weight: 800;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--kolore-brand-primary);
     white-space: nowrap;
 }
@@ -151,12 +151,12 @@
 }
 
 .plater-osagaiak li {
-    background-color: #f1f5f9;
+    background-color: var(--kolore-surface-variant);
     border: 1px solid var(--kolore-border);
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 6px;
     font-size: 0.76rem;
-    color: #334155;
+    color: var(--kolore-text-secondary);
     font-weight: 500;
 }
 

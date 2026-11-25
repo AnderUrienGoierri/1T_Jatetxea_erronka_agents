@@ -1,44 +1,47 @@
 /* ==========================================================================
    JATETXEA - Oinarrizko Estiloak eta Aldagaiak (base.css)
-   Italiar-Euskaldun Diseinu Sistema Ofiziala (T1 Osteria & Parrilla)
+   T1 Jatetxea v2.0 — Warm Hospitality Light & Evening Espresso Dark
    ========================================================================== */
 
-:root {
-    /* Brand Nagusiak (Chianti & Ardoa) */
+:root,
+[data-theme="light"] {
+    /* Marka Nagusiak (Chianti & Borgoina) */
     --kolore-brand-primary: #881337;
     --kolore-brand-hover: #9f1239;
     --kolore-brand-dark: #4c0519;
-    --kolore-brand-light: #fff1f2;
+    --kolore-brand-light: #fce7f0;
 
-    /* Bigarren Mailakoak (Baso & Albahaka Berdea) */
+    /* Urrea (Antique Gold) */
+    --kolore-gold: #d4a359;
+    --kolore-gold-dark: #b45309;
+    --kolore-gold-tint: #fef3c7;
+
+    /* Egoera Semantikoak (WCAG 2.2 POUR) */
     --kolore-success: #15803d;
     --kolore-success-bg: #dcfce7;
     --kolore-success-border: #86efac;
 
-    /* Azentuak & Labea (Toskana Terrakota & Parmigiano Urrea) */
-    --kolore-gold: #fcd34d;
-    --kolore-gold-dark: #d97706;
     --kolore-warning: #c2410c;
-    --kolore-warning-bg: #fef3c7;
-    --kolore-warning-border: #fcd34d;
-    --kolore-warning-text: #92400e;
+    --kolore-warning-bg: #ffedd5;
+    --kolore-warning-border: #fdba74;
+    --kolore-warning-text: #9a3412;
 
-    /* Barra BDS & Info (Mediterraneo Urdina) */
-    --kolore-info: #0284c7;
+    --kolore-info: #0369a1;
     --kolore-info-bg: #e0f2fe;
     --kolore-info-border: #bae6fd;
 
-    /* Alerta Gorria */
-    --kolore-danger: #dc2626;
+    --kolore-danger: #b91c1c;
     --kolore-danger-bg: #fee2e2;
     --kolore-danger-border: #fecaca;
 
-    /* Neutroak (Irina, Marmola & Arbela) */
-    --kolore-bg-app: #f8fafc;
+    /* Warm Hospitality Light (60-30-10) */
+    --kolore-bg-app: #faf7f2;
     --kolore-bg-card: #ffffff;
-    --kolore-border: #e2e8f0;
-    --kolore-text-main: #1e293b;
-    --kolore-text-muted: #64748b;
+    --kolore-surface-variant: #f3efe8;
+    --kolore-border: #e6dfd5;
+    --kolore-text-main: #1c1917;
+    --kolore-text-secondary: #57534e;
+    --kolore-text-muted: #78716c;
 
     /* Bateragarritasun Aliasak */
     --kolore-nagusia: var(--kolore-brand-dark);
@@ -56,17 +59,59 @@
     --kolore-errorea: var(--kolore-danger);
     --kolore-errorea-atzeko: var(--kolore-danger-bg);
 
-    /* Tipografiak */
-    --font-title: 'Cinzel', 'Playfair Display', 'Georgia', serif;
-    --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Tipografiak v2.0 (Cinzel + Plus Jakarta Sans + JetBrains Mono) */
+    --font-title: 'Cinzel', Georgia, serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
 
     /* Itzalak eta Formak */
-    --itzala-arina: 0 1px 3px rgba(30, 41, 59, 0.06);
-    --itzala-ertaina: 0 4px 12px -2px rgba(30, 41, 59, 0.08), 0 2px 6px -2px rgba(30, 41, 59, 0.04);
-    --itzala-sakona: 0 12px 24px -4px rgba(136, 19, 55, 0.12), 0 4px 10px -2px rgba(30, 41, 59, 0.06);
+    --itzala-arina: 0 2px 6px rgba(28, 25, 23, 0.05);
+    --itzala-ertaina: 0 6px 18px -4px rgba(28, 25, 23, 0.08), 0 2px 6px -2px rgba(28, 25, 23, 0.04);
+    --itzala-sakona: 0 14px 28px -6px rgba(136, 19, 55, 0.14), 0 4px 10px -2px rgba(28, 25, 23, 0.06);
     --erradioa: 10px;
     --erradioa-lg: 14px;
-    --trantsizioa: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --trantsizioa: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+    /* Evening Espresso Dark */
+    --kolore-brand-primary: #be123c;
+    --kolore-brand-hover: #e11d48;
+    --kolore-brand-dark: #4c0519;
+    --kolore-brand-light: #3a0a1b;
+
+    --kolore-gold: #d4a359;
+    --kolore-gold-dark: #b45309;
+    --kolore-gold-tint: rgba(180, 83, 9, 0.22);
+
+    --kolore-success: #4ade80;
+    --kolore-success-bg: rgba(21, 128, 61, 0.2);
+    --kolore-success-border: #15803d;
+
+    --kolore-warning: #fb923c;
+    --kolore-warning-bg: rgba(194, 65, 12, 0.2);
+    --kolore-warning-border: #c2410c;
+    --kolore-warning-text: #fed7aa;
+
+    --kolore-info: #38bdf8;
+    --kolore-info-bg: rgba(3, 105, 161, 0.22);
+    --kolore-info-border: #0369a1;
+
+    --kolore-danger: #f87171;
+    --kolore-danger-bg: rgba(185, 28, 28, 0.22);
+    --kolore-danger-border: #b91c1c;
+
+    --kolore-bg-app: #0f0d0e;
+    --kolore-bg-card: #1a1618;
+    --kolore-surface-variant: #262023;
+    --kolore-border: #352d31;
+    --kolore-text-main: #faf7f2;
+    --kolore-text-secondary: #a8a29e;
+    --kolore-text-muted: #78716c;
+
+    --itzala-arina: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --itzala-ertaina: 0 8px 20px rgba(0, 0, 0, 0.45);
+    --itzala-sakona: 0 16px 32px rgba(0, 0, 0, 0.55);
 }
 
 * {
@@ -85,6 +130,7 @@ body {
     color: var(--kolore-text-main);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .container {
@@ -109,25 +155,29 @@ section {
     font-family: var(--font-title);
     font-size: 2.15rem;
     font-weight: 800;
-    letter-spacing: 0.75px;
+    letter-spacing: 1px;
     color: var(--kolore-brand-primary);
     margin-bottom: 0.4rem;
+}
+
+[data-theme="dark"] .section-header h2 {
+    color: var(--kolore-gold);
 }
 
 .section-header h2::after {
     content: "";
     display: block;
-    width: 64px;
+    width: 68px;
     height: 3px;
-    background: linear-gradient(90deg, var(--kolore-gold), var(--kolore-success));
-    margin: 0.6rem auto 0;
+    background: linear-gradient(90deg, var(--kolore-brand-primary), var(--kolore-gold));
+    margin: 0.65rem auto 0;
     border-radius: 2px;
 }
 
 .section-header p {
-    color: var(--kolore-text-muted);
-    font-size: 1.05rem;
-    margin-top: 0.5rem;
+    color: var(--kolore-text-secondary);
+    font-size: 1.02rem;
+    margin-top: 0.55rem;
     max-width: 680px;
     margin-left: auto;
     margin-right: auto;
@@ -142,8 +192,8 @@ section {
     justify-content: center;
     padding: 0.8rem 1.75rem;
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.94rem;
+    font-weight: 700;
     letter-spacing: 0.2px;
     border-radius: var(--erradioa);
     text-decoration: none;
@@ -168,7 +218,7 @@ section {
 }
 
 .btn-secondary {
-    background-color: #ffffff;
+    background-color: var(--kolore-bg-card);
     color: var(--kolore-brand-primary);
     border: 1.5px solid var(--kolore-brand-primary);
     box-shadow: var(--itzala-arina);
@@ -176,7 +226,7 @@ section {
 
 .btn-secondary:hover {
     background-color: var(--kolore-brand-light);
-    color: var(--kolore-brand-dark);
+    color: var(--kolore-text-main);
     transform: translateY(-2px);
     box-shadow: var(--itzala-ertaina);
 }
@@ -189,9 +239,9 @@ section {
    OINA (Footer)
    ========================================================================== */
 footer {
-    background-color: var(--kolore-brand-dark);
-    color: #cbd5e1;
-    border-top: 3px solid var(--kolore-gold);
+    background-color: #1a1618;
+    color: #a8a29e;
+    border-top: 2px solid var(--kolore-gold);
     padding: 3rem 1.5rem;
 }
 
@@ -211,20 +261,20 @@ footer {
     font-weight: 800;
     color: var(--kolore-gold);
     display: block;
-    letter-spacing: 1px;
+    letter-spacing: 1.4px;
 }
 
 .footer-slogan {
     font-size: 0.95rem;
-    color: #e2e8f0;
+    color: #faf7f2;
     margin-top: 0.35rem;
     font-style: italic;
 }
 
 .footer-copy {
-    font-size: 0.85rem;
-    color: #94a3b8;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.84rem;
+    color: #78716c;
+    border-top: 1px solid #352d31;
     padding-top: 1.25rem;
     margin-top: 1.25rem;
 }
