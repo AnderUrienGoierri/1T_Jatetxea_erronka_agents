@@ -15,24 +15,24 @@
                      "etxean":  {
                                     "deskribapena":  "Etxeko WiFi Lokala (euskaltel_urite)",
                                     "wifi_ssid":  "euskaltel_urite",
-                                    "api_host":  "192.168.1.100",
+                                    "api_host":  "192.168.1.134",
                                     "api_port":  5050,
-                                    "api_base_url":  "http://192.168.1.100:5050/api/v1",
-                                    "web_url":  "http://192.168.1.100:8085",
-                                    "chat_url":  "http://192.168.1.100:3001",
-                                    "odoo_url":  "http://192.168.1.100:8070",
-                                    "tv_kds_url":  "http://192.168.1.100:8086"
+                                    "api_base_url":  "http://192.168.1.134:5050/api/v1",
+                                    "web_url":  "http://192.168.1.134:8085",
+                                    "chat_url":  "http://192.168.1.134:3001",
+                                    "odoo_url":  "http://192.168.1.134:8070",
+                                    "tv_kds_url":  "http://192.168.1.134:8086"
                                 },
                      "innovatek":  {
                                        "deskribapena":  "Innovatek Sarea (Router ASUS / INN-WPRIVATE / Kablez)",
                                        "wifi_ssid":  "INN-WPRIVATE",
-                                       "api_host":  "10.100.30.112",
+                                       "api_host":  "10.100.30.128",
                                        "api_port":  5050,
-                                       "api_base_url":  "http://10.100.30.112:5050/api/v1",
-                                       "web_url":  "http://10.100.30.112:8085",
-                                       "chat_url":  "http://10.100.30.112:3001",
-                                       "odoo_url":  "http://10.100.30.112:8070",
-                                       "tv_kds_url":  "http://10.100.30.112:8086"
+                                       "api_base_url":  "http://10.100.30.128:5050/api/v1",
+                                       "web_url":  "http://10.100.30.128:8085",
+                                       "chat_url":  "http://10.100.30.128:3001",
+                                       "odoo_url":  "http://10.100.30.128:8070",
+                                       "tv_kds_url":  "http://10.100.30.128:8086"
                                    },
                      "tolosako_etxea":  {
                                             "deskribapena":  "Tolosako Etxeko WiFi Sarea",
