@@ -76,14 +76,15 @@ partial class OrdainketaForm
         pnlHeader.Location = new Point(0, 0);
         pnlHeader.Name = "pnlHeader";
         pnlHeader.Padding = new Padding(24, 16, 24, 16);
-        pnlHeader.Size = new Size(634, 110);
+        pnlHeader.Size = new Size(800, 110);
         pnlHeader.TabIndex = 0;
         // 
         // lblBezInfo
         // 
+        lblBezInfo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblBezInfo.Font = new Font("Segoe UI", 9F);
         lblBezInfo.ForeColor = Color.FromArgb(254, 226, 226);
-        lblBezInfo.Location = new Point(350, 68);
+        lblBezInfo.Location = new Point(516, 68);
         lblBezInfo.Name = "lblBezInfo";
         lblBezInfo.Size = new Size(260, 20);
         lblBezInfo.TabIndex = 3;
@@ -92,9 +93,10 @@ partial class OrdainketaForm
         // 
         // lblTotala
         // 
+        lblTotala.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblTotala.Font = new Font("Segoe UI", 26F, FontStyle.Bold);
         lblTotala.ForeColor = Color.White;
-        lblTotala.Location = new Point(350, 16);
+        lblTotala.Location = new Point(516, 16);
         lblTotala.Name = "lblTotala";
         lblTotala.Size = new Size(260, 48);
         lblTotala.TabIndex = 2;
@@ -174,6 +176,7 @@ partial class OrdainketaForm
         // 
         // pnlBody
         // 
+        pnlBody.AutoScroll = true;
         pnlBody.BackColor = Color.FromArgb(248, 250, 252);
         pnlBody.Controls.Add(_pnlEskudirua);
         pnlBody.Controls.Add(_pnlTxartela);
@@ -182,7 +185,7 @@ partial class OrdainketaForm
         pnlBody.Location = new Point(0, 164);
         pnlBody.Name = "pnlBody";
         pnlBody.Padding = new Padding(24, 18, 24, 18);
-        pnlBody.Size = new Size(634, 442);
+        pnlBody.Size = new Size(800, 442);
         pnlBody.TabIndex = 2;
         // 
         // _pnlBizum
@@ -423,6 +426,7 @@ partial class OrdainketaForm
         // 
         // pnlKanbioaKutxa
         // 
+        pnlKanbioaKutxa.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         pnlKanbioaKutxa.BackColor = Color.White;
         pnlKanbioaKutxa.Controls.Add(_lblKanbioa);
         pnlKanbioaKutxa.Controls.Add(lblKanbioTit);
@@ -502,11 +506,12 @@ partial class OrdainketaForm
         pnlBottom.Location = new Point(0, 606);
         pnlBottom.Name = "pnlBottom";
         pnlBottom.Padding = new Padding(24, 14, 24, 14);
-        pnlBottom.Size = new Size(634, 75);
+        pnlBottom.Size = new Size(800, 75);
         pnlBottom.TabIndex = 3;
         // 
         // _btnKobratu
         // 
+        _btnKobratu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         _btnKobratu.BackColor = Color.FromArgb(136, 19, 55);
         _btnKobratu.Cursor = Cursors.Hand;
         _btnKobratu.FlatAppearance.BorderSize = 0;
@@ -515,7 +520,7 @@ partial class OrdainketaForm
         _btnKobratu.ForeColor = Color.White;
         _btnKobratu.Location = new Point(148, 14);
         _btnKobratu.Name = "_btnKobratu";
-        _btnKobratu.Size = new Size(460, 46);
+        _btnKobratu.Size = new Size(628, 46);
         _btnKobratu.TabIndex = 1;
         _btnKobratu.Text = "KOBRATU ETA TIKETA SORTU";
         _btnKobratu.UseVisualStyleBackColor = false;
@@ -539,18 +544,20 @@ partial class OrdainketaForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(634, 681);
+        ClientSize = new Size(840, 640);
         Controls.Add(pnlBody);
         Controls.Add(pnlBottom);
         Controls.Add(pnlTabs);
         Controls.Add(pnlHeader);
         Font = new Font("Segoe UI", 9.5F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = false;
         MinimizeBox = false;
+        MinimumSize = new Size(720, 540);
         Name = "OrdainketaForm";
         StartPosition = FormStartPosition.CenterParent;
         Text = "T1 Jatetxea - Kontua Kobratu (POS)";
+        WindowState = FormWindowState.Normal;
         pnlHeader.ResumeLayout(false);
         pnlHeader.PerformLayout();
         pnlTabs.ResumeLayout(false);

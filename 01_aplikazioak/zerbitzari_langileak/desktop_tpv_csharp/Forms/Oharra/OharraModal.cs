@@ -1,3 +1,5 @@
+using Jatetxea.Desktop.UI;
+
 namespace Jatetxea.Desktop.Forms;
 
 public partial class OharraModal : Form
@@ -29,12 +31,79 @@ public partial class OharraModal : Form
         InitializeComponent();
         Oharra = unekoOharra;
 
+        // T1 Warm Hospitality v2.0 paleta + DoubleBuffering
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        pnlGoiburua.BackColor = Theme.MarbleWhite;
+        pnlBehekoa.BackColor = Theme.MarbleWhite;
+        pnlPresets.BackColor = Theme.WarmLinen;
+        lblTitulua.Font = Theme.DisplayFont(13.5f);
+        lblTitulua.ForeColor = Theme.ChiantiPrimary;
+        Theme.StyleButton(btnGorde, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 10.5f);
+        Theme.StyleButton(btnKendu, Theme.DangerBg, Theme.Danger, Theme.DangerBorder, radius: 10, fontSize: 10f);
+        Theme.StyleButton(btnUtzi, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+
         lblPlaterIzena.Text = platerIzena;
         txtOharra.Text = unekoOharra ?? string.Empty;
 
         SortuPresetBotoiak();
         LotuEkitaldiak();
         EguneratuUI();
+
+        Resize += (s, e) => EgokituResponsiveDiseinua();
+        Load += (s, e) =>
+        {
+            Theme.ApplyModalDpiSize(this, 760, 560, 620, 460);
+            EgokituResponsiveDiseinua();
+        };
+    }
+
+    /// <summary>
+    /// Visual Studio WinForms Designer-erako eraikitzailea
+    /// </summary>
+    public OharraModal() : this("Plateraren Izena", null)
+    {
+    }
+
+    private void EgokituResponsiveDiseinua()
+    {
+        int S(int px) => Theme.S(this, px);
+        pnlGoiburua.Height = S(76);
+        pnlBehekoa.Height = S(78);
+
+        int contentW = Math.Clamp(ClientSize.Width - S(48), S(500), S(860));
+        int leftX = (ClientSize.Width - contentW) / 2;
+
+        lblTitulua.SetBounds(leftX, S(10), contentW, S(28));
+        lblPlaterIzena.SetBounds(leftX, S(40), contentW, S(26));
+
+        int topY = pnlGoiburua.Bottom + S(12);
+        int bottomLimit = pnlBehekoa.Top - S(14);
+        int availH = Math.Max(S(200), bottomLimit - topY);
+
+        lblPresetsTit.SetBounds(leftX, topY, contentW, S(24));
+        int presetsH = Math.Clamp((int)(availH * 0.45), S(105), S(240));
+        pnlPresets.SetBounds(leftX, topY + S(26), contentW, presetsH);
+
+        int idatziY = pnlPresets.Bottom + S(10);
+        int karW = S(180);
+        lblIdatziTit.SetBounds(leftX, idatziY, contentW - karW, S(24));
+        lblKaraktereak.SetBounds(leftX + contentW - karW, idatziY, karW, S(24));
+
+        int txtY = idatziY + S(26);
+        int txtH = Math.Max(S(64), bottomLimit - txtY);
+        txtOharra.SetBounds(leftX, txtY, contentW, txtH);
+
+        // Beheko 3 botoiak proportzionalki banatu
+        int gap = S(12);
+        int btnH = S(46);
+        int btnY = (pnlBehekoa.Height - btnH) / 2;
+        int btnGordeW = (int)(contentW * 0.42);
+        int btnKenduW = (int)(contentW * 0.34);
+        int btnUtziW = contentW - btnGordeW - btnKenduW - gap * 2;
+        btnGorde.SetBounds(leftX, btnY, btnGordeW, btnH);
+        btnKendu.SetBounds(btnGorde.Right + gap, btnY, btnKenduW, btnH);
+        btnUtzi.SetBounds(btnKendu.Right + gap, btnY, btnUtziW, btnH);
     }
 
     private void SortuPresetBotoiak()

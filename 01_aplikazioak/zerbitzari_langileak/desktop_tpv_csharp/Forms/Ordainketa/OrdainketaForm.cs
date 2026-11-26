@@ -2,6 +2,7 @@ using System.Drawing.Drawing2D;
 using System.Text.RegularExpressions;
 using Jatetxea.Desktop.Models;
 using Jatetxea.Desktop.Services;
+using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
@@ -30,6 +31,22 @@ public partial class OrdainketaForm : Form
         _api = api;
 
         InitializeComponent();
+
+        // T1 Warm Hospitality v2.0 paleta + DoubleBuffering
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        pnlBody.BackColor = Theme.WarmLinen;
+        pnlTabs.BackColor = Theme.MarbleWhite;
+        pnlBottom.BackColor = Theme.MarbleWhite;
+        lblTit.Font = Theme.DisplayFont(15f);
+        lblTotala.Font = Theme.MonoFont(24f, bold: true);
+        _lblKanbioa.Font = Theme.MonoFont(22f, bold: true);
+        _txtJasotakoa.Font = Theme.MonoFont(18f, bold: true);
+        Theme.StyleButton(btnUtzi, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+        Theme.StyleButton(_btnKobratu, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 12, fontSize: 11f);
+        Theme.ApplyRoundedRegion(_btnEskudiruaTab, 10);
+        Theme.ApplyRoundedRegion(_btnTxartelaTab, 10);
+        Theme.ApplyRoundedRegion(_btnBizumTab, 10);
 
         Text = $"T1 Jatetxea - Mahaia {_mahaia.Zenbakia} Kontua Kobratu (POS)";
 
@@ -96,8 +113,103 @@ public partial class OrdainketaForm : Form
         btnUtzi.Click += (s, e) => { DialogResult = DialogResult.Cancel; Close(); };
         _btnKobratu.Click += async (s, e) => await ExekutatuOrdainketaAsync();
 
+        // Responsive: 3 ordainketa-fitxak eta barruko eremuak zabalera guztian banatu (DPI eskalatua)
+        pnlTabs.Resize += (s, e) => EgokituOrdainketaResponsive();
+        Resize += (s, e) => EgokituOrdainketaResponsive();
+        Load += (s, e) =>
+        {
+            Theme.ApplyModalDpiSize(this, 880, 680, 740, 560);
+            EgokituOrdainketaResponsive();
+        };
+
         AldatuMota("Eskudirua");
         EguneratuKanbioa();
+    }
+
+    private void EgokituOrdainketaResponsive()
+    {
+        int S(int px) => Theme.S(this, px);
+
+        // 1. Goiko Chianti barra (titulu/azpititulu eta totala/BEZ gainjarpenik gabe)
+        pnlHeader.Height = S(104);
+        int pad = S(24);
+        int hdrW = pnlHeader.ClientSize.Width;
+        int rightW = S(280);
+        lblTit.AutoSize = false;
+        lblTit.SetBounds(pad, S(14), Math.Max(S(260), hdrW - rightW - pad * 2), S(38));
+        lblSub.AutoSize = false;
+        lblSub.SetBounds(pad, S(58), Math.Max(S(260), hdrW - rightW - pad * 2), S(28));
+
+        lblTotala.AutoSize = false;
+        lblTotala.TextAlign = ContentAlignment.MiddleRight;
+        lblTotala.SetBounds(hdrW - rightW - pad, S(10), rightW, S(48));
+        lblBezInfo.AutoSize = false;
+        lblBezInfo.TextAlign = ContentAlignment.MiddleRight;
+        lblBezInfo.SetBounds(hdrW - rightW - pad, S(62), rightW, S(26));
+
+        // 2. 3 ordainketa-fitxa proportzionalak
+        pnlTabs.Height = S(62);
+        int gap = S(12);
+        int availW = Math.Max(S(500), pnlTabs.ClientSize.Width - pad * 2);
+        int tabW = (availW - gap * 2) / 3;
+        int tabH = S(42);
+        int tabY = (pnlTabs.Height - tabH) / 2;
+        _btnEskudiruaTab.SetBounds(pad, tabY, tabW, tabH);
+        _btnTxartelaTab.SetBounds(pad + tabW + gap, tabY, tabW, tabH);
+        _btnBizumTab.SetBounds(pad + (tabW + gap) * 2, tabY, tabW, tabH);
+
+        // 3. Gorputza: Eskudirua, Txartela, Bizum guztiz DPI-eskalatuta
+        pnlBody.Padding = new Padding(S(24), S(18), S(24), S(18));
+        int innerW = Math.Max(S(460), pnlBody.ClientSize.Width - S(64));
+
+        // 3a) Eskudirua
+        lblJasotakoaTit.SetBounds(S(6), S(6), innerW, S(26));
+        _txtJasotakoa.SetBounds(S(6), S(38), S(240), S(46));
+        lblEuro.SetBounds(_txtJasotakoa.Right + S(10), S(42), S(34), S(38));
+
+        pnlAzkarrak.SetBounds(S(6), S(98), innerW, S(50));
+        foreach (Control c in pnlAzkarrak.Controls)
+        {
+            if (c is Button b)
+            {
+                var sz = TextRenderer.MeasureText(b.Text, b.Font);
+                b.Size = new Size(Math.Max(S(82), sz.Width + S(26)), S(40));
+                b.Margin = new Padding(0, 0, S(8), S(6));
+            }
+        }
+
+        pnlKanbioaKutxa.SetBounds(S(6), S(162), innerW, S(108));
+        lblKanbioTit.SetBounds(S(18), S(14), innerW - S(36), S(24));
+        _lblKanbioa.SetBounds(S(18), S(44), innerW - S(36), S(50));
+
+        // 3b) Txartela
+        lblTxartelTit.SetBounds(S(6), S(6), innerW, S(24));
+        _txtTxartelZenbakia.SetBounds(S(6), S(34), S(340), S(36));
+        _lblTxartelMarka.SetBounds(_txtTxartelZenbakia.Right + S(12), S(36), S(180), S(32));
+        lblIraungTit.SetBounds(S(6), S(82), S(160), S(24));
+        _txtIraungitzea.SetBounds(S(6), S(110), S(140), S(34));
+        lblCvvTit.SetBounds(S(168), S(82), S(100), S(24));
+        _txtCvv.SetBounds(S(168), S(110), S(100), S(34));
+        lblTitularTit.SetBounds(S(290), S(82), Math.Max(S(200), innerW - S(296)), S(24));
+        _txtTitularra.SetBounds(S(290), S(110), Math.Max(S(200), innerW - S(296)), S(34));
+        btnPresetVisa.SetBounds(S(6), S(160), S(190), S(36));
+        btnPresetMastercard.SetBounds(btnPresetVisa.Right + S(12), S(160), S(220), S(36));
+        lblSegurtasuna.SetBounds(S(6), S(210), innerW, S(46));
+
+        // 3c) Bizum
+        lblBizumTit.SetBounds(S(6), S(6), innerW, S(24));
+        _txtBizumTelefonoa.SetBounds(S(6), S(36), S(260), S(40));
+        _lblBizumValid.SetBounds(_txtBizumTelefonoa.Right + S(14), S(40), S(240), S(32));
+        btnPresetBizum.SetBounds(S(6), S(90), S(230), S(38));
+        lblBizumInfo.SetBounds(S(6), S(144), innerW, S(54));
+
+        // 4. Beheko barra (Utzi + Kobratu botoiak)
+        pnlBottom.Height = S(78);
+        int bH = S(46);
+        int bY = (pnlBottom.Height - bH) / 2;
+        int utziW = S(110);
+        btnUtzi.SetBounds(pad, bY, utziW, bH);
+        _btnKobratu.SetBounds(btnUtzi.Right + S(14), bY, Math.Max(S(260), pnlBottom.ClientSize.Width - btnUtzi.Right - S(14) - pad), bH);
     }
 
     private void SortuBotoiAzkarra(FlowLayoutPanel pnl, string testua, decimal zenbatekoa)
@@ -105,15 +217,10 @@ public partial class OrdainketaForm : Form
         var btn = new Button
         {
             Text = testua,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-            Size = new Size(88, 38),
-            BackColor = Color.FromArgb(241, 245, 249),
-            ForeColor = Color.FromArgb(30, 41, 59),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Margin = new Padding(0, 0, 8, 0)
+            Size = new Size(Theme.S(this, 88), Theme.S(this, 40)),
+            Margin = new Padding(0, 0, Theme.S(this, 8), 0)
         };
-        btn.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+        Theme.StyleButton(btn, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 8, fontSize: 9.5f);
         btn.Click += (s, e) =>
         {
             _txtJasotakoa.Text = $"{zenbatekoa:F2}";

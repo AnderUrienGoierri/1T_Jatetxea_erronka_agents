@@ -7,7 +7,7 @@ static class Program
     {
         try
         {
-            Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         }
         catch { }
 

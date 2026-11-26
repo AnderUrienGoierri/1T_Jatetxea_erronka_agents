@@ -17,6 +17,8 @@ public partial class ErreserbakForm : Form
 
     private List<ErreserbaDto> _erreserbaGuztiak = new();
     private Dictionary<string, List<ErreserbaDto>> _erreserbakDataMap = new();
+    private readonly System.Windows.Forms.Timer _autoRefreshTimer = new() { Interval = 5000 };
+    private bool _kargatzen = false;
 
     private readonly (string Kodea, string Izena, string Ordutegia)[] _txandak = new[]
     {
@@ -45,17 +47,27 @@ public partial class ErreserbakForm : Form
 
         InitializeComponent();
 
+        // T1 Warm Hospitality v2.0 paleta + parpadeorik gabeko DoubleBuffering
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        pnlLeftCalendar.BackColor = Theme.MarbleWhite;
+        _pnlRightDetails.BackColor = Theme.WarmLinen;
+        pnlSelectedDayHeader.BackColor = Theme.MarbleWhite;
+        Theme.StyleButton(btnFreskatu, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 9.5f);
+        Theme.StyleButton(btnBerriaTop, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 9.5f);
+        Theme.StyleButton(btnEgunekoErreserba, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 9.5f);
+
         if (!string.IsNullOrWhiteSpace(_langilea.Izena))
         {
             lblSub.Text = $"Kudeatzailea: {_langilea.Izena} ({_langilea.Rola}) · Telefonoz eta Pertsonan jasotako erreserbak";
         }
 
-        btnFreskatu.Click += async (s, e) => await KargatuErreserbakGuztiakAsync();
+        btnFreskatu.Click += async (s, e) => await KargatuErreserbakGuztiakAsync(behartu: true);
         btnBerriaTop.Click += (s, e) => IrekiErreserbaBerria(_hautatutakoData);
 
         pnlLeftCalendar.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
+            using var pen = new Pen(Theme.WarmTaupe, 1.2f);
             e.Graphics.DrawLine(pen, pnlLeftCalendar.Width - 1, 0, pnlLeftCalendar.Width - 1, pnlLeftCalendar.Height);
         };
 
@@ -100,21 +112,149 @@ public partial class ErreserbakForm : Form
 
         btnEgunekoErreserba.Click += (s, e) => IrekiErreserbaBerria(_hautatutakoData);
 
-        Load += async (s, e) => await KargatuErreserbakGuztiakAsync();
+        _autoRefreshTimer.Tick += async (s, e) => await KargatuErreserbakGuztiakAsync(behartu: false);
+
+        FormClosing += (s, e) =>
+        {
+            _autoRefreshTimer.Stop();
+            _autoRefreshTimer.Dispose();
+        };
+
+        Load += async (s, e) =>
+        {
+            EgokituResponsiveDiseinua();
+            await KargatuErreserbakGuztiakAsync(behartu: true);
+            _autoRefreshTimer.Start();
+        };
+
+        Resize += (s, e) => EgokituResponsiveDiseinua();
+    }
+
+    private void EgokituResponsiveDiseinua()
+    {
+        int S(int px) => Theme.S(this, px);
+        bool estua = ClientSize.Width < S(1040);
+
+        // 1. Goiko Chianti barra (DPI-rekin eskalatuta, titulu/azpititulu gainjarpenik gabe)
+        pnlHeader.Height = S(86);
+        lblTit.Font = Theme.DisplayFont(13.5f);
+        lblTit.ForeColor = Theme.MarbleWhite;
+        lblTit.Location = new Point(S(24), S(14));
+        lblSub.Font = Theme.BodyFont(9.2f, bold: false);
+        lblSub.ForeColor = Theme.ChiantiTint;
+        lblSub.Location = new Point(S(25), S(48));
+        lblSub.Visible = ClientSize.Width >= S(900);
+
+        int btnH = S(40);
+        int btnY = (pnlHeader.Height - btnH) / 2;
+        int wBerria = S(186);
+        int wFres = S(112);
+        btnBerriaTop.SetBounds(pnlHeader.Width - wBerria - S(24), btnY, wBerria, btnH);
+        btnFreskatu.SetBounds(btnBerriaTop.Left - wFres - S(12), btnY, wFres, btnH);
+
+        // 2. Ezkerreko egutegia
+        pnlLeftCalendar.Width = estua ? S(380) : S(490);
+        pnlLeftCalendar.Padding = new Padding(S(16), S(14), S(16), S(14));
+        pnlMonthNav.Height = S(44);
+        int navBtnW = S(38);
+        int navBtnH = S(36);
+        int navBtnY = (pnlMonthNav.Height - navBtnH) / 2;
+        btnPrevMonth.SetBounds(0, navBtnY, navBtnW, navBtnH);
+        btnNextMonth.SetBounds(pnlMonthNav.ClientSize.Width - navBtnW, navBtnY, navBtnW, navBtnH);
+        _lblMonthTitle.SetBounds(btnPrevMonth.Right + S(6), 0, Math.Max(S(120), btnNextMonth.Left - btnPrevMonth.Right - S(12)), pnlMonthNav.Height);
+        _pnlMonthPills.AutoScroll = true;
+        _pnlMonthPills.Height = S(46);
+        pnlDayHeaders.Height = S(30);
+        _pnlDayGrid.Height = ClientSize.Height < S(600) ? S(250) : S(340);
+
+        // 3. Eskuineko egun-hautatu goiburua (titulu eta estatistika bananduta!)
+        _pnlRightDetails.Padding = estua ? new Padding(S(14), S(12), S(14), S(12)) : new Padding(S(24), S(16), S(24), S(20));
+        pnlSelectedDayHeader.Height = S(84);
+        _lblSelectedDayTitle.Font = Theme.BodyFont(13f, bold: true);
+        _lblSelectedDayTitle.ForeColor = Theme.EspressoInk;
+        _lblSelectedDayTitle.Location = new Point(S(20), S(12));
+        _lblSelectedDayStats.Font = Theme.BodyFont(9.5f, bold: true);
+        _lblSelectedDayStats.ForeColor = Theme.ChiantiPrimary;
+        _lblSelectedDayStats.Location = new Point(S(20), S(48));
+
+        btnEgunekoErreserba.Text = estua ? "+ Erreserbatu" : "+ Egun honetan erreserbatu";
+        var btnSz = TextRenderer.MeasureText(btnEgunekoErreserba.Text, btnEgunekoErreserba.Font);
+        int btnDayW = Math.Max(S(140), btnSz.Width + S(30));
+        int btnDayH = S(40);
+        btnEgunekoErreserba.SetBounds(pnlSelectedDayHeader.Width - btnDayW - S(18), (pnlSelectedDayHeader.Height - btnDayH) / 2, btnDayW, btnDayH);
+
+        // 4. Txanden txartelak zabalera guztira egokitu
+        int targetW = Math.Max(S(340), _pnlTurnosContainer.ClientSize.Width - S(28));
+        _pnlTurnosContainer.SuspendLayout();
+        foreach (Control box in _pnlTurnosContainer.Controls)
+        {
+            if (box is Panel p)
+            {
+                p.Width = targetW;
+                foreach (Control child in p.Controls)
+                {
+                    if (child is Panel card)
+                    {
+                        card.Width = Math.Max(S(280), targetW - S(32));
+                    }
+                }
+                p.Invalidate();
+            }
+        }
+        _pnlTurnosContainer.ResumeLayout(true);
     }
 
     /// <summary>
-    /// Zerbitzariko erreserba guztiak deskargatzen ditu eta dataren arabera antolatzen ditu.
+    /// Zerbitzariko erreserba guztiak deskargatzen ditu eta soilik aldaketak badaude eguneratzen du UI-a (AJAX diff, 0 parpadeo).
     /// </summary>
-    private async Task KargatuErreserbakGuztiakAsync()
+    private async Task KargatuErreserbakGuztiakAsync(bool behartu = true)
     {
-        _erreserbaGuztiak = await _api.GetErreserbakAsync();
-        _erreserbakDataMap = _erreserbaGuztiak
-            .Where(x => !string.IsNullOrWhiteSpace(x.Data))
-            .GroupBy(x => x.Data)
-            .ToDictionary(g => g.Key, g => g.ToList());
+        if (_kargatzen) return;
+        _kargatzen = true;
+        try
+        {
+            var berriak = await _api.GetErreserbakAsync();
+            if (IsDisposed) return;
 
-        EguneratuHilabeteIkuspegia();
+            if (!behartu && !ErreserbakAldatuDira(_erreserbaGuztiak, berriak))
+            {
+                return;
+            }
+
+            _erreserbaGuztiak = berriak;
+            _erreserbakDataMap = _erreserbaGuztiak
+                .Where(x => !string.IsNullOrWhiteSpace(x.Data))
+                .GroupBy(x => x.Data)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            UiPerf.RunFlickerFree(this, () => EguneratuHilabeteIkuspegia(), preserveScroll: true);
+        }
+        catch
+        {
+            // Auto-freskatze isilean erroreak ez blokeatu UI-a
+        }
+        finally
+        {
+            _kargatzen = false;
+        }
+    }
+
+    private static bool ErreserbakAldatuDira(List<ErreserbaDto> a, List<ErreserbaDto> b)
+    {
+        if (a.Count != b.Count) return true;
+        for (int i = 0; i < a.Count; i++)
+        {
+            if (a[i].Id != b[i].Id ||
+                a[i].MahaiaId != b[i].MahaiaId ||
+                a[i].PertsonaKopurua != b[i].PertsonaKopurua ||
+                !string.Equals(a[i].Data, b[i].Data, StringComparison.Ordinal) ||
+                !string.Equals(a[i].Txanda, b[i].Txanda, StringComparison.Ordinal) ||
+                !string.Equals(a[i].Egoera, b[i].Egoera, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -156,19 +296,24 @@ public partial class ErreserbakForm : Form
             string laburra = hIzena.Length > 4 ? hIzena.Substring(0, 4) : hIzena;
             string testua = i == 0 ? $"{laburra}* ({hErreserbak})" : $"{laburra} ({hErreserbak})";
 
+            var pillFont = Theme.BodyFont(8.5f, bold: isCurrentSelected || hErreserbak > 0);
+            var sz = TextRenderer.MeasureText(testua, pillFont);
+            int pillW = Math.Max(Theme.S(this, 82), sz.Width + Theme.S(this, 18));
+
             var btnPill = new Button
             {
                 Text = testua,
-                Size = new Size(90, 32),
-                Margin = new Padding(2, 2, 2, 2),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = isCurrentSelected ? Theme.AccentWine : (hErreserbak > 0 ? Color.FromArgb(253, 242, 248) : Color.White),
-                ForeColor = isCurrentSelected ? Color.White : (hErreserbak > 0 ? Theme.AccentWine : Color.FromArgb(51, 65, 85)),
-                Font = new Font("Segoe UI", 8.2F, isCurrentSelected || hErreserbak > 0 ? FontStyle.Bold : FontStyle.Regular),
-                Cursor = Cursors.Hand
+                Size = new Size(pillW, Theme.S(this, 34)),
+                Margin = new Padding(Theme.S(this, 2), Theme.S(this, 4), Theme.S(this, 4), Theme.S(this, 4))
             };
-            btnPill.FlatAppearance.BorderColor = isCurrentSelected ? Theme.AccentWine : (hErreserbak > 0 ? Color.FromArgb(244, 114, 182) : Color.FromArgb(203, 213, 225));
-            btnPill.FlatAppearance.BorderSize = isCurrentSelected ? 0 : 1;
+            Theme.StyleButton(
+                btnPill,
+                isCurrentSelected ? Theme.ChiantiPrimary : (hErreserbak > 0 ? Theme.ChiantiTint : Theme.MarbleWhite),
+                isCurrentSelected ? Theme.MarbleWhite : (hErreserbak > 0 ? Theme.ChiantiPrimary : Theme.EspressoInk),
+                isCurrentSelected ? null : (hErreserbak > 0 ? Theme.ChiantiPrimary : Theme.WarmTaupe),
+                radius: 8,
+                fontSize: 8.5f,
+                bold: isCurrentSelected || hErreserbak > 0);
 
             var captureHil = hil;
             btnPill.Click += (s, e) =>
@@ -336,7 +481,7 @@ public partial class ErreserbakForm : Form
             ? $"Guztira: {guztiraErreserbak} erreserba egun honetan ({guztiraPax} pertsona)"
             : "Ez dago erreserbarik egun honetan (Mahaia guztiak libre)";
 
-        int containerWidth = Math.Max(580, _pnlRightDetails.Width - 55);
+        int containerWidth = Math.Max(320, _pnlTurnosContainer.ClientSize.Width - 26);
 
         foreach (var (kodea, izena, ordutegia) in _txandak)
         {
@@ -356,98 +501,99 @@ public partial class ErreserbakForm : Form
     /// </summary>
     private Control SortuTxandaBlokea(string kodea, string izena, string ordutegia, List<ErreserbaDto> txandakoak, int width)
     {
+        int S(int px) => Theme.S(this, px);
         var box = new Panel
         {
             Width = width,
-            AutoSize = true,
-            BackColor = Color.White,
-            Margin = new Padding(0, 0, 0, 16),
-            Padding = new Padding(16)
+            AutoSize = false,
+            BackColor = Theme.MarbleWhite,
+            Margin = new Padding(0, 0, 0, S(14)),
+            Padding = new Padding(S(16))
         };
         box.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.2f);
+            using var pen = new Pen(Theme.WarmTaupe, 1.2f);
             e.Graphics.DrawRectangle(pen, 0, 0, box.Width - 1, box.Height - 1);
 
-            // Ezkerreko kolore zinta
-            Color ribbonColor = kodea.StartsWith("Bazkaria") ? Color.FromArgb(234, 88, 12) : Theme.Purple;
+            Color ribbonColor = kodea.StartsWith("Bazkaria") ? Theme.Warning : Theme.Purple;
             using var brush = new SolidBrush(ribbonColor);
-            e.Graphics.FillRectangle(brush, 0, 0, 5, box.Height);
+            e.Graphics.FillRectangle(brush, 0, 0, S(5), box.Height);
         };
 
-        int curY = 12;
+        int curY = S(14);
 
         // Txanda Goiburua
         var lblTxandaTit = new Label
         {
             Text = $"{izena} ({ordutegia})",
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(15, 23, 42),
-            Location = new Point(14, curY),
+            Font = Theme.BodyFont(11f, bold: true),
+            ForeColor = Theme.EspressoInk,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(S(16), curY),
             AutoSize = true
         };
 
+        var titSz = TextRenderer.MeasureText(lblTxandaTit.Text, lblTxandaTit.Font);
         int paxGuztira = txandakoak.Sum(x => x.PertsonaKopurua);
         var lblTxandaInfo = new Label
         {
             Text = txandakoak.Count > 0 ? $"{txandakoak.Count} erreserba · {paxGuztira} lagun" : "0 erreserba",
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-            ForeColor = txandakoak.Count > 0 ? Theme.AccentWine : Color.FromArgb(100, 116, 139),
-            Location = new Point(230, curY + 2),
+            Font = Theme.BodyFont(9f, bold: true),
+            ForeColor = txandakoak.Count > 0 ? Theme.ChiantiPrimary : Theme.StoneMuted,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(S(16) + titSz.Width + S(16), curY + S(3)),
             AutoSize = true
         };
 
+        int btnW = S(130);
+        int btnH = S(34);
         var btnGehituTxandan = new Button
         {
             Text = "+ Erreserbatu",
-            Size = new Size(115, 28),
+            Size = new Size(btnW, btnH),
             Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            Location = new Point(box.Width - 135, curY - 2),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(240, 253, 244),
-            ForeColor = Color.FromArgb(22, 163, 74),
-            Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
-            Cursor = Cursors.Hand
+            Location = new Point(box.Width - btnW - S(16), curY - S(2))
         };
-        btnGehituTxandan.FlatAppearance.BorderColor = Color.FromArgb(187, 247, 208);
+        Theme.StyleButton(btnGehituTxandan, Theme.SuccessBg, Theme.Success, Theme.SuccessBorder, radius: 8, fontSize: 9f);
         btnGehituTxandan.Click += (s, e) => IrekiErreserbaBerria(_hautatutakoData, kodea);
 
         box.Resize += (s, e) =>
         {
-            btnGehituTxandan.Location = new Point(box.Width - 135, 10);
+            btnGehituTxandan.Location = new Point(box.Width - btnGehituTxandan.Width - S(16), S(12));
         };
 
         box.Controls.Add(lblTxandaTit);
         box.Controls.Add(lblTxandaInfo);
         box.Controls.Add(btnGehituTxandan);
 
-        curY += 36;
+        curY += S(44);
 
         if (txandakoak.Count == 0)
         {
             var lblHutsa = new Label
             {
-                Text = "Ez dago erreserbarik txanda honetan (Mahaia guztiak libre daude).",
-                Font = new Font("Segoe UI", 9F, FontStyle.Italic),
-                ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(14, curY),
-                Size = new Size(width - 30, 24)
+                Text = "Ez dago erreserbarik txanda honetan (Mahai guztiak libre daude).",
+                Font = new Font("Segoe UI", 9f, FontStyle.Italic),
+                ForeColor = Theme.StoneMuted,
+                BackColor = Theme.MarbleWhite,
+                Location = new Point(S(16), curY),
+                Size = new Size(Math.Max(S(240), width - S(36)), S(26))
             };
             box.Controls.Add(lblHutsa);
-            curY += 28;
+            curY += S(32);
         }
         else
         {
             foreach (var err in txandakoak)
             {
-                var card = SortuErreserbaTxartelTxikia(err, width - 36);
-                card.Location = new Point(14, curY);
+                var card = SortuErreserbaTxartelTxikia(err, width - S(36));
+                card.Location = new Point(S(16), curY);
                 box.Controls.Add(card);
-                curY += card.Height + 10;
+                curY += card.Height + S(10);
             }
         }
 
-        box.Height = curY + 8;
+        box.Height = curY + S(10);
         return box;
     }
 

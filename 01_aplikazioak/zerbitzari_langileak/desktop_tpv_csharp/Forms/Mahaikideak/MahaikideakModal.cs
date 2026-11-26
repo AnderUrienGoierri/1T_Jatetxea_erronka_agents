@@ -1,4 +1,5 @@
 using Jatetxea.Desktop.Models;
+using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
@@ -14,6 +15,19 @@ public partial class MahaikideakModal : Form
     public MahaikideakModal()
     {
         InitializeComponent();
+
+        // T1 Warm Hospitality v2.0 paleta + DoubleBuffering
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        lblTitulua.Font = Theme.DisplayFont(16f);
+        lblTitulua.ForeColor = Theme.ChiantiPrimary;
+        lblKopuruaTestua.Font = Theme.MonoFont(15f, bold: true);
+        lblKopuruaTestua.ForeColor = Theme.EspressoInk;
+        Theme.StyleButton(btnMinus, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 14f);
+        Theme.StyleButton(btnPlus, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 14f);
+        Theme.StyleButton(btnUtzi, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 10.5f);
+        Theme.StyleButton(btnJarraitu, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 10.5f);
+
         KonfiguratuBotoiak();
     }
 
@@ -58,7 +72,50 @@ public partial class MahaikideakModal : Form
         btnMinus.Click += (s, e) => AldatuKopurua(-1);
         btnPlus.Click += (s, e) => AldatuKopurua(1);
 
+        Resize += (s, e) => EgokituResponsiveDiseinua();
+        Load += (s, e) =>
+        {
+            Theme.ApplyModalDpiSize(this, 720, 540, 620, 470);
+            EgokituResponsiveDiseinua();
+        };
+
         EguneratuUI();
+    }
+
+    private void EgokituResponsiveDiseinua()
+    {
+        int S(int px) => Theme.S(this, px);
+        int contentW = Math.Clamp(ClientSize.Width - S(48), S(460), S(740));
+        int leftX = (ClientSize.Width - contentW) / 2;
+        int availH = ClientSize.Height;
+
+        int titH = S(42);
+        int subH = S(28);
+        int stepH = S(56);
+        int actH = S(58);
+        int gridH = Math.Clamp(availH - titH - subH - stepH - actH - S(72), S(140), S(240));
+        int totalH = titH + subH + S(12) + gridH + S(14) + stepH + S(16) + actH;
+        int y = Math.Max(S(14), (availH - totalH) / 2);
+
+        lblTitulua.SetBounds(leftX, y, contentW, titH);
+        y += titH;
+        lblAzpititulua.SetBounds(leftX, y, contentW, subH);
+        y += subH + S(12);
+        pnlSareta.SetBounds(leftX, y, contentW, gridH);
+        y += gridH + S(14);
+
+        pnlStepper.SetBounds(leftX, y, contentW, stepH);
+        int btnStepW = S(64);
+        btnMinus.SetBounds(S(4), S(4), btnStepW, stepH - S(8));
+        btnPlus.SetBounds(contentW - btnStepW - S(4), S(4), btnStepW, stepH - S(8));
+        lblKopuruaTestua.SetBounds(btnStepW + S(10), S(4), contentW - (btnStepW + S(10)) * 2, stepH - S(8));
+        y += stepH + S(16);
+
+        pnlEkintzak.SetBounds(leftX, y, contentW, actH);
+        int gap = S(16);
+        int halfW = (contentW - gap - S(8)) / 2;
+        btnUtzi.SetBounds(S(4), S(4), halfW, actH - S(8));
+        btnJarraitu.SetBounds(btnUtzi.Right + gap, S(4), halfW, actH - S(8));
     }
 
     private void AldatuKopurua(int aldaketa)

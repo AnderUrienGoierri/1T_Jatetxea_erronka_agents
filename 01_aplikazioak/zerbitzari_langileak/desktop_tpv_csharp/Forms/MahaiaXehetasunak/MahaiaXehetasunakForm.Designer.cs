@@ -169,16 +169,17 @@ partial class MahaiaXehetasunakForm
         btnEgoeraGarbitzen.Text = "Garbitzeko";
         btnEgoeraGarbitzen.UseVisualStyleBackColor = false;
         // 
-        // pnlEskuina (Ekintza botoiak eta laburpena - 440px)
+        // pnlEskuina (Ekintza botoiak eta laburpena - Responsive)
         // 
+        pnlEskuina.AutoScroll = true;
         pnlEskuina.BackColor = Color.FromArgb(248, 250, 252);
         pnlEskuina.Controls.Add(pnlActions);
         pnlEskuina.Controls.Add(pnlSummaryCard);
         pnlEskuina.Dock = DockStyle.Right;
         pnlEskuina.Location = new Point(830, 88);
         pnlEskuina.Name = "pnlEskuina";
-        pnlEskuina.Padding = new Padding(16, 16, 24, 16);
-        pnlEskuina.Size = new Size(450, 712);
+        pnlEskuina.Padding = new Padding(14, 14, 18, 14);
+        pnlEskuina.Size = new Size(420, 712);
         pnlEskuina.TabIndex = 2;
         // 
         // pnlSummaryCard
@@ -191,160 +192,172 @@ partial class MahaiaXehetasunakForm
         pnlSummaryCard.Controls.Add(pnlDividerSummary);
         pnlSummaryCard.Controls.Add(lblSummaryTitle);
         pnlSummaryCard.Dock = DockStyle.Top;
-        pnlSummaryCard.Location = new Point(16, 16);
+        pnlSummaryCard.Location = new Point(14, 14);
         pnlSummaryCard.Name = "pnlSummaryCard";
-        pnlSummaryCard.Padding = new Padding(18);
-        pnlSummaryCard.Size = new Size(410, 275);
+        pnlSummaryCard.Padding = new Padding(16);
+        pnlSummaryCard.Size = new Size(388, 245);
         pnlSummaryCard.TabIndex = 0;
         // 
         // lblEgoeraOrokorra
         // 
-        lblEgoeraOrokorra.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+        lblEgoeraOrokorra.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblEgoeraOrokorra.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblEgoeraOrokorra.ForeColor = Color.FromArgb(180, 83, 9);
-        lblEgoeraOrokorra.Location = new Point(18, 196);
+        lblEgoeraOrokorra.Location = new Point(16, 182);
         lblEgoeraOrokorra.Name = "lblEgoeraOrokorra";
-        lblEgoeraOrokorra.Size = new Size(374, 60);
+        lblEgoeraOrokorra.Size = new Size(356, 48);
         lblEgoeraOrokorra.TabIndex = 5;
         lblEgoeraOrokorra.Text = "Platerak sukaldera bidaltzeke daude";
         lblEgoeraOrokorra.TextAlign = ContentAlignment.MiddleCenter;
         // 
         // lblGuztira
         // 
-        lblGuztira.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+        lblGuztira.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblGuztira.Font = new Font("Segoe UI", 16.5F, FontStyle.Bold);
         lblGuztira.ForeColor = Color.FromArgb(30, 41, 59);
-        lblGuztira.Location = new Point(18, 138);
+        lblGuztira.Location = new Point(16, 128);
         lblGuztira.Name = "lblGuztira";
-        lblGuztira.Size = new Size(374, 50);
+        lblGuztira.Size = new Size(356, 46);
         lblGuztira.TabIndex = 4;
         lblGuztira.Text = "GUZTIRA:  60,00 €";
         lblGuztira.TextAlign = ContentAlignment.MiddleRight;
         // 
         // lblBez
         // 
-        lblBez.Font = new Font("Segoe UI", 10.5F);
+        lblBez.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblBez.Font = new Font("Segoe UI", 10F);
         lblBez.ForeColor = Color.FromArgb(100, 116, 139);
-        lblBez.Location = new Point(18, 98);
+        lblBez.Location = new Point(16, 92);
         lblBez.Name = "lblBez";
-        lblBez.Size = new Size(374, 32);
+        lblBez.Size = new Size(356, 30);
         lblBez.TabIndex = 3;
         lblBez.Text = "BEZ (%10 barne):  5,45 €";
         lblBez.TextAlign = ContentAlignment.MiddleRight;
         // 
         // lblAzpitotala
         // 
-        lblAzpitotala.Font = new Font("Segoe UI", 11F);
+        lblAzpitotala.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblAzpitotala.Font = new Font("Segoe UI", 10.5F);
         lblAzpitotala.ForeColor = Color.FromArgb(71, 85, 105);
-        lblAzpitotala.Location = new Point(18, 62);
+        lblAzpitotala.Location = new Point(16, 58);
         lblAzpitotala.Name = "lblAzpitotala";
-        lblAzpitotala.Size = new Size(374, 32);
+        lblAzpitotala.Size = new Size(356, 30);
         lblAzpitotala.TabIndex = 2;
         lblAzpitotala.Text = "Azpitotala:  54,55 €";
         lblAzpitotala.TextAlign = ContentAlignment.MiddleRight;
         // 
         // pnlDividerSummary
         // 
+        pnlDividerSummary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         pnlDividerSummary.BackColor = Color.FromArgb(226, 232, 240);
-        pnlDividerSummary.Location = new Point(18, 52);
+        pnlDividerSummary.Location = new Point(16, 48);
         pnlDividerSummary.Name = "pnlDividerSummary";
-        pnlDividerSummary.Size = new Size(374, 1);
+        pnlDividerSummary.Size = new Size(356, 1);
         pnlDividerSummary.TabIndex = 1;
         // 
         // lblSummaryTitle
         // 
-        lblSummaryTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblSummaryTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblSummaryTitle.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
         lblSummaryTitle.ForeColor = Color.FromArgb(30, 41, 59);
-        lblSummaryTitle.Location = new Point(18, 14);
+        lblSummaryTitle.Location = new Point(16, 12);
         lblSummaryTitle.Name = "lblSummaryTitle";
-        lblSummaryTitle.Size = new Size(374, 34);
+        lblSummaryTitle.Size = new Size(356, 32);
         lblSummaryTitle.TabIndex = 0;
         lblSummaryTitle.Text = "KONTUAREN LABURPENA";
         lblSummaryTitle.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // pnlActions
         // 
+        pnlActions.AutoScroll = true;
         pnlActions.Controls.Add(btnSukalderaBidali);
         pnlActions.Controls.Add(btnGehituEskaera);
         pnlActions.Controls.Add(btnGehituKontua);
         pnlActions.Controls.Add(btnKontuaEskatu);
         pnlActions.Controls.Add(btnAldatuMahaiaz);
         pnlActions.Dock = DockStyle.Fill;
-        pnlActions.Location = new Point(16, 291);
+        pnlActions.Location = new Point(14, 259);
         pnlActions.Name = "pnlActions";
         pnlActions.Padding = new Padding(0, 10, 0, 0);
-        pnlActions.Size = new Size(410, 405);
+        pnlActions.Size = new Size(388, 439);
         pnlActions.TabIndex = 1;
         // 
         // btnSukalderaBidali ("SUKALDERA BIDALI")
         // 
+        btnSukalderaBidali.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnSukalderaBidali.BackColor = Color.FromArgb(22, 101, 52);
         btnSukalderaBidali.Cursor = Cursors.Hand;
         btnSukalderaBidali.FlatAppearance.BorderSize = 0;
         btnSukalderaBidali.FlatStyle = FlatStyle.Flat;
-        btnSukalderaBidali.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        btnSukalderaBidali.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
         btnSukalderaBidali.ForeColor = Color.White;
         btnSukalderaBidali.Location = new Point(0, 10);
         btnSukalderaBidali.Name = "btnSukalderaBidali";
-        btnSukalderaBidali.Size = new Size(410, 68);
+        btnSukalderaBidali.Size = new Size(388, 58);
         btnSukalderaBidali.TabIndex = 0;
         btnSukalderaBidali.Text = "SUKALDERA BIDALI";
         btnSukalderaBidali.UseVisualStyleBackColor = false;
         // 
         // btnGehituEskaera ("+ PRODUKTUAK GEHITU")
         // 
+        btnGehituEskaera.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnGehituEskaera.BackColor = Color.FromArgb(136, 19, 55);
         btnGehituEskaera.Cursor = Cursors.Hand;
         btnGehituEskaera.FlatAppearance.BorderSize = 0;
         btnGehituEskaera.FlatStyle = FlatStyle.Flat;
-        btnGehituEskaera.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
+        btnGehituEskaera.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         btnGehituEskaera.ForeColor = Color.White;
-        btnGehituEskaera.Location = new Point(0, 88);
+        btnGehituEskaera.Location = new Point(0, 76);
         btnGehituEskaera.Name = "btnGehituEskaera";
-        btnGehituEskaera.Size = new Size(410, 56);
+        btnGehituEskaera.Size = new Size(388, 50);
         btnGehituEskaera.TabIndex = 1;
         btnGehituEskaera.Text = "+ PRODUKTUAK GEHITU";
         btnGehituEskaera.UseVisualStyleBackColor = false;
         // 
         // btnGehituKontua ("+ KONTU BERRIA (Banatua)")
         // 
+        btnGehituKontua.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnGehituKontua.BackColor = Color.White;
         btnGehituKontua.Cursor = Cursors.Hand;
         btnGehituKontua.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnGehituKontua.FlatStyle = FlatStyle.Flat;
-        btnGehituKontua.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        btnGehituKontua.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         btnGehituKontua.ForeColor = Color.FromArgb(15, 118, 110);
-        btnGehituKontua.Location = new Point(0, 154);
+        btnGehituKontua.Location = new Point(0, 134);
         btnGehituKontua.Name = "btnGehituKontua";
-        btnGehituKontua.Size = new Size(410, 50);
+        btnGehituKontua.Size = new Size(388, 46);
         btnGehituKontua.TabIndex = 2;
         btnGehituKontua.Text = "+ KONTU BERRIA (Mahaikide Banatua)";
         btnGehituKontua.UseVisualStyleBackColor = false;
         // 
         // btnKontuaEskatu ("KONTUA ESKATU / KOBRATU")
         // 
+        btnKontuaEskatu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnKontuaEskatu.BackColor = Color.FromArgb(241, 245, 249);
         btnKontuaEskatu.Cursor = Cursors.Hand;
         btnKontuaEskatu.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnKontuaEskatu.FlatStyle = FlatStyle.Flat;
-        btnKontuaEskatu.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        btnKontuaEskatu.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
         btnKontuaEskatu.ForeColor = Color.FromArgb(30, 41, 59);
-        btnKontuaEskatu.Location = new Point(0, 214);
+        btnKontuaEskatu.Location = new Point(0, 188);
         btnKontuaEskatu.Name = "btnKontuaEskatu";
-        btnKontuaEskatu.Size = new Size(410, 50);
+        btnKontuaEskatu.Size = new Size(388, 46);
         btnKontuaEskatu.TabIndex = 3;
         btnKontuaEskatu.Text = "KONTUA ESKATU / KOBRATU";
         btnKontuaEskatu.UseVisualStyleBackColor = false;
         // 
         // btnAldatuMahaiaz ("Aldatu Mahaiaz")
         // 
+        btnAldatuMahaiaz.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnAldatuMahaiaz.BackColor = Color.FromArgb(248, 250, 252);
         btnAldatuMahaiaz.Cursor = Cursors.Hand;
         btnAldatuMahaiaz.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnAldatuMahaiaz.FlatStyle = FlatStyle.Flat;
-        btnAldatuMahaiaz.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+        btnAldatuMahaiaz.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         btnAldatuMahaiaz.ForeColor = Color.FromArgb(100, 116, 139);
-        btnAldatuMahaiaz.Location = new Point(0, 274);
+        btnAldatuMahaiaz.Location = new Point(0, 242);
         btnAldatuMahaiaz.Name = "btnAldatuMahaiaz";
-        btnAldatuMahaiaz.Size = new Size(410, 48);
+        btnAldatuMahaiaz.Size = new Size(388, 44);
         btnAldatuMahaiaz.TabIndex = 4;
         btnAldatuMahaiaz.Text = "Aldatu Mahaiaz";
         btnAldatuMahaiaz.UseVisualStyleBackColor = false;
@@ -440,18 +453,22 @@ partial class MahaiaXehetasunakForm
         flowKontuFitxak.TabIndex = 0;
         flowKontuFitxak.WrapContents = false;
         // 
-        // MahaiaXehetasunakModal (Orain pantaila normala da, 1280x800 Tablet POS diseinuan)
+        // MahaiaXehetasunakForm (Responsive, Maximized, MinimumSize 800x500)
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1366, 850);
+        ClientSize = new Size(1280, 800);
         Controls.Add(pnlEzkerra);
         Controls.Add(pnlEskuina);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1180, 750);
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox = true;
+        MinimizeBox = true;
+        MinimumSize = new Size(800, 500);
         Name = "MahaiaXehetasunakForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Mahaiaren Xehetasunak";
+        WindowState = FormWindowState.Maximized;
         pnlTopBar.ResumeLayout(false);
         pnlEgoeraChanger.ResumeLayout(false);
         pnlEskuina.ResumeLayout(false);

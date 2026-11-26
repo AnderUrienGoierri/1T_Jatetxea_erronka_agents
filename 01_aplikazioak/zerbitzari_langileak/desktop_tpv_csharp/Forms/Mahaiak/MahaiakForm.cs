@@ -7,13 +7,29 @@ namespace Jatetxea.Desktop.Forms;
 
 public partial class MahaiakForm : Form
 {
+    private sealed class MahaiTxartelUi
+    {
+        public MahaiaDto Mahaia { get; set; } = null!;
+        public Panel Card { get; init; } = null!;
+        public Label LblZenbakia { get; init; } = null!;
+        public Label LblSeats { get; init; } = null!;
+        public Panel PnlBadge { get; init; } = null!;
+        public Label LblBadgeText { get; init; } = null!;
+        public Label LblBeheEzkerra { get; init; } = null!;
+        public Label LblBeheEskuina { get; init; } = null!;
+        public Button BtnLibreJarri { get; init; } = null!;
+        public Color BadgeBg { get; set; }
+        public Color BadgeBorder { get; set; }
+        public bool IsHovered { get; set; }
+    }
+
     private readonly LangileaDto _langilea;
     private readonly ApiService _api;
     private List<MahaiaDto> _mahaiak = new();
+    private readonly Dictionary<int, MahaiTxartelUi> _txartelakById = new();
     private string _aukeratutakoEremua = "Jangela Nagusia";
     private readonly System.Windows.Forms.Timer _tenporizadorea;
-
-
+    private bool _kargatzen = false;
 
     /// <summary>
     /// Visual Studio WinForms Designer-erako eraikitzailea
@@ -30,19 +46,27 @@ public partial class MahaiakForm : Form
 
         Text = $"T1 Jatetxea - Mahaiak ({_langilea.Izena})";
 
-        // Goiko barraren marra banatzailea
+        // T1 Warm Hospitality v2.0 diseinua + parpadeorik gabeko DoubleBuffering aplikatu
+        AplikatuEstiloBerria();
+
+        // Goiko barraren marra banatzailea (Warm Taupe)
         pnlTopBar.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
+            using var pen = new Pen(Theme.WarmTaupe, 1.2f);
             e.Graphics.DrawLine(pen, 0, pnlTopBar.Height - 1, pnlTopBar.Width, pnlTopBar.Height - 1);
         };
 
         // Guneen fitxen azpiko marra banatzailea
         pnlTabStrip.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(226, 232, 240), 1.5f);
+            using var pen = new Pen(Theme.WarmTaupe, 1.2f);
             e.Graphics.DrawLine(pen, 0, pnlTabStrip.Height - 1, pnlTabStrip.Width, pnlTabStrip.Height - 1);
         };
+
+        // T1 monograma arkitektonikoa margotu (Android ic_t1_logo.xml & Figma)
+        lblLogo.Text = string.Empty;
+        lblLogo.BackColor = Theme.MarbleWhite;
+        lblLogo.Paint += (s, e) => Theme.DrawT1Logo(e.Graphics, new Rectangle(0, 0, lblLogo.Width, lblLogo.Height));
 
         // Zerbitzariaren avatar borobila margotu
         SetupProfileAvatar();
@@ -55,56 +79,221 @@ public partial class MahaiakForm : Form
         {
             using var erreserbakForm = new ErreserbakForm(_langilea, _api, _mahaiak);
             erreserbakForm.ShowDialog(this);
-            _ = KargatuMahaiakAsync();
+            _ = KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
         };
-        btnFreskatu.Click += async (s, e) => await KargatuMahaiakAsync();
+        btnFreskatu.Click += async (s, e) => await KargatuMahaiakAsync(isSilent: false, behartuEguneratzea: true);
         btnLogout.Click += (s, e) => Close();
 
-        // Tenporizadorea 3 segundoro automatikoki freskatzeko sukaldeko aldaketak azkar hautemateko
+        // Tenporizadorea 3 segundoro AJAX-moduko diff freskatze isila egiteko (0 parpadeo)
         _tenporizadorea = new System.Windows.Forms.Timer { Interval = 3000 };
         _tenporizadorea.Tick += async (s, e) => await KargatuMahaiakAsync(isSilent: true);
 
         Load += async (s, e) =>
         {
             EguneratuLangileProfila();
-            await KargatuMahaiakAsync();
+            EgokituResponsiveDiseinua();
+            await KargatuMahaiakAsync(isSilent: false, behartuEguneratzea: true);
             _tenporizadorea.Start();
         };
 
-        FormClosed += (s, e) => _tenporizadorea.Stop();
+        Resize += (s, e) => EgokituResponsiveDiseinua();
+
+        FormClosed += (s, e) =>
+        {
+            _tenporizadorea.Stop();
+            _tenporizadorea.Dispose();
+        };
+    }
+
+    private void AplikatuEstiloBerria()
+    {
+        Theme.ApplyWarmHospitalityTheme(this);
+
+        BackColor = Theme.WarmLinen;
+        pnlTopBar.BackColor = Theme.MarbleWhite;
+        pnlProfile.BackColor = Theme.MarbleWhite;
+        pnlTabStrip.BackColor = Theme.MarbleWhite;
+        pnlContent.BackColor = Theme.WarmLinen;
+        pnlSectionHeader.BackColor = Theme.WarmLinen;
+        pnlMahaiak.BackColor = Theme.WarmLinen;
+
+        lblBrand.ForeColor = Theme.ChiantiPrimary;
+        lblBrand.Font = Theme.DisplayFont(15.5f);
+
+        lblServerName.ForeColor = Theme.EspressoInk;
+        lblServerName.Font = Theme.BodyFont(10.5f, bold: true);
+        lblServerStatus.ForeColor = Theme.Success;
+        lblServerStatus.Font = Theme.BodyFont(9f, bold: true);
+
+        lblSectionTitle.ForeColor = Theme.EspressoInk;
+        lblSectionTitle.Font = Theme.BodyFont(14.5f, bold: true);
+        lblSummary.ForeColor = Theme.WarmSlate;
+        lblSummary.Font = Theme.MonoFont(9.5f, bold: false);
+
+        Theme.StyleButton(btnErreserbak, Theme.PurpleBg, Theme.Purple, Theme.PurpleBorder, radius: 10, fontSize: 9.5f);
+        Theme.StyleButton(btnFreskatu, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 9.5f);
+        Theme.StyleButton(btnLogout, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 9.5f);
+    }
+
+    private void EgokituResponsiveDiseinua()
+    {
+        int S(int px) => Theme.S(this, px);
+        bool estua = ClientSize.Width < S(1040);
+
+        // 1. Goiko barra DPI-rekin eskalatuta, gainjarpenik eta testu-mozketarik gabe
+        pnlTopBar.Height = ClientSize.Height < S(580) ? S(68) : S(84);
+        int yBtn = (pnlTopBar.Height - S(42)) / 2;
+
+        int logoSz = S(48);
+        lblLogo.Size = new Size(logoSz, logoSz);
+        lblLogo.Location = new Point(S(18), (pnlTopBar.Height - logoSz) / 2);
+
+        lblBrand.Location = new Point(lblLogo.Right + S(12), (pnlTopBar.Height - logoSz) / 2);
+        lblBrand.Text = estua ? "T1 MAHAIAK" : "T1 JATETXEA · MAHAIAK";
+        lblBrand.Font = Theme.DisplayFont(estua ? 12.5f : 15f);
+        lblBrand.Size = new Size(estua ? S(200) : S(390), logoSz);
+
+        int btnH = S(42);
+        int gap = S(10);
+        int wErr = S(132);
+        int wFres = S(104);
+        int wOut = S(116);
+
+        if (estua)
+        {
+            lblAvatarCircle.Visible = false;
+            int wName = S(115);
+            pnlProfile.Width = wName + wErr + wFres + wOut + gap * 4 + S(14);
+            lblServerName.Location = new Point(S(4), yBtn);
+            lblServerName.Size = new Size(wName, S(22));
+            lblServerStatus.Location = new Point(S(4), yBtn + S(21));
+            lblServerStatus.Size = new Size(wName, S(20));
+
+            int x = lblServerName.Right + gap;
+            btnErreserbak.SetBounds(x, yBtn, wErr, btnH);
+            btnFreskatu.SetBounds(btnErreserbak.Right + gap, yBtn, wFres, btnH);
+            btnLogout.SetBounds(btnFreskatu.Right + gap, yBtn, wOut, btnH);
+        }
+        else
+        {
+            lblAvatarCircle.Visible = true;
+            int avSz = S(46);
+            int wName = S(130);
+            pnlProfile.Width = avSz + wName + wErr + wFres + wOut + gap * 5 + S(20);
+            lblAvatarCircle.SetBounds(S(6), (pnlTopBar.Height - avSz) / 2, avSz, avSz);
+            lblServerName.SetBounds(lblAvatarCircle.Right + S(10), yBtn, wName, S(22));
+            lblServerStatus.SetBounds(lblAvatarCircle.Right + S(10), yBtn + S(21), wName, S(20));
+
+            int x = lblServerName.Right + gap;
+            btnErreserbak.SetBounds(x, yBtn, wErr, btnH);
+            btnFreskatu.SetBounds(btnErreserbak.Right + gap, yBtn, wFres, btnH);
+            btnLogout.SetBounds(btnFreskatu.Right + gap, yBtn, wOut, btnH);
+        }
+
+        // Guneen fitxa-barra DPI-rekin eskalatuta
+        pnlTabStrip.Height = S(58);
+        pnlTabStrip.Padding = new Padding(S(24), S(9), S(24), S(9));
+        pnlSectionHeader.Height = S(50);
+        pnlContent.Padding = new Padding(S(24), S(14), S(24), S(18));
+
+        Button[] fitxak = { btnTabJangela, btnTabTerraza, btnTabBarra, btnTabVIP, btnTabGuztiak };
+        foreach (var btn in fitxak)
+        {
+            btn.Height = S(38);
+            btn.Padding = new Padding(S(18), 0, S(18), 0);
+            btn.Margin = new Padding(0, 0, S(10), 0);
+            var sz = TextRenderer.MeasureText(btn.Text.Replace('\u00A0', ' '), btn.Font);
+            btn.AutoSize = false;
+            btn.Width = sz.Width + S(36);
+        }
+
+        // 2. Mahai txartelen zabalera dinamikoa (pantaila osoa aprobetxatuz)
+        EgokituMahaiTxartelak();
+    }
+
+    private void EgokituMahaiTxartelak()
+    {
+        int S(int px) => Theme.S(this, px);
+        int availW = pnlMahaiak.ClientSize.Width - pnlMahaiak.Padding.Horizontal - S(26);
+        if (availW < S(280)) return;
+
+        int minCardW = S(300);
+        int cols = Math.Max(2, availW / S(360));
+        if (availW < S(700)) cols = 2;
+        if (availW < S(520)) cols = 1;
+
+        int marginX = S(10);
+        int cardW = Math.Max(minCardW, (availW - (cols * marginX * 2)) / cols);
+        int cardH = S(196);
+
+        pnlMahaiak.SuspendLayout();
+        foreach (Control ctrl in pnlMahaiak.Controls)
+        {
+            if (ctrl is Panel card && card.Tag is MahaiTxartelUi ui)
+            {
+                card.Size = new Size(cardW, cardH);
+                card.Margin = new Padding(marginX);
+                EguneratuTxartelGeometria(ui);
+                card.Invalidate();
+            }
+        }
+        pnlMahaiak.ResumeLayout(true);
+    }
+
+    private void EguneratuTxartelGeometria(MahaiTxartelUi ui)
+    {
+        int S(int px) => Theme.S(this, px);
+        int pad = S(20);
+        int cardW = ui.Card.Width;
+        int cardH = ui.Card.Height;
+
+        var badgeSz = TextRenderer.MeasureText(ui.LblBadgeText.Text, ui.LblBadgeText.Font);
+        int badgeW = Math.Max(S(112), badgeSz.Width + S(28));
+        int badgeH = S(32);
+
+        ui.PnlBadge.SetBounds(cardW - badgeW - pad, S(18), badgeW, badgeH);
+        ui.LblZenbakia.SetBounds(pad, S(14), Math.Max(S(120), ui.PnlBadge.Left - pad - S(10)), S(34));
+        ui.LblSeats.SetBounds(pad, S(54), cardW - pad * 2, S(28));
+
+        int footerY = cardH - S(52);
+        ui.LblBeheEzkerra.SetBounds(pad, footerY, (cardW - pad * 2) / 2 - S(6), S(34));
+        ui.LblBeheEskuina.SetBounds(cardW / 2, footerY, (cardW - pad * 2) / 2, S(34));
+
+        int btnW = S(138);
+        int btnH = S(38);
+        ui.BtnLibreJarri.SetBounds(cardW - btnW - pad, cardH - btnH - S(14), btnW, btnH);
     }
 
     private void SetupProfileAvatar()
     {
+        lblAvatarCircle.BackColor = Theme.MarbleWhite;
         lblAvatarCircle.Paint += (s, e) =>
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            // Barruko hondo borobila
-            using var bgBrush = new SolidBrush(Color.FromArgb(241, 245, 249));
+            using var bgBrush = new SolidBrush(Theme.StoneMist);
             e.Graphics.FillEllipse(bgBrush, 2, 2, lblAvatarCircle.Width - 5, lblAvatarCircle.Height - 5);
 
-            // Kanpoko ertz leuna
-            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
+            using var pen = new Pen(Theme.GoldBorder, 1.6f);
             e.Graphics.DrawEllipse(pen, 2, 2, lblAvatarCircle.Width - 5, lblAvatarCircle.Height - 5);
 
-            // Inizialak erdiratuta
-            TextRenderer.DrawText(e.Graphics, lblAvatarCircle.Text, lblAvatarCircle.Font,
+            TextRenderer.DrawText(e.Graphics, lblAvatarCircle.Text, Theme.BodyFont(12f, bold: true),
                 new Rectangle(0, 0, lblAvatarCircle.Width, lblAvatarCircle.Height),
-                Color.FromArgb(71, 85, 105),
+                Theme.ChiantiPrimary,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         };
     }
 
     private void EguneratuLangileProfila()
     {
-        var zatiak = _langilea.Izena.Trim().Split(' ');
-        string initials = string.Join("", zatiak.Select(z => z.Length > 0 ? z[0].ToString() : "")).ToUpper();
+        var zatiak = _langilea.Izena.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string initials = string.Join("", zatiak.Select(z => z[0].ToString())).ToUpper();
         if (initials.Length > 2) initials = initials.Substring(0, 2);
 
         lblServerName.Text = _langilea.Izena;
         lblAvatarCircle.Text = initials;
         lblServerStatus.Text = "● Online";
+        lblAvatarCircle.Invalidate();
     }
 
     private void LotuFitxak()
@@ -121,19 +310,36 @@ public partial class MahaiakForm : Form
         btnTabVIP.Click += (s, e) => AukeratuGunea("VIP");
         btnTabGuztiak.Click += (s, e) => AukeratuGunea("Guztiak");
 
-        // Fitxa aktiboaren azpiko marra nabarmendua margotu
+        pnlTabStrip.Padding = new Padding(24, 9, 24, 9);
+        pnlTabStrip.Height = 60;
+
         Button[] fitxak = { btnTabJangela, btnTabTerraza, btnTabBarra, btnTabVIP, btnTabGuztiak };
         foreach (var btn in fitxak)
         {
+            btn.Height = 40;
+            btn.Margin = new Padding(0, 0, 10, 0);
+            btn.Padding = new Padding(16, 0, 16, 0);
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = Theme.StoneMist;
             btn.Paint += (s, e) =>
             {
                 string garbia = btn.Text.Replace('\u00A0', ' ');
                 bool isAktiboa = garbia.Equals(_aukeratutakoEremua, StringComparison.OrdinalIgnoreCase);
+
+                e.Graphics.Clear(Theme.MarbleWhite);
                 if (isAktiboa)
                 {
-                    using var activePen = new Pen(Color.FromArgb(136, 19, 55), 3.5f);
-                    e.Graphics.DrawLine(activePen, 4, btn.Height - 3, btn.Width - 4, btn.Height - 3);
+                    Theme.DrawRoundedCard(e.Graphics, new Rectangle(1, 1, btn.Width - 2, btn.Height - 2), 19, Theme.ChiantiTint, Theme.ChiantiPrimary, 1.4f);
                 }
+
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    garbia,
+                    btn.Font,
+                    new Rectangle(0, 0, btn.Width, btn.Height),
+                    isAktiboa ? Theme.ChiantiPrimary : Theme.WarmSlate,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             };
         }
 
@@ -142,10 +348,11 @@ public partial class MahaiakForm : Form
 
     private void AukeratuGunea(string gunea)
     {
+        if (_aukeratutakoEremua.Equals(gunea, StringComparison.OrdinalIgnoreCase)) return;
         _aukeratutakoEremua = gunea;
         FreskatuFitxenItxura();
-        lblSectionTitle.Text = gunea.ToUpper();
-        BistaratuMahaiak();
+        lblSectionTitle.Text = gunea.ToUpperInvariant();
+        BistaratuMahaiak(behartuBerreraiki: true);
     }
 
     private void FreskatuFitxenItxura()
@@ -155,24 +362,77 @@ public partial class MahaiakForm : Form
         {
             string garbia = btn.Text.Replace('\u00A0', ' ');
             bool isAktiboa = garbia.Equals(_aukeratutakoEremua, StringComparison.OrdinalIgnoreCase);
-            btn.Font = new Font("Segoe UI", 10.5F, isAktiboa ? FontStyle.Bold : FontStyle.Regular);
-            btn.ForeColor = isAktiboa ? Color.FromArgb(136, 19, 55) : Color.FromArgb(100, 116, 139);
+            btn.Font = Theme.BodyFont(10f, bold: isAktiboa);
+            btn.ForeColor = isAktiboa ? Theme.ChiantiPrimary : Theme.WarmSlate;
+            btn.BackColor = Theme.MarbleWhite;
             btn.Invalidate();
         }
     }
 
-    private async Task KargatuMahaiakAsync(bool isSilent = false)
+    /// <summary>
+    /// AJAX-moduko diff freskatzea: soilik datuak aldatu badira eguneratzen du UI-a,
+    /// eta ahal den guztietan txartelak lekuan bertan (in-place) patched egiten ditu 0 parpadeorekin.
+    /// </summary>
+    private async Task KargatuMahaiakAsync(bool isSilent = false, bool behartuEguneratzea = false)
     {
-        if (!isSilent)
+        if (_kargatzen) return;
+        _kargatzen = true;
+
+        try
         {
-            lblSummary.Text = "Mahaiak kargatzen...";
+            if (!isSilent && _mahaiak.Count == 0)
+            {
+                lblSummary.Text = "Mahaiak kargatzen...";
+            }
+
+            var datuak = await _api.GetMahaiakAsync();
+            if (IsDisposed) return;
+
+            bool aldatuDa = behartuEguneratzea || MahaiakAldatuDira(_mahaiak, datuak);
+            if (!aldatuDa)
+            {
+                return; // Ezer ez da aldatu -> 0 UI ukitze, 0 parpadeo!
+            }
+
+            _mahaiak = datuak;
+            EguneratuLaburpena();
+            BistaratuMahaiak(behartuBerreraiki: false);
+        }
+        catch
+        {
+            if (!isSilent && !IsDisposed)
+            {
+                lblSummary.Text = "API konexio errorea — berriro saiatzen...";
+            }
+        }
+        finally
+        {
+            _kargatzen = false;
+        }
+    }
+
+    private static bool MahaiakAldatuDira(List<MahaiaDto> zaharra, List<MahaiaDto> berria)
+    {
+        if (zaharra.Count != berria.Count) return true;
+
+        for (int i = 0; i < zaharra.Count; i++)
+        {
+            var a = zaharra[i];
+            var b = berria[i];
+            if (a.Id != b.Id ||
+                a.Zenbakia != b.Zenbakia ||
+                a.Edukiera != b.Edukiera ||
+                !string.Equals(a.Kokapena, b.Kokapena, StringComparison.Ordinal) ||
+                !string.Equals(a.Egoera, b.Egoera, StringComparison.OrdinalIgnoreCase) ||
+                a.Mahaikideak != b.Mahaikideak ||
+                !string.Equals(a.Iraupena, b.Iraupena, StringComparison.Ordinal) ||
+                a.AktiboEskaeraId != b.AktiboEskaeraId)
+            {
+                return true;
+            }
         }
 
-        var datuak = await _api.GetMahaiakAsync();
-        _mahaiak = datuak;
-
-        EguneratuLaburpena();
-        BistaratuMahaiak();
+        return false;
     }
 
     private void EguneratuLaburpena()
@@ -180,9 +440,17 @@ public partial class MahaiakForm : Form
         int guztira = _mahaiak.Count;
         int libre = _mahaiak.Count(m => m.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase));
         int okupatuta = _mahaiak.Count(m => m.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase));
+        int sukaldean = _mahaiak.Count(m => m.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase) || m.Egoera.Equals("Sukaldean", StringComparison.OrdinalIgnoreCase));
         int garbitzen = _mahaiak.Count(m => m.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase));
 
-        lblSummary.Text = $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Garbitzen: {garbitzen}";
+        string laburpena = sukaldean > 0
+            ? $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Sukaldean: {sukaldean} · Garbitzen: {garbitzen}"
+            : $"Guztira: {guztira} · Libre: {libre} · Okupatuta: {okupatuta} · Garbitzen: {garbitzen}";
+
+        if (lblSummary.Text != laburpena)
+        {
+            lblSummary.Text = laburpena;
+        }
     }
 
     private bool KokapenaBatDator(string mahaiaKokapena, string tabIzena)
@@ -196,225 +464,336 @@ public partial class MahaiakForm : Form
         return mahaiaKokapena.Equals(tabIzena, StringComparison.OrdinalIgnoreCase);
     }
 
-    private void BistaratuMahaiak()
+    private void BistaratuMahaiak(bool behartuBerreraiki = false)
     {
-        pnlMahaiak.SuspendLayout();
-        pnlMahaiak.Controls.Clear();
-
         if (_mahaiak.Count == 0)
         {
-            var lblError = new Label
+            UiPerf.RunFlickerFree(pnlMahaiak, () =>
             {
-                Text = "Ez da mahairik aurkitu datu-basean edo API konexioa falta da.\nMesedez, egiaztatu backend zerbitzaria (http://localhost:5050) martxan dagoela.",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(220, 38, 38),
-                AutoSize = false,
-                Size = new Size(pnlMahaiak.Width - 40, 80),
-                Location = new Point(20, 40),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            pnlMahaiak.Controls.Add(lblError);
-            pnlMahaiak.ResumeLayout(true);
+                _txartelakById.Clear();
+                pnlMahaiak.Controls.Clear();
+                var lblError = new Label
+                {
+                    Text = "Ez da mahairik aurkitu datu-basean edo API konexioa falta da.\nMesedez, egiaztatu backend zerbitzaria (http://localhost:5050) martxan dagoela.",
+                    Font = Theme.BodyFont(11.5f, bold: true),
+                    ForeColor = Theme.Danger,
+                    AutoSize = false,
+                    Size = new Size(Math.Max(420, pnlMahaiak.ClientSize.Width - 60), 80),
+                    Location = new Point(20, 40),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlMahaiak.Controls.Add(lblError);
+            }, preserveScroll: false);
             return;
         }
 
         var iragaziak = _mahaiak.Where(m => KokapenaBatDator(m.Kokapena, _aukeratutakoEremua)).ToList();
 
-        foreach (var mahaia in iragaziak)
+        // In-place patching: ID multzoa berdina bada, EZ ezabatu kontrolik (0 parpadeo eta 0 scroll-jauzi)
+        bool idMultzoBerdina = !behartuBerreraiki
+            && _txartelakById.Count == iragaziak.Count
+            && iragaziak.All(m => _txartelakById.ContainsKey(m.Id));
+
+        if (idMultzoBerdina)
         {
-            var card = SortuMahaiTxartela(mahaia);
-            pnlMahaiak.Controls.Add(card);
+            foreach (var mahaia in iragaziak)
+            {
+                var ui = _txartelakById[mahaia.Id];
+                EguneratuTxartelaInPlace(ui, mahaia);
+            }
+            return;
         }
 
-        pnlMahaiak.ResumeLayout(true);
+        // Gunea aldatu da edo mahai berriak daude -> WM_SETREDRAW blokeoarekin parpadeorik gabe berreraiki
+        UiPerf.RunFlickerFree(pnlMahaiak, () =>
+        {
+            _txartelakById.Clear();
+            pnlMahaiak.Controls.Clear();
+
+            foreach (var mahaia in iragaziak)
+            {
+                var ui = SortuMahaiTxartela(mahaia);
+                _txartelakById[mahaia.Id] = ui;
+                pnlMahaiak.Controls.Add(ui.Card);
+            }
+        }, preserveScroll: !behartuBerreraiki);
+
+        EgokituMahaiTxartelak();
     }
 
     /// <summary>
-    /// Zirriborroko (2-Mahaiak_interfazea.jpg) mahai-txartel garbia sortzen du
+    /// T1 Warm Hospitality estiloko mahai-txartela sortzen du (Figma 02 · MahaiakForm bezala).
     /// </summary>
-    private Control SortuMahaiTxartela(MahaiaDto mahaia)
+    private MahaiTxartelUi SortuMahaiTxartela(MahaiaDto mahaia)
     {
         var card = new Panel
         {
-            Width = 390,
-            Height = 220,
-            Margin = new Padding(16),
-            BackColor = Color.White,
+            Width = 370,
+            Height = 204,
+            Margin = new Padding(12),
+            BackColor = Theme.WarmLinen,
             Cursor = Cursors.Hand
         };
 
-        // 1. Izenburua ("Mahaia X")
         var lblZenbakia = new Label
         {
-            Text = $"Mahaia {mahaia.Zenbakia}",
-            Font = new Font("Segoe UI", 16F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(30, 41, 59),
-            Location = new Point(22, 16),
-            Size = new Size(240, 40),
+            Font = Theme.BodyFont(15.5f, bold: true),
+            ForeColor = Theme.EspressoInk,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(22, 18),
+            Size = new Size(195, 34),
             TextAlign = ContentAlignment.MiddleLeft,
             AutoSize = false
         };
-        card.Controls.Add(lblZenbakia);
 
-        // 2. Edukiera ("X seats" / "X leku")
         var lblSeats = new Label
         {
-            Text = $"{mahaia.Edukiera} leku",
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Regular),
-            ForeColor = Color.FromArgb(100, 116, 139),
-            Location = new Point(22, 60),
-            Size = new Size(180, 28),
+            Font = Theme.BodyFont(10.5f, bold: false),
+            ForeColor = Theme.WarmSlate,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(22, 54),
+            Size = new Size(210, 26),
             TextAlign = ContentAlignment.MiddleLeft,
             AutoSize = false
         };
-        card.Controls.Add(lblSeats);
 
-        // 3. Behe-ezkerra: Okupatutako denbora (APIak bidaltzen badu)
-        bool isOkupatua = mahaia.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase);
-        bool isEskaeraBidean = mahaia.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase);
-
-        if ((isOkupatua || isEskaeraBidean) && !string.IsNullOrWhiteSpace(mahaia.Iraupena))
-        {
-            var lblTime = new Label
-            {
-                Text = mahaia.Iraupena,
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(51, 65, 85),
-                Location = new Point(22, 146),
-                Size = new Size(160, 40),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lblTime);
-        }
-
-        // 4. Behe-eskuina: Egoera Txapa ("Librea", "Okupatua", "Eskaera bidean")
-        string egoeraText = mahaia.Egoera switch
-        {
-            "Libre" => "Librea",
-            "Okupatuta" => "Okupatua",
-            "Eskaera bidean" => "Eskaera bidean",
-            _ => mahaia.Egoera
-        };
-
-        var (badgeBg, badgeFg, badgeBorder) = mahaia.Egoera switch
-        {
-            "Libre" => (Color.FromArgb(220, 252, 231), Color.FromArgb(22, 101, 52), Color.FromArgb(134, 239, 172)),
-            "Okupatuta" => (Color.FromArgb(51, 65, 85), Color.White, Color.FromArgb(30, 41, 59)),
-            "Eskaera bidean" => (Color.FromArgb(254, 243, 199), Color.FromArgb(146, 64, 14), Color.FromArgb(253, 230, 138)),
-            "Garbitzen" => (Color.FromArgb(241, 245, 249), Color.FromArgb(71, 85, 105), Color.FromArgb(203, 213, 225)),
-            _ => (Color.FromArgb(219, 234, 254), Color.FromArgb(30, 64, 175), Color.FromArgb(147, 197, 253))
-        };
-
-        int badgeWidth = Math.Max(155, egoeraText.Length * 11 + 38);
         var pnlBadge = new Panel
         {
-            Location = new Point(card.Width - badgeWidth - 22, 98),
-            Size = new Size(badgeWidth, 42),
-            BackColor = badgeBg
-        };
-        pnlBadge.Paint += (s, e) =>
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var pen = new Pen(badgeBorder, 1.2f);
-            e.Graphics.DrawRectangle(pen, 0, 0, pnlBadge.Width - 1, pnlBadge.Height - 1);
+            Location = new Point(card.Width - 156, 22),
+            Size = new Size(136, 34),
+            BackColor = Theme.MarbleWhite,
+            Tag = "right-aligned"
         };
 
         var lblBadgeText = new Label
         {
             Dock = DockStyle.Fill,
-            Text = egoeraText,
-            Font = new Font("Segoe UI", 11.5F, FontStyle.Bold),
-            ForeColor = badgeFg,
+            Font = Theme.BodyFont(9.5f, bold: true),
+            BackColor = Color.Transparent,
             TextAlign = ContentAlignment.MiddleCenter
         };
         pnlBadge.Controls.Add(lblBadgeText);
-        card.Controls.Add(pnlBadge);
 
-        // Okupatuta badago: PAX kopurua txaparen azpian ("4 PAX")
-        if (isOkupatua || isEskaeraBidean)
+        var lblBeheEzkerra = new Label
         {
-            var lblPax = new Label
-            {
-                Text = $"{mahaia.Edukiera} PAX",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(71, 85, 105),
-                Location = new Point(card.Width - badgeWidth - 22, 148),
-                Size = new Size(badgeWidth, 34),
-                TextAlign = ContentAlignment.MiddleRight
-            };
-            card.Controls.Add(lblPax);
-        }
-        else if (mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase))
-        {
-            // Garbitzen badago: "Libre jarri" ekintza-botoi berdea txartelaren beheko eskuinean
-            var btnLibreJarri = new Button
-            {
-                Text = "✓ Libre jarri",
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(22, 101, 52), // Berde dotorea
-                Location = new Point(card.Width - badgeWidth - 22, 148),
-                Size = new Size(badgeWidth, 42),
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnLibreJarri.FlatAppearance.BorderSize = 0;
-            btnLibreJarri.Click += async (s, e) =>
-            {
-                btnLibreJarri.Enabled = false;
-                btnLibreJarri.Text = "Eguneratzen...";
-                bool ok = await _api.EguneratuMahaiarenEgoeraAsync(mahaia.Id, "Libre");
-                if (ok)
-                {
-                    mahaia.Egoera = "Libre";
-                    await KargatuMahaiakAsync();
-                }
-                else
-                {
-                    MessageBox.Show("Ezin izan da mahaiaren egoera eguneratu APIan.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btnLibreJarri.Enabled = true;
-                    btnLibreJarri.Text = "✓ Libre jarri";
-                }
-            };
-            card.Controls.Add(btnLibreJarri);
-        }
-
-        // Txartelaren kanpoko marra
-        card.Paint += (s, e) =>
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
-            e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
+            Font = Theme.MonoFont(13f, bold: true),
+            ForeColor = Theme.ChiantiPrimary,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(22, 146),
+            Size = new Size(165, 34),
+            TextAlign = ContentAlignment.MiddleLeft,
+            AutoSize = false
         };
 
-        // Klik egitean dagokion ekintza
-        void OnClick(object? s, EventArgs e) => MahaiTxartelaKlikatua(mahaia);
-        card.Click += OnClick;
-        lblZenbakia.Click += OnClick;
-        lblSeats.Click += OnClick;
-        pnlBadge.Click += OnClick;
-        lblBadgeText.Click += OnClick;
+        var lblBeheEskuina = new Label
+        {
+            Font = Theme.BodyFont(10f, bold: true),
+            ForeColor = Theme.WarmSlate,
+            BackColor = Theme.MarbleWhite,
+            Location = new Point(card.Width - 170, 146),
+            Size = new Size(150, 34),
+            TextAlign = ContentAlignment.MiddleRight,
+            Tag = "right-aligned"
+        };
 
-        return card;
+        var btnLibreJarri = new Button
+        {
+            Text = "✓ Libre jarri",
+            Location = new Point(card.Width - 160, 140),
+            Size = new Size(140, 40),
+            Visible = false,
+            Tag = "right-aligned"
+        };
+        Theme.StyleButton(btnLibreJarri, Theme.Success, Theme.MarbleWhite, null, radius: 10, fontSize: 10f);
+
+        card.Controls.Add(lblZenbakia);
+        card.Controls.Add(lblSeats);
+        card.Controls.Add(pnlBadge);
+        card.Controls.Add(lblBeheEzkerra);
+        card.Controls.Add(lblBeheEskuina);
+        card.Controls.Add(btnLibreJarri);
+
+        var ui = new MahaiTxartelUi
+        {
+            Mahaia = mahaia,
+            Card = card,
+            LblZenbakia = lblZenbakia,
+            LblSeats = lblSeats,
+            PnlBadge = pnlBadge,
+            LblBadgeText = lblBadgeText,
+            LblBeheEzkerra = lblBeheEzkerra,
+            LblBeheEskuina = lblBeheEskuina,
+            BtnLibreJarri = btnLibreJarri
+        };
+        card.Tag = ui;
+
+        // Txartelaren gorputz biribildua (Warm Hospitality MarbleWhite + WarmTaupe/GoldBorder hover)
+        card.Paint += (s, e) =>
+        {
+            Color borderCol = ui.IsHovered ? Theme.GoldBorder : Theme.WarmTaupe;
+            float borderW = ui.IsHovered ? 1.8f : 1.3f;
+            Theme.DrawRoundedCard(e.Graphics, new Rectangle(0, 0, card.Width, card.Height), 16, Theme.MarbleWhite, borderCol, borderW);
+
+            // Azpiko banatzaile fina (txartel barruan, DPI-rekin eskalatuta)
+            int divY = card.Height - Theme.S(this, 64);
+            using var divPen = new Pen(Theme.StoneMist, 1.2f);
+            e.Graphics.DrawLine(divPen, Theme.S(this, 20), divY, card.Width - Theme.S(this, 20), divY);
+        };
+
+        // Egoera pilula biribildua
+        pnlBadge.Paint += (s, e) =>
+        {
+            Theme.DrawRoundedCard(e.Graphics, new Rectangle(0, 0, pnlBadge.Width, pnlBadge.Height), 16, ui.BadgeBg, ui.BadgeBorder, 1.2f);
+        };
+
+        btnLibreJarri.Click += async (s, e) =>
+        {
+            var m = ui.Mahaia;
+            btnLibreJarri.Enabled = false;
+            btnLibreJarri.Text = "Eguneratzen...";
+            bool ok = await _api.EguneratuMahaiarenEgoeraAsync(m.Id, "Libre");
+            if (ok)
+            {
+                m.Egoera = "Libre";
+                await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
+            }
+            else
+            {
+                MessageBox.Show("Ezin izan da mahaiaren egoera eguneratu APIan.", "Errorea", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnLibreJarri.Enabled = true;
+                btnLibreJarri.Text = "✓ Libre jarri";
+            }
+        };
+
+        void OnClick(object? s, EventArgs e) => MahaiTxartelaKlikatua(ui.Mahaia);
+        void OnEnter(object? s, EventArgs e) { if (!ui.IsHovered) { ui.IsHovered = true; card.Invalidate(); } }
+        void OnLeave(object? s, EventArgs e)
+        {
+            if (ui.IsHovered && !card.ClientRectangle.Contains(card.PointToClient(Cursor.Position)))
+            {
+                ui.IsHovered = false;
+                card.Invalidate();
+            }
+        }
+
+        Control[] clickable = { card, lblZenbakia, lblSeats, pnlBadge, lblBadgeText, lblBeheEzkerra, lblBeheEskuina };
+        foreach (var ctrl in clickable)
+        {
+            ctrl.Click += OnClick;
+            ctrl.MouseEnter += OnEnter;
+            ctrl.MouseLeave += OnLeave;
+        }
+
+        EguneratuTxartelaInPlace(ui, mahaia);
+        return ui;
+    }
+
+    /// <summary>
+    /// Txartel baten datuak lekuan bertan eguneratzen ditu kontrolik suntsitu gabe (0 parpadeo).
+    /// </summary>
+    private void EguneratuTxartelaInPlace(MahaiTxartelUi ui, MahaiaDto mahaia)
+    {
+        ui.Mahaia = mahaia;
+
+        string tit = $"Mahaia {mahaia.Zenbakia}";
+        if (ui.LblZenbakia.Text != tit) ui.LblZenbakia.Text = tit;
+
+        string seats = string.IsNullOrWhiteSpace(mahaia.Kokapena)
+            ? $"{mahaia.Edukiera} leku"
+            : $"{mahaia.Edukiera} leku · {mahaia.Kokapena}";
+        if (ui.LblSeats.Text != seats) ui.LblSeats.Text = seats;
+
+        string egoeraText = mahaia.Egoera switch
+        {
+            "Libre" => "● Librea",
+            "Okupatuta" => "● Okupatuta",
+            "Eskaera bidean" => "● Sukaldean",
+            "Garbitzen" => "● Garbitzen",
+            _ => $"● {mahaia.Egoera}"
+        };
+
+        var (badgeBg, badgeBorder, badgeFg) = Theme.GetEgoeraKoloreak(mahaia.Egoera);
+        bool badgeChanged = ui.BadgeBg != badgeBg || ui.BadgeBorder != badgeBorder || ui.LblBadgeText.Text != egoeraText;
+
+        ui.BadgeBg = badgeBg;
+        ui.BadgeBorder = badgeBorder;
+        ui.LblBadgeText.Text = egoeraText;
+        ui.LblBadgeText.ForeColor = badgeFg;
+
+        if (badgeChanged)
+        {
+            ui.PnlBadge.Invalidate();
+        }
+
+        bool isLibre = mahaia.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase);
+        bool isGarbitzen = mahaia.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase);
+        bool isOkupatua = mahaia.Egoera.Equals("Okupatuta", StringComparison.OrdinalIgnoreCase) ||
+                          mahaia.Egoera.Equals("Eskaera bidean", StringComparison.OrdinalIgnoreCase);
+
+        if (isGarbitzen)
+        {
+            ui.LblBeheEzkerra.Text = "Garbitzeko zain";
+            ui.LblBeheEzkerra.Font = Theme.BodyFont(10f, bold: false);
+            ui.LblBeheEzkerra.ForeColor = Theme.Info;
+            ui.LblBeheEskuina.Visible = false;
+            ui.BtnLibreJarri.Visible = true;
+            ui.BtnLibreJarri.Enabled = true;
+            ui.BtnLibreJarri.Text = "✓ Libre jarri";
+        }
+        else if (isOkupatua)
+        {
+            ui.LblBeheEzkerra.Text = !string.IsNullOrWhiteSpace(mahaia.Iraupena) ? mahaia.Iraupena : "Zerbitzuan";
+            ui.LblBeheEzkerra.Font = Theme.MonoFont(11.5f, bold: true);
+            ui.LblBeheEzkerra.ForeColor = Theme.ChiantiPrimary;
+
+            int pax = mahaia.Mahaikideak ?? mahaia.Edukiera;
+            ui.LblBeheEskuina.Text = $"{pax} PAX";
+            ui.LblBeheEskuina.ForeColor = Theme.EspressoInk;
+            ui.LblBeheEskuina.Visible = true;
+            ui.BtnLibreJarri.Visible = false;
+        }
+        else if (isLibre)
+        {
+            ui.LblBeheEzkerra.Text = "Prest";
+            ui.LblBeheEzkerra.Font = Theme.BodyFont(10f, bold: false);
+            ui.LblBeheEzkerra.ForeColor = Theme.StoneMuted;
+
+            ui.LblBeheEskuina.Text = string.Empty;
+            ui.LblBeheEskuina.Visible = false;
+            ui.BtnLibreJarri.Visible = false;
+        }
+        else
+        {
+            ui.LblBeheEzkerra.Text = mahaia.Egoera;
+            ui.LblBeheEzkerra.Font = Theme.BodyFont(10f, bold: true);
+            ui.LblBeheEzkerra.ForeColor = Theme.Purple;
+
+            ui.LblBeheEskuina.Text = string.Empty;
+            ui.LblBeheEskuina.Visible = false;
+            ui.BtnLibreJarri.Visible = false;
+        }
+
+        if (ui.Card.Parent != null)
+        {
+            EguneratuTxartelGeometria(ui);
+        }
     }
 
     private async void MahaiTxartelaKlikatua(MahaiaDto mahaia)
     {
         if (mahaia.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase))
         {
-            // 1. Mahaikide kopurua hautatzeko modala ireki
             using var modalKopurua = new MahaikideakModal(mahaia);
             if (modalKopurua.ShowDialog() == DialogResult.OK)
             {
                 int pertsonaKopurua = modalKopurua.PertsonaKopurua;
 
-                // 2. Eskaera / Komanda pantaila ireki (pantaila osoan)
                 Hide();
                 var formEskaera = new EskaeraForm(mahaia, _langilea, _api, pertsonaKopurua);
                 formEskaera.FormClosed += async (s, e) =>
                 {
                     Show();
-                    await KargatuMahaiakAsync();
+                    await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
                 };
                 formEskaera.Show();
             }
@@ -433,7 +812,7 @@ public partial class MahaiakForm : Form
                 if (ok)
                 {
                     mahaia.Egoera = "Libre";
-                    await KargatuMahaiakAsync();
+                    await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
                 }
                 else
                 {
@@ -446,25 +825,23 @@ public partial class MahaiakForm : Form
                 return;
             }
 
-            // 'Ez' sakatzean xehetasunak ireki
             Hide();
             var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
             formXehetasunak.FormClosed += async (s, e) =>
             {
                 Show();
-                await KargatuMahaiakAsync();
+                await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
             };
             formXehetasunak.Show();
         }
         else
         {
-            // Okupatuta edo Erreserbatuta: Mahaiaren xehetasunak (pantaila osoan)
             Hide();
             var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
             formXehetasunak.FormClosed += async (s, e) =>
             {
                 Show();
-                await KargatuMahaiakAsync();
+                await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
             };
             formXehetasunak.Show();
         }

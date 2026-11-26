@@ -1,6 +1,7 @@
 using System.Drawing.Drawing2D;
 using Jatetxea.Desktop.Models;
 using Jatetxea.Desktop.Services;
+using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
@@ -47,26 +48,53 @@ public partial class MahaiaXehetasunakForm : Form
         lblMahaiaTit.Text = $"T1 Jatetxea - Mahaia {_mahaia.Zenbakia}";
         lblZerbitzaria.Text = $"Zerbitzaria: {_langilea.Izena} ({_mahaia.Edukiera} pax)";
 
+        // T1 Warm Hospitality v2.0 paleta + DoubleBuffering aplikatu
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        pnlTopBar.BackColor = Theme.MarbleWhite;
+        pnlEzkerra.BackColor = Theme.WarmLinen;
+        pnlEskuina.BackColor = Theme.WarmLinen;
+        pnlActions.BackColor = Theme.WarmLinen;
+        pnlSummaryCard.BackColor = Theme.WarmLinen;
+        pnlTicketCard.BackColor = Theme.WarmLinen;
+        pnlTicketLines.BackColor = Theme.MarbleWhite;
+        flowKontuFitxak.BackColor = Theme.MarbleWhite;
+
+        lblMahaiaTit.Font = Theme.DisplayFont(15f);
+        lblMahaiaTit.ForeColor = Theme.ChiantiPrimary;
+        lblZerbitzaria.Font = Theme.BodyFont(10f, bold: false);
+        lblZerbitzaria.ForeColor = Theme.WarmSlate;
+        lblGuztira.Font = Theme.MonoFont(16.5f, bold: true);
+        lblGuztira.ForeColor = Theme.ChiantiPrimary;
+        lblAzpitotala.Font = Theme.MonoFont(10f, bold: false);
+        lblBez.Font = Theme.MonoFont(10f, bold: false);
+
+        Theme.StyleButton(btnAtzera, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+        Theme.StyleButton(btnGehituEskaera, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 10.5f);
+        Theme.StyleButton(btnGehituKontua, Theme.MarbleWhite, Theme.Success, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+        Theme.StyleButton(btnAldatuMahaiaz, Theme.StoneMist, Theme.WarmSlate, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+        Theme.ApplyRoundedRegion(btnSukalderaBidali, 10);
+        Theme.ApplyRoundedRegion(btnKontuaEskatu, 10);
+        Theme.ApplyRoundedRegion(btnEgoeraLibre, 10);
+        Theme.ApplyRoundedRegion(btnEgoeraOkupatuta, 10);
+        Theme.ApplyRoundedRegion(btnEgoeraGarbitzen, 10);
+
         // Barraren beheko marra
         pnlTopBar.Paint += (s, e) =>
         {
-            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
+            using var pen = new Pen(Theme.WarmTaupe, 1.2f);
             e.Graphics.DrawLine(pen, 0, pnlTopBar.Height - 1, pnlTopBar.Width, pnlTopBar.Height - 1);
         };
 
-        // Txartelen ertz leunak
+        // Laburpen-txartela: Warm Hospitality urrezko ertzarekin (Figma 03 · MahaiaXehetasunakForm)
         pnlSummaryCard.Paint += (s, e) =>
         {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
-            e.Graphics.DrawRectangle(pen, 0, 0, pnlSummaryCard.Width - 1, pnlSummaryCard.Height - 1);
+            Theme.DrawRoundedCard(e.Graphics, new Rectangle(0, 0, pnlSummaryCard.Width, pnlSummaryCard.Height), 14, Theme.MarbleWhite, Theme.GoldBorder, 1.5f);
         };
 
         pnlTicketCard.Paint += (s, e) =>
         {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using var pen = new Pen(Color.FromArgb(203, 213, 225), 1.5f);
-            e.Graphics.DrawRectangle(pen, 0, 0, pnlTicketCard.Width - 1, pnlTicketCard.Height - 1);
+            Theme.DrawRoundedCard(e.Graphics, new Rectangle(0, 0, pnlTicketCard.Width, pnlTicketCard.Height), 14, Theme.MarbleWhite, Theme.WarmTaupe, 1.2f);
         };
 
         // Botoien ekintzak lotu
@@ -98,10 +126,115 @@ public partial class MahaiaXehetasunakForm : Form
 
         Load += async (s, e) =>
         {
+            EgokituResponsiveDiseinua();
             await KargatuDatuakAsync();
             _autoRefreshTimer.Start();
             _pulseTimer.Start();
         };
+
+        Resize += (s, e) => EgokituResponsiveDiseinua();
+        pnlTicketLines.Resize += (s, e) => EgokituLerroTxartelak();
+    }
+
+    private void EgokituResponsiveDiseinua()
+    {
+        int S(int px) => Theme.S(this, px);
+        bool estua = ClientSize.Width < S(1080);
+        bool osoEstua = ClientSize.Width < S(920);
+
+        // 1. Goiko barra: DPI-rekin eskalatuta, gainjarpenik gabe
+        pnlTopBar.Height = ClientSize.Height < S(580) ? S(68) : S(84);
+        int yCenter = (pnlTopBar.Height - S(42)) / 2;
+
+        btnAtzera.SetBounds(S(16), yCenter, osoEstua ? S(112) : S(142), S(42));
+
+        lblMahaiaTit.Text = osoEstua ? $"MAHAIA {_mahaia.Zenbakia}" : $"T1 JATETXEA · MAHAIA {_mahaia.Zenbakia}";
+        lblMahaiaTit.Font = Theme.DisplayFont(osoEstua ? 12.5f : 14.5f);
+        lblMahaiaTit.SetBounds(btnAtzera.Right + S(12), yCenter, osoEstua ? S(165) : S(360), S(42));
+
+        int btnH = S(40);
+        int gap = S(8);
+        if (estua)
+        {
+            lblEgoeraEtiketa.Visible = !osoEstua;
+            int lblW = osoEstua ? 0 : S(62);
+            int wLib = S(92);
+            int wOku = S(110);
+            int wGar = S(114);
+            int totalW = lblW + wLib + wOku + wGar + gap * 3;
+            pnlEgoeraChanger.Size = new Size(totalW, S(48));
+            if (lblEgoeraEtiketa.Visible) lblEgoeraEtiketa.SetBounds(0, S(4), lblW, btnH);
+            btnEgoeraLibre.SetBounds(lblW, S(4), wLib, btnH);
+            btnEgoeraOkupatuta.SetBounds(btnEgoeraLibre.Right + gap, S(4), wOku, btnH);
+            btnEgoeraGarbitzen.SetBounds(btnEgoeraOkupatuta.Right + gap, S(4), wGar, btnH);
+            pnlEgoeraChanger.Location = new Point(pnlTopBar.Width - pnlEgoeraChanger.Width - S(16), (pnlTopBar.Height - pnlEgoeraChanger.Height) / 2);
+
+            lblZerbitzaria.Visible = !osoEstua && (pnlEgoeraChanger.Left - lblMahaiaTit.Right > S(160));
+            if (lblZerbitzaria.Visible)
+            {
+                lblZerbitzaria.SetBounds(lblMahaiaTit.Right + S(8), yCenter, pnlEgoeraChanger.Left - lblMahaiaTit.Right - S(16), S(42));
+            }
+        }
+        else
+        {
+            lblEgoeraEtiketa.Visible = true;
+            int lblW = S(68);
+            int wLib = S(104);
+            int wOku = S(122);
+            int wGar = S(126);
+            int totalW = lblW + wLib + wOku + wGar + gap * 3;
+            pnlEgoeraChanger.Size = new Size(totalW, S(50));
+            lblEgoeraEtiketa.SetBounds(0, S(5), lblW, btnH);
+            btnEgoeraLibre.SetBounds(lblW, S(5), wLib, btnH);
+            btnEgoeraOkupatuta.SetBounds(btnEgoeraLibre.Right + gap, S(5), wOku, btnH);
+            btnEgoeraGarbitzen.SetBounds(btnEgoeraOkupatuta.Right + gap, S(5), wGar, btnH);
+            pnlEgoeraChanger.Location = new Point(pnlTopBar.Width - pnlEgoeraChanger.Width - S(18), (pnlTopBar.Height - pnlEgoeraChanger.Height) / 2);
+
+            lblZerbitzaria.Visible = true;
+            int zLeft = lblMahaiaTit.Right + S(10);
+            lblZerbitzaria.SetBounds(zLeft, yCenter, Math.Max(S(140), pnlEgoeraChanger.Left - zLeft - S(16)), S(42));
+        }
+
+        // 2. Eskuineko panelaren zabalera eta barruko txartel/botoien DPI geometria
+        pnlEskuina.Width = osoEstua ? S(310) : (estua ? S(360) : S(430));
+        pnlEskuina.Padding = new Padding(S(14), S(16), S(20), S(16));
+        pnlEzkerra.Padding = osoEstua ? new Padding(S(12), S(10), S(8), S(12)) : new Padding(S(24), S(16), S(16), S(20));
+        lblLerroLaburpena.Visible = ClientSize.Width >= S(900);
+
+        int sumW = Math.Max(S(260), pnlEskuina.ClientSize.Width - pnlEskuina.Padding.Horizontal);
+        pnlSummaryCard.Height = S(226);
+        int padS = S(18);
+        lblSummaryTitle.SetBounds(padS, S(14), sumW - padS * 2, S(28));
+        pnlDividerSummary.SetBounds(padS, S(44), sumW - padS * 2, 1);
+        lblAzpitotala.SetBounds(padS, S(54), sumW - padS * 2, S(26));
+        lblBez.SetBounds(padS, S(84), sumW - padS * 2, S(26));
+        lblGuztira.SetBounds(padS, S(118), sumW - padS * 2, S(42));
+        lblEgoeraOrokorra.SetBounds(padS, S(170), sumW - padS * 2, S(38));
+
+        int actY = S(12);
+        int actH = S(50);
+        int actGap = S(10);
+        Button[] actBtns = { btnSukalderaBidali, btnGehituEskaera, btnGehituKontua, btnKontuaEskatu, btnAldatuMahaiaz };
+        foreach (var b in actBtns)
+        {
+            b.SetBounds(0, actY, sumW, actH);
+            actY += actH + actGap;
+        }
+
+        // 3. Ezkerreko lerro-txartelen zabalera eguneratu
+        EgokituLerroTxartelak();
+    }
+
+    private void EgokituLerroTxartelak()
+    {
+        int w = Math.Max(340, pnlTicketLines.ClientSize.Width - 18);
+        foreach (Control c in pnlTicketLines.Controls)
+        {
+            if (c is Panel card && card.Dock == DockStyle.None)
+            {
+                card.Width = w;
+            }
+        }
     }
 
     private async Task AutoFreskatuAsync()
@@ -147,14 +280,16 @@ public partial class MahaiaXehetasunakForm : Form
         {
             var ez = zaharra[i];
             var eb = berria[i];
-            if (ez.Id != eb.Id || ez.Egoera != eb.Egoera) return true;
+            if (ez.Id != eb.Id || ez.Egoera != eb.Egoera || ez.Guztira != eb.Guztira) return true;
             if (ez.Lerroak == null || eb.Lerroak == null) return true;
             if (ez.Lerroak.Count != eb.Lerroak.Count) return true;
             for (int j = 0; j < ez.Lerroak.Count; j++)
             {
                 if (ez.Lerroak[j].Id != eb.Lerroak[j].Id ||
                     ez.Lerroak[j].Egoera != eb.Lerroak[j].Egoera ||
-                    ez.Lerroak[j].Kantitatea != eb.Lerroak[j].Kantitatea)
+                    ez.Lerroak[j].Kantitatea != eb.Lerroak[j].Kantitatea ||
+                    ez.Lerroak[j].UnitatePrezioa != eb.Lerroak[j].UnitatePrezioa ||
+                    !string.Equals(ez.Lerroak[j].Oharrak, eb.Lerroak[j].Oharrak, StringComparison.Ordinal))
                 {
                     return true;
                 }
@@ -225,116 +360,113 @@ public partial class MahaiaXehetasunakForm : Form
 
     private void EguneratuKontuFitxak()
     {
-        flowKontuFitxak.SuspendLayout();
-        flowKontuFitxak.Controls.Clear();
-
-        for (int i = 0; i < _eskaerak.Count; i++)
+        UiPerf.RunFlickerFree(flowKontuFitxak, () =>
         {
-            int index = i;
-            var eskaera = _eskaerak[index];
-            bool isAukeratua = index == _hautatutakoEskaeraIndex;
-            bool platerikGabe = (eskaera.Lerroak == null || eskaera.Lerroak.Count == 0 || eskaera.Lerroak.Sum(l => l.Kantitatea) == 0) && eskaera.Guztira == 0m;
+            flowKontuFitxak.Controls.Clear();
 
-            if (platerikGabe)
+            for (int i = 0; i < _eskaerak.Count; i++)
             {
-                // Platerik ez duen kontua: eskuin ertzean '✕' botoia jarri kontua ezabatzeko aukera emanez
-                var pnlTab = new Panel
-                {
-                    Size = new Size(255, 46),
-                    Margin = new Padding(0, 0, 10, 0),
-                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White
-                };
-                pnlTab.Paint += (s, e) =>
-                {
-                    using var pen = new Pen(isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225), 1.5f);
-                    e.Graphics.DrawRectangle(pen, 0, 0, pnlTab.Width - 1, pnlTab.Height - 1);
-                };
+                int index = i;
+                var eskaera = _eskaerak[index];
+                bool isAukeratua = index == _hautatutakoEskaeraIndex;
+                bool platerikGabe = (eskaera.Lerroak == null || eskaera.Lerroak.Count == 0 || eskaera.Lerroak.Sum(l => l.Kantitatea) == 0) && eskaera.Guztira == 0m;
 
-                var btnTab = new Button
+                if (platerikGabe)
                 {
-                    Text = $"{index + 1}. Kontua (#{eskaera.Id}) - 0,00 €",
-                    Font = new Font("Segoe UI", 9.5F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
-                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
-                    ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
-                    Location = new Point(0, 0),
-                    Size = new Size(215, 46),
-                    FlatStyle = FlatStyle.Flat,
-                    Cursor = Cursors.Hand,
-                    TextAlign = ContentAlignment.MiddleCenter
-                };
-                btnTab.FlatAppearance.BorderSize = 0;
-                btnTab.Click += (s, e) =>
-                {
-                    _hautatutakoEskaeraIndex = index;
-                    EguneratuKontuFitxak();
-                    BistaratuHautatutakoEskaera();
-                };
+                    var pnlTab = new Panel
+                    {
+                        Size = new Size(255, 44),
+                        Margin = new Padding(0, 0, 10, 0),
+                        BackColor = isAukeratua ? Theme.ChiantiPrimary : Theme.DangerBg
+                    };
+                    Theme.ApplyRoundedRegion(pnlTab, 10);
+                    pnlTab.Paint += (s, e) =>
+                    {
+                        Theme.DrawRoundedCard(e.Graphics, new Rectangle(0, 0, pnlTab.Width, pnlTab.Height), 10,
+                            isAukeratua ? Theme.ChiantiPrimary : Theme.DangerBg,
+                            isAukeratua ? Theme.ChiantiPrimary : Theme.DangerBorder, 1.3f);
+                    };
 
-                var btnX = new Button
-                {
-                    Text = "✕",
-                    Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                    BackColor = isAukeratua ? Color.FromArgb(159, 18, 57) : Color.FromArgb(254, 242, 242),
-                    ForeColor = isAukeratua ? Color.FromArgb(254, 205, 211) : Color.FromArgb(220, 38, 38),
-                    Location = new Point(216, 0),
-                    Size = new Size(39, 46),
-                    FlatStyle = FlatStyle.Flat,
-                    Cursor = Cursors.Hand
-                };
-                btnX.FlatAppearance.BorderSize = 0;
+                    var btnTab = new Button
+                    {
+                        Text = $"{index + 1}. Kontua (#{eskaera.Id}) — 0,00 €",
+                        Font = Theme.BodyFont(9.2f, bold: isAukeratua),
+                        BackColor = isAukeratua ? Theme.ChiantiPrimary : Theme.DangerBg,
+                        ForeColor = isAukeratua ? Theme.MarbleWhite : Theme.Danger,
+                        Location = new Point(2, 2),
+                        Size = new Size(212, 40),
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand,
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+                    btnTab.FlatAppearance.BorderSize = 0;
+                    btnTab.Click += (s, e) =>
+                    {
+                        _hautatutakoEskaeraIndex = index;
+                        EguneratuKontuFitxak();
+                        BistaratuHautatutakoEskaera();
+                    };
 
-                var tip = new ToolTip();
-                tip.SetToolTip(btnX, "Ezabatu kontu hutsa (platerik gabe)");
+                    var btnX = new Button
+                    {
+                        Text = "✕",
+                        Font = Theme.BodyFont(11f, bold: true),
+                        BackColor = isAukeratua ? Theme.PomodoroHover : Theme.DangerBg,
+                        ForeColor = isAukeratua ? Theme.ChiantiTint : Theme.Danger,
+                        Location = new Point(215, 2),
+                        Size = new Size(38, 40),
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand
+                    };
+                    btnX.FlatAppearance.BorderSize = 0;
 
-                btnX.MouseEnter += (s, e) =>
-                {
-                    btnX.BackColor = Color.FromArgb(220, 38, 38);
-                    btnX.ForeColor = Color.White;
-                };
-                btnX.MouseLeave += (s, e) =>
-                {
-                    btnX.BackColor = isAukeratua ? Color.FromArgb(159, 18, 57) : Color.FromArgb(254, 242, 242);
-                    btnX.ForeColor = isAukeratua ? Color.FromArgb(254, 205, 211) : Color.FromArgb(220, 38, 38);
-                };
+                    var tip = new ToolTip();
+                    tip.SetToolTip(btnX, "Ezabatu kontu hutsa (platerik gabe)");
 
-                btnX.Click += async (s, e) =>
-                {
-                    await EzabatuKontuHutsaAsync(eskaera, index);
-                };
+                    btnX.MouseEnter += (s, e) =>
+                    {
+                        btnX.BackColor = Theme.Danger;
+                        btnX.ForeColor = Theme.MarbleWhite;
+                    };
+                    btnX.MouseLeave += (s, e) =>
+                    {
+                        btnX.BackColor = isAukeratua ? Theme.PomodoroHover : Theme.DangerBg;
+                        btnX.ForeColor = isAukeratua ? Theme.ChiantiTint : Theme.Danger;
+                    };
 
-                pnlTab.Controls.Add(btnTab);
-                pnlTab.Controls.Add(btnX);
-                flowKontuFitxak.Controls.Add(pnlTab);
+                    btnX.Click += async (s, e) => await EzabatuKontuHutsaAsync(eskaera, index);
+
+                    pnlTab.Controls.Add(btnTab);
+                    pnlTab.Controls.Add(btnX);
+                    flowKontuFitxak.Controls.Add(pnlTab);
+                }
+                else
+                {
+                    var btn = new Button
+                    {
+                        Text = $"{index + 1}. Kontua (#{eskaera.Id}) — {eskaera.Guztira:F2} €",
+                        Size = new Size(245, 44),
+                        Margin = new Padding(0, 0, 10, 0)
+                    };
+                    Theme.StyleButton(btn,
+                        isAukeratua ? Theme.ChiantiPrimary : Theme.MarbleWhite,
+                        isAukeratua ? Theme.MarbleWhite : Theme.EspressoInk,
+                        isAukeratua ? null : Theme.WarmTaupe,
+                        radius: 10,
+                        fontSize: 9.5f,
+                        bold: isAukeratua);
+
+                    btn.Click += (s, e) =>
+                    {
+                        _hautatutakoEskaeraIndex = index;
+                        EguneratuKontuFitxak();
+                        BistaratuHautatutakoEskaera();
+                    };
+
+                    flowKontuFitxak.Controls.Add(btn);
+                }
             }
-            else
-            {
-                // Platerak dituen kontua: fitxa arrunta (ezabatzeko '✕' botoirik gabe)
-                var btn = new Button
-                {
-                    Text = $"{index + 1}. Kontua (#{eskaera.Id}) - {eskaera.Guztira:F2} €",
-                    Font = new Font("Segoe UI", 10F, isAukeratua ? FontStyle.Bold : FontStyle.Regular),
-                    BackColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.White,
-                    ForeColor = isAukeratua ? Color.White : Color.FromArgb(51, 65, 85),
-                    Size = new Size(245, 46),
-                    Margin = new Padding(0, 0, 10, 0),
-                    FlatStyle = FlatStyle.Flat,
-                    Cursor = Cursors.Hand
-                };
-                btn.FlatAppearance.BorderColor = isAukeratua ? Color.FromArgb(136, 19, 55) : Color.FromArgb(203, 213, 225);
-                btn.FlatAppearance.BorderSize = 1;
-
-                btn.Click += (s, e) =>
-                {
-                    _hautatutakoEskaeraIndex = index;
-                    EguneratuKontuFitxak();
-                    BistaratuHautatutakoEskaera();
-                };
-
-                flowKontuFitxak.Controls.Add(btn);
-            }
-        }
-
-        flowKontuFitxak.ResumeLayout(true);
+        }, preserveScroll: true);
     }
 
     private void BistaratuHautatutakoEskaera()
@@ -520,41 +652,41 @@ public partial class MahaiaXehetasunakForm : Form
             btnSukalderaBidali.Enabled = false;
         }
 
-        // 3. Plateren zerrenda eraiki
-        _egindaControls.Clear();
-        pnlTicketLines.SuspendLayout();
-        pnlTicketLines.Controls.Clear();
-
-        int y = 8;
-
-        // Platerak lehentasunaren arabera ordenatu:
-        // 1. EGINDA (zerbitzatzeko prest daudenak lehenengo, GORAN!)
-        // 2. MARTXAN (sukaldean prestatzen ari direnak)
-        // 3. ZAI (oraindik sukaldera bidali gabekoak)
-        // 4. ZERBITZATUA (dagoeneko mahaira eramandakoak, AZKENA/BEHERAN)
-        int LortuLehentasuna(string egoera) => NormalizatuEgoera(egoera) switch
+        // 3. Plateren zerrenda eraiki (parpadeorik gabe + scroll posizioa mantenduz)
+        UiPerf.RunFlickerFree(pnlTicketLines, () =>
         {
-            "Eginda" => 0,      // Zerbitzatzeko prest: LEHENENGO (GORAN)
-            "Martxan" => 1,     // Sukaldean prestatzen
-            "Zai" => 2,         // Sukaldera bidaltzeke
-            "Zerbitzatua" => 3, // Zerbitzatuta: AZKENA (BEHERAN)
-            _ => 4
-        };
+            _egindaControls.Clear();
+            pnlTicketLines.Controls.Clear();
 
-        var lerroakOrdenatuta = eskaera.Lerroak
-            .OrderBy(l => LortuLehentasuna(l.Egoera))
-            .ThenBy(l => l.Id)
-            .ToList();
+            int y = 8;
 
-        foreach (var lerro in lerroakOrdenatuta)
-        {
-            var rowCard = SortuLerroTxartela(lerro, targetWidth);
-            rowCard.Location = new Point(4, y);
-            pnlTicketLines.Controls.Add(rowCard);
-            y += rowCard.Height + 10;
-        }
+            // Platerak lehentasunaren arabera ordenatu:
+            // 1. EGINDA (zerbitzatzeko prest daudenak lehenengo, GORAN!)
+            // 2. MARTXAN (sukaldean prestatzen ari direnak)
+            // 3. ZAI (oraindik sukaldera bidali gabekoak)
+            // 4. ZERBITZATUA (dagoeneko mahaira eramandakoak, AZKENA/BEHERAN)
+            int LortuLehentasuna(string egoera) => NormalizatuEgoera(egoera) switch
+            {
+                "Eginda" => 0,      // Zerbitzatzeko prest: LEHENENGO (GORAN)
+                "Martxan" => 1,     // Sukaldean prestatzen
+                "Zai" => 2,         // Sukaldera bidaltzeke
+                "Zerbitzatua" => 3, // Zerbitzatuta: AZKENA (BEHERAN)
+                _ => 4
+            };
 
-        pnlTicketLines.ResumeLayout(true);
+            var lerroakOrdenatuta = eskaera.Lerroak
+                .OrderBy(l => LortuLehentasuna(l.Egoera))
+                .ThenBy(l => l.Id)
+                .ToList();
+
+            foreach (var lerro in lerroakOrdenatuta)
+            {
+                var rowCard = SortuLerroTxartela(lerro, targetWidth);
+                rowCard.Location = new Point(4, y);
+                pnlTicketLines.Controls.Add(rowCard);
+                y += rowCard.Height + 10;
+            }
+        }, preserveScroll: true);
     }
 
     private Control SortuLerroTxartela(EskaeraLerroaDto lerro, int cardWidth)

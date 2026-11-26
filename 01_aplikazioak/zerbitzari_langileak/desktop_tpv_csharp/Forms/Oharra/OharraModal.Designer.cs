@@ -189,7 +189,7 @@ partial class OharraModal
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.White;
         CancelButton = btnUtzi;
-        ClientSize = new Size(590, 520);
+        ClientSize = new Size(720, 520);
         Controls.Add(pnlBehekoa);
         Controls.Add(txtOharra);
         Controls.Add(lblKaraktereak);
@@ -197,12 +197,14 @@ partial class OharraModal
         Controls.Add(pnlPresets);
         Controls.Add(lblPresetsTit);
         Controls.Add(pnlGoiburua);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = false;
         MinimizeBox = false;
+        MinimumSize = new Size(600, 440);
         Name = "OharraModal";
         StartPosition = FormStartPosition.CenterParent;
         Text = "Plateraren Oharra / Adierazpena";
+        WindowState = FormWindowState.Normal;
         pnlGoiburua.ResumeLayout(false);
         pnlBehekoa.ResumeLayout(false);
         ResumeLayout(false);

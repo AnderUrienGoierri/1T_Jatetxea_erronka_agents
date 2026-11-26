@@ -443,14 +443,19 @@ partial class LoginForm
         // LoginForm
         // 
         AutoScaleMode = AutoScaleMode.None;
+        AutoScroll = true;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1366, 850);
+        ClientSize = new Size(1280, 800);
         Controls.Add(pnlCard);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1180, 750);
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox = true;
+        MinimizeBox = true;
+        MinimumSize = new Size(800, 500);
         Name = "LoginForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Saioa Hasi (TPV Tablet)";
+        WindowState = FormWindowState.Maximized;
         pnlTopBar.ResumeLayout(false);
         pnlTopBar.PerformLayout();
         pnlCard.ResumeLayout(false);

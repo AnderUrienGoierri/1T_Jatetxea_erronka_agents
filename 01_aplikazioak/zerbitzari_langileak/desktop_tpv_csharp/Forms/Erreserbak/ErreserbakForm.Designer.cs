@@ -201,6 +201,7 @@ partial class ErreserbakForm
         // 
         // pnlLeftCalendar
         // 
+        pnlLeftCalendar.AutoScroll = true;
         pnlLeftCalendar.BackColor = Color.White;
         pnlLeftCalendar.Controls.Add(_lblCalendarFooter);
         pnlLeftCalendar.Controls.Add(_pnlDayGrid);
@@ -210,8 +211,8 @@ partial class ErreserbakForm
         pnlLeftCalendar.Dock = DockStyle.Left;
         pnlLeftCalendar.Location = new Point(0, 0);
         pnlLeftCalendar.Name = "pnlLeftCalendar";
-        pnlLeftCalendar.Padding = new Padding(16, 12, 16, 12);
-        pnlLeftCalendar.Size = new Size(490, 689);
+        pnlLeftCalendar.Padding = new Padding(14, 10, 14, 10);
+        pnlLeftCalendar.Size = new Size(460, 689);
         pnlLeftCalendar.TabIndex = 0;
         // 
         // _lblCalendarFooter
@@ -295,13 +296,14 @@ partial class ErreserbakForm
         // 
         // btnNextMonth
         // 
+        btnNextMonth.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         btnNextMonth.BackColor = Color.FromArgb(241, 245, 249);
         btnNextMonth.Cursor = Cursors.Hand;
         btnNextMonth.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         btnNextMonth.FlatStyle = FlatStyle.Flat;
         btnNextMonth.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnNextMonth.ForeColor = Color.FromArgb(71, 85, 105);
-        btnNextMonth.Location = new Point(416, 4);
+        btnNextMonth.Location = new Point(392, 4);
         btnNextMonth.Name = "btnNextMonth";
         btnNextMonth.Size = new Size(38, 36);
         btnNextMonth.TabIndex = 2;
@@ -310,11 +312,12 @@ partial class ErreserbakForm
         // 
         // _lblMonthTitle
         // 
+        _lblMonthTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         _lblMonthTitle.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
         _lblMonthTitle.ForeColor = Color.FromArgb(15, 23, 42);
         _lblMonthTitle.Location = new Point(46, 4);
         _lblMonthTitle.Name = "_lblMonthTitle";
-        _lblMonthTitle.Size = new Size(364, 36);
+        _lblMonthTitle.Size = new Size(340, 36);
         _lblMonthTitle.TabIndex = 1;
         _lblMonthTitle.TextAlign = ContentAlignment.MiddleCenter;
         // 
@@ -341,10 +344,14 @@ partial class ErreserbakForm
         Controls.Add(pnlMain);
         Controls.Add(pnlHeader);
         Font = new Font("Segoe UI", 9.5F);
-        MinimumSize = new Size(1050, 680);
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox = true;
+        MinimizeBox = true;
+        MinimumSize = new Size(800, 500);
         Name = "ErreserbakForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Erreserben Kudeaketa Zentrala (TPV)";
+        WindowState = FormWindowState.Maximized;
         pnlHeader.ResumeLayout(false);
         pnlHeader.PerformLayout();
         pnlMain.ResumeLayout(false);

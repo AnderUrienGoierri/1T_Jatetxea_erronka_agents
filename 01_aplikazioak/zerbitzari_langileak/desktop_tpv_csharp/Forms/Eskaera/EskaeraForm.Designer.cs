@@ -106,9 +106,11 @@ partial class EskaeraForm
         // 
         splitMain.Dock = DockStyle.Fill;
         splitMain.FixedPanel = FixedPanel.Panel2;
-        splitMain.IsSplitterFixed = true;
+        splitMain.IsSplitterFixed = false;
         splitMain.Location = new Point(0, 84);
         splitMain.Name = "splitMain";
+        splitMain.Panel1MinSize = 360;
+        splitMain.Panel2MinSize = 280;
         // 
         // splitMain.Panel1 (Ezkerra: Kategoriak eta Platerak)
         // 
@@ -124,9 +126,9 @@ partial class EskaeraForm
         splitMain.Panel2.Controls.Add(pnlKarritoa);
         splitMain.Panel2.Controls.Add(pnlLaburpena);
         splitMain.Panel2.Controls.Add(pnlKomandaGoiburua);
-        splitMain.Panel2.Padding = new Padding(16);
-        splitMain.Size = new Size(1366, 766);
-        splitMain.SplitterDistance = 910;
+        splitMain.Panel2.Padding = new Padding(14);
+        splitMain.Size = new Size(1280, 716);
+        splitMain.SplitterDistance = 850;
         splitMain.TabIndex = 1;
         // 
         // pnlPlaterak (Produktuen txartelen flow panela)
@@ -161,7 +163,7 @@ partial class EskaeraForm
         // 
         // pnlKategoriak (EDARIAK, HASTEKOAK, HARAGIAK, POSTREAK...)
         // 
-        pnlKategoriak.AutoScroll = false;
+        pnlKategoriak.AutoScroll = true;
         pnlKategoriak.Controls.Add(btnKatEdariak);
         pnlKategoriak.Controls.Add(btnKatHastekoak);
         pnlKategoriak.Controls.Add(btnKatHaragiak);
@@ -267,57 +269,61 @@ partial class EskaeraForm
         pnlLaburpena.Controls.Add(lblBez);
         pnlLaburpena.Controls.Add(lblAzpitotala);
         pnlLaburpena.Dock = DockStyle.Bottom;
-        pnlLaburpena.Location = new Point(16, 490);
+        pnlLaburpena.Location = new Point(14, 490);
         pnlLaburpena.Name = "pnlLaburpena";
-        pnlLaburpena.Size = new Size(424, 240);
+        pnlLaburpena.Size = new Size(400, 198);
         pnlLaburpena.TabIndex = 2;
         // 
         // btnBidali ("ESKAERA SORTU")
         // 
+        btnBidali.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         btnBidali.BackColor = Color.FromArgb(136, 19, 55);
         btnBidali.Cursor = Cursors.Hand;
         btnBidali.FlatAppearance.BorderSize = 0;
         btnBidali.FlatStyle = FlatStyle.Flat;
-        btnBidali.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
+        btnBidali.Font = new Font("Segoe UI", 12.5F, FontStyle.Bold);
         btnBidali.ForeColor = Color.White;
-        btnBidali.Location = new Point(6, 150);
+        btnBidali.Location = new Point(4, 128);
         btnBidali.Name = "btnBidali";
-        btnBidali.Size = new Size(412, 70);
+        btnBidali.Size = new Size(392, 58);
         btnBidali.TabIndex = 3;
         btnBidali.Text = "ESKAERA SORTU";
         btnBidali.UseVisualStyleBackColor = false;
         // 
         // lblGuztira ("Guztira: 43.45 €")
         // 
-        lblGuztira.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+        lblGuztira.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblGuztira.Font = new Font("Segoe UI", 14.5F, FontStyle.Bold);
         lblGuztira.ForeColor = Color.FromArgb(30, 41, 59);
-        lblGuztira.Location = new Point(6, 96);
+        lblGuztira.Location = new Point(4, 80);
         lblGuztira.Name = "lblGuztira";
-        lblGuztira.Size = new Size(412, 46);
+        lblGuztira.Size = new Size(392, 40);
         lblGuztira.TabIndex = 2;
-        lblGuztira.Text = "Guztira:                        0.00 €";
+        lblGuztira.Text = "Guztira:  0.00 €";
         lblGuztira.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // lblBez ("BEZ (%10): 3.95 €")
         // 
-        lblBez.Font = new Font("Segoe UI", 11.5F);
+        lblBez.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblBez.Font = new Font("Segoe UI", 10.5F);
         lblBez.ForeColor = Color.FromArgb(100, 116, 139);
-        lblBez.Location = new Point(6, 54);
+        lblBez.Location = new Point(4, 44);
         lblBez.Name = "lblBez";
-        lblBez.Size = new Size(412, 34);
+        lblBez.Size = new Size(392, 30);
         lblBez.TabIndex = 1;
-        lblBez.Text = "BEZ (%10):                    0.00 €";
+        lblBez.Text = "BEZ (%10):  0.00 €";
         lblBez.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // lblAzpitotala ("Azpitotala: 39.50 €")
         // 
-        lblAzpitotala.Font = new Font("Segoe UI", 11.5F);
+        lblAzpitotala.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        lblAzpitotala.Font = new Font("Segoe UI", 10.5F);
         lblAzpitotala.ForeColor = Color.FromArgb(100, 116, 139);
-        lblAzpitotala.Location = new Point(6, 14);
+        lblAzpitotala.Location = new Point(4, 10);
         lblAzpitotala.Name = "lblAzpitotala";
-        lblAzpitotala.Size = new Size(412, 34);
+        lblAzpitotala.Size = new Size(392, 30);
         lblAzpitotala.TabIndex = 0;
-        lblAzpitotala.Text = "Azpitotala:                   0.00 €";
+        lblAzpitotala.Text = "Azpitotala:  0.00 €";
         lblAzpitotala.TextAlign = ContentAlignment.MiddleLeft;
         // 
         // pnlKarritoa (Aukeratutako produktuen zerrenda oharrekin)
@@ -356,13 +362,17 @@ partial class EskaeraForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(1366, 850);
+        ClientSize = new Size(1280, 800);
         Controls.Add(splitMain);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1180, 750);
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox = true;
+        MinimizeBox = true;
+        MinimumSize = new Size(800, 500);
         Name = "EskaeraForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Eskaera Berria";
+        WindowState = FormWindowState.Maximized;
         pnlTopBar.ResumeLayout(false);
         splitMain.Panel1.ResumeLayout(false);
         splitMain.Panel2.ResumeLayout(false);

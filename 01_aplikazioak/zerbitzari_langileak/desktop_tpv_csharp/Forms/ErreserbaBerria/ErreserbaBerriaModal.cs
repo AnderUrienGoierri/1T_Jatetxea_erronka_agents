@@ -28,6 +28,21 @@ public partial class ErreserbaBerriaModal : Form
 
         InitializeComponent();
 
+        // T1 Warm Hospitality v2.0 paleta + DoubleBuffering
+        Theme.ApplyWarmHospitalityTheme(this);
+        BackColor = Theme.WarmLinen;
+        pnlBody.BackColor = Theme.WarmLinen;
+        pnlFooter.BackColor = Theme.MarbleWhite;
+        foreach (Control c in pnlBody.Controls)
+        {
+            if (c is Label lbl)
+            {
+                lbl.BackColor = Theme.WarmLinen;
+            }
+        }
+        Theme.StyleButton(_btnUtzi, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 10f);
+        Theme.StyleButton(_btnGorde, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 10f);
+
         if (!string.IsNullOrWhiteSpace(_langilea.Izena))
         {
             lblSub.Text = $"Kudeatzailea: {_langilea.Izena} ({_langilea.Rola}) · Telefonoz edo Pertsonan jasota";
@@ -82,6 +97,84 @@ public partial class ErreserbaBerriaModal : Form
         _cmbJatorria.Items.Add("Telefonoz jasotako erreserba (Dei zuzena)");
         _cmbJatorria.Items.Add("Pertsonan jasotako erreserba (Barran edo Sarreran)");
         _cmbJatorria.SelectedIndex = 0;
+
+        // Responsive 2-zutabe GridPane estiloko egokitzea (DPI eskalatua)
+        pnlBody.Resize += (s, e) => EgokituFormularioResponsive();
+        Load += (s, e) =>
+        {
+            Theme.ApplyModalDpiSize(this, 820, 660, 660, 540);
+            EgokituFormularioResponsive();
+        };
+    }
+
+    private void EgokituFormularioResponsive()
+    {
+        int S(int px) => Theme.S(this, px);
+
+        // 1. Goiko barra
+        pnlHeader.Height = S(84);
+        lblTit.Font = Theme.DisplayFont(13.5f);
+        lblTit.ForeColor = Theme.MarbleWhite;
+        lblTit.SetBounds(S(24), S(12), Math.Max(S(340), pnlHeader.ClientSize.Width - S(48)), S(32));
+        lblSub.Font = Theme.BodyFont(9.2f, bold: false);
+        lblSub.ForeColor = Theme.ChiantiTint;
+        lblSub.SetBounds(S(24), S(48), Math.Max(S(340), pnlHeader.ClientSize.Width - S(48)), S(24));
+
+        // 2. Formularioaren 2 zutabeak bertikalki eta horizontalki DPI-eskalatuta
+        int availW = pnlBody.ClientSize.Width;
+        int contentW = Math.Clamp(availW - S(48), S(500), S(860));
+        int leftX = Math.Max(S(24), (availW - contentW) / 2);
+        int gap = S(20);
+        int colW = (contentW - gap) / 2;
+        int rightX = leftX + colW + gap;
+
+        int lblH = S(22);
+        int inpH = S(32);
+        int rowStep = S(72);
+        int y = S(16);
+
+        lblIzena.SetBounds(leftX, y, colW, lblH);
+        _txtIzena.SetBounds(leftX, y + lblH + S(4), colW, inpH);
+        lblAbizena.SetBounds(rightX, y, colW, lblH);
+        _txtAbizena.SetBounds(rightX, y + lblH + S(4), colW, inpH);
+        y += rowStep;
+
+        lblTel.SetBounds(leftX, y, colW, lblH);
+        _txtTelefonoa.SetBounds(leftX, y + lblH + S(4), colW, inpH);
+        lblMail.SetBounds(rightX, y, colW, lblH);
+        _txtEmaila.SetBounds(rightX, y + lblH + S(4), colW, inpH);
+        y += rowStep;
+
+        lblData.SetBounds(leftX, y, colW, lblH);
+        _dtpData.SetBounds(leftX, y + lblH + S(4), colW, inpH);
+        lblTxanda.SetBounds(rightX, y, colW, lblH);
+        _cmbTxanda.SetBounds(rightX, y + lblH + S(4), colW, inpH);
+        y += rowStep;
+
+        lblPax.SetBounds(leftX, y, colW, lblH);
+        _nudPax.SetBounds(leftX, y + lblH + S(4), colW, inpH);
+        lblMahaia.SetBounds(rightX, y, colW, lblH);
+        _cmbMahaia.SetBounds(rightX, y + lblH + S(4), colW, inpH);
+        y += rowStep;
+
+        lblJatorria.SetBounds(leftX, y, contentW, lblH);
+        _cmbJatorria.SetBounds(leftX, y + lblH + S(4), contentW, inpH);
+        y += rowStep;
+
+        lblOharrak.SetBounds(leftX, y, contentW, lblH);
+        _txtOharrak.SetBounds(leftX, y + lblH + S(4), contentW, S(68));
+        y += lblH + S(78);
+
+        _lblErrorea.SetBounds(leftX, y, contentW, S(28));
+
+        // 3. Beheko barra eta botoiak
+        pnlFooter.Height = S(72);
+        int bH = S(42);
+        int bY = (pnlFooter.Height - bH) / 2;
+        int wGorde = S(186);
+        int wUtzi = S(112);
+        _btnGorde.SetBounds(pnlFooter.ClientSize.Width - wGorde - S(24), bY, wGorde, bH);
+        _btnUtzi.SetBounds(_btnGorde.Left - wUtzi - S(12), bY, wUtzi, bH);
     }
 
     private async Task GordeErreserbaAsync()

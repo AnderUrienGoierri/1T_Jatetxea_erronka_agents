@@ -92,18 +92,19 @@ partial class ErreserbaBerriaModal
         pnlFooter.Location = new Point(0, 571);
         pnlFooter.Name = "pnlFooter";
         pnlFooter.Padding = new Padding(20, 14, 20, 14);
-        pnlFooter.Size = new Size(524, 70);
+        pnlFooter.Size = new Size(800, 70);
         pnlFooter.TabIndex = 1;
         // 
         // _btnUtzi
         // 
+        _btnUtzi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         _btnUtzi.BackColor = Color.FromArgb(241, 245, 249);
         _btnUtzi.Cursor = Cursors.Hand;
         _btnUtzi.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
         _btnUtzi.FlatStyle = FlatStyle.Flat;
         _btnUtzi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         _btnUtzi.ForeColor = Color.FromArgb(51, 65, 85);
-        _btnUtzi.Location = new Point(250, 14);
+        _btnUtzi.Location = new Point(526, 14);
         _btnUtzi.Name = "_btnUtzi";
         _btnUtzi.Size = new Size(110, 42);
         _btnUtzi.TabIndex = 1;
@@ -112,13 +113,14 @@ partial class ErreserbaBerriaModal
         // 
         // _btnGorde
         // 
+        _btnGorde.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         _btnGorde.BackColor = Color.FromArgb(136, 19, 55);
         _btnGorde.Cursor = Cursors.Hand;
         _btnGorde.FlatAppearance.BorderSize = 0;
         _btnGorde.FlatStyle = FlatStyle.Flat;
         _btnGorde.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         _btnGorde.ForeColor = Color.White;
-        _btnGorde.Location = new Point(370, 14);
+        _btnGorde.Location = new Point(646, 14);
         _btnGorde.Name = "_btnGorde";
         _btnGorde.Size = new Size(134, 42);
         _btnGorde.TabIndex = 0;
@@ -372,17 +374,19 @@ partial class ErreserbaBerriaModal
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(524, 641);
+        ClientSize = new Size(760, 620);
         Controls.Add(pnlBody);
         Controls.Add(pnlFooter);
         Controls.Add(pnlHeader);
         Font = new Font("Segoe UI", 9.5F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = false;
         MinimizeBox = false;
+        MinimumSize = new Size(620, 520);
         Name = "ErreserbaBerriaModal";
         StartPosition = FormStartPosition.CenterParent;
         Text = "T1 Jatetxea - Erreserba Berria Sartu";
+        WindowState = FormWindowState.Normal;
         pnlHeader.ResumeLayout(false);
         pnlFooter.ResumeLayout(false);
         pnlBody.ResumeLayout(false);

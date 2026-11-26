@@ -73,18 +73,19 @@ partial class TiketIkusteaForm
         pnlBehea.Location = new Point(0, 616);
         pnlBehea.Name = "pnlBehea";
         pnlBehea.Padding = new Padding(16, 12, 16, 12);
-        pnlBehea.Size = new Size(524, 65);
+        pnlBehea.Size = new Size(800, 65);
         pnlBehea.TabIndex = 1;
         // 
         // btnItxi
         // 
+        btnItxi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         btnItxi.BackColor = Color.FromArgb(71, 85, 105);
         btnItxi.Cursor = Cursors.Hand;
         btnItxi.FlatAppearance.BorderSize = 0;
         btnItxi.FlatStyle = FlatStyle.Flat;
         btnItxi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         btnItxi.ForeColor = Color.White;
-        btnItxi.Location = new Point(410, 12);
+        btnItxi.Location = new Point(685, 12);
         btnItxi.Name = "btnItxi";
         btnItxi.Size = new Size(95, 40);
         btnItxi.TabIndex = 2;
@@ -150,17 +151,19 @@ partial class TiketIkusteaForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(248, 250, 252);
-        ClientSize = new Size(524, 681);
+        ClientSize = new Size(640, 660);
         Controls.Add(pnlKutxa);
         Controls.Add(pnlBehea);
         Controls.Add(pnlGoiburua);
         Font = new Font("Segoe UI", 9.5F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = false;
         MinimizeBox = false;
+        MinimumSize = new Size(540, 500);
         Name = "TiketIkusteaForm";
         StartPosition = FormStartPosition.CenterParent;
         Text = "T1 Jatetxea - Tiket Fiskala";
+        WindowState = FormWindowState.Normal;
         pnlGoiburua.ResumeLayout(false);
         pnlBehea.ResumeLayout(false);
         pnlKutxa.ResumeLayout(false);

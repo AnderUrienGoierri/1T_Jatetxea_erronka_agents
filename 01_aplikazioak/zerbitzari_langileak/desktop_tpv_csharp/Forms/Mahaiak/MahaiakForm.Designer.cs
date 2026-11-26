@@ -362,14 +362,18 @@ partial class MahaiakForm
         // 
         AutoScaleMode = AutoScaleMode.None;
         BackColor = Color.FromArgb(241, 245, 249);
-        ClientSize = new Size(1366, 850);
+        ClientSize = new Size(1280, 800);
         Controls.Add(pnlContent);
         Controls.Add(pnlTabStrip);
         Controls.Add(pnlTopBar);
-        MinimumSize = new Size(1180, 750);
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox = true;
+        MinimizeBox = true;
+        MinimumSize = new Size(800, 500);
         Name = "MahaiakForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "T1 Jatetxea - Mahaiak";
+        WindowState = FormWindowState.Maximized;
         pnlTopBar.ResumeLayout(false);
         pnlProfile.ResumeLayout(false);
         pnlTabStrip.ResumeLayout(false);
