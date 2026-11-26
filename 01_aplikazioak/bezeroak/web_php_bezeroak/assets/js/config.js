@@ -29,38 +29,46 @@ async function egiaztatuApiEgoera() {
   const badge = document.getElementById("api-status");
   if (!badge) return;
 
+  function ezarriEgoera(egoera, mezua) {
+    badge.className = `api-status-badge ${egoera}`;
+    badge.title = mezua;
+    badge.setAttribute("aria-label", mezua);
+  }
+
+  let res;
   try {
     const healthUrl = API_BASE.replace("/api/v1", "/health");
-    const res = await fetch(healthUrl, {
+    res = await fetch(healthUrl, {
       mode: "cors",
       headers: { "X-App-Id": "web_php" },
     });
-
-    if (res.ok) {
-      const data = await res.json().catch(() => null);
-      const isDbConnected =
-        data &&
-        (data.database === "Connected" ||
-          data.datuBaseaKonektatuta === true ||
-          data.status === "Healthy");
-
-      if (isDbConnected) {
-        badge.className = "api-status-badge online";
-        badge.innerHTML = '<span class="status-dot"></span> API &amp; DB Linean';
-        badge.title = "REST API eta MySQL Datu-basea konektatuta daude (Portua 5050)";
-      } else {
-        badge.className = "api-status-badge warning";
-        badge.innerHTML =
-          '<span class="status-dot" style="background:#eab308;"></span> API Linean | DB Deskonektatuta';
-        badge.title = "REST API linean dago baina MySQL datu-basearekin arazoa dago";
-      }
-    } else {
-      throw new Error("API erantzun ez-zuzena: " + res.status);
-    }
   } catch (err) {
-    badge.className = "api-status-badge offline";
-    badge.innerHTML = '<span class="status-dot"></span> API Deskonektatuta';
-    badge.title = "Ezin izan da REST APIarekin konektatu (Portua 5050)";
+    ezarriEgoera("offline", "APIa ez dago eskuragarri; datu-basearen egoera ezezaguna da");
+    return;
+  }
+
+  if (!res.ok) {
+    ezarriEgoera("warning", `APIaren egoera-egiaztapenak huts egin du (HTTP ${res.status})`);
+    return;
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    ezarriEgoera("warning", "APIaren egoera-erantzuna ez da baliozkoa");
+    return;
+  }
+
+  const dbOnline = data && (data.database != null
+    ? data.database === "Connected"
+    : data.datuBaseaKonektatuta != null
+      ? data.datuBaseaKonektatuta === true
+      : data.status === "Healthy");
+  if (dbOnline) {
+    ezarriEgoera("online", "API eta datu-basea konektatuta");
+  } else {
+    ezarriEgoera("warning", "APIak erantzuten du, baina datu-basearen konexioak edo egoera-egiaztapenak huts egin du");
   }
 }
 

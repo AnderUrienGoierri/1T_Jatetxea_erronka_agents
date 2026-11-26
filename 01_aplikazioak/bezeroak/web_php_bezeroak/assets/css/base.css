@@ -10,6 +10,8 @@
     --kolore-brand-hover: #9f1239;
     --kolore-brand-dark: #4c0519;
     --kolore-brand-light: #fce7f0;
+    --kolore-brand-text: #881337;
+    --kolore-brand-text-dark: #4c0519;
 
     /* Urrea (Antique Gold) */
     --kolore-gold: #d4a359;
@@ -79,6 +81,8 @@
     --kolore-brand-hover: #e11d48;
     --kolore-brand-dark: #4c0519;
     --kolore-brand-light: #3a0a1b;
+    --kolore-brand-text: #fb8299;
+    --kolore-brand-text-dark: #fb8299;
 
     --kolore-gold: #d4a359;
     --kolore-gold-dark: #b45309;
@@ -107,7 +111,7 @@
     --kolore-border: #352d31;
     --kolore-text-main: #faf7f2;
     --kolore-text-secondary: #a8a29e;
-    --kolore-text-muted: #78716c;
+    --kolore-text-muted: #b6aaa8;
 
     --itzala-arina: 0 2px 8px rgba(0, 0, 0, 0.35);
     --itzala-ertaina: 0 8px 20px rgba(0, 0, 0, 0.45);
@@ -219,7 +223,7 @@ section {
 
 .btn-secondary {
     background-color: var(--kolore-bg-card);
-    color: var(--kolore-brand-primary);
+    color: var(--kolore-brand-text);
     border: 1.5px solid var(--kolore-brand-primary);
     box-shadow: var(--itzala-arina);
 }

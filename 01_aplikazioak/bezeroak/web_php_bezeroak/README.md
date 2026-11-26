@@ -2,6 +2,14 @@
 
 Jatetxearen webgune publikoa, karta interaktiboa, online mahai-erreserbak eta bezeroen iritziak kudeatzen dituen PHP aplikazioa.
 
+Kartako alergenoak ikurrekin erakusten dira; ikurraren gainean jarrita edo teklatuarekin hautatuta izena ikus daiteke. Ikur ezagunik ez duten alergenoak testuz agertzen dira.
+
+Kartako «Guztiak» iragazkiak platerak erakusten ditu; edariak «Edariak» iragazkian eta haren azpikategorietan daude.
+
+Goiburuko ezarpenetatik gaia alda daiteke. Konexio-puntua berdea da APIa eta datu-basea ondo daudenean, laranja APIak erantzun baina egoera-egiaztapenak huts egiten duenean, eta gorria APIa eskuragarri ez dagoenean. Azken kasuan datu-basearen egoera ezezaguna da; puntuaren azalpenak xehetasuna erakusten du.
+
+Tolosako babarrunen argazkia: [Xaverius, Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tolosako_babarrunak.jpeg), domeinu publikoa.
+
 ---
 
 ## 1. Informazio Orokorra

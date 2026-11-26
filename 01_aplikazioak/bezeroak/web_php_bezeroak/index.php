@@ -20,15 +20,15 @@ $resHealth = call_api('GET', $health_url);
 $api_online = false;
 $db_online = false;
 
-if ($resHealth['status'] === 200) {
+if ($resHealth['status'] > 0) {
     $api_online = true;
-    $db_online = true;
-} elseif ($resHealth['status'] === 503) {
-    $api_online = true;
-    $db_online = false;
-} elseif ($resHealth['status'] > 0) {
-    $api_online = true;
-    $db_online = false;
+    $healthData = $resHealth['data'] ?? [];
+    $db_online = $resHealth['status'] === 200
+        && (isset($healthData['database'])
+            ? $healthData['database'] === 'Connected'
+            : (isset($healthData['datuBaseaKonektatuta'])
+                ? $healthData['datuBaseaKonektatuta'] === true
+                : ($healthData['status'] ?? null) === 'Healthy'));
 } else {
     // Proba egin platerak deialdiarekin
     $resPlaterakTest = call_api('GET', "$api_base_url/platerak");

@@ -10,10 +10,10 @@
     </footer>
 
     <!-- MODULARIZATUTAKO JAVASCRIPT FITXATEGIAK (Interaktibitate arina eta iragazkiak) -->
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/karta.js"></script>
+    <script src="assets/js/config.js?v=<?php echo filemtime(__DIR__ . '/../js/config.js'); ?>"></script>
+    <script src="assets/js/karta.js?v=<?php echo filemtime(__DIR__ . '/../js/karta.js'); ?>"></script>
     <script src="assets/js/erreserbak.js"></script>
     <script src="assets/js/iritziak.js"></script>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/app.js?v=<?php echo filemtime(__DIR__ . '/../js/app.js'); ?>"></script>
 </body>
 </html>

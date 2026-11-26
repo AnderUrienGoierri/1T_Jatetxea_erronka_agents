@@ -27,7 +27,7 @@
 }
 
 .kontaktua-titulua {
-    color: var(--kolore-brand-primary);
+    color: var(--kolore-brand-text);
     font-family: var(--font-title);
     margin-bottom: 0.5rem;
     font-size: 1.15rem;

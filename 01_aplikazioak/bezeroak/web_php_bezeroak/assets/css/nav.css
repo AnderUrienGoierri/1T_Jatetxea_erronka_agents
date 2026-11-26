@@ -116,6 +116,50 @@ nav a.active {
     gap: 0.75rem;
 }
 
+.settings-menu {
+    position: relative;
+}
+
+.settings-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #faf7f2;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    list-style: none;
+}
+
+.settings-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.settings-toggle:hover,
+.settings-menu[open] .settings-toggle {
+    color: var(--kolore-gold);
+}
+
+.settings-toggle:focus-visible,
+.api-status-badge:focus-visible {
+    outline: 2px solid #faf7f2;
+    outline-offset: 3px;
+}
+
+.settings-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    padding: 0.75rem;
+    border: 1px solid rgba(212, 163, 89, 0.45);
+    border-radius: var(--erradioa);
+    background: #1a1618;
+    box-shadow: var(--itzala-ertaina);
+    z-index: 1;
+}
+
 .theme-toggle-btn {
     background: rgba(26, 22, 24, 0.7);
     color: #faf7f2;
@@ -137,36 +181,23 @@ nav a.active {
 }
 
 .api-status-badge {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    padding: 0.36rem 0.85rem;
-    border-radius: 999px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    white-space: nowrap;
-    letter-spacing: 0.2px;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background-color: currentColor;
     display: inline-block;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 .api-status-badge.online {
-    background-color: rgba(21, 128, 61, 0.22);
-    color: #4ade80;
-    border: 1px solid #15803d;
+    background-color: #4ade80;
+}
+
+.api-status-badge.warning {
+    background-color: #fb923c;
 }
 
 .api-status-badge.offline {
-    background-color: rgba(185, 28, 28, 0.24);
-    color: #f87171;
-    border: 1px solid #b91c1c;
+    background-color: #f87171;
 }
 
 @media (max-width: 850px) {

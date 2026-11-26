@@ -24,7 +24,7 @@
 
 .erreserba-form-area h3, .erreserba-info-area h3 {
     margin-bottom: 1.25rem;
-    color: var(--kolore-brand-primary);
+    color: var(--kolore-brand-text);
     font-family: var(--font-title);
     font-size: 1.35rem;
     font-weight: 800;
@@ -106,7 +106,7 @@
 }
 
 .txanden-ordutegiak li strong {
-    color: var(--kolore-brand-dark);
+    color: var(--kolore-brand-text-dark);
 }
 
 .oharra-kaxa {

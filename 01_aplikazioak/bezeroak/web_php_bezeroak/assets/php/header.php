@@ -33,7 +33,8 @@ if (!empty($client_api_env)) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/../css/style.css'); ?>">
+    <link rel="stylesheet" href="assets/css/nav.css?v=<?php echo filemtime(__DIR__ . '/../css/nav.css'); ?>">
     <script>
         // Bezeroaren JavaScript logikari API helbidea pasa (nabigatzailetik erabilgarria)
         window.API_BASE_URL = "<?php echo htmlspecialchars($client_api_url, ENT_QUOTES, 'UTF-8'); ?>";
@@ -75,7 +76,7 @@ if (!empty($client_api_env)) {
             <!-- Erdian: Nabigazio-menua -->
             <nav>
                 <ul>
-                    <li><a href="#karta" class="active">Karta</a></li>
+                    <li><a href="#karta">Karta</a></li>
                     <li><a href="#erreserba">Erreserba</a></li>
                     <li><a href="#iritziak">Iritziak</a></li>
                     <li><a href="#kontaktua">Kontaktua</a></li>
@@ -84,34 +85,32 @@ if (!empty($client_api_env)) {
 
             <!-- Eskuinaldean: Gaia + API egoera -->
             <div class="header-right">
-                <button type="button" id="webThemeBtn" class="theme-toggle-btn" onclick="toggleWebTheme()" title="Aldatu Warm Hospitality / Evening Espresso gaia">
-                    Modu Iluna
-                </button>
-                <div class="api-status-wrapper">
-                    <?php if (!empty($api_online) && !empty($db_online)): ?>
-                        <span id="api-status" class="api-status-badge online" title="REST API eta MySQL Datu-basea konektatuta daude">
-                            <span class="status-dot"></span> API &amp; DB Linean
-                        </span>
-                    <?php elseif (!empty($api_online) && empty($db_online)): ?>
-                        <span id="api-status" class="api-status-badge warning" style="background:#451a03; color:#fde047; border:1px solid #ca8a04; display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;" title="API-ra konektatuta dago, baina MySQL datu-basearekin ezin izan da konexioa lortu">
-                            <span class="status-dot" style="background:#eab308;"></span> API Konektatuta | DB Deskonektatuta
-                        </span>
-                    <?php else: ?>
-                        <span id="api-status" class="api-status-badge offline" title="Ezin izan da REST APIarekin konektatu">
-                            <span class="status-dot"></span> API Deskonektatuta
-                        </span>
-                    <?php endif; ?>
-                </div>
+                <details class="settings-menu">
+                    <summary class="settings-toggle" aria-label="Ezarpenak" title="Ezarpenak">
+                        <svg viewBox="0 1 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10 2.5h4l.5 2.2c.6.2 1.2.4 1.8.8l1.9-1.2L21 7l-1.2 2c.3.5.6 1.1.7 1.7l2.2.5v3.6l-2.2.5c-.1.6-.4 1.2-.7 1.7l1.2 2-2.8 2.7-1.9-1.2c-.6.4-1.2.6-1.8.8l-.5 2.2h-4l-.5-2.2c-.6-.2-1.2-.4-1.8-.8l-1.9 1.2L3 19l1.2-2c-.3-.5-.6-1.1-.7-1.7l-2.2-.5v-3.6l2.2-.5c.1-.6.4-1.2.7-1.7L3 7l2.8-2.7 1.9 1.2c.6-.4 1.2-.6 1.8-.8Z"></path>
+                            <circle cx="12" cy="13" r="3.1"></circle>
+                        </svg>
+                    </summary>
+                    <div class="settings-panel">
+                        <button type="button" id="webThemeBtn" class="theme-toggle-btn" onclick="toggleWebTheme()">
+                            Modu Iluna
+                        </button>
+                    </div>
+                </details>
+                <?php
+                    if (!empty($api_online) && !empty($db_online)) {
+                        $statusClass = 'online';
+                        $statusText = 'API eta datu-basea konektatuta';
+                    } elseif (!empty($api_online)) {
+                        $statusClass = 'warning';
+                        $statusText = 'APIak erantzuten du, baina datu-basearen konexioak edo egoera-egiaztapenak huts egin du';
+                    } else {
+                        $statusClass = 'offline';
+                        $statusText = 'APIa ez dago eskuragarri; datu-basearen egoera ezezaguna da';
+                    }
+                ?>
+                <span id="api-status" class="api-status-badge <?php echo $statusClass; ?>" role="status" tabindex="0" aria-label="<?php echo $statusText; ?>" title="<?php echo $statusText; ?>"></span>
             </div>
         </div>
     </header>
-
-    <?php if (!empty($api_online) && empty($db_online)): ?>
-    <div id="db-alert-banner" style="background:#991b1b; color:#ffffff; font-weight:700; text-align:center; padding:10px 16px; font-size:13px; border-bottom:2px solid #7f1d1d; letter-spacing:0.3px;">
-        ADI: REST API zerbitzariarekin konexioa ondo lortu da (Portua 5050), baina MySQL datu-basearekin ezin izan da konexioa ezarri! (Datu-basea itzalita dago)
-    </div>
-    <?php elseif (empty($api_online)): ?>
-    <div id="api-alert-banner" style="background:#7f1d1d; color:#fee2e2; font-weight:600; text-align:center; padding:8px 16px; font-size:13px; border-bottom:1px solid #991b1b;">
-        OHARRA: REST API nagusia deskonektatuta dago (http://localhost:5050). Datu estatikoak erakusten ari dira.
-    </div>
-    <?php endif; ?>

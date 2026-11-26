@@ -12,7 +12,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
         <section id="karta">
             <div class="section-header">
                 <h2>Gure Karta</h2>
-                <p>Bi munduetako lehengai gorenekin prestatua: euskal parrillako haragi eta arrainak, italiar pasta freskoak eta ardo hautatuak (Guztira: <?php echo count($platerak); ?> aukera)</p>
+                <p>Bi munduetako lehengai gorenekin prestatua: euskal parrillako haragi eta arrainak, italiar pasta freskoak eta ardo hautatuak</p>
             </div>
 
             <!-- Kategoria-iragazkiak -->
@@ -24,6 +24,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
                 <button type="button" class="filter-btn" data-kategoria="Postrea">Postreak</button>
                 <button type="button" class="filter-btn" data-kategoria="Edaria">Edariak</button>
             </div>
+            <div id="edari-azpikategoriak" class="edari-azpikategoriak" role="group" aria-label="Edarien azpikategoriak" hidden></div>
 
             <!-- Plateren Grid-a (PHP bidez zerbitzarian sortua) -->
             <div id="platerak-zerrenda" class="platerak-grid">
@@ -45,6 +46,13 @@ $ahalmenaMap = $ahalmenaMap ?? [];
                             $agortuta = ($stockAhalmena !== null && $stockAhalmena === 0);
                         ?>
                         <div class="plater-card <?php echo $agortuta ? 'agortuta' : ''; ?>" data-kategoria="<?php echo $kategoria; ?>">
+                            <img
+                                class="plater-irudia"
+                                src="assets/img/platerak/platera_<?php echo $plateraId; ?>.jpg"
+                                alt="<?php echo $izena; ?>"
+                                loading="lazy"
+                                decoding="async"
+                            >
                             <div class="plater-header">
                                 <h3 class="plater-izena"><?php echo $izena; ?></h3>
                                 <span class="plater-prezioa"><?php echo $prezioa; ?></span>
@@ -52,7 +60,7 @@ $ahalmenaMap = $ahalmenaMap ?? [];
                             <p class="plater-deskribapena"><?php echo $deskribapena; ?></p>
                             
                             <?php if (!empty($alergenoak)): ?>
-                                <p class="plater-alergenoak">
+                                <p class="plater-alergenoak" data-alergenoak="<?php echo $alergenoak; ?>">
                                     <strong>Alergenoak:</strong> <?php echo $alergenoak; ?>
                                 </p>
                             <?php endif; ?>
@@ -73,8 +81,6 @@ $ahalmenaMap = $ahalmenaMap ?? [];
                                 <span class="prestatze-denbora"><?php echo $denbora; ?> min</span>
                                 <?php if ($agortuta): ?>
                                     <span class="stock-tag agortuta">Agortuta</span>
-                                <?php elseif ($stockAhalmena !== null): ?>
-                                    <span class="stock-tag eskuragarri"><?php echo $stockAhalmena; ?> anoa</span>
                                 <?php endif; ?>
                             </div>
                         </div>

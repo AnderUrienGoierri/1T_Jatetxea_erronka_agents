@@ -11,7 +11,8 @@
     margin-bottom: 2.5rem;
 }
 
-.filter-btn {
+.filter-btn,
+.edari-azpikategoria-btn {
     padding: 0.6rem 1.25rem;
     border: 1.5px solid var(--kolore-border);
     background-color: var(--kolore-bg-card);
@@ -25,18 +26,37 @@
     box-shadow: var(--itzala-arina);
 }
 
-.filter-btn:hover {
-    color: var(--kolore-brand-primary);
+.filter-btn:hover,
+.edari-azpikategoria-btn:hover {
+    color: var(--kolore-brand-text);
     border-color: var(--kolore-brand-primary);
     background-color: var(--kolore-brand-light);
     transform: translateY(-1px);
 }
 
-.filter-btn.active {
+.filter-btn.active,
+.edari-azpikategoria-btn.active {
     background-color: var(--kolore-brand-primary);
     color: #ffffff;
     border-color: var(--kolore-brand-primary);
     box-shadow: 0 4px 14px rgba(136, 19, 55, 0.28);
+}
+
+.edari-azpikategoriak {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: -1.5rem 0 2.5rem;
+}
+
+.edari-azpikategoriak[hidden] {
+    display: none;
+}
+
+.edari-azpikategoria-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.82rem;
 }
 
 /* Plateren Sareta (Grid) */
@@ -81,6 +101,15 @@
     background: linear-gradient(90deg, var(--kolore-brand-primary), var(--kolore-gold));
 }
 
+.plater-irudia {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--erradioa);
+    margin-bottom: 1rem;
+}
+
 .plater-card.agortuta {
     opacity: 0.7;
     background-color: var(--kolore-surface-variant);
@@ -113,7 +142,7 @@
     font-family: var(--font-mono);
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--kolore-brand-primary);
+    color: var(--kolore-brand-text);
     white-space: nowrap;
 }
 
@@ -133,6 +162,64 @@
     padding: 0.4rem 0.65rem;
     border-radius: 4px;
     margin-bottom: 0.75rem;
+}
+
+.plater-alergenoak.ikurrak {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0;
+    background: none;
+    border: 0;
+}
+
+.alergeno-ikurra {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.3rem;
+    border: 1px solid var(--kolore-warning);
+    border-radius: 999px;
+    background: var(--kolore-warning-bg);
+    color: var(--kolore-warning-text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: help;
+}
+
+.alergeno-ikurra:hover::after,
+.alergeno-ikurra:focus::after {
+    content: attr(data-izena);
+    position: absolute;
+    bottom: calc(100% + 0.3rem);
+    left: 0;
+    z-index: 1;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--kolore-border);
+    border-radius: 4px;
+    background: var(--kolore-bg-card);
+    color: var(--kolore-text-main);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    box-shadow: var(--itzala-ertaina);
+}
+
+.alergeno-ikurra:focus-visible {
+    outline: 2px solid var(--kolore-warning);
+    outline-offset: 2px;
+}
+
+.alergeno-ikurra.kimikoa {
+    font-size: 0.72rem;
+}
+
+.alergeno-ezezaguna {
+    align-self: center;
+    color: var(--kolore-warning-text);
+    font-weight: 600;
 }
 
 .plater-osagaiak {
@@ -180,7 +267,7 @@
 .kategoria-tag {
     font-size: 0.76rem;
     font-weight: 700;
-    background-color: #f1f5f9;
+    background-color: var(--kolore-surface-variant);
     color: var(--kolore-text-main);
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
@@ -203,13 +290,13 @@
 
 .plater-card[data-kategoria="Bigarrena"] .kategoria-tag {
     background-color: var(--kolore-brand-light);
-    color: var(--kolore-brand-primary);
+    color: var(--kolore-brand-text);
     border-color: #fecdd3;
 }
 
 .plater-card[data-kategoria="Postrea"] .kategoria-tag {
     background-color: #fdf4ff;
-    color: #c026d3;
+    color: #86198f;
     border-color: #f5d0fe;
 }
 
