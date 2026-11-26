@@ -145,8 +145,8 @@ services:
       - PASSWORD=odoo
     volumes:
       - odoo_web_data:/var/lib/odoo
-      - ../../01_aplikazioak/odoo_erp/config/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ../../01_aplikazioak/odoo_erp/addons:/mnt/extra-addons
+      - ../../01_aplikazioak/admin/odoo_erp/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../../01_aplikazioak/admin/odoo_erp/addons:/mnt/extra-addons
     networks:
       - jatetxea_net
 
