@@ -46,6 +46,312 @@
         background: #27272a;
         margin: 0 auto;
       }
+
+      /* ===== APP LOGO & REAL TECH/IDE ICON PILLS ===== */
+      .app-logo-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #18181b;
+        border: 1px solid #3f3f46;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 5px;
+      }
+      .app-logo-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .app-tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+        margin-bottom: 12px;
+      }
+      .tech-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: #18181b;
+        border: 1px solid #27272a;
+        font-size: 11px;
+        font-weight: 600;
+        color: #e4e4e7;
+        line-height: 1.2;
+      }
+      .tech-pill.ide-pill {
+        background: rgba(136, 19, 55, 0.22);
+        border-color: rgba(212, 163, 89, 0.45);
+        color: #fde68a;
+      }
+      .tech-pill img {
+        width: 15px;
+        height: 15px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+
+      /* ===== ZERBITZU TAULAKO IKONO BOTOIAK (Piztu / Itzali / Pausatu / Xehetasunak) ===== */
+      .svc-icon-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #27272a;
+        background: #18181b;
+        color: #a1a1aa;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+      }
+      .svc-icon-btn svg {
+        width: 14px;
+        height: 14px;
+        pointer-events: none;
+      }
+      .svc-icon-btn.svc-play:hover {
+        background: rgba(16, 185, 129, 0.18);
+        border-color: #10b981;
+        color: #34d399;
+      }
+      .svc-icon-btn.svc-stop:hover {
+        background: rgba(239, 68, 68, 0.18);
+        border-color: #ef4444;
+        color: #f87171;
+      }
+      .svc-icon-btn.svc-pause:hover {
+        background: rgba(245, 158, 11, 0.18);
+        border-color: #f59e0b;
+        color: #fbbf24;
+      }
+      .svc-icon-btn.svc-info:hover,
+      .svc-icon-btn.svc-gui:hover,
+      .svc-icon-btn.svc-headless:hover {
+        background: rgba(56, 189, 248, 0.16);
+        border-color: #0ea5e9;
+        color: #38bdf8;
+      }
+
+      /* ===== MODU ARGIA (T1 Warm Hospitality Light) ===== */
+      [data-theme="light"] body,
+      [data-theme="light"] .bg-zinc-950,
+      [data-theme="light"] .bg-zinc-950\/95,
+      [data-theme="light"] .bg-zinc-950\/90,
+      [data-theme="light"] .bg-zinc-950\/80,
+      [data-theme="light"] .bg-zinc-950\/70,
+      [data-theme="light"] .bg-zinc-950\/60,
+      [data-theme="light"] .bg-zinc-950\/50,
+      [data-theme="light"] .bg-zinc-950\/40 {
+        background-color: #faf7f2 !important;
+        color: #1c1917 !important;
+      }
+      [data-theme="light"] header,
+      [data-theme="light"] .bg-zinc-900,
+      [data-theme="light"] .bg-zinc-900\/95,
+      [data-theme="light"] .bg-zinc-900\/90,
+      [data-theme="light"] .bg-zinc-900\/80,
+      [data-theme="light"] .bg-zinc-900\/70,
+      [data-theme="light"] .bg-zinc-900\/60,
+      [data-theme="light"] .bg-zinc-900\/50,
+      [data-theme="light"] .bg-zinc-900\/40 {
+        background-color: #ffffff !important;
+        color: #1c1917 !important;
+      }
+      [data-theme="light"] .bg-zinc-800,
+      [data-theme="light"] .bg-zinc-800\/80,
+      [data-theme="light"] .bg-zinc-800\/70,
+      [data-theme="light"] .bg-zinc-800\/50,
+      [data-theme="light"] .bg-zinc-800\/40 {
+        background-color: #f3efe8 !important;
+        color: #1c1917 !important;
+      }
+      [data-theme="light"] tbody tr:hover,
+      [data-theme="light"] .hover\:bg-zinc-900\/80:hover,
+      [data-theme="light"] .hover\:bg-zinc-800\/60:hover,
+      [data-theme="light"] .hover\:bg-zinc-800\/50:hover,
+      [data-theme="light"] .hover\:bg-zinc-800\/40:hover,
+      [data-theme="light"] .hover\:bg-zinc-800:hover,
+      [data-theme="light"] .hover\:bg-zinc-700:hover {
+        background-color: #f3efe8 !important;
+      }
+      [data-theme="light"] tbody tr:hover td,
+      [data-theme="light"] tbody tr:hover span:not(.text-emerald-400):not(.text-rose-400):not(.text-amber-400) {
+        color: #1c1917 !important;
+      }
+      [data-theme="light"] .border-zinc-800,
+      [data-theme="light"] .border-zinc-800\/80,
+      [data-theme="light"] .border-zinc-700,
+      [data-theme="light"] .border-zinc-700\/60 {
+        border-color: #e6dfd5 !important;
+      }
+      [data-theme="light"] .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+      [data-theme="light"] .divide-zinc-800\/60 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #e6dfd5 !important;
+      }
+      [data-theme="light"] .text-white,
+      [data-theme="light"] .text-zinc-100,
+      [data-theme="light"] .text-zinc-200 {
+        color: #1c1917 !important;
+      }
+      [data-theme="light"] .text-zinc-300 {
+        color: #44403c !important;
+      }
+      [data-theme="light"] .text-zinc-400,
+      [data-theme="light"] .text-zinc-500,
+      [data-theme="light"] .text-zinc-600 {
+        color: #57534e !important;
+      }
+      [data-theme="light"] .text-emerald-400 {
+        color: #15803d !important;
+      }
+      [data-theme="light"] .bg-emerald-500\/10,
+      [data-theme="light"] .bg-emerald-950 {
+        background-color: #dcfce7 !important;
+      }
+      [data-theme="light"] .border-emerald-500\/20,
+      [data-theme="light"] .border-emerald-800 {
+        border-color: #86efac !important;
+      }
+      [data-theme="light"] .text-rose-400 {
+        color: #b91c1c !important;
+      }
+      [data-theme="light"] .bg-rose-500\/10 {
+        background-color: #fee2e2 !important;
+      }
+      [data-theme="light"] .border-rose-500\/20 {
+        border-color: #fca5a5 !important;
+      }
+      [data-theme="light"] .text-amber-400,
+      [data-theme="light"] .text-amber-300,
+      [data-theme="light"] .text-amber-200 {
+        color: #b45309 !important;
+      }
+      [data-theme="light"] .bg-amber-500\/10,
+      [data-theme="light"] .bg-amber-950,
+      [data-theme="light"] .bg-amber-950\/60 {
+        background-color: #fef3c7 !important;
+      }
+      [data-theme="light"] .border-amber-800\/60 {
+        border-color: #fcd34d !important;
+      }
+      [data-theme="light"] .bg-rose-950\/60 {
+        background-color: #fee2e2 !important;
+      }
+      [data-theme="light"] .text-rose-200 {
+        color: #b91c1c !important;
+      }
+      [data-theme="light"] .border-rose-800\/60 {
+        border-color: #fca5a5 !important;
+      }
+      [data-theme="light"] .bg-sky-950\/60 {
+        background-color: #e0f2fe !important;
+      }
+      [data-theme="light"] .text-sky-200 {
+        color: #0369a1 !important;
+      }
+      [data-theme="light"] .border-sky-800\/60 {
+        border-color: #7dd3fc !important;
+      }
+      .mini-logo-box {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #18181b;
+        border: 1px solid #3f3f46;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+      .mini-logo-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      [data-theme="light"] .mini-logo-box {
+        background: #faf7f2;
+        border-color: #e6dfd5;
+      }
+      [data-theme="light"] .svc-icon-btn {
+        background: #faf7f2;
+        border-color: #e6dfd5;
+        color: #57534e;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-play {
+        color: #15803d;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-play:hover {
+        background: #dcfce7;
+        border-color: #15803d;
+        color: #15803d;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-stop {
+        color: #b91c1c;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-stop:hover {
+        background: #fee2e2;
+        border-color: #b91c1c;
+        color: #b91c1c;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-pause {
+        color: #b45309;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-pause:hover {
+        background: #fef3c7;
+        border-color: #b45309;
+        color: #b45309;
+      }
+      [data-theme="light"] .svc-icon-btn.svc-info:hover,
+      [data-theme="light"] .svc-icon-btn.svc-gui:hover,
+      [data-theme="light"] .svc-icon-btn.svc-headless:hover {
+        background: #e0f2fe;
+        border-color: #0369a1;
+        color: #0369a1;
+      }
+      [data-theme="light"] .bg-zinc-100 {
+        background-color: #881337 !important;
+        color: #ffffff !important;
+      }
+      [data-theme="light"] .bg-zinc-100:hover {
+        background-color: #9f1239 !important;
+        color: #ffffff !important;
+      }
+      [data-theme="light"] .bg-zinc-100.text-zinc-950,
+      [data-theme="light"] .bg-zinc-100 span {
+        color: #ffffff !important;
+      }
+      [data-theme="light"] .app-logo-box {
+        background: #faf7f2;
+        border-color: #d4a359;
+      }
+      [data-theme="light"] .tech-pill {
+        background: #f3efe8;
+        border-color: #e6dfd5;
+        color: #1c1917;
+      }
+      [data-theme="light"] .tech-pill.ide-pill {
+        background: #fce7f0;
+        border-color: #881337;
+        color: #881337;
+      }
+      [data-theme="light"] ::-webkit-scrollbar-track {
+        background: #faf7f2;
+      }
+      [data-theme="light"] ::-webkit-scrollbar-thumb {
+        background: #d6ccc2;
+      }
+      [data-theme="light"] .tree-line {
+        background: #e6dfd5;
+      }
     </style>
   </head>
   <body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans flex flex-col">
@@ -57,9 +363,14 @@
       >
         <div class="flex items-center space-x-2.5 min-w-0">
           <div
-            class="w-7 h-7 sm:w-8 sm:h-8 rounded bg-zinc-950 border border-zinc-800 flex items-center justify-center font-mono font-bold text-xs text-zinc-300 tracking-wider flex-shrink-0 shadow-xs"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center p-0.5 flex-shrink-0 shadow-xs overflow-hidden"
           >
-            IT
+            <img
+              id="headerBrandLogo"
+              src="icons/t1_logo_dark.svg"
+              alt="T1 Logo"
+              class="w-full h-full object-contain"
+            />
           </div>
           <div class="min-w-0">
             <h1
@@ -77,8 +388,16 @@
           </div>
         </div>
 
-        <!-- ESKUINEAN: FRESKATU + KONTROLEN DROPDOWN TOLESGARRIA -->
+        <!-- ESKUINEAN: GAIA + FRESKATU + KONTROLEN DROPDOWN TOLESGARRIA -->
         <div class="flex items-center space-x-1.5 flex-shrink-0">
+          <button
+            id="btnToggleTheme"
+            onclick="toggleAdminTheme()"
+            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-md text-xs font-semibold transition flex items-center gap-1.5"
+            title="Aldatu Modu Argia / Modu Iluna"
+          >
+            <span id="txtToggleTheme">Modu Argia</span>
+          </button>
           <button
             onclick="freskatuDena()"
             class="px-2.5 py-1.5 bg-zinc-100 hover:bg-white text-zinc-950 rounded-md text-xs font-semibold shadow-xs transition flex items-center gap-1"
@@ -2297,42 +2616,60 @@
               ></span
               >)
             </h4>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button
                 id="btnMdlStart"
-                class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded font-semibold text-xs"
+                class="svc-icon-btn svc-play"
+                style="width:34px; height:34px;"
+                title="Piztu edukiontzia (Start)"
+                aria-label="Piztu"
               >
-                Start
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               </button>
               <button
                 id="btnMdlStop"
-                class="px-3 py-1.5 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded text-xs font-medium transition"
+                class="svc-icon-btn svc-stop"
+                style="width:34px; height:34px;"
+                title="Itzali edukiontzia (Stop)"
+                aria-label="Itzali"
               >
-                Stop
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
               </button>
               <button
                 id="btnMdlPause"
-                class="px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded font-semibold text-xs"
+                class="svc-icon-btn svc-pause"
+                style="width:34px; height:34px;"
+                title="Pausatu edukiontzia (Pause)"
+                aria-label="Pausatu"
               >
-                Pause
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
               </button>
               <button
                 id="btnMdlUnpause"
-                class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-xs font-medium transition"
+                class="svc-icon-btn svc-play"
+                style="width:34px; height:34px;"
+                title="Berrekin edukiontzia (Resume)"
+                aria-label="Berrekin"
               >
-                Resume
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5v14l8-7-8-7zm9 0v14l8-7-8-7z"/></svg>
               </button>
               <button
                 id="btnMdlRestart"
-                class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded font-semibold text-xs border border-zinc-700"
+                class="svc-icon-btn svc-info"
+                style="width:34px; height:34px;"
+                title="Berrabiarazi edukiontzia (Restart)"
+                aria-label="Berrabiarazi"
               >
-                Restart
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
               </button>
               <button
                 id="btnMdlLogs"
-                class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-xs font-medium transition"
+                class="svc-icon-btn svc-headless"
+                style="width:34px; height:34px;"
+                title="Ikusi edukiontziaren log-ak"
+                aria-label="Ikusi Log-ak"
               >
-                Ikusi Log-ak
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
               </button>
             </div>
           </div>
@@ -2628,7 +2965,7 @@
             const tr = document.createElement("tr");
             tr.className = "hover:bg-zinc-900/80 cursor-pointer transition";
             tr.onclick = (e) => {
-              if (e.target.tagName !== "BUTTON" && e.target.tagName !== "A")
+              if (!e.target.closest("button, a"))
                 irekiModala(p.id);
             };
 
@@ -2679,22 +3016,22 @@
               }
             }
 
-            // 2. Docker zerbitzua bada: Piztu, Itzali, Pausatu
+            // 2. Docker zerbitzua bada: Piztu, Itzali, Pausatu (Ikono Botoiak)
             if (p.dockerService) {
               botoiakHtml += `
-                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'start')" class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100 border border-zinc-800 hover:border-zinc-700 rounded text-[10px] font-medium transition" title="Piztu edukiontzia">
-                                Piztu
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'start')" class="svc-icon-btn svc-play" title="Piztu edukiontzia" aria-label="Piztu">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </button>
-                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'stop')" class="px-2 py-1 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded text-[10px] font-medium transition" title="Itzali edukiontzia">
-                                Itzali
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'stop')" class="svc-icon-btn svc-stop" title="Itzali edukiontzia" aria-label="Itzali">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
                             </button>
-                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'pause')" class="px-2 py-1 bg-zinc-900 hover:bg-amber-950/40 text-zinc-400 hover:text-amber-400 border border-zinc-800 hover:border-amber-900/60 rounded text-[10px] font-medium transition" title="Pausatu edukiontzia">
-                                Pausatu
+                            <button onclick="event.stopPropagation(); dockerSingleAction('${p.dockerService}', 'pause')" class="svc-icon-btn svc-pause" title="Pausatu edukiontzia" aria-label="Pausatu">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
                             </button>
                         `;
             }
 
-            // 3. VirtualBox makina bada (makina zutabean 'Erronka-' badauka eta dockerService ez bada)
+            // 3. VirtualBox makina bada (GUI, Headless, Itzali ikono botoiak)
             if (
               !p.dockerService &&
               p.makina &&
@@ -2702,22 +3039,22 @@
             ) {
               const vmIzena = p.makina.split(" ")[0].trim();
               botoiakHtml += `
-                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-gui')" class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100 border border-zinc-800 hover:border-zinc-700 rounded text-[10px] font-medium transition" title="Ireki VM-aren pantaila interaktiboa">
-                                GUI
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-gui')" class="svc-icon-btn svc-gui" title="Ireki VM-aren pantaila interaktiboa (GUI)" aria-label="GUI">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                             </button>
-                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-headless')" class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 rounded text-[10px] font-medium transition" title="Altxatu VM atzean">
-                                Headless
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'start-headless')" class="svc-icon-btn svc-headless" title="Altxatu VM atzean (Headless)" aria-label="Headless">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                             </button>
-                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'stop')" class="px-2 py-1 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded text-[10px] font-medium transition" title="Gelditu VM (ACPI)">
-                                Itzali
+                            <button onclick="event.stopPropagation(); vboxAction('${vmIzena}', 'stop')" class="svc-icon-btn svc-stop" title="Gelditu VM (ACPI Itzali)" aria-label="Itzali">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
                             </button>
                         `;
             }
 
-            // 4. Beti: Xehetasunak modala
+            // 4. Beti: Xehetasunak modala (Info ikonoa)
             botoiakHtml += `
-                        <button onclick="event.stopPropagation(); irekiModala('${p.id}')" class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded text-[11px] font-medium border border-zinc-800 transition" title="Ikusi xehetasun guztiak">
-                            Xehetasunak
+                        <button onclick="event.stopPropagation(); irekiModala('${p.id}')" class="svc-icon-btn svc-info" title="Ikusi zerbitzuaren xehetasunak" aria-label="Xehetasunak">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                         </button>
                     `;
 
@@ -3616,43 +3953,87 @@
               (c.state || "").toLowerCase().includes("paused");
             if (isRunning) martxanKop++;
 
-            // Mapping for app launch
+            // Mapping for app launch + real icon
             let appLauncherHtml = "";
+            let containerIcon = "icons/docker.svg";
             const sLower = (c.service || c.name || "").toLowerCase();
             if (sLower.includes("web")) {
-              appLauncherHtml = `<button onclick="launchApp('web', 'http://localhost:8085')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki Web PHP Karta">Exekutatu App</button>`;
+              containerIcon = "icons/php.svg";
+              appLauncherHtml = `<button onclick="launchApp('web', 'http://localhost:8085')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki Web PHP Karta (8085)">Ireki (8085)</button>`;
+            } else if (sLower.includes("odoo") && sLower.includes("db") || sLower.includes("postgres")) {
+              containerIcon = "icons/postgresql.svg";
             } else if (sLower.includes("odoo")) {
-              appLauncherHtml = `<button onclick="launchApp('odoo', 'http://localhost:8070')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki Odoo ERP">Exekutatu App</button>`;
+              containerIcon = "icons/odoo.svg";
+              appLauncherHtml = `<button onclick="launchApp('odoo', 'http://localhost:8070')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki Odoo ERP (8070)">Ireki (8070)</button>`;
             } else if (sLower.includes("api")) {
-              appLauncherHtml = `<button onclick="launchApp('api', 'http://localhost:5050/')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki REST API (5050)">Exekutatu App</button>`;
+              containerIcon = "icons/dotnetcore.svg";
+              appLauncherHtml = `<button onclick="launchApp('api', 'http://localhost:5050/')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki REST API (5050)">Ireki (5050)</button>`;
             } else if (sLower.includes("kds")) {
-              appLauncherHtml = `<button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki Sukaldea KDS">Exekutatu App</button>`;
+              containerIcon = "icons/nginx.svg";
+              appLauncherHtml = `<button onclick="launchApp('kds_tv', 'http://localhost:8086')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki Sukaldea KDS (8086)">Ireki (8086)</button>`;
             } else if (sLower.includes("chat")) {
-              appLauncherHtml = `<button onclick="launchApp('chat', 'http://localhost:3001')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Ireki Barne Txata">Exekutatu App</button>`;
+              containerIcon = "icons/nodejs.svg";
+              appLauncherHtml = `<button onclick="launchApp('chat', 'http://localhost:3001')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki Barne Txata (3001)">Ireki (3001)</button>`;
+            } else if (sLower.includes("mysql") || sLower.includes("db")) {
+              containerIcon = "icons/mysql.svg";
+            } else if (sLower.includes("phpmyadmin")) {
+              containerIcon = "icons/phpmyadmin.svg";
+              appLauncherHtml = `<button onclick="launchApp('phpmyadmin', 'http://localhost:8081')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki phpMyAdmin (8081)">Ireki (8081)</button>`;
+            } else if (sLower.includes("adminer")) {
+              containerIcon = "icons/postgresql.svg";
+              appLauncherHtml = `<button onclick="launchApp('adminer', 'http://localhost:8082')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold transition" title="Ireki Adminer (8082)">Ireki (8082)</button>`;
             }
+
+            // Formateatu Docker portuak JSON gordinetik txapa garbietara
+            let portsHtml = '<span class="px-2 py-0.5 bg-zinc-950 border border-zinc-800 rounded text-[10px] font-mono text-zinc-400">Barne sarea</span>';
+            try {
+              if (c.publishers && typeof c.publishers === "string" && c.publishers.trim().startsWith("[")) {
+                const parsed = JSON.parse(c.publishers);
+                const seen = new Set();
+                const badges = [];
+                parsed.forEach((pub) => {
+                  if (pub.PublishedPort && pub.TargetPort) {
+                    const key = `${pub.PublishedPort}->${pub.TargetPort}/${pub.Protocol || "tcp"}`;
+                    if (!seen.has(key)) {
+                      seen.add(key);
+                      badges.push(`<span class="px-2 py-0.5 bg-zinc-950 border border-zinc-800 rounded text-[10px] font-mono text-zinc-300">${pub.PublishedPort} → ${pub.TargetPort}/${pub.Protocol || "tcp"}</span>`);
+                    }
+                  }
+                });
+                if (badges.length > 0) portsHtml = badges.join(" ");
+              } else if (c.publishers) {
+                portsHtml = `<span class="px-2 py-0.5 bg-zinc-950 border border-zinc-800 rounded text-[10px] font-mono text-zinc-400 truncate">${c.publishers}</span>`;
+              }
+            } catch (_) {}
 
             const card = document.createElement("div");
             card.className = `p-4 bg-zinc-900 border rounded-lg flex flex-col justify-between hover:border-zinc-700 transition ${isPaused ? "border-amber-500/30" : isRunning ? "border-zinc-800" : "border-zinc-800/60 opacity-60"}`;
 
             card.innerHTML = `
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-bold text-white text-sm truncate" title="${c.name}">${c.name || c.service}</span>
-                                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${isPaused ? "bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono" : isRunning ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono" : "bg-zinc-800 text-zinc-400 font-mono"}">
+                            <div class="flex items-center justify-between gap-2 mb-2.5">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="mini-logo-box"><img src="${containerIcon}" alt="${c.service}" /></div>
+                                    <div class="min-w-0">
+                                        <div class="font-bold text-white text-sm truncate" title="${c.name}">${c.name || c.service}</div>
+                                        <div class="text-[11px] text-zinc-400 font-mono truncate" title="${c.status}">${c.status}</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold flex-shrink-0 ${isPaused ? "bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono" : isRunning ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono" : "bg-zinc-800 text-zinc-400 font-mono"}">
                                     ${isPaused ? "PAUSATUTA" : isRunning ? "MARTXAN" : "GELDITUTA"}
                                 </span>
                             </div>
-                            <div class="text-xs text-zinc-400 font-mono mb-2 truncate" title="${c.status}">${c.status}</div>
-                            <div class="text-[11px] text-zinc-400 mb-3 truncate" title="${c.publishers || ""}">${c.publishers || "Barne sarea"}</div>
+                            <div class="flex flex-wrap gap-1.5 mb-3">${portsHtml}</div>
                         </div>
-                        <div class="pt-3 border-t border-zinc-800 flex flex-wrap gap-1.5 text-xs items-center">
-                            ${appLauncherHtml}
-                            <button onclick="dockerSingleAction('${c.service}', 'start')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-600 rounded text-[11px] font-medium transition" title="Piztu edukiontzia">Piztu</button>
-                            <button onclick="dockerSingleAction('${c.service}', 'stop')" class="px-2 py-1 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded text-[11px] font-medium transition" title="Itzali edukiontzia">Itzali</button>
-                            <button onclick="dockerSingleAction('${c.service}', 'pause')" class="px-2 py-1 bg-zinc-900 hover:bg-amber-950/40 text-zinc-400 hover:text-amber-400 border border-zinc-800 hover:border-amber-900/60 rounded text-[11px] font-medium transition" title="Pausatu edukiontzia">Pausatu</button>
-                            <button onclick="dockerSingleAction('${c.service}', 'unpause')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 rounded text-[11px] font-medium transition" title="Berrekin edukiontzia">Berrekin</button>
-                            <button onclick="dockerSingleAction('${c.service}', 'restart')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded text-[11px]" title="Berrabiarazi edukiontzia">Berrabiarazi</button>
-                            <button onclick="ikusiDockerLogs('${c.service}')" class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 rounded text-[11px] font-medium transition">Log-ak</button>
+                        <div class="pt-3 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                            <div class="flex items-center gap-1.5">${appLauncherHtml}</div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="dockerSingleAction('${c.service}', 'start')" class="svc-icon-btn svc-play" title="Piztu edukiontzia" aria-label="Piztu"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                                <button onclick="dockerSingleAction('${c.service}', 'stop')" class="svc-icon-btn svc-stop" title="Itzali edukiontzia" aria-label="Itzali"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+                                <button onclick="dockerSingleAction('${c.service}', '${isPaused ? "unpause" : "pause"}')" class="svc-icon-btn svc-pause" title="${isPaused ? "Berrekin edukiontzia" : "Pausatu edukiontzia"}" aria-label="${isPaused ? "Berrekin" : "Pausatu"}"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+                                <button onclick="dockerSingleAction('${c.service}', 'restart')" class="svc-icon-btn svc-info" title="Berrabiarazi edukiontzia" aria-label="Berrabiarazi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+                                <button onclick="ikusiDockerLogs('${c.service}')" class="svc-icon-btn svc-headless" title="Ikusi edukiontziaren log-ak" aria-label="Log-ak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></button>
+                            </div>
                         </div>
                     `;
             grid.appendChild(card);
@@ -3685,36 +4066,39 @@
             if (vm.running) martxanKop++;
             const isPaused =
               vm.status && vm.status.toLowerCase().includes("paused");
+            const vmLower = (vm.name || "").toLowerCase();
+            const vmIcon = vmLower.includes("opnsense")
+              ? "icons/opnsense.svg"
+              : vmLower.includes("ubuntu")
+                ? "icons/apache.svg"
+                : "icons/virtualbox.svg";
+
             const card = document.createElement("div");
-            card.className = `p-4 bg-zinc-900 border rounded-lg flex flex-col justify-between hover:border-zinc-700 transition ${vm.running ? "border-zinc-800" : "border-zinc-800/60 opacity-70"}`;
+            card.className = `p-4 bg-zinc-900 border rounded-lg flex flex-col justify-between hover:border-zinc-700 transition ${vm.running ? "border-zinc-800" : "border-zinc-800/60 opacity-85"}`;
             card.innerHTML = `
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-bold text-white text-sm">${vm.name}</span>
-                                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${vm.running ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono" : "bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono"}">
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="mini-logo-box"><img src="${vmIcon}" alt="${vm.name}" /></div>
+                                    <div class="min-w-0">
+                                        <div class="font-bold text-white text-sm truncate">${vm.name}</div>
+                                        <div class="text-[11px] text-zinc-400">Egoera: <span class="font-mono text-zinc-300 font-semibold">${vm.running ? "Martxan" : "Itzalita"}</span></div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold flex-shrink-0 ${vm.running ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono" : "bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono"}">
                                     ${vm.status}
                                 </span>
                             </div>
-                            <div class="text-xs text-zinc-400 mb-3">
-                                Egoera: <span class="font-mono text-zinc-300 font-semibold">${vm.running ? "Martxan" : "Itzalita"}</span>
-                            </div>
                         </div>
-                        <div class="pt-3 border-t border-zinc-800 flex flex-wrap gap-1.5 text-xs">
-                            <button onclick="vboxAction('${vm.name}', 'start-gui')" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-medium transition" title="Abiarazi eta ireki pantaila interaktiboa">
-                                Pantaila Ireki (GUI)
-                            </button>
-                            <button onclick="vboxAction('${vm.name}', 'start-headless')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded text-[11px] font-semibold border border-zinc-700 transition" title="Abiarazi atzean kontsolarik gabe">
-                                Headless
-                            </button>
-                            <button onclick="vboxAction('${vm.name}', 'stop')" class="px-2 py-1 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded text-[11px] font-medium transition" title="Gelditu VM (ACPI)">
-                                Gelditu (ACPI)
-                            </button>
-                            <button onclick="vboxAction('${vm.name}', '${isPaused ? "resume" : "pause"}')" class="px-2 py-1 bg-amber-950 hover:bg-amber-900 text-amber-300 rounded text-[11px] font-semibold transition">
-                                ${isPaused ? "Berrekin" : "Pausatu"}
-                            </button>
-                            <button onclick="vboxAction('${vm.name}', 'reset')" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 rounded text-[11px] border border-zinc-700 transition">
-                                Reset
-                            </button>
+                        <div class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-1.5 text-xs">
+                            <span class="text-[10px] font-mono text-zinc-500 uppercase">VM Kontrolak</span>
+                            <div class="flex items-center gap-1">
+                                <button onclick="vboxAction('${vm.name}', 'start-gui')" class="svc-icon-btn svc-play" title="Abiarazi pantaila interaktiboarekin (GUI)" aria-label="GUI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></button>
+                                <button onclick="vboxAction('${vm.name}', 'start-headless')" class="svc-icon-btn svc-headless" title="Abiarazi atzean kontsolarik gabe (Headless)" aria-label="Headless"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></button>
+                                <button onclick="vboxAction('${vm.name}', 'stop')" class="svc-icon-btn svc-stop" title="Gelditu VM (ACPI Itzali)" aria-label="Itzali"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+                                <button onclick="vboxAction('${vm.name}', '${isPaused ? "resume" : "pause"}')" class="svc-icon-btn svc-pause" title="${isPaused ? "Berrekin VM" : "Pausatu VM"}" aria-label="${isPaused ? "Berrekin" : "Pausatu"}"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+                                <button onclick="vboxAction('${vm.name}', 'reset')" class="svc-icon-btn svc-info" title="Berrabiarazi VM (Reset)" aria-label="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+                            </div>
                         </div>
                     `;
             grid.appendChild(card);
@@ -3860,8 +4244,216 @@
         }
       }
 
+      // ==============================================================
+      // MODU ARGIA / ILUNA (T1 Warm Hospitality / Evening Espresso)
+      // ==============================================================
+      function applyAdminTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("admin_it_theme", theme);
+        const lbl = document.getElementById("txtToggleTheme");
+        if (lbl) lbl.textContent = theme === "light" ? "Modu Iluna" : "Modu Argia";
+        const brandLogo = document.getElementById("headerBrandLogo");
+        if (brandLogo) {
+          brandLogo.src = theme === "light" ? "icons/t1_logo_light.svg" : "icons/t1_logo_dark.svg";
+        }
+        document.querySelectorAll("img[data-t1-brand='true']").forEach((img) => {
+          img.src = theme === "light" ? "icons/t1_logo_light.svg" : "icons/t1_logo_dark.svg";
+        });
+      }
+
+      function toggleAdminTheme() {
+        const cur = document.documentElement.getAttribute("data-theme") || "dark";
+        applyAdminTheme(cur === "dark" ? "light" : "dark");
+      }
+
+      // ==============================================================
+      // APLIKAZIO BAKOITZAREN LOGOA, LENGOAIA ETA IDE IKONO ERREALAK
+      // ==============================================================
+      const APP_ICON_REGISTRY = {
+        csharp_tpv: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/csharp.svg", label: "C# 13" },
+            { icon: "icons/dotnetcore.svg", label: ".NET 10" },
+            { icon: "icons/visualstudio.svg", label: "Visual Studio", ide: true },
+          ],
+        },
+        javafx_kds: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/java.svg", label: "Java 21" },
+            { icon: "icons/maven.svg", label: "Maven" },
+            { icon: "icons/intellij.svg", label: "IntelliJ IDEA", ide: true },
+          ],
+        },
+        kudeaketa_desktop_java: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/java.svg", label: "Java 21" },
+            { icon: "icons/maven.svg", label: "JavaFX / Maven" },
+            { icon: "icons/intellij.svg", label: "IntelliJ IDEA", ide: true },
+          ],
+        },
+        web_php: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/php.svg", label: "PHP 8.4" },
+            { icon: "icons/html5.svg", label: "HTML5" },
+            { icon: "icons/css3.svg", label: "CSS3" },
+            { icon: "icons/apache.svg", label: "Apache" },
+            { icon: "icons/vscode.svg", label: "VS Code", ide: true },
+          ],
+        },
+        mobile_bezeroa: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/flutter.svg", label: "Flutter 3" },
+            { icon: "icons/dart.svg", label: "Dart 3" },
+            { icon: "icons/vscode.svg", label: "VS Code", ide: true },
+          ],
+        },
+        mobile_zerbitzaria: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/flutter.svg", label: "Flutter 3" },
+            { icon: "icons/dart.svg", label: "Dart 3" },
+            { icon: "icons/vscode.svg", label: "VS Code", ide: true },
+          ],
+        },
+        android_tv: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/kotlin.svg", label: "Kotlin" },
+            { icon: "icons/jetpackcompose.svg", label: "Compose TV" },
+            { icon: "icons/android.svg", label: "Android TV" },
+            { icon: "icons/androidstudio.svg", label: "Android Studio", ide: true },
+          ],
+        },
+        zerbitzaria_android: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/kotlin.svg", label: "Kotlin" },
+            { icon: "icons/jetpackcompose.svg", label: "Compose M3" },
+            { icon: "icons/android.svg", label: "Android" },
+            { icon: "icons/androidstudio.svg", label: "Android Studio", ide: true },
+          ],
+        },
+        odoo: {
+          logo: "icons/odoo.svg",
+          stack: [
+            { icon: "icons/python.svg", label: "Python 3" },
+            { icon: "icons/postgresql.svg", label: "PostgreSQL 15" },
+            { icon: "icons/docker.svg", label: "Docker", ide: true },
+          ],
+        },
+        api: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/csharp.svg", label: "C# 13" },
+            { icon: "icons/dotnetcore.svg", label: ".NET 10 API" },
+            { icon: "icons/visualstudio.svg", label: "Visual Studio", ide: true },
+            { icon: "icons/docker.svg", label: "Docker", ide: true },
+          ],
+        },
+        chat: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/nodejs.svg", label: "Node.js" },
+            { icon: "icons/javascript.svg", label: "JavaScript" },
+            { icon: "icons/socketio.svg", label: "Socket.IO" },
+            { icon: "icons/vscode.svg", label: "VS Code", ide: true },
+          ],
+        },
+        phpmyadmin: {
+          logo: "icons/phpmyadmin.svg",
+          stack: [
+            { icon: "icons/php.svg", label: "PHP" },
+            { icon: "icons/mysql.svg", label: "MySQL 8.0" },
+            { icon: "icons/docker.svg", label: "Docker", ide: true },
+          ],
+        },
+        adminer: {
+          logo: "icons/postgresql.svg",
+          stack: [
+            { icon: "icons/php.svg", label: "PHP" },
+            { icon: "icons/postgresql.svg", label: "PostgreSQL 15" },
+            { icon: "icons/docker.svg", label: "Docker", ide: true },
+          ],
+        },
+        opnsense_web: {
+          logo: "icons/opnsense.svg",
+          stack: [
+            { icon: "icons/freebsd.svg", label: "FreeBSD" },
+            { icon: "icons/php.svg", label: "OPNsense" },
+            { icon: "icons/virtualbox.svg", label: "VirtualBox", ide: true },
+          ],
+        },
+        admin_mobile: {
+          logo: "t1",
+          stack: [
+            { icon: "icons/kotlin.svg", label: "Kotlin" },
+            { icon: "icons/android.svg", label: "Android APK" },
+            { icon: "icons/androidstudio.svg", label: "Android Studio", ide: true },
+          ],
+        },
+      };
+
+      function enhanceAppCardsWithIcons() {
+        const curTheme = document.documentElement.getAttribute("data-theme") || "dark";
+        document.querySelectorAll(".app-card-item[data-app-id]").forEach((card) => {
+          const appId = card.getAttribute("data-app-id");
+          const meta = APP_ICON_REGISTRY[appId];
+          if (!meta || card.dataset.iconsEnhanced === "true") return;
+          card.dataset.iconsEnhanced = "true";
+
+          // 1. Txertatu aplikazioaren logoa izenburuaren ondoan
+          const headerRow = card.querySelector(".flex.items-start.justify-between");
+          if (headerRow) {
+            const leftBlock = headerRow.firstElementChild;
+            if (leftBlock) {
+              const wrap = document.createElement("div");
+              wrap.className = "flex items-center gap-2.5 min-w-0";
+              const logoBox = document.createElement("div");
+              logoBox.className = "app-logo-box";
+              const img = document.createElement("img");
+              if (meta.logo === "t1") {
+                img.src = curTheme === "light" ? "icons/t1_logo_light.svg" : "icons/t1_logo_dark.svg";
+                img.setAttribute("data-t1-brand", "true");
+              } else {
+                img.src = meta.logo;
+              }
+              img.alt = appId + " logo";
+              logoBox.appendChild(img);
+              headerRow.insertBefore(wrap, leftBlock);
+              wrap.appendChild(logoBox);
+              wrap.appendChild(leftBlock);
+            }
+          }
+
+          // 2. Txertatu lengoaia eta IDE/programa ikono errealak deskribapenaren azpian
+          const descP = card.querySelector("p.text-xs");
+          if (descP && meta.stack && meta.stack.length > 0) {
+            const stackDiv = document.createElement("div");
+            stackDiv.className = "app-tech-stack";
+            stackDiv.innerHTML = meta.stack
+              .map(
+                (item) => `
+                <span class="tech-pill ${item.ide ? "ide-pill" : ""}" title="${item.ide ? "IDE / Programa: " : "Lengoaia / Teknologia: "}${item.label}">
+                  <img src="${item.icon}" alt="${item.label}" loading="lazy" />
+                  <span>${item.label}</span>
+                </span>`
+              )
+              .join("");
+            descP.insertAdjacentElement("afterend", stackDiv);
+          }
+        });
+      }
+
       // HASIERAKO KARGA
       window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("admin_it_theme") || "dark";
+        applyAdminTheme(savedTheme);
+        enhanceAppCardsWithIcons();
         hasieratuGoiburuKontrolak();
         freskatuDena();
         setInterval(freskatuDena, 5000);

@@ -732,13 +732,44 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
                 Path.Combine(csharpDir, "bin", "Release", "net10.0-windows", "win-x64", "Jatetxea.Desktop.exe"),
                 Path.Combine(csharpDir, "bin", "Debug", "net10.0-windows", "win-x64", "Jatetxea.Desktop.exe")
             };
-            string? csharpExe = csharpExeCandidates.FirstOrDefault(File.Exists);
+
+            string? csharpExe = csharpExeCandidates
+                .Where(File.Exists)
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+
+            // Egiaztatu iturburu-koderen bat (.cs / .csproj / appsettings.json) .exe baino berriagoa den
+            string csharpProject = Path.Combine(csharpDir, "Jatetxea.Desktop.csproj");
+            bool needsRebuild = csharpExe == null;
+            if (!needsRebuild && Directory.Exists(csharpDir))
+            {
+                DateTime exeTime = File.GetLastWriteTimeUtc(csharpExe!);
+                DateTime latestSource = Directory.EnumerateFiles(csharpDir, "*.*", SearchOption.AllDirectories)
+                    .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
+                             && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+                             && (f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+                              || f.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
+                              || f.EndsWith(".resx", StringComparison.OrdinalIgnoreCase)))
+                    .Select(File.GetLastWriteTimeUtc)
+                    .DefaultIfEmpty(DateTime.MinValue)
+                    .Max();
+                if (latestSource > exeTime) needsRebuild = true;
+            }
+
+            if (needsRebuild && File.Exists(csharpProject))
+            {
+                await RunCommandAsync("dotnet", $"build \"{csharpProject}\" -c Release", csharpDir);
+                csharpExe = csharpExeCandidates
+                    .Where(File.Exists)
+                    .OrderByDescending(File.GetLastWriteTimeUtc)
+                    .FirstOrDefault();
+            }
 
             if (csharpExe != null && File.Exists(csharpExe))
             {
                 string csharpBinDir = Path.GetDirectoryName(csharpExe)!;
                 LaunchInteractiveProcess(csharpExe, "", csharpBinDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina mahaigaineko aplikazioaren interfazea (UI) ireki da." });
+                return Results.Ok(new { Success = true, IsUrl = false, Message = $"C# TPV Areto & Kutxazaina (azken bertsioa) ireki da: {Path.GetFileName(Path.GetDirectoryName(csharpBinDir))}" });
             }
 
             string csharpBat = Path.Combine(csharpDir, "hasi_tpv_mahaigaina.bat");
@@ -746,23 +777,6 @@ app.MapPost("/api/apps/launch/{appId}", async (string appId, HttpContext ctx) =>
             {
                 LaunchInteractiveProcess(csharpBat, "", csharpDir);
                 return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina aplikazioa irekitzen (hasi_tpv_mahaigaina.bat bidez)..." });
-            }
-
-            if (csharpExe == null)
-            {
-                string csharpProject = Path.Combine(csharpDir, "Jatetxea.Desktop.csproj");
-                if (File.Exists(csharpProject))
-                {
-                    await RunCommandAsync("dotnet", $"build \"{csharpProject}\" -c Release", csharpDir);
-                    csharpExe = csharpExeCandidates.FirstOrDefault(File.Exists);
-                }
-            }
-
-            if (csharpExe != null && File.Exists(csharpExe))
-            {
-                string csharpBinDir = Path.GetDirectoryName(csharpExe)!;
-                LaunchInteractiveProcess(csharpExe, "", csharpBinDir);
-                return Results.Ok(new { Success = true, IsUrl = false, Message = "C# TPV Areto & Kutxazaina mahaigaineko aplikazioaren interfazea (UI) ireki da." });
             }
             return Results.Ok(new { Success = false, Message = "Ez da hasi_tpv_mahaigaina.bat edo Jatetxea.Desktop.exe aurkitu." });
 
