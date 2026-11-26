@@ -70,14 +70,67 @@
     background-color: var(--kolore-bg-card);
     border: 1px solid var(--kolore-border);
     border-radius: var(--erradioa-lg);
-    padding: 1.65rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     box-shadow: var(--itzala-arina);
     transition: var(--trantsizioa);
     position: relative;
     overflow: hidden;
+}
+
+.plater-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: var(--kolore-surface-variant);
+    border-bottom: 1px solid var(--kolore-border);
+    flex-shrink: 0;
+}
+
+.plater-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.plater-card:hover .plater-img {
+    transform: scale(1.05);
+}
+
+.plater-card.agortuta .plater-img {
+    filter: grayscale(65%) brightness(0.85);
+}
+
+.plater-card.agortuta:hover .plater-img {
+    transform: none;
+}
+
+.plater-agortuta-overlay {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background-color: rgba(185, 28, 28, 0.92);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.plater-body {
+    padding: 1.35rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
 }
 
 .plater-card::before {
@@ -300,7 +353,17 @@
     border-color: #f5d0fe;
 }
 
-.plater-card[data-kategoria="Edaria"] .kategoria-tag {
+.plater-card[data-kategoria="Edaria"] .kategoria-tag,
+.plater-card[data-kategoria="Urak"] .kategoria-tag,
+.plater-card[data-kategoria="Freskagarriak"] .kategoria-tag,
+.plater-card[data-kategoria="Garagardoak"] .kategoria-tag,
+.plater-card[data-kategoria="Sagardoak"] .kategoria-tag,
+.plater-card[data-kategoria="Ardoak"] .kategoria-tag,
+.plater-card[data-kategoria="Kafeak"] .kategoria-tag,
+.plater-card[data-kategoria="Infusioak"] .kategoria-tag,
+.plater-card[data-kategoria="Likoreak"] .kategoria-tag,
+.plater-card[data-kategoria="Konbinatuak"] .kategoria-tag,
+.plater-card[data-kategoria="Koktailak"] .kategoria-tag {
     background-color: var(--kolore-success-bg);
     color: var(--kolore-success);
     border-color: var(--kolore-success-border);
@@ -324,4 +387,40 @@
     background-color: var(--kolore-danger-bg);
     color: var(--kolore-danger);
     border: 1px solid var(--kolore-danger-border);
+}
+
+
+/* Edarien Azpikategoria-iragazkiak */
+.kategoria-subfilters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: -1.5rem;
+    margin-bottom: 2.25rem;
+}
+
+.subfilter-btn {
+    padding: 0.4rem 0.95rem;
+    border: 1px solid var(--kolore-border);
+    background-color: var(--kolore-surface-variant);
+    color: var(--kolore-text-secondary);
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    transition: var(--trantsizioa);
+}
+
+.subfilter-btn:hover {
+    border-color: var(--kolore-gold);
+    color: var(--kolore-brand-primary);
+}
+
+.subfilter-btn.active {
+    background-color: var(--kolore-gold);
+    color: #1c1917;
+    border-color: var(--kolore-gold-dark);
+    font-weight: 700;
 }

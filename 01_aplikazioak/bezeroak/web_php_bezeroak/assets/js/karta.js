@@ -6,108 +6,60 @@
 let unekoKategoria = "Guztiak";
 let unekoEdariAzpikategoria = "Guztiak";
 
-const edariKategoriak = new Set([
-  "Edaria", "Urak", "Freskagarriak", "Garagardoak", "Sagardoak",
-  "Ardoak", "Kafeak", "Infusioak", "Likoreak", "Konbinatuak", "Koktailak",
+const EDARI_KATEGORIAK = new Set([
+  "Edaria",
+  "Edariak",
+  "Urak",
+  "Freskagarriak",
+  "Garagardoak",
+  "Sagardoak",
+  "Ardoak",
+  "Kafeak",
+  "Infusioak",
+  "Likoreak",
+  "Konbinatuak",
+  "Koktailak",
 ]);
 
-const alergenoIkurrak = {
-  glutena: "🌾",
-  krustazeoak: "🦀",
-  arrautza: "🥚",
-  arrautzak: "🥚",
-  arraina: "🐟",
-  arrainak: "🐟",
-  kakahueteak: "🥜",
-  kakahuetea: "🥜",
-  soja: "🫘",
-  laktosa: "🥛",
-  esnea: "🥛",
-  esnekiak: "🥛",
-  "fruitu lehorrak": "🌰",
-  apioa: "🥬",
-  mostaza: "🫙",
-  ziapea: "🫙",
-  sesamoa: "🌱",
-  sulfitoak: "SO₂",
-  moluskuak: "🐚",
-  lupinua: "🌼",
-  lupinuak: "🌼",
-};
-
-function erakutsiAlergenoIkurrak(edukiontzia) {
-  edukiontzia.querySelectorAll(".plater-alergenoak").forEach((elementua) => {
-    const izenak = elementua.dataset.alergenoak.split(",").map((izena) => izena.trim()).filter(Boolean);
-    if (!izenak.length) return;
-
-    const zerrenda = document.createDocumentFragment();
-    izenak.forEach((izena) => {
-      const ikurra = alergenoIkurrak[izena.toLocaleLowerCase("eu")];
-      const etiketa = document.createElement("span");
-      if (ikurra) {
-        etiketa.className = `alergeno-ikurra${ikurra === "SO₂" ? " kimikoa" : ""}`;
-        etiketa.setAttribute("role", "img");
-        etiketa.setAttribute("aria-label", `Alergenoa: ${izena}`);
-        etiketa.setAttribute("title", izena);
-        etiketa.dataset.izena = izena;
-        etiketa.tabIndex = 0;
-        etiketa.textContent = ikurra;
-      } else {
-        etiketa.className = "alergeno-ezezaguna";
-        etiketa.textContent = izena;
-      }
-      zerrenda.appendChild(etiketa);
-    });
-    elementua.replaceChildren(zerrenda);
-    elementua.classList.add("ikurrak");
-    elementua.setAttribute("aria-label", "Alergenoak");
-  });
-}
-
 /**
- * Kategoria-iragazkien gertaerak konfiguratzen ditu.
+ * Kategoria-iragazkien eta edarien azpikategorien gertaerak konfiguratzen ditu.
  */
 function konfiguratuIragazkiak() {
   const botoiak = document.querySelectorAll(".filter-btn");
+  const subBar = document.getElementById("edari-azpikategoriak");
+  const subBotoiak = document.querySelectorAll(".subfilter-btn");
+
   if (!botoiak || botoiak.length === 0) return;
 
-  const azpikategoriak = document.getElementById("edari-azpikategoriak");
-  const azpibotoiak = ["Guztiak", ...Array.from(edariKategoriak).filter((kategoria) => kategoria !== "Edaria")]
-    .map((kategoria) => {
-      const botoia = document.createElement("button");
-      botoia.type = "button";
-      botoia.className = "edari-azpikategoria-btn";
-      botoia.textContent = kategoria;
-      botoia.addEventListener("click", () => {
-        unekoEdariAzpikategoria = kategoria;
-        eguneratuAzpibotoiak();
-        iragaziPlaterak();
-      });
-      azpikategoriak.appendChild(botoia);
-      return botoia;
-    });
-
-  function eguneratuAzpibotoiak() {
-    azpibotoiak.forEach((botoia) => {
-      const aktiboa = botoia.textContent === unekoEdariAzpikategoria;
-      botoia.classList.toggle("active", aktiboa);
-      botoia.setAttribute("aria-pressed", String(aktiboa));
-    });
-  }
-
-  eguneratuAzpibotoiak();
   botoiak.forEach((btn) => {
     btn.addEventListener("click", () => {
       botoiak.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       unekoKategoria = btn.getAttribute("data-kategoria") || "Guztiak";
-      unekoEdariAzpikategoria = "Guztiak";
-      azpikategoriak.hidden = unekoKategoria !== "Edaria";
-      eguneratuAzpibotoiak();
+
+      if (subBar) {
+        if (unekoKategoria === "Edaria") {
+          subBar.style.display = "flex";
+        } else {
+          subBar.style.display = "none";
+          unekoEdariAzpikategoria = "Guztiak";
+          subBotoiak.forEach((sb) =>
+            sb.classList.toggle("active", sb.getAttribute("data-edari-kat") === "Guztiak")
+          );
+        }
+      }
       iragaziPlaterak();
     });
   });
-  iragaziPlaterak();
+
+  subBotoiak.forEach((sbtn) => {
+    sbtn.addEventListener("click", () => {
+      subBotoiak.forEach((sb) => sb.classList.remove("active"));
+      sbtn.classList.add("active");
+      unekoEdariAzpikategoria = sbtn.getAttribute("data-edari-kat") || "Guztiak";
+      iragaziPlaterak();
+    });
+  });
 }
 
 /**
@@ -118,18 +70,22 @@ function iragaziPlaterak() {
   if (!txartelak || txartelak.length === 0) return;
 
   txartelak.forEach((card) => {
-    const kategoria = card.getAttribute("data-kategoria");
-    const batDator = unekoKategoria === "Edaria"
-      ? edariKategoriak.has(kategoria) &&
-        (unekoEdariAzpikategoria === "Guztiak" || kategoria === unekoEdariAzpikategoria)
-      : (unekoKategoria === "Guztiak" && !edariKategoriak.has(kategoria)) ||
-        kategoria === unekoKategoria ||
-        (unekoKategoria === "Sarrerakoa" && kategoria === "Lehena");
-    if (batDator) {
-      card.style.display = "";
+    const kategoria = card.getAttribute("data-kategoria") || "";
+    let erakutsi = false;
+
+    if (unekoKategoria === "Guztiak") {
+      erakutsi = true;
+    } else if (unekoKategoria === "Edaria") {
+      if (unekoEdariAzpikategoria === "Guztiak") {
+        erakutsi = EDARI_KATEGORIAK.has(kategoria);
+      } else {
+        erakutsi = kategoria === unekoEdariAzpikategoria;
+      }
     } else {
-      card.style.display = "none";
+      erakutsi = kategoria === unekoKategoria;
     }
+
+    card.style.display = erakutsi ? "" : "none";
   });
 }
 
@@ -143,47 +99,59 @@ async function egiaztatuEdoKargatuKarta() {
 
   const existitzenDira = edukiontzia.querySelectorAll(".plater-card");
   if (existitzenDira.length > 0) {
-    erakutsiAlergenoIkurrak(edukiontzia);
-    // Jada PHPk zerbitzari-mailan renderizatu ditu txartel guztiak
     return;
   }
 
-  // Fallback: JS bidez kargatu hutsik badago
   try {
     const res = await fetch(`${API_BASE}/platerak`, {
       headers: { "X-App-Id": "web_php" },
     });
     const json = await res.json();
     if (json.status === "success" && json.dataList && json.dataList.length > 0) {
+      const katFallback = {
+        Sarrerakoa: "sarrerakoa.jpg",
+        Lehena: "lehena.jpg",
+        Bigarrena: "bigarrena.jpg",
+        Postrea: "postrea.jpg",
+        Edaria: "ardoak.jpg",
+        Urak: "urak.jpg",
+        Freskagarriak: "freskagarriak.jpg",
+        Garagardoak: "garagardoak.jpg",
+        Sagardoak: "sagardoak.jpg",
+        Ardoak: "ardoak.jpg",
+        Kafeak: "kafeak.jpg",
+        Infusioak: "infusioak.jpg",
+        Likoreak: "likoreak.jpg",
+        Konbinatuak: "konbinatuak.jpg",
+        Koktailak: "koktailak.jpg",
+      };
       edukiontzia.innerHTML = json.dataList.map((p) => {
-        const id = Number(p.id);
-        const escapeHtml = (value) => String(value || "").replace(/[&<>"']/g, (char) => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        })[char]);
-        const irudiIzena = escapeHtml(p.izena);
-        const alergenoak = escapeHtml(p.alergenoak);
-        const irudia = Number.isSafeInteger(id) && id > 0
-          ? `<img class="plater-irudia" src="assets/img/platerak/platera_${id}.jpg" alt="${irudiIzena}" loading="lazy" decoding="async">`
-          : "";
-
+        const prezio = Number(p.prezioa ?? p.salmentaPrezioa ?? 0).toFixed(2).replace(".", ",");
+        const fb = `assets/img/kategoriak/${katFallback[p.kategoria] || "bigarrena.jpg"}`;
         return `
-          <div class="plater-card" data-kategoria="${p.kategoria}">
-            ${irudia}
-            <div class="plater-card-header">
-              <span class="plater-kategoria-badge">${p.kategoria}</span>
-              <span class="plater-prezioa">${p.salmentaPrezioa.toFixed(2)} &euro;</span>
-            </div>
-            <h3 class="plater-titulua">${p.izena}</h3>
-            <p class="plater-deskribapena">${p.deskribapena || ''}</p>
-            ${alergenoak ? `<p class="plater-alergenoak" data-alergenoak="${alergenoak}"><strong>Alergenoak:</strong> ${alergenoak}</p>` : ""}
+        <div class="plater-card" data-kategoria="${p.kategoria}">
+          <div class="plater-img-wrap">
+            <img src="assets/img/platerak/platera_${p.id}.jpg"
+                 alt="${p.izena}"
+                 class="plater-img"
+                 loading="lazy"
+                 decoding="async"
+                 onerror="this.onerror=null;this.src='${fb}';">
           </div>
-        `;
+          <div class="plater-body">
+            <div class="plater-header">
+              <h3 class="plater-izena">${p.izena}</h3>
+              <span class="plater-prezioa">${prezio} &euro;</span>
+            </div>
+            <p class="plater-deskribapena">${p.deskribapena || ''}</p>
+            <div class="plater-meta">
+              <span class="kategoria-tag">${p.kategoria}</span>
+              <span class="prestatze-denbora">${p.prestatzeDenboraMin ?? 15} min</span>
+            </div>
+          </div>
+        </div>
+      `;
       }).join("");
-      erakutsiAlergenoIkurrak(edukiontzia);
       iragaziPlaterak();
     }
   } catch (e) {
