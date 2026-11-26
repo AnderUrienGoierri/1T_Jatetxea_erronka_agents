@@ -57,11 +57,7 @@ public partial class TiketIkusteaForm : Form
 
         // Responsive: tiket termikoa zentratuta eta DPI-rekin eskalatuta
         pnlKutxa.Resize += (s, e) => EgokituTiketZabalera();
-        Load += (s, e) =>
-        {
-            Theme.ApplyModalDpiSize(this, 680, 700, 540, 520);
-            EgokituTiketZabalera();
-        };
+        Theme.AttachModalDpiAdaptation(this, 680, 700, 540, 520, EgokituTiketZabalera);
     }
 
     private void EgokituTiketZabalera()
@@ -70,10 +66,10 @@ public partial class TiketIkusteaForm : Form
 
         // 1. Goiko barra (titulu eta azpititulu gainjarpenik gabe)
         pnlGoiburua.Height = S(86);
-        lblTit.Font = Theme.DisplayFont(13.5f);
+        lblTit.Font = Theme.DisplayFont(this, 13.5f);
         lblTit.ForeColor = Theme.MarbleWhite;
         lblTit.SetBounds(S(24), S(14), Math.Max(S(360), pnlGoiburua.ClientSize.Width - S(48)), S(32));
-        lblSub.Font = Theme.BodyFont(9.5f, bold: false);
+        lblSub.Font = Theme.BodyFont(this, 9.5f, bold: false);
         lblSub.ForeColor = Theme.SuccessBg;
         lblSub.SetBounds(S(24), S(48), Math.Max(S(360), pnlGoiburua.ClientSize.Width - S(48)), S(26));
 

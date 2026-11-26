@@ -73,11 +73,7 @@ public partial class MahaikideakModal : Form
         btnPlus.Click += (s, e) => AldatuKopurua(1);
 
         Resize += (s, e) => EgokituResponsiveDiseinua();
-        Load += (s, e) =>
-        {
-            Theme.ApplyModalDpiSize(this, 720, 540, 620, 470);
-            EgokituResponsiveDiseinua();
-        };
+        Theme.AttachModalDpiAdaptation(this, 720, 540, 620, 470, EgokituResponsiveDiseinua);
 
         EguneratuUI();
     }

@@ -134,6 +134,12 @@ public partial class MahaiaXehetasunakForm : Form
 
         Resize += (s, e) => EgokituResponsiveDiseinua();
         pnlTicketLines.Resize += (s, e) => EgokituLerroTxartelak();
+
+        Theme.AttachMainFormDpiAdaptation(this, () =>
+        {
+            EgokituResponsiveDiseinua();
+            EgokituLerroTxartelak();
+        });
     }
 
     private void EgokituResponsiveDiseinua()
@@ -149,7 +155,7 @@ public partial class MahaiaXehetasunakForm : Form
         btnAtzera.SetBounds(S(16), yCenter, osoEstua ? S(112) : S(142), S(42));
 
         lblMahaiaTit.Text = osoEstua ? $"MAHAIA {_mahaia.Zenbakia}" : $"T1 JATETXEA · MAHAIA {_mahaia.Zenbakia}";
-        lblMahaiaTit.Font = Theme.DisplayFont(osoEstua ? 12.5f : 14.5f);
+        lblMahaiaTit.Font = Theme.DisplayFont(this, osoEstua ? 12.5f : 14.5f);
         lblMahaiaTit.SetBounds(btnAtzera.Right + S(12), yCenter, osoEstua ? S(165) : S(360), S(42));
 
         int btnH = S(40);
@@ -1123,8 +1129,10 @@ public partial class MahaiaXehetasunakForm : Form
         int? dagoenekoEskaeraId = _eskaerak.Count > _hautatutakoEskaeraIndex ? _eskaerak[_hautatutakoEskaeraIndex].Id : null;
 
         using var eskaeraForm = new EskaeraForm(_mahaia, _langilea, _api, _mahaia.Edukiera, dagoenekoEskaeraId);
+        Theme.PlaceOnActiveScreen(eskaeraForm, this);
         Hide();
         eskaeraForm.ShowDialog();
+        Theme.PlaceOnActiveScreen(this);
         Show();
         _ = KargatuDatuakAsync();
     }

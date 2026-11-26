@@ -98,6 +98,12 @@ public partial class MahaiakForm : Form
 
         Resize += (s, e) => EgokituResponsiveDiseinua();
 
+        Theme.AttachMainFormDpiAdaptation(this, () =>
+        {
+            EgokituResponsiveDiseinua();
+            EgokituMahaiTxartelak();
+        });
+
         FormClosed += (s, e) =>
         {
             _tenporizadorea.Stop();
@@ -150,7 +156,7 @@ public partial class MahaiakForm : Form
 
         lblBrand.Location = new Point(lblLogo.Right + S(12), (pnlTopBar.Height - logoSz) / 2);
         lblBrand.Text = estua ? "T1 MAHAIAK" : "T1 JATETXEA · MAHAIAK";
-        lblBrand.Font = Theme.DisplayFont(estua ? 12.5f : 15f);
+        lblBrand.Font = Theme.DisplayFont(this, estua ? 12.5f : 15f);
         lblBrand.Size = new Size(estua ? S(200) : S(390), logoSz);
 
         int btnH = S(42);
@@ -277,7 +283,8 @@ public partial class MahaiakForm : Form
             using var pen = new Pen(Theme.GoldBorder, 1.6f);
             e.Graphics.DrawEllipse(pen, 2, 2, lblAvatarCircle.Width - 5, lblAvatarCircle.Height - 5);
 
-            TextRenderer.DrawText(e.Graphics, lblAvatarCircle.Text, Theme.BodyFont(12f, bold: true),
+            using var avatarFont = Theme.BodyFont(this, 12f, bold: true);
+            TextRenderer.DrawText(e.Graphics, lblAvatarCircle.Text, avatarFont,
                 new Rectangle(0, 0, lblAvatarCircle.Width, lblAvatarCircle.Height),
                 Theme.ChiantiPrimary,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
@@ -784,17 +791,19 @@ public partial class MahaiakForm : Form
         if (mahaia.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase))
         {
             using var modalKopurua = new MahaikideakModal(mahaia);
-            if (modalKopurua.ShowDialog() == DialogResult.OK)
+            if (modalKopurua.ShowDialog(this) == DialogResult.OK)
             {
                 int pertsonaKopurua = modalKopurua.PertsonaKopurua;
 
-                Hide();
                 var formEskaera = new EskaeraForm(mahaia, _langilea, _api, pertsonaKopurua);
+                Theme.PlaceOnActiveScreen(formEskaera, this);
                 formEskaera.FormClosed += async (s, e) =>
                 {
+                    Theme.PlaceOnActiveScreen(this);
                     Show();
                     await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
                 };
+                Hide();
                 formEskaera.Show();
             }
         }
@@ -825,24 +834,28 @@ public partial class MahaiakForm : Form
                 return;
             }
 
-            Hide();
             var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
+            Theme.PlaceOnActiveScreen(formXehetasunak, this);
             formXehetasunak.FormClosed += async (s, e) =>
             {
+                Theme.PlaceOnActiveScreen(this);
                 Show();
                 await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
             };
+            Hide();
             formXehetasunak.Show();
         }
         else
         {
-            Hide();
             var formXehetasunak = new MahaiaXehetasunakForm(mahaia, _langilea, _api);
+            Theme.PlaceOnActiveScreen(formXehetasunak, this);
             formXehetasunak.FormClosed += async (s, e) =>
             {
+                Theme.PlaceOnActiveScreen(this);
                 Show();
                 await KargatuMahaiakAsync(isSilent: true, behartuEguneratzea: true);
             };
+            Hide();
             formXehetasunak.Show();
         }
     }

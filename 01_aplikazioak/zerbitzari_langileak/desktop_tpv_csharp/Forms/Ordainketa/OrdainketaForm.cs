@@ -116,11 +116,7 @@ public partial class OrdainketaForm : Form
         // Responsive: 3 ordainketa-fitxak eta barruko eremuak zabalera guztian banatu (DPI eskalatua)
         pnlTabs.Resize += (s, e) => EgokituOrdainketaResponsive();
         Resize += (s, e) => EgokituOrdainketaResponsive();
-        Load += (s, e) =>
-        {
-            Theme.ApplyModalDpiSize(this, 880, 680, 740, 560);
-            EgokituOrdainketaResponsive();
-        };
+        Theme.AttachModalDpiAdaptation(this, 880, 680, 740, 560, EgokituOrdainketaResponsive);
 
         AldatuMota("Eskudirua");
         EguneratuKanbioa();
@@ -375,7 +371,7 @@ public partial class OrdainketaForm : Form
 
         // Tiket fiskalaren leihoa ireki (aurrebista, gorde eta inprimatzeko aukerarekin)
         using var tiketForm = new TiketIkusteaForm(ordainketa);
-        tiketForm.ShowDialog();
+        tiketForm.ShowDialog(this);
 
         DialogResult = DialogResult.OK;
         Close();

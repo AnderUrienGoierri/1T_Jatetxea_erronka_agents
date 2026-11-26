@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.Runtime.CompilerServices;
 
 namespace Jatetxea.Desktop.UI;
 
@@ -126,11 +127,25 @@ public static class Theme
         return new Font("Georgia", size, style);
     }
 
+    public static Font DisplayFont(Control? c, float ptSize, FontStyle style = FontStyle.Bold)
+    {
+        float px = PtToPx(c, ptSize);
+        if (CinzelFamily != null)
+            return new Font(CinzelFamily, px, style, GraphicsUnit.Pixel);
+        return new Font("Georgia", px, style, GraphicsUnit.Pixel);
+    }
+
     public static Font BodyFont(float size, bool bold = false)
     {
         FontStyle style = bold ? FontStyle.Bold : FontStyle.Regular;
         // Segoe UI Windows ClearType-ekin perfektuki errendatzen da (espaziatu garbia, lausotasunik gabe)
         return new Font("Segoe UI", size, style);
+    }
+
+    public static Font BodyFont(Control? c, float ptSize, bool bold = false, FontStyle? explicitStyle = null)
+    {
+        FontStyle style = explicitStyle ?? (bold ? FontStyle.Bold : FontStyle.Regular);
+        return new Font("Segoe UI", PtToPx(c, ptSize), style, GraphicsUnit.Pixel);
     }
 
     public static Font MonoFont(float size, bool bold = true)
@@ -139,6 +154,15 @@ public static class Theme
         if (MonoFamily != null)
             return new Font(MonoFamily, size, style);
         return new Font("Consolas", size, style);
+    }
+
+    public static Font MonoFont(Control? c, float ptSize, bool bold = true)
+    {
+        FontStyle style = bold ? FontStyle.Bold : FontStyle.Regular;
+        float px = PtToPx(c, ptSize);
+        if (MonoFamily != null)
+            return new Font(MonoFamily, px, style, GraphicsUnit.Pixel);
+        return new Font("Consolas", px, style, GraphicsUnit.Pixel);
     }
 
     // Letra-tipo estandarrak
@@ -152,13 +176,264 @@ public static class Theme
     public static readonly Font FontKeypad = MonoFont(17f, bold: true);
 
     // ── DPI Eskalatze Laguntzaileak (PerMonitorV2 100% / 125% / 150% / 200%) ──
-    public static float DpiScale(Control? c)
+    public static Screen? ActiveScreen { get; set; }
+
+    private sealed record BaseFontSpec(FontFamily Family, float BasePt, FontStyle Style);
+    private static readonly ConditionalWeakTable<Control, BaseFontSpec> BaseFonts = new();
+    private static readonly ConditionalWeakTable<Control, object> DpiHookedContainers = new();
+
+    /// <summary>
+    /// Leiho bat erabiltzaileak unean darabilen pantaila berean (ActiveScreen / sourceForm) kokatzen du,
+    /// pantailaz aldatzean edo login egitean pantaila nagusira itzultzea saihesteko.
+    /// </summary>
+    public static void PlaceOnActiveScreen(Form targetForm, Form? sourceForm = null)
     {
-        int dpi = c != null && !c.IsDisposed && c.DeviceDpi > 0 ? c.DeviceDpi : 96;
-        return dpi / 96f;
+        if (targetForm.IsDisposed) return;
+
+        if (sourceForm != null && !sourceForm.IsDisposed)
+        {
+            ActiveScreen = Screen.FromControl(sourceForm);
+        }
+        else if (targetForm.Owner != null && !targetForm.Owner.IsDisposed)
+        {
+            ActiveScreen = Screen.FromControl(targetForm.Owner);
+        }
+
+        var screen = ActiveScreen ?? Screen.FromControl(targetForm);
+        var wa = screen.WorkingArea;
+        bool wasMaximized = targetForm.WindowState == FormWindowState.Maximized;
+
+        targetForm.StartPosition = FormStartPosition.Manual;
+        if (wasMaximized)
+        {
+            targetForm.WindowState = FormWindowState.Normal;
+            targetForm.Bounds = wa;
+            targetForm.WindowState = FormWindowState.Maximized;
+        }
+        else
+        {
+            int x = wa.Left + Math.Max(0, (wa.Width - targetForm.Width) / 2);
+            int y = wa.Top + Math.Max(0, (wa.Height - targetForm.Height) / 2);
+            targetForm.Location = new Point(x, y);
+        }
     }
 
+    private static void HookContainerForDpi(Control container)
+    {
+        if (container.IsDisposed) return;
+        if (DpiHookedContainers.TryGetValue(container, out _)) return;
+        DpiHookedContainers.Add(container, new object());
+
+        container.ControlAdded += (s, e) =>
+        {
+            if (e.Control == null || e.Control.IsDisposed) return;
+            var frm = e.Control.FindForm() ?? container.FindForm();
+            int dpi = GetControlDpi(frm ?? container);
+            RefreshFontsRecursive(e.Control, dpi);
+            HookContainerForDpi(e.Control);
+        };
+    }
+
+    public static int GetControlDpi(Control? c)
+    {
+        if (c == null || c.IsDisposed) return 96;
+        int dpi = c.DeviceDpi;
+        if (!c.IsHandleCreated)
+        {
+            var frm = c.FindForm();
+            if (frm != null && !frm.IsDisposed && frm.IsHandleCreated && frm.DeviceDpi > 0)
+            {
+                dpi = frm.DeviceDpi;
+            }
+        }
+        return dpi > 0 ? dpi : 96;
+    }
+
+    public static float PtToPx(Control? c, float ptSize)
+    {
+        return Math.Max(6f, ptSize * (GetControlDpi(c) / 72f));
+    }
+
+    public static float DpiScale(Control? c) => GetControlDpi(c) / 96f;
+
     public static int S(Control? c, int px) => (int)Math.Round(px * DpiScale(c));
+
+    /// <summary>
+    /// AutoScaleMode.None + PerMonitorV2 konbinazioan, GraphicsUnit.Point letra-tipoek
+    /// Windows-eko pantaila nagusiko LOGPIXELSY (adib. 192 DPI) hartzen dute beti.
+    /// Metodo honek kontrol-zuhaitz osoko letra-tipoak GraphicsUnit.Pixel bihurtzen ditu
+    /// uneko pantailaren DeviceDpi zehatzera (pt * DeviceDpi / 72), pantaila guztietan
+    /// proportzio berdin-berdina lortzeko (200% portatila <-> 100% HDMI).
+    /// </summary>
+    public static void RefreshFontsForDpi(Control root)
+    {
+        if (root == null || root.IsDisposed) return;
+
+        int dpi = GetControlDpi(root);
+
+        try
+        {
+            root.SuspendLayout();
+            ApplyPixelFontToControl(root, dpi);
+
+            foreach (Control child in root.Controls)
+            {
+                RefreshFontsRecursive(child, dpi);
+            }
+        }
+        finally
+        {
+            root.ResumeLayout(true);
+        }
+    }
+
+    private static void RefreshFontsRecursive(Control ctrl, int dpi)
+    {
+        if (ctrl.IsDisposed) return;
+
+        ApplyPixelFontToControl(ctrl, dpi);
+        HookContainerForDpi(ctrl);
+
+        if (ctrl.HasChildren)
+        {
+            foreach (Control child in ctrl.Controls)
+            {
+                RefreshFontsRecursive(child, dpi);
+            }
+        }
+    }
+
+    private static void ApplyPixelFontToControl(Control ctrl, int dpi)
+    {
+        if (ctrl.Font == null) return;
+
+        var f = ctrl.Font;
+        BaseFontSpec spec;
+
+        if (f.Unit == GraphicsUnit.Point)
+        {
+            // Puntutan esleitutako letra-tipo berria edo hasierakoa: gorde bere oinarrizko pt tamaina
+            spec = new BaseFontSpec(f.FontFamily, f.Size, f.Style);
+            BaseFonts.AddOrUpdate(ctrl, spec);
+        }
+        else if (!BaseFonts.TryGetValue(ctrl, out spec!))
+        {
+            // Pixel-etan sortutakoa (adib. BodyFont(this, pt)): atzera-kalkulatu pt tamaina
+            float basePt = f.Size * 72f / Math.Max(96, dpi);
+            spec = new BaseFontSpec(f.FontFamily, basePt, f.Style);
+            BaseFonts.AddOrUpdate(ctrl, spec);
+        }
+
+        float targetPx = Math.Max(6f, spec.BasePt * (dpi / 72f));
+        if (f.Unit == GraphicsUnit.Pixel && Math.Abs(f.Size - targetPx) < 0.15f && f.Style == spec.Style)
+        {
+            return;
+        }
+
+        ctrl.Font = new Font(spec.Family, targetPx, spec.Style, GraphicsUnit.Pixel);
+    }
+
+    /// <summary>
+    /// Formulario nagusi bati uneko pantailaren DPI eta WorkingArea-ra egokitutako MinimumSize ezartzen dio.
+    /// </summary>
+    public static void ApplyMainFormDpiBounds(Form form, int minLogicalW = 800, int minLogicalH = 500)
+    {
+        if (form.IsDisposed) return;
+        var screen = Screen.FromControl(form.Owner ?? form).WorkingArea;
+        int minW = Math.Min(S(form, minLogicalW), (int)(screen.Width * 0.92));
+        int minH = Math.Min(S(form, minLogicalH), (int)(screen.Height * 0.92));
+        form.MinimumSize = new Size(Math.Max(320, minW), Math.Max(240, minH));
+    }
+
+    /// <summary>
+    /// Formulario nagusi batean (Maximized) pantaila anitzeko PerMonitorV2 egokitzapen automatikoa aktibatzen du:
+    /// - Guraso-leihoaren (Owner) pantaila berean irekitzen da.
+    /// - DPI aldaketan (200% <-> 100%) letra-tipoak, MinimumSize eta diseinu dinamikoa automatikoki berritzen ditu.
+    /// </summary>
+    public static void AttachMainFormDpiAdaptation(Form form, Action onDpiRefresh, int minLogicalW = 800, int minLogicalH = 500)
+    {
+        bool dpiRefreshQueued = false;
+
+        void RememberScreen()
+        {
+            if (!form.IsDisposed && form.Visible && form.WindowState != FormWindowState.Minimized)
+            {
+                ActiveScreen = Screen.FromControl(form);
+            }
+        }
+
+        form.Activated += (s, e) => RememberScreen();
+        form.LocationChanged += (s, e) => RememberScreen();
+
+        form.Load += (s, e) =>
+        {
+            if (form.IsDisposed) return;
+
+            // Guraso-leihoaren edo azken pantaila aktiboaren pantaila berean kokatu
+            if (form.Owner != null || ActiveScreen != null)
+            {
+                PlaceOnActiveScreen(form, form.Owner);
+            }
+
+            ApplyMainFormDpiBounds(form, minLogicalW, minLogicalH);
+            RefreshFontsForDpi(form);
+        };
+
+        form.DpiChanged += (s, e) =>
+        {
+            if (form.IsDisposed || dpiRefreshQueued) return;
+            dpiRefreshQueued = true;
+
+            form.BeginInvoke(new Action(() =>
+            {
+                dpiRefreshQueued = false;
+                if (form.IsDisposed) return;
+
+                ApplyMainFormDpiBounds(form, minLogicalW, minLogicalH);
+                RefreshFontsForDpi(form);
+                onDpiRefresh();
+                form.PerformLayout();
+                form.Invalidate(true);
+            }));
+        };
+    }
+
+    /// <summary>
+    /// Modal batean pantaila anitzeko PerMonitorV2 egokitzapen automatikoa aktibatzen du
+    /// (Load eta DpiChanged gertaeretan tamaina, zentratzea, letra-tipoak eta layout-a berrituz).
+    /// </summary>
+    public static void AttachModalDpiAdaptation(Form modal, int logicalW, int logicalH, int minLogicalW, int minLogicalH, Action onDpiRefresh)
+    {
+        bool dpiRefreshQueued = false;
+
+        modal.Load += (s, e) =>
+        {
+            if (modal.IsDisposed) return;
+            RefreshFontsForDpi(modal);
+            ApplyModalDpiSize(modal, logicalW, logicalH, minLogicalW, minLogicalH);
+            onDpiRefresh();
+            modal.PerformLayout();
+            modal.Invalidate(true);
+        };
+
+        modal.DpiChanged += (s, e) =>
+        {
+            if (modal.IsDisposed || dpiRefreshQueued) return;
+            dpiRefreshQueued = true;
+
+            modal.BeginInvoke(new Action(() =>
+            {
+                dpiRefreshQueued = false;
+                if (modal.IsDisposed) return;
+
+                RefreshFontsForDpi(modal);
+                ApplyModalDpiSize(modal, logicalW, logicalH, minLogicalW, minLogicalH);
+                onDpiRefresh();
+                modal.PerformLayout();
+                modal.Invalidate(true);
+            }));
+        };
+    }
 
     /// <summary>
     /// Modal bati DPI-arekin eskalatutako tamaina erosoa ezartzen dio (pantailaren %90 gainditu gabe)
@@ -166,18 +441,22 @@ public static class Theme
     /// </summary>
     public static void ApplyModalDpiSize(Form modal, int logicalW, int logicalH, int minLogicalW, int minLogicalH)
     {
-        var screen = Screen.FromControl(modal.Owner ?? modal).WorkingArea;
+        var targetScreen = modal.Owner != null
+            ? Screen.FromControl(modal.Owner)
+            : (ActiveScreen ?? Screen.FromControl(modal));
+        var screen = targetScreen.WorkingArea;
         int targetW = Math.Min(S(modal, logicalW), (int)(screen.Width * 0.90));
         int targetH = Math.Min(S(modal, logicalH), (int)(screen.Height * 0.90));
         int minW = Math.Min(S(modal, minLogicalW), targetW);
         int minH = Math.Min(S(modal, minLogicalH), targetH);
 
+        modal.StartPosition = FormStartPosition.Manual;
         modal.MinimumSize = new Size(minW, minH);
         modal.ClientSize = new Size(targetW, targetH);
 
         var refRect = modal.Owner != null ? modal.Owner.Bounds : screen;
-        int x = Math.Max(screen.Left, refRect.Left + (refRect.Width - modal.Width) / 2);
-        int y = Math.Max(screen.Top, refRect.Top + (refRect.Height - modal.Height) / 2);
+        int x = Math.Clamp(refRect.Left + (refRect.Width - modal.Width) / 2, screen.Left, Math.Max(screen.Left, screen.Right - modal.Width));
+        int y = Math.Clamp(refRect.Top + (refRect.Height - modal.Height) / 2, screen.Top, Math.Max(screen.Top, screen.Bottom - modal.Height));
         modal.Location = new Point(x, y);
     }
 
@@ -297,7 +576,9 @@ public static class Theme
         btn.FlatAppearance.BorderSize = 0;
         btn.BackColor = bg;
         btn.ForeColor = fg;
-        btn.Font = BodyFont(fontSize, bold);
+        var f = BodyFont(btn, fontSize, bold);
+        btn.Font = f;
+        BaseFonts.AddOrUpdate(btn, new BaseFontSpec(f.FontFamily, fontSize, f.Style));
         btn.Cursor = Cursors.Hand;
         btn.UseVisualStyleBackColor = false;
         btn.Region = null;

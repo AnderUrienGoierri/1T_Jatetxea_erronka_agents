@@ -166,6 +166,13 @@ public partial class EskaeraForm : Form
             EgokituResponsiveDiseinua();
             await KargatuDatuakAsync();
         };
+
+        Theme.AttachMainFormDpiAdaptation(this, () =>
+        {
+            EgokituResponsiveDiseinua();
+            AldatuKategoria(_aukeratutakoKategoria);
+            EguneratuKarritoBistaratzea();
+        });
     }
 
     private void EgokituResponsiveDiseinua()
@@ -177,7 +184,7 @@ public partial class EskaeraForm : Form
         int yBtn = (pnlTopBar.Height - S(42)) / 2;
         btnAtzera.SetBounds(S(16), yBtn, estua ? S(130) : S(156), S(42));
 
-        lblMahaiaTit.Font = Theme.DisplayFont(estua ? 12.5f : 15f);
+        lblMahaiaTit.Font = Theme.DisplayFont(this, estua ? 12.5f : 15f);
         lblMahaiaTit.SetBounds(btnAtzera.Right + S(14), yBtn, estua ? S(280) : S(480), S(42));
 
         lblZerbitzaria.Visible = ClientSize.Width >= S(860);
@@ -370,7 +377,7 @@ public partial class EskaeraForm : Form
                     : _platerak.Count(p => string.Equals(p.Kategoria?.Trim(), azpikat, StringComparison.OrdinalIgnoreCase));
 
                 string etiketa = kop > 0 ? $"{azpikat} ({kop})" : azpikat;
-                var pillFont = Theme.BodyFont(9f, bold: aktiboa);
+                using var pillFont = Theme.BodyFont(this, 9f, bold: aktiboa);
                 var sz = TextRenderer.MeasureText(etiketa, pillFont);
                 int btnW = Math.Max(Theme.S(this, 86), sz.Width + Theme.S(this, 28));
 
@@ -423,7 +430,7 @@ public partial class EskaeraForm : Form
         foreach (var (btn, kat) in btns)
         {
             bool isAktiboa = kat.Equals(_aukeratutakoKategoria, StringComparison.OrdinalIgnoreCase);
-            btn.Font = Theme.BodyFont(10.5f, bold: isAktiboa);
+            btn.Font = Theme.BodyFont(this, 10.5f, bold: isAktiboa);
             btn.ForeColor = isAktiboa ? Theme.ChiantiPrimary : Theme.WarmSlate;
             btn.BackColor = isAktiboa ? Theme.ChiantiTint : Theme.MarbleWhite;
         }
@@ -567,7 +574,8 @@ public partial class EskaeraForm : Form
             {
                 using var phBrush = new SolidBrush(Theme.StoneMist);
                 g.FillRectangle(phBrush, imgRect);
-                TextRenderer.DrawText(g, badgeText, Theme.DisplayFont(18f), Rectangle.Round(imgRect), Theme.WarmSlate,
+                using var phFont = Theme.DisplayFont(this, 18f);
+                TextRenderer.DrawText(g, badgeText, phFont, Rectangle.Round(imgRect), Theme.WarmSlate,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             }
 
@@ -599,14 +607,14 @@ public partial class EskaeraForm : Form
             // 4. Produktuaren izena eta prezioa beheko bandan
             int padX = S(10);
             var nameRect = new Rectangle(padX, imgH + S(6), w - padX * 2, S(38));
-            using (var nameFont = Theme.BodyFont(9.2f, bold: true))
+            using (var nameFont = Theme.BodyFont(this, 9.2f, bold: true))
             {
                 TextRenderer.DrawText(g, platera.Izena, nameFont, nameRect, Theme.MarbleWhite,
                     TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
             }
 
             var priceRect = new Rectangle(padX, h - S(28), w - padX * 2, S(24));
-            using (var priceFont = Theme.MonoFont(10.5f, bold: true))
+            using (var priceFont = Theme.MonoFont(this, 10.5f, bold: true))
             {
                 TextRenderer.DrawText(g, $"{platera.Prezioa:F2} €", priceFont, priceRect, Theme.GoldTint,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter);

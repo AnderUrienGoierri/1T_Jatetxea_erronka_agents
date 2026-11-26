@@ -128,6 +128,12 @@ public partial class ErreserbakForm : Form
         };
 
         Resize += (s, e) => EgokituResponsiveDiseinua();
+
+        Theme.AttachMainFormDpiAdaptation(this, () =>
+        {
+            EgokituResponsiveDiseinua();
+            EguneratuHilabeteIkuspegia();
+        });
     }
 
     private void EgokituResponsiveDiseinua()
@@ -137,10 +143,10 @@ public partial class ErreserbakForm : Form
 
         // 1. Goiko Chianti barra (DPI-rekin eskalatuta, titulu/azpititulu gainjarpenik gabe)
         pnlHeader.Height = S(86);
-        lblTit.Font = Theme.DisplayFont(13.5f);
+        lblTit.Font = Theme.DisplayFont(this, 13.5f);
         lblTit.ForeColor = Theme.MarbleWhite;
         lblTit.Location = new Point(S(24), S(14));
-        lblSub.Font = Theme.BodyFont(9.2f, bold: false);
+        lblSub.Font = Theme.BodyFont(this, 9.2f, bold: false);
         lblSub.ForeColor = Theme.ChiantiTint;
         lblSub.Location = new Point(S(25), S(48));
         lblSub.Visible = ClientSize.Width >= S(900);
@@ -170,10 +176,10 @@ public partial class ErreserbakForm : Form
         // 3. Eskuineko egun-hautatu goiburua (titulu eta estatistika bananduta!)
         _pnlRightDetails.Padding = estua ? new Padding(S(14), S(12), S(14), S(12)) : new Padding(S(24), S(16), S(24), S(20));
         pnlSelectedDayHeader.Height = S(84);
-        _lblSelectedDayTitle.Font = Theme.BodyFont(13f, bold: true);
+        _lblSelectedDayTitle.Font = Theme.BodyFont(this, 13f, bold: true);
         _lblSelectedDayTitle.ForeColor = Theme.EspressoInk;
         _lblSelectedDayTitle.Location = new Point(S(20), S(12));
-        _lblSelectedDayStats.Font = Theme.BodyFont(9.5f, bold: true);
+        _lblSelectedDayStats.Font = Theme.BodyFont(this, 9.5f, bold: true);
         _lblSelectedDayStats.ForeColor = Theme.ChiantiPrimary;
         _lblSelectedDayStats.Location = new Point(S(20), S(48));
 
@@ -401,15 +407,17 @@ public partial class ErreserbakForm : Form
                 Color dayColor = isSelected 
                     ? Color.White 
                     : (isToday ? Color.FromArgb(37, 99, 235) : Color.FromArgb(30, 41, 59));
-                using var fontDay = new Font("Segoe UI", 10F, isToday || isSelected ? FontStyle.Bold : FontStyle.Regular);
+                using var fontDay = Theme.BodyFont(this, 10f, bold: isToday || isSelected);
                 using var brushDay = new SolidBrush(dayColor);
-                e.Graphics.DrawString(captureEgunaZenbakia.ToString(), fontDay, brushDay, new PointF(4, 3));
+                e.Graphics.DrawString(captureEgunaZenbakia.ToString(), fontDay, brushDay, new PointF(Theme.S(this, 4), Theme.S(this, 3)));
 
                 // Gaur bada eta hautatua ez bada, "Gaur" testua
                 if (isToday && !isSelected)
                 {
-                    using var fontGaur = new Font("Segoe UI", 6.5F, FontStyle.Bold);
-                    e.Graphics.DrawString("GAUR", fontGaur, new SolidBrush(Color.FromArgb(37, 99, 235)), new PointF(cell.Width - 32, 4));
+                    using var fontGaur = Theme.BodyFont(this, 6.5f, bold: true);
+                    using var gaurBrush = new SolidBrush(Color.FromArgb(37, 99, 235));
+                    var gSz = e.Graphics.MeasureString("GAUR", fontGaur);
+                    e.Graphics.DrawString("GAUR", fontGaur, gaurBrush, new PointF(cell.Width - gSz.Width - Theme.S(this, 3), Theme.S(this, 4)));
                 }
 
                 // Erreserba badaude, intsignia / badge margotu
@@ -419,19 +427,19 @@ public partial class ErreserbakForm : Form
                     Color badgeFg = isSelected ? Theme.AccentWine : Color.White;
 
                     string badgeText = $"{errKop} err";
-                    using var fontBadge = new Font("Segoe UI", 7F, FontStyle.Bold);
+                    using var fontBadge = Theme.BodyFont(this, 7f, bold: true);
                     var txtSize = e.Graphics.MeasureString(badgeText, fontBadge);
 
-                    int badgeW = (int)txtSize.Width + 8;
-                    int badgeH = 16;
+                    int badgeW = (int)txtSize.Width + Theme.S(this, 8);
+                    int badgeH = Theme.S(this, 16);
                     int badgeX = (cell.Width - badgeW) / 2;
-                    int badgeY = cell.Height - badgeH - 3;
+                    int badgeY = cell.Height - badgeH - Theme.S(this, 3);
 
                     using var brush = new SolidBrush(badgeBg);
                     e.Graphics.FillRectangle(brush, badgeX, badgeY, badgeW, badgeH);
 
                     using var fgBrush = new SolidBrush(badgeFg);
-                    e.Graphics.DrawString(badgeText, fontBadge, fgBrush, new PointF(badgeX + 4, badgeY + 1));
+                    e.Graphics.DrawString(badgeText, fontBadge, fgBrush, new PointF(badgeX + Theme.S(this, 4), badgeY + Theme.S(this, 1)));
                 }
             };
 

@@ -51,11 +51,11 @@ public partial class OharraModal : Form
         EguneratuUI();
 
         Resize += (s, e) => EgokituResponsiveDiseinua();
-        Load += (s, e) =>
+        Theme.AttachModalDpiAdaptation(this, 760, 560, 620, 460, () =>
         {
-            Theme.ApplyModalDpiSize(this, 760, 560, 620, 460);
+            SortuPresetBotoiak();
             EgokituResponsiveDiseinua();
-        };
+        });
     }
 
     /// <summary>

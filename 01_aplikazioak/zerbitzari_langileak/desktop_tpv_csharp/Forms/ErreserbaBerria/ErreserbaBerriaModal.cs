@@ -100,11 +100,7 @@ public partial class ErreserbaBerriaModal : Form
 
         // Responsive 2-zutabe GridPane estiloko egokitzea (DPI eskalatua)
         pnlBody.Resize += (s, e) => EgokituFormularioResponsive();
-        Load += (s, e) =>
-        {
-            Theme.ApplyModalDpiSize(this, 820, 660, 660, 540);
-            EgokituFormularioResponsive();
-        };
+        Theme.AttachModalDpiAdaptation(this, 820, 660, 660, 540, EgokituFormularioResponsive);
     }
 
     private void EgokituFormularioResponsive()
@@ -113,10 +109,10 @@ public partial class ErreserbaBerriaModal : Form
 
         // 1. Goiko barra
         pnlHeader.Height = S(84);
-        lblTit.Font = Theme.DisplayFont(13.5f);
+        lblTit.Font = Theme.DisplayFont(this, 13.5f);
         lblTit.ForeColor = Theme.MarbleWhite;
         lblTit.SetBounds(S(24), S(12), Math.Max(S(340), pnlHeader.ClientSize.Width - S(48)), S(32));
-        lblSub.Font = Theme.BodyFont(9.2f, bold: false);
+        lblSub.Font = Theme.BodyFont(this, 9.2f, bold: false);
         lblSub.ForeColor = Theme.ChiantiTint;
         lblSub.SetBounds(S(24), S(48), Math.Max(S(340), pnlHeader.ClientSize.Width - S(48)), S(24));
 

@@ -302,7 +302,7 @@ public partial class LoginForm : Form
         Load += async (s, e) =>
         {
             EgokituGoikoBarra();
-            _btnOfflineRetry.Location = new Point((_pnlOfflineNotice.Width - _btnOfflineRetry.Width) / 2, 60);
+            _btnOfflineRetry.Location = new Point((_pnlOfflineNotice.Width - _btnOfflineRetry.Width) / 2, Theme.S(this, 60));
             ZentratuTxartela();
 
             await SaiatuKonektatzenAsync(eskuz: false);
@@ -312,6 +312,18 @@ public partial class LoginForm : Form
                 _autoKonexioTimer.Start();
             }
         };
+
+        Theme.AttachMainFormDpiAdaptation(this, () =>
+        {
+            EgokituGoikoBarra();
+            ZentratuTxartela();
+            if (_baimendutakoLangileak.Count > 0)
+            {
+                var unekoak = new List<LangileaDto>(_baimendutakoLangileak);
+                _avatarCards.Clear();
+                BistaratuLangileak(unekoak);
+            }
+        });
 
         Shown += (s, e) =>
         {
@@ -627,7 +639,7 @@ public partial class LoginForm : Form
                     Location = new Point(0, circleSz + S(4)),
                     Text = shortName,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Font = Theme.BodyFont(8.8f, bold: false),
+                    Font = Theme.BodyFont(this, 8.8f, bold: false),
                     ForeColor = Theme.WarmSlate,
                     Cursor = Cursors.Hand,
                     BackColor = Color.Transparent
@@ -639,7 +651,7 @@ public partial class LoginForm : Form
                     Location = new Point(0, circleSz + S(24)),
                     Text = roleText,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Font = Theme.BodyFont(7.5f, bold: true),
+                    Font = Theme.BodyFont(this, 7.5f, bold: true),
                     ForeColor = Theme.StoneMuted,
                     Cursor = Cursors.Hand,
                     BackColor = Color.Transparent
@@ -667,7 +679,8 @@ public partial class LoginForm : Form
                     using var pen = new Pen(borderCol, isSelected ? 2f : 1.2f);
                     e.Graphics.DrawEllipse(pen, 2, 2, lblCircle.Width - 5, lblCircle.Height - 5);
 
-                    TextRenderer.DrawText(e.Graphics, lblCircle.Text, Theme.BodyFont(12f, bold: true),
+                    using var circleFont = Theme.BodyFont(this, 12f, bold: true);
+                    TextRenderer.DrawText(e.Graphics, lblCircle.Text, circleFont,
                         new Rectangle(0, 0, lblCircle.Width, lblCircle.Height),
                         fgCol,
                         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
@@ -712,9 +725,9 @@ public partial class LoginForm : Form
         foreach (var item in _avatarCards)
         {
             bool isSelected = item.Langilea.Id == langilea.Id;
-            item.Name.Font = new Font("Segoe UI", 9.5F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            item.Name.Font = Theme.BodyFont(this, 9.2f, bold: isSelected);
             item.Name.ForeColor = isSelected ? Color.FromArgb(30, 41, 59) : Color.FromArgb(100, 116, 139);
-            item.Role.Font = new Font("Segoe UI", 7.5F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            item.Role.Font = Theme.BodyFont(this, 7.5f, bold: isSelected);
             item.Role.ForeColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(148, 163, 184);
             item.Circle.Invalidate();
 
@@ -968,9 +981,11 @@ public partial class LoginForm : Form
             _autoKonexioTimer.Stop();
 
             var mahaiakForm = new MahaiakForm(sesioLangilea, _api);
+            Theme.PlaceOnActiveScreen(mahaiakForm, this);
             mahaiakForm.FormClosed += async (s, e) =>
             {
                 _api.EzarriUnekoLangilea(null, null, null);
+                Theme.PlaceOnActiveScreen(this);
                 Show();
                 _pin = string.Empty;
                 FreskatuPinDots();
