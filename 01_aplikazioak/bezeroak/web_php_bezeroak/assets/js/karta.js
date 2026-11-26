@@ -21,6 +21,61 @@ const EDARI_KATEGORIAK = new Set([
   "Koktailak",
 ]);
 
+const alergenoIkurrak = {
+  glutena: "🌾",
+  krustazeoak: "🦀",
+  arrautza: "🥚",
+  arrautzak: "🥚",
+  arraina: "🐟",
+  arrainak: "🐟",
+  kakahueteak: "🥜",
+  kakahuetea: "🥜",
+  soja: "🫘",
+  laktosa: "🥛",
+  esnea: "🥛",
+  esnekiak: "🥛",
+  "fruitu lehorrak": "🌰",
+  apioa: "🥬",
+  mostaza: "🫙",
+  ziapea: "🫙",
+  sesamoa: "🌱",
+  sulfitoak: "SO₂",
+  moluskuak: "🐚",
+  lupinua: "🌼",
+  lupinuak: "🌼",
+};
+
+function erakutsiAlergenoIkurrak(edukiontzia) {
+  if (!edukiontzia) return;
+  edukiontzia.querySelectorAll(".plater-alergenoak").forEach((elementua) => {
+    const raw = elementua.dataset.alergenoak || "";
+    const izenak = raw.split(",").map((izena) => izena.trim()).filter(Boolean);
+    if (!izenak.length) return;
+
+    const zerrenda = document.createDocumentFragment();
+    izenak.forEach((izena) => {
+      const ikurra = alergenoIkurrak[izena.toLocaleLowerCase("eu")];
+      const etiketa = document.createElement("span");
+      if (ikurra) {
+        etiketa.className = `alergeno-ikurra${ikurra === "SO₂" ? " kimikoa" : ""}`;
+        etiketa.setAttribute("role", "img");
+        etiketa.setAttribute("aria-label", `Alergenoa: ${izena}`);
+        etiketa.setAttribute("title", izena);
+        etiketa.dataset.izena = izena;
+        etiketa.tabIndex = 0;
+        etiketa.textContent = ikurra;
+      } else {
+        etiketa.className = "alergeno-ezezaguna";
+        etiketa.textContent = izena;
+      }
+      zerrenda.appendChild(etiketa);
+    });
+    elementua.replaceChildren(zerrenda);
+    elementua.classList.add("ikurrak");
+    elementua.setAttribute("aria-label", "Alergenoak");
+  });
+}
+
 /**
  * Kategoria-iragazkien eta edarien azpikategorien gertaerak konfiguratzen ditu.
  */
@@ -99,6 +154,7 @@ async function egiaztatuEdoKargatuKarta() {
 
   const existitzenDira = edukiontzia.querySelectorAll(".plater-card");
   if (existitzenDira.length > 0) {
+    erakutsiAlergenoIkurrak(edukiontzia);
     return;
   }
 
@@ -144,6 +200,7 @@ async function egiaztatuEdoKargatuKarta() {
               <span class="plater-prezioa">${prezio} &euro;</span>
             </div>
             <p class="plater-deskribapena">${p.deskribapena || ''}</p>
+            ${p.alergenoak ? `<p class="plater-alergenoak" data-alergenoak="${p.alergenoak}"><strong>Alergenoak:</strong> ${p.alergenoak}</p>` : ''}
             <div class="plater-meta">
               <span class="kategoria-tag">${p.kategoria}</span>
               <span class="prestatze-denbora">${p.prestatzeDenboraMin ?? 15} min</span>
@@ -152,6 +209,7 @@ async function egiaztatuEdoKargatuKarta() {
         </div>
       `;
       }).join("");
+      erakutsiAlergenoIkurrak(edukiontzia);
       iragaziPlaterak();
     }
   } catch (e) {

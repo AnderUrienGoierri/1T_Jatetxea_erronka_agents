@@ -112,7 +112,7 @@ foreach ($platerak as $pl) {
                                 <p class="plater-deskribapena"><?php echo $deskribapena; ?></p>
 
                                 <?php if (!empty($alergenoak)): ?>
-                                    <p class="plater-alergenoak">
+                                    <p class="plater-alergenoak" data-alergenoak="<?php echo $alergenoak; ?>">
                                         <strong>Alergenoak:</strong> <?php echo $alergenoak; ?>
                                     </p>
                                 <?php endif; ?>
@@ -133,8 +133,6 @@ foreach ($platerak as $pl) {
                                     <span class="prestatze-denbora"><?php echo $denbora; ?> min</span>
                                     <?php if ($agortuta): ?>
                                         <span class="stock-tag agortuta">Agortuta</span>
-                                    <?php elseif ($stockAhalmena !== null): ?>
-                                        <span class="stock-tag eskuragarri"><?php echo $stockAhalmena; ?> anoa</span>
                                     <?php endif; ?>
                                 </div>
                             </div>
