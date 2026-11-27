@@ -1,7 +1,9 @@
 using System.Data;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Jatetxea.Api.Controllers;
 
@@ -9,7 +11,7 @@ namespace Jatetxea.Api.Controllers;
 [Route("api/v1/fakturak")]
 public class FakturakController : BaseApiKontroladorea
 {
-    public FakturakController(IConfiguration config) : base(config) { }
+    public FakturakController(ISessionFactory sessionFactory) : base(sessionFactory) { }
 
     /// <summary>
     /// Faktura guztien zerrenda lortzen du (salmenta eta erosketa fakturak).
@@ -20,31 +22,19 @@ public class FakturakController : BaseApiKontroladorea
         [FromQuery] string? egoera = null,
         [FromQuery] bool barneEzabatuak = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = @"
-            SELECT id, eskaera_id, faktura_zenbakia, mota, azpimota, kontzeptua, 
-                   hornitzailea, hornitzaile_cif, bezero_nif, bezero_izena, bezero_helbidea,
-                   oinarri_zergagarria, bez_ehunekoa, bez_zenbatekoa, guztira, 
-                   ordainketa_metodoa, egoera, data, oharrak, ezabatua 
-            FROM fakturak 
-            WHERE 1=1";
+        using var session = IrekiSaioa();
+        var query = session.Query<Faktura>();
 
-        if (!barneEzabatuak) sql += " AND ezabatua = 0";
-        if (!string.IsNullOrWhiteSpace(mota)) sql += " AND mota = @mota";
-        if (!string.IsNullOrWhiteSpace(egoera)) sql += " AND egoera = @egoera";
-        sql += " ORDER BY data DESC, id DESC;";
+        if (!barneEzabatuak) query = query.Where(f => !f.Ezabatua);
+        if (!string.IsNullOrWhiteSpace(mota)) query = query.Where(f => f.Mota == mota);
+        if (!string.IsNullOrWhiteSpace(egoera)) query = query.Where(f => f.Egoera == egoera);
 
-        var zerrenda = new List<FakturaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        if (!string.IsNullOrWhiteSpace(mota)) cmd.Parameters.AddWithValue("@mota", mota);
-        if (!string.IsNullOrWhiteSpace(egoera)) cmd.Parameters.AddWithValue("@egoera", egoera);
+        var fakturak = await query
+            .OrderByDescending(f => f.Data)
+            .ThenByDescending(f => f.Id)
+            .ToListAsync();
 
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            zerrenda.Add(MapFakturaDto(reader));
-        }
-
+        var zerrenda = fakturak.Select(MapFakturaDto).ToList();
         return SuccessList(zerrenda, 200, "Fakturak ondo berreskuratu dira.");
     }
 
@@ -54,35 +44,25 @@ public class FakturakController : BaseApiKontroladorea
     [HttpGet("laburpena")]
     public async Task<IActionResult> LortuFinantzaLaburpena()
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT 
-                COALESCE(SUM(CASE WHEN mota = 'Salmenta' AND egoera != 'Ezeztatua' THEN guztira ELSE 0 END), 0) AS salmentak_guztira,
-                COALESCE(SUM(CASE WHEN mota = 'Erosketa' AND egoera != 'Ezeztatua' THEN guztira ELSE 0 END), 0) AS gastuak_guztira,
-                COALESCE(SUM(CASE WHEN mota = 'Salmenta' AND egoera != 'Ezeztatua' THEN bez_zenbatekoa ELSE 0 END), 0) AS jasotako_bez,
-                COALESCE(SUM(CASE WHEN mota = 'Erosketa' AND egoera != 'Ezeztatua' THEN bez_zenbatekoa ELSE 0 END), 0) AS ordaindutako_bez,
-                COUNT(CASE WHEN mota = 'Salmenta' AND egoera != 'Ezeztatua' THEN 1 END) AS salmenta_kopurua,
-                COUNT(CASE WHEN mota = 'Erosketa' AND egoera != 'Ezeztatua' THEN 1 END) AS gastu_kopurua
-            FROM fakturak 
-            WHERE ezabatua = 0;";
+        using var session = IrekiSaioa();
+        var aktiboak = await session.Query<Faktura>()
+            .Where(f => !f.Ezabatua && f.Egoera != "Ezeztatua")
+            .ToListAsync();
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
+        var salmentak = aktiboak.Where(f => f.Mota == "Salmenta").ToList();
+        var erosketak = aktiboak.Where(f => f.Mota == "Erosketa").ToList();
+
+        var laburpena = new FinantzaLaburpenaDto
         {
-            var laburpena = new FinantzaLaburpenaDto
-            {
-                SalmentakGuztira = reader.GetDecimal("salmentak_guztira"),
-                GastuakGuztira = reader.GetDecimal("gastuak_guztira"),
-                JasotakoBez = reader.GetDecimal("jasotako_bez"),
-                OrdaindutakoBez = reader.GetDecimal("ordaindutako_bez"),
-                SalmentaKopurua = reader.GetInt32("salmenta_kopurua"),
-                GastuKopurua = reader.GetInt32("gastu_kopurua")
-            };
-            return Success(laburpena, 200, "Finantza laburpena ondo kalkulatu da.");
-        }
+            SalmentakGuztira = salmentak.Sum(f => f.Guztira),
+            GastuakGuztira = erosketak.Sum(f => f.Guztira),
+            JasotakoBez = salmentak.Sum(f => f.BezZenbatekoa),
+            OrdaindutakoBez = erosketak.Sum(f => f.BezZenbatekoa),
+            SalmentaKopurua = salmentak.Count,
+            GastuKopurua = erosketak.Count
+        };
 
-        return Success(new FinantzaLaburpenaDto(), 200, "Ez da fakturarik aurkitu.");
+        return Success(laburpena, 200, "Finantza laburpena ondo kalkulatu da.");
     }
 
     /// <summary>
@@ -91,22 +71,12 @@ public class FakturakController : BaseApiKontroladorea
     [HttpGet("{id:int}")]
     public async Task<IActionResult> LortuIdBidez(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT id, eskaera_id, faktura_zenbakia, mota, azpimota, kontzeptua, 
-                   hornitzailea, hornitzaile_cif, bezero_nif, bezero_izena, bezero_helbidea,
-                   oinarri_zergagarria, bez_ehunekoa, bez_zenbatekoa, guztira, 
-                   ordainketa_metodoa, egoera, data, oharrak, ezabatua 
-            FROM fakturak 
-            WHERE id = @id LIMIT 1;";
-
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
+        using var session = IrekiSaioa();
+        var faktura = await session.GetAsync<Faktura>(id);
+        if (faktura == null)
             return NotFoundError($"Ez da aurkitu {id} ID-a duen fakturarik.");
 
-        return Success(MapFakturaDto(reader), 200, "Faktura aurkitu da.");
+        return Success(MapFakturaDto(faktura), 200, "Faktura aurkitu da.");
     }
 
     /// <summary>
@@ -118,7 +88,6 @@ public class FakturakController : BaseApiKontroladorea
         if (string.IsNullOrWhiteSpace(dto.Kontzeptua))
             return BadRequestError("Kontzeptua derrigorrezkoa da.");
 
-        // BEZ eta totalak kalkulatu
         decimal oinarria = Math.Max(0, dto.OinarriZergagarria);
         decimal bezEhunekoa = dto.BezEhunekoa > 0 ? dto.BezEhunekoa : 10.00m;
         decimal bezZenbatekoa = Math.Round(oinarria * (bezEhunekoa / 100m), 2);
@@ -126,52 +95,22 @@ public class FakturakController : BaseApiKontroladorea
             ? dto.Guztira.Value
             : oinarria + bezZenbatekoa;
 
-        // Faktura zenbakia automatikoki sortu ez bada zehaztu
         string zenbakia = !string.IsNullOrWhiteSpace(dto.FakturaZenbakia)
             ? dto.FakturaZenbakia.Trim()
             : $"F{DateTime.Now.Year}-{(dto.Mota == "Erosketa" ? "G" : "S")}{DateTimeOffset.UtcNow.ToUnixTimeSeconds() % 1000000:D6}";
 
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            INSERT INTO fakturak 
-            (eskaera_id, faktura_zenbakia, mota, azpimota, kontzeptua, 
-             hornitzailea, hornitzaile_cif, bezero_nif, bezero_izena, bezero_helbidea,
-             oinarri_zergagarria, bez_ehunekoa, bez_zenbatekoa, guztira, 
-             ordainketa_metodoa, egoera, data, oharrak)
-            VALUES 
-            (@eskaera_id, @zenbakia, @mota, @azpimota, @kontzeptua, 
-             @hornitzailea, @hornitzaile_cif, @bezero_nif, @bezero_izena, @bezero_helbidea,
-             @oinarria, @bezEhunekoa, @bezZenbatekoa, @guztira, 
-             @ordainketa_metodoa, @egoera, @data, @oharrak);
-            SELECT LAST_INSERT_ID();";
-
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@eskaera_id", (object?)dto.EskaeraId ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@zenbakia", zenbakia);
-        cmd.Parameters.AddWithValue("@mota", dto.Mota);
-        cmd.Parameters.AddWithValue("@azpimota", dto.Azpimota);
-        cmd.Parameters.AddWithValue("@kontzeptua", dto.Kontzeptua.Trim());
-        cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@hornitzaile_cif", (object?)dto.HornitzaileCif ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@bezero_nif", (object?)dto.BezeroNif ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@bezero_izena", (object?)dto.BezeroIzena ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@bezero_helbidea", (object?)dto.BezeroHelbidea ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@oinarria", oinarria);
-        cmd.Parameters.AddWithValue("@bezEhunekoa", bezEhunekoa);
-        cmd.Parameters.AddWithValue("@bezZenbatekoa", bezZenbatekoa);
-        cmd.Parameters.AddWithValue("@guztira", guztira);
-        cmd.Parameters.AddWithValue("@ordainketa_metodoa", dto.OrdainketaMetodoa ?? "Txartela");
-        cmd.Parameters.AddWithValue("@egoera", dto.Egoera ?? "Ordaindua");
-        cmd.Parameters.AddWithValue("@data", dto.Data ?? DateTime.Now);
-        cmd.Parameters.AddWithValue("@oharrak", (object?)dto.Oharrak ?? DBNull.Value);
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            int berriaId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-            var emaitza = new FakturaDTO
+            Eskaera? eskaera = dto.EskaeraId.HasValue
+                ? await session.GetAsync<Eskaera>(dto.EskaeraId.Value)
+                : null;
+
+            var faktura = new Faktura
             {
-                Id = berriaId,
-                EskaeraId = dto.EskaeraId,
+                Eskaera = eskaera,
                 FakturaZenbakia = zenbakia,
                 Mota = dto.Mota,
                 Azpimota = dto.Azpimota,
@@ -189,13 +128,18 @@ public class FakturakController : BaseApiKontroladorea
                 Egoera = dto.Egoera ?? "Ordaindua",
                 Data = dto.Data ?? DateTime.Now,
                 Oharrak = dto.Oharrak,
-                Ezabatua = false
+                Ezabatua = false,
+                SortzeData = DateTime.Now
             };
 
-            return CreatedResult(emaitza, 201, "Faktura arrakastaz sortu da.");
+            await session.SaveAsync(faktura);
+            await tx.CommitAsync();
+
+            return CreatedResult(MapFakturaDto(faktura), 201, "Faktura arrakastaz sortu da.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
+            await RollbackSeguruaAsync(tx);
             return ConflictError($"Dagoeneko existitzen da '{zenbakia}' zenbakia duen faktura bat.");
         }
     }
@@ -206,61 +150,75 @@ public class FakturakController : BaseApiKontroladorea
     [HttpPut("{id:int}/egoera")]
     public async Task<IActionResult> EguneratuEgoera(int id, [FromBody] FakturaEgoeraEguneratuDto dto)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = "UPDATE fakturak SET egoera = @egoera WHERE id = @id AND ezabatua = 0;";
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@egoera", dto.Egoera);
-        cmd.Parameters.AddWithValue("@id", id);
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        int errenkadak = await cmd.ExecuteNonQueryAsync();
-        if (errenkadak == 0)
+        var faktura = await session.GetAsync<Faktura>(id, LockMode.Upgrade);
+        if (faktura == null || faktura.Ezabatua)
+        {
+            await RollbackSeguruaAsync(tx);
             return NotFoundError($"Ez da aurkitu {id} ID-a duen faktura aktiborik.");
+        }
+
+        faktura.Egoera = dto.Egoera;
+        await session.UpdateAsync(faktura);
+        await tx.CommitAsync();
 
         return Success(new { id, egoera = dto.Egoera }, 200, "Fakturaren egoera eguneratu da.");
     }
 
     /// <summary>
-    /// Faktura ezabatzen du (Soft delete).
+    /// Faktura ezabatzen du (Soft delete lehenetsia, Hard delete hard=true bidez).
     /// </summary>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Ezabatu(int id, [FromQuery] bool hard = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = hard
-            ? "DELETE FROM fakturak WHERE id = @id;"
-            : "UPDATE fakturak SET ezabatua = 1, ezabatze_data = CURRENT_TIMESTAMP WHERE id = @id;";
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-
-        int errenkadak = await cmd.ExecuteNonQueryAsync();
-        if (errenkadak == 0)
+        var faktura = await session.GetAsync<Faktura>(id, LockMode.Upgrade);
+        if (faktura == null)
+        {
+            await RollbackSeguruaAsync(tx);
             return NotFoundError($"Ez da aurkitu {id} ID-a duen fakturarik.");
+        }
 
+        if (hard)
+        {
+            await session.DeleteAsync(faktura);
+        }
+        else
+        {
+            faktura.Ezabatua = true;
+            faktura.EzabatzeData = DateTime.Now;
+            await session.UpdateAsync(faktura);
+        }
+
+        await tx.CommitAsync();
         return Success(new { id, ezabatua = true }, 200, "Faktura ezabatu da.");
     }
 
-    private static FakturaDTO MapFakturaDto(MySqlDataReader reader) => new()
+    private static FakturaDTO MapFakturaDto(Faktura f) => new()
     {
-        Id = reader.GetInt32("id"),
-        EskaeraId = reader.IsDBNull("eskaera_id") ? null : reader.GetInt32("eskaera_id"),
-        FakturaZenbakia = reader.GetString("faktura_zenbakia"),
-        Mota = reader.GetString("mota"),
-        Azpimota = reader.GetString("azpimota"),
-        Kontzeptua = reader.GetString("kontzeptua"),
-        Hornitzailea = reader.IsDBNull("hornitzailea") ? null : reader.GetString("hornitzailea"),
-        HornitzaileCif = reader.IsDBNull("hornitzaile_cif") ? null : reader.GetString("hornitzaile_cif"),
-        BezeroNif = reader.IsDBNull("bezero_nif") ? null : reader.GetString("bezero_nif"),
-        BezeroIzena = reader.IsDBNull("bezero_izena") ? null : reader.GetString("bezero_izena"),
-        BezeroHelbidea = reader.IsDBNull("bezero_helbidea") ? null : reader.GetString("bezero_helbidea"),
-        OinarriZergagarria = reader.GetDecimal("oinarri_zergagarria"),
-        BezEhunekoa = reader.GetDecimal("bez_ehunekoa"),
-        BezZenbatekoa = reader.GetDecimal("bez_zenbatekoa"),
-        Guztira = reader.GetDecimal("guztira"),
-        OrdainketaMetodoa = reader.GetString("ordainketa_metodoa"),
-        Egoera = reader.GetString("egoera"),
-        Data = reader.GetDateTime("data"),
-        Oharrak = reader.IsDBNull("oharrak") ? null : reader.GetString("oharrak"),
-        Ezabatua = reader.GetBoolean("ezabatua")
+        Id = f.Id,
+        EskaeraId = f.Eskaera?.Id,
+        FakturaZenbakia = f.FakturaZenbakia,
+        Mota = f.Mota,
+        Azpimota = f.Azpimota,
+        Kontzeptua = f.Kontzeptua,
+        Hornitzailea = f.Hornitzailea,
+        HornitzaileCif = f.HornitzaileCif,
+        BezeroNif = f.BezeroNif,
+        BezeroIzena = f.BezeroIzena,
+        BezeroHelbidea = f.BezeroHelbidea,
+        OinarriZergagarria = f.OinarriZergagarria,
+        BezEhunekoa = f.BezEhunekoa,
+        BezZenbatekoa = f.BezZenbatekoa,
+        Guztira = f.Guztira,
+        OrdainketaMetodoa = f.OrdainketaMetodoa,
+        Egoera = f.Egoera,
+        Data = f.Data,
+        Oharrak = f.Oharrak,
+        Ezabatua = f.Ezabatua
     };
 }

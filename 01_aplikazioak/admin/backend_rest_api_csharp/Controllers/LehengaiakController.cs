@@ -1,7 +1,9 @@
 using System.Data;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Jatetxea.Api.Controllers;
 
@@ -9,7 +11,7 @@ namespace Jatetxea.Api.Controllers;
 [Route("api/v1/lehengaiak")]
 public class LehengaiakController : BaseApiKontroladorea
 {
-    public LehengaiakController(IConfiguration config) : base(config) { }
+    public LehengaiakController(ISessionFactory sessionFactory) : base(sessionFactory) { }
 
     /// <summary>
     /// Lehengai guztien zerrenda lortzen du uneko stockarekin.
@@ -17,30 +19,26 @@ public class LehengaiakController : BaseApiKontroladorea
     [HttpGet]
     public async Task<IActionResult> LortuGuztiak([FromQuery] bool barneEzabatuak = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = @"
-            SELECT id, izena, unitatea, uneko_stocka, gutxieneko_stocka, kostu_unitarioa, hornitzailea, ezabatua 
-            FROM lehengaiak";
-        if (!barneEzabatuak) sql += " WHERE ezabatua = 0";
-        sql += " ORDER BY izena ASC;";
+        using var session = IrekiSaioa();
+        var query = session.Query<Lehengaia>();
+        if (!barneEzabatuak)
+            query = query.Where(l => !l.Ezabatua);
 
-        var zerrenda = new List<LehengaiaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var lehengaiak = await query
+            .OrderBy(l => l.Izena)
+            .ToListAsync();
+
+        var zerrenda = lehengaiak.Select(l => new LehengaiaDTO
         {
-            zerrenda.Add(new LehengaiaDTO
-            {
-                Id = reader.GetInt32("id"),
-                Izena = reader.GetString("izena"),
-                Unitatea = reader.GetString("unitatea"),
-                UnekoStocka = reader.GetDecimal("uneko_stocka"),
-                GutxienekoStocka = reader.GetDecimal("gutxieneko_stocka"),
-                KostuUnitarioa = reader.GetDecimal("kostu_unitarioa"),
-                Hornitzailea = reader.IsDBNull("hornitzailea") ? null : reader.GetString("hornitzailea"),
-                Ezabatua = reader.GetBoolean("ezabatua")
-            });
-        }
+            Id = l.Id,
+            Izena = l.Izena,
+            Unitatea = l.Unitatea,
+            UnekoStocka = l.UnekoStocka,
+            GutxienekoStocka = l.GutxienekoStocka,
+            KostuUnitarioa = l.KostuUnitarioa,
+            Hornitzailea = l.Hornitzailea,
+            Ezabatua = l.Ezabatua
+        }).ToList();
 
         return SuccessList(zerrenda, 200, "Lehengaiak ondo berreskuratu dira.");
     }
@@ -51,27 +49,21 @@ public class LehengaiakController : BaseApiKontroladorea
     [HttpGet("{id:int}")]
     public async Task<IActionResult> LortuIdBidez(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT id, izena, unitatea, uneko_stocka, gutxieneko_stocka, kostu_unitarioa, hornitzailea, ezabatua 
-            FROM lehengaiak WHERE id = @id LIMIT 1;";
-
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
+        using var session = IrekiSaioa();
+        var l = await session.GetAsync<Lehengaia>(id);
+        if (l == null)
             return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
 
         var dto = new LehengaiaDTO
         {
-            Id = reader.GetInt32("id"),
-            Izena = reader.GetString("izena"),
-            Unitatea = reader.GetString("unitatea"),
-            UnekoStocka = reader.GetDecimal("uneko_stocka"),
-            GutxienekoStocka = reader.GetDecimal("gutxieneko_stocka"),
-            KostuUnitarioa = reader.GetDecimal("kostu_unitarioa"),
-            Hornitzailea = reader.IsDBNull("hornitzailea") ? null : reader.GetString("hornitzailea"),
-            Ezabatua = reader.GetBoolean("ezabatua")
+            Id = l.Id,
+            Izena = l.Izena,
+            Unitatea = l.Unitatea,
+            UnekoStocka = l.UnekoStocka,
+            GutxienekoStocka = l.GutxienekoStocka,
+            KostuUnitarioa = l.KostuUnitarioa,
+            Hornitzailea = l.Hornitzailea,
+            Ezabatua = l.Ezabatua
         };
 
         return Success(dto, 200, "Lehengaia ondo aurkitu da.");
@@ -83,34 +75,27 @@ public class LehengaiakController : BaseApiKontroladorea
     [HttpGet("alertak")]
     public async Task<IActionResult> LortuAlertak()
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT lehengaia_id, izena, unitatea, uneko_stocka, gutxieneko_stocka, proposatutako_erosketa, hornitzailea 
-            FROM v_erosi_beharreko_lehengaiak 
-            ORDER BY uneko_stocka ASC;";
+        using var session = IrekiSaioa();
+        var alertak = await session.Query<ErosiBeharrekoLehengaia>()
+            .OrderBy(a => a.UnekoStocka)
+            .ToListAsync();
 
-        var alertak = new List<LehengaiaAlertaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var emaitza = alertak.Select(a => new LehengaiaAlertaDTO
         {
-            alertak.Add(new LehengaiaAlertaDTO
-            {
-                LehengaiaId = reader.GetInt32("lehengaia_id"),
-                Izena = reader.GetString("izena"),
-                Unitatea = reader.GetString("unitatea"),
-                UnekoStocka = reader.GetDecimal("uneko_stocka"),
-                GutxienekoStocka = reader.GetDecimal("gutxieneko_stocka"),
-                ProposatutakoErosketa = reader.GetDecimal("proposatutako_erosketa"),
-                Hornitzailea = reader.IsDBNull("hornitzailea") ? null : reader.GetString("hornitzailea")
-            });
-        }
+            LehengaiaId = a.LehengaiaId,
+            Izena = a.Izena,
+            Unitatea = a.Unitatea,
+            UnekoStocka = a.UnekoStocka,
+            GutxienekoStocka = a.GutxienekoStocka,
+            ProposatutakoErosketa = a.ProposatutakoErosketa,
+            Hornitzailea = a.Hornitzailea
+        }).ToList();
 
-        return SuccessList(alertak, 200, "Stock alertak (erosketa-zerrenda) berreskuratu dira.");
+        return SuccessList(emaitza, 200, "Stock alertak (erosketa-zerrenda) berreskuratu dira.");
     }
 
     /// <summary>
-    /// Lehengai berria sortzen du.
+    /// Lehengai berria sortzen du transakzio atomikoan (hasierako stocka > 0 bada, auditoria ere sortuz).
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Sortu([FromBody] LehengaiaSortuDto dto)
@@ -120,59 +105,63 @@ public class LehengaiakController : BaseApiKontroladorea
         if (!UnitateBaliozkoa(dto.Unitatea))
             return BadRequestError("Unitatea ez da baliozkoa. Erabili kg, g, l, ml edo unitatea.");
 
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
-        const string sql = @"
-            INSERT INTO lehengaiak (izena, unitatea, uneko_stocka, gutxieneko_stocka, kostu_unitarioa, hornitzailea, ezabatua, sortze_data)
-            VALUES (@izena, @unitatea, @uneko, @gutxi, @kostu, @hornitzailea, 0, CURRENT_TIMESTAMP);
-            SELECT LAST_INSERT_ID();";
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            await using var cmd = new MySqlCommand(sql, kon, tx);
-            cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
-            cmd.Parameters.AddWithValue("@unitatea", dto.Unitatea);
-            cmd.Parameters.AddWithValue("@uneko", dto.UnekoStocka);
-            cmd.Parameters.AddWithValue("@gutxi", dto.GutxienekoStocka);
-            cmd.Parameters.AddWithValue("@kostu", dto.KostuUnitarioa);
-            cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea?.Trim() ?? DBNull.Value);
-
-            var sortutakoId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-            if (dto.UnekoStocka > 0)
+            var lehengaia = new Lehengaia
             {
-                const string stockSql = @"
-                    INSERT INTO stock_mugimenduak (lehengaia_id, mota, kantitatea, oharrak, data)
-                    VALUES (@id, 'Egokitzapena_Inbentarioa', @kantitatea, 'Hasierako inbentarioa', CURRENT_TIMESTAMP);";
-                await using var stockCmd = new MySqlCommand(stockSql, kon, tx);
-                stockCmd.Parameters.AddWithValue("@id", sortutakoId);
-                stockCmd.Parameters.AddWithValue("@kantitatea", dto.UnekoStocka);
-                await stockCmd.ExecuteNonQueryAsync();
-            }
-            await tx.CommitAsync();
-
-            var emaitza = new LehengaiaDTO
-            {
-                Id = sortutakoId,
                 Izena = dto.Izena.Trim(),
                 Unitatea = dto.Unitatea,
                 UnekoStocka = dto.UnekoStocka,
                 GutxienekoStocka = dto.GutxienekoStocka,
                 KostuUnitarioa = dto.KostuUnitarioa,
-                Hornitzailea = dto.Hornitzailea,
+                Hornitzailea = dto.Hornitzailea?.Trim(),
+                Ezabatua = false,
+                SortzeData = DateTime.Now
+            };
+
+            await session.SaveAsync(lehengaia);
+
+            if (dto.UnekoStocka > 0)
+            {
+                var mugimendua = new StockMugimendua
+                {
+                    Lehengaia = lehengaia,
+                    Mota = "Egokitzapena_Inbentarioa",
+                    Kantitatea = dto.UnekoStocka,
+                    Oharrak = "Hasierako inbentarioa",
+                    Data = DateTime.Now
+                };
+                await session.SaveAsync(mugimendua);
+            }
+
+            await tx.CommitAsync();
+
+            var emaitza = new LehengaiaDTO
+            {
+                Id = lehengaia.Id,
+                Izena = lehengaia.Izena,
+                Unitatea = lehengaia.Unitatea,
+                UnekoStocka = lehengaia.UnekoStocka,
+                GutxienekoStocka = lehengaia.GutxienekoStocka,
+                KostuUnitarioa = lehengaia.KostuUnitarioa,
+                Hornitzailea = lehengaia.Hornitzailea,
                 Ezabatua = false
             };
 
             return CreatedResult(emaitza, 201, "Lehengaia arrakastaz sortu da.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ConflictError($"Dagoeneko existitzen da '{dto.Izena}' izena duen lehengaia.");
         }
     }
 
     /// <summary>
-    /// Lehengaiaren datu nagusiak eguneratzen ditu, uneko stocka eta historia aldatu gabe.
+    /// Lehengaiaren datu nagusiak eguneratzen ditu blokeo pesimistan (LockMode.Upgrade), stocka aldatu gabe.
     /// </summary>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Eguneratu(int id, [FromBody] LehengaiaEguneratuDto dto)
@@ -182,75 +171,62 @@ public class LehengaiakController : BaseApiKontroladorea
         if (!UnitateBaliozkoa(dto.Unitatea))
             return BadRequestError("Unitatea ez da baliozkoa. Erabili kg, g, l, ml edo unitatea.");
 
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
-        const string lockSql = @"
-            SELECT unitatea, ezabatua
-            FROM lehengaiak
-            WHERE id = @id
-            FOR UPDATE;";
-        string unitateZaharra;
-        await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
-        {
-            lockCmd.Parameters.AddWithValue("@id", id);
-            await using var reader = await lockCmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync())
-                return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
-            if (reader.GetBoolean("ezabatua"))
-                return ConflictError("Desgaitutako lehengai bat ezin da editatu.");
-            unitateZaharra = reader.GetString("unitatea");
-        }
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        if (!string.Equals(unitateZaharra, dto.Unitatea, StringComparison.Ordinal))
-        {
-            const string historySql = @"
-                SELECT EXISTS(SELECT 1 FROM stock_mugimenduak WHERE lehengaia_id = @id)
-                    OR EXISTS(SELECT 1 FROM plater_osagaiak WHERE lehengaia_id = @id);";
-            await using var historyCmd = new MySqlCommand(historySql, kon, tx);
-            historyCmd.Parameters.AddWithValue("@id", id);
-            if (Convert.ToInt32(await historyCmd.ExecuteScalarAsync()) != 0)
-                return ConflictError("Unitatea ezin da aldatu stock-historia edo errezeta bati lotuta dagoenean.");
-        }
-
-        const string updateSql = @"
-            UPDATE lehengaiak
-            SET izena = @izena,
-                unitatea = @unitatea,
-                gutxieneko_stocka = @gutxi,
-                kostu_unitarioa = @kostu,
-                hornitzailea = @hornitzailea
-            WHERE id = @id AND ezabatua = 0;";
         try
         {
-            await using var cmd = new MySqlCommand(updateSql, kon, tx);
-            cmd.Parameters.AddWithValue("@izena", dto.Izena.Trim());
-            cmd.Parameters.AddWithValue("@unitatea", dto.Unitatea);
-            cmd.Parameters.AddWithValue("@gutxi", dto.GutxienekoStocka);
-            cmd.Parameters.AddWithValue("@kostu", dto.KostuUnitarioa);
-            cmd.Parameters.AddWithValue("@hornitzailea", (object?)dto.Hornitzailea?.Trim() ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@id", id);
-            await cmd.ExecuteNonQueryAsync();
+            var lehengaia = await session.GetAsync<Lehengaia>(id, LockMode.Upgrade);
+            if (lehengaia == null)
+            {
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
+            }
+            if (lehengaia.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Desgaitutako lehengai bat ezin da editatu.");
+            }
+
+            if (!string.Equals(lehengaia.Unitatea, dto.Unitatea, StringComparison.Ordinal))
+            {
+                bool baduHistoria = await session.Query<StockMugimendua>().AnyAsync(sm => sm.Lehengaia.Id == id)
+                                 || await session.Query<PlaterOsagaia>().AnyAsync(po => po.LehengaiaId == id);
+                if (baduHistoria)
+                {
+                    await RollbackSeguruaAsync(tx);
+                    return ConflictError("Unitatea ezin da aldatu stock-historia edo errezeta bati lotuta dagoenean.");
+                }
+            }
+
+            lehengaia.Izena = dto.Izena.Trim();
+            lehengaia.Unitatea = dto.Unitatea;
+            lehengaia.GutxienekoStocka = dto.GutxienekoStocka;
+            lehengaia.KostuUnitarioa = dto.KostuUnitarioa;
+            lehengaia.Hornitzailea = dto.Hornitzailea?.Trim();
+
+            await session.UpdateAsync(lehengaia);
             await tx.CommitAsync();
 
             return Success(new
             {
                 id,
-                izena = dto.Izena.Trim(),
-                unitatea = dto.Unitatea,
-                gutxienekoStocka = dto.GutxienekoStocka,
-                kostuUnitarioa = dto.KostuUnitarioa,
-                hornitzailea = dto.Hornitzailea
+                izena = lehengaia.Izena,
+                unitatea = lehengaia.Unitatea,
+                gutxienekoStocka = lehengaia.GutxienekoStocka,
+                kostuUnitarioa = lehengaia.KostuUnitarioa,
+                hornitzailea = lehengaia.Hornitzailea
             }, 200, "Lehengaiaren datuak eguneratu dira; stocka aldatu gabe mantendu da.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ConflictError($"Dagoeneko existitzen da '{dto.Izena}' izena duen lehengaia.");
         }
     }
 
     /// <summary>
-    /// Hornitzailearen albarana erregistratu eta lehengaiaren stocka gehitu transakzionalean.
+    /// Hornitzailearen albarana erregistratu eta lehengaiaren stocka gehitu transakzio pesimistan (LockMode.Upgrade).
     /// </summary>
     [HttpPost("sarrera")]
     public async Task<IActionResult> ErregistratuSarrera([FromBody] AlbaranaSarreraDto dto)
@@ -258,76 +234,59 @@ public class LehengaiakController : BaseApiKontroladorea
         if (dto.Kantitatea <= 0)
             return BadRequestError("Sarrerako kantitateak 0 baino handiagoa izan behar du.");
 
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            // 1. Lehengaia blokeatu eta egiaztatu
-            const string sqlCheck = "SELECT izena, uneko_stocka, unitatea, ezabatua FROM lehengaiak WHERE id = @id FOR UPDATE;";
-            string izena;
-            decimal unekoStocka;
-            string unitatea;
-
-            await using (var cmdCheck = new MySqlCommand(sqlCheck, kon, tx))
+            // 1. Lehengaia blokeatu (SELECT ... FOR UPDATE) eta egiaztatu
+            var lehengaia = await session.GetAsync<Lehengaia>(dto.LehengaiaId, LockMode.Upgrade);
+            if (lehengaia == null)
             {
-                cmdCheck.Parameters.AddWithValue("@id", dto.LehengaiaId);
-                await using var reader = await cmdCheck.ExecuteReaderAsync();
-                if (!await reader.ReadAsync())
-                {
-                    await tx.RollbackAsync();
-                    return NotFoundError($"Ez da aurkitu {dto.LehengaiaId} ID-a duen lehengaia.");
-                }
-
-                if (reader.GetBoolean("ezabatua"))
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError("Lehengaia desgaituta dago. Berreskuratu lehenago.");
-                }
-
-                izena = reader.GetString("izena");
-                unekoStocka = reader.GetDecimal("uneko_stocka");
-                unitatea = reader.GetString("unitatea");
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {dto.LehengaiaId} ID-a duen lehengaia.");
             }
+
+            if (lehengaia.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Lehengaia desgaituta dago. Berreskuratu lehenago.");
+            }
+
+            decimal aurrekoStocka = lehengaia.UnekoStocka;
+            decimal stockBerria = aurrekoStocka + dto.Kantitatea;
 
             // 2. Stocka eguneratu
-            decimal stockBerria = unekoStocka + dto.Kantitatea;
-            const string sqlUpdate = "UPDATE lehengaiak SET uneko_stocka = @berria WHERE id = @id;";
-            await using (var cmdUpd = new MySqlCommand(sqlUpdate, kon, tx))
-            {
-                cmdUpd.Parameters.AddWithValue("@berria", stockBerria);
-                cmdUpd.Parameters.AddWithValue("@id", dto.LehengaiaId);
-                await cmdUpd.ExecuteNonQueryAsync();
-            }
+            lehengaia.UnekoStocka = stockBerria;
+            await session.UpdateAsync(lehengaia);
 
             // 3. Auditoria erregistratu stock_mugimenduak taulan
-            const string sqlMugimendua = @"
-                INSERT INTO stock_mugimenduak (lehengaia_id, mota, kantitatea, oharrak, data)
-                VALUES (@id, 'Sarrera_Albarana', @kantitatea, @oharrak, CURRENT_TIMESTAMP);";
-            await using (var cmdMug = new MySqlCommand(sqlMugimendua, kon, tx))
+            string oharra = dto.Oharrak ?? (dto.Hornitzailea != null ? $"Hornitzailea: {dto.Hornitzailea}" : "Albaran sarrera");
+            var mugimendua = new StockMugimendua
             {
-                cmdMug.Parameters.AddWithValue("@id", dto.LehengaiaId);
-                cmdMug.Parameters.AddWithValue("@kantitatea", dto.Kantitatea);
-                string oharra = dto.Oharrak ?? (dto.Hornitzailea != null ? $"Hornitzailea: {dto.Hornitzailea}" : "Albaran sarrera");
-                cmdMug.Parameters.AddWithValue("@oharrak", oharra);
-                await cmdMug.ExecuteNonQueryAsync();
-            }
+                Lehengaia = lehengaia,
+                Mota = "Sarrera_Albarana",
+                Kantitatea = dto.Kantitatea,
+                Oharrak = oharra,
+                Data = DateTime.Now
+            };
+            await session.SaveAsync(mugimendua);
 
             await tx.CommitAsync();
 
             return Success(new
             {
-                lehengaiaId = dto.LehengaiaId,
-                izena,
-                aurrekoStocka = unekoStocka,
+                lehengaiaId = lehengaia.Id,
+                izena = lehengaia.Izena,
+                aurrekoStocka,
                 gehitutakoKantitatea = dto.Kantitatea,
                 unekoStockBerria = stockBerria,
-                unitatea
+                unitatea = lehengaia.Unitatea
             }, 200, "Albarana ondo erregistratu da eta stocka eguneratu da.");
         }
         catch (Exception ex)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ServerError("Errorea albarana erregistratzean: " + ex.Message);
         }
     }
@@ -338,62 +297,53 @@ public class LehengaiakController : BaseApiKontroladorea
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Ezabatu(int id, [FromQuery] bool hard = false)
     {
-        await using var kon = await SortuKonexioaAsync();
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         if (hard)
         {
-            const string sqlHard = "DELETE FROM lehengaiak WHERE id = @id;";
             try
             {
-                await using var cmd = new MySqlCommand(sqlHard, kon);
-                cmd.Parameters.AddWithValue("@id", id);
-                int errenkadak = await cmd.ExecuteNonQueryAsync();
-                if (errenkadak == 0)
+                var lehengaia = await session.GetAsync<Lehengaia>(id, LockMode.Upgrade);
+                if (lehengaia == null)
+                {
+                    await RollbackSeguruaAsync(tx);
                     return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
+                }
+
+                await session.DeleteAsync(lehengaia);
+                await tx.CommitAsync();
 
                 return Success(new { id, ezabatua = true, mota = "hard" }, 200, "Lehengaia behin betiko ezabatu da.");
             }
-            catch (MySqlException ex) when (ex.Number == 1451)
+            catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1451)
             {
+                await RollbackSeguruaAsync(tx);
                 return ConflictError("Lehengaia ezin da behin betiko ezabatu, plateren errezetetan edo stock mugimenduetan erabilia dagoelako.");
             }
         }
         else
         {
-            await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
-            const string lockSql = "SELECT ezabatua FROM lehengaiak WHERE id = @id FOR UPDATE;";
-            await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
+            var lehengaia = await session.GetAsync<Lehengaia>(id, LockMode.Upgrade);
+            if (lehengaia == null || lehengaia.Ezabatua)
             {
-                lockCmd.Parameters.AddWithValue("@id", id);
-                var deletedValue = await lockCmd.ExecuteScalarAsync();
-                if (deletedValue == null)
-                    return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
-                if (Convert.ToBoolean(deletedValue))
-                    return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
-            }
-
-            const string recipeUseSql = @"
-                SELECT EXISTS(
-                    SELECT 1
-                    FROM plater_osagaiak po
-                    JOIN platerak p ON p.id = po.platera_id
-                    WHERE po.lehengaia_id = @id AND p.ezabatua = 0
-                );";
-            await using (var useCmd = new MySqlCommand(recipeUseSql, kon, tx))
-            {
-                useCmd.Parameters.AddWithValue("@id", id);
-                if (Convert.ToInt32(await useCmd.ExecuteScalarAsync()) != 0)
-                    return ConflictError("Lehengaia ezin da desgaitu plater aktibo baten errezetan erabiltzen den bitartean.");
-            }
-
-            const string sqlSoft = "UPDATE lehengaiak SET ezabatua = 1, ezabatze_data = CURRENT_TIMESTAMP WHERE id = @id AND ezabatua = 0;";
-            await using var cmd = new MySqlCommand(sqlSoft, kon, tx);
-            cmd.Parameters.AddWithValue("@id", id);
-            int errenkadak = await cmd.ExecuteNonQueryAsync();
-            if (errenkadak == 0)
+                await RollbackSeguruaAsync(tx);
                 return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengai aktiborik.");
+            }
 
+            bool errezetanErabilia = await session.Query<PlaterOsagaia>()
+                .AnyAsync(po => po.LehengaiaId == id && !po.Platera!.Ezabatua);
+            if (errezetanErabilia)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Lehengaia ezin da desgaitu plater aktibo baten errezetan erabiltzen den bitartean.");
+            }
+
+            lehengaia.Ezabatua = true;
+            lehengaia.EzabatzeData = DateTime.Now;
+            await session.UpdateAsync(lehengaia);
             await tx.CommitAsync();
+
             return Success(new { id, ezabatua = true, mota = "soft" }, 200, "Lehengaia desgaitu da (soft delete).");
         }
     }
@@ -404,14 +354,20 @@ public class LehengaiakController : BaseApiKontroladorea
     [HttpPut("{id:int}/restore")]
     public async Task<IActionResult> Berreskuratu(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = "UPDATE lehengaiak SET ezabatua = 0, ezabatze_data = NULL WHERE id = @id AND ezabatua = 1;";
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        int errenkadak = await cmd.ExecuteNonQueryAsync();
-        if (errenkadak == 0)
+        var lehengaia = await session.GetAsync<Lehengaia>(id, LockMode.Upgrade);
+        if (lehengaia == null || !lehengaia.Ezabatua)
+        {
+            await RollbackSeguruaAsync(tx);
             return NotFoundError($"Ez da aurkitu berreskuratzeko {id} ID-a duen lehengairik.");
+        }
+
+        lehengaia.Ezabatua = false;
+        lehengaia.EzabatzeData = null;
+        await session.UpdateAsync(lehengaia);
+        await tx.CommitAsync();
 
         return Success(new { id, berreskuratua = true }, 200, "Lehengaia berreskuratu da.");
     }

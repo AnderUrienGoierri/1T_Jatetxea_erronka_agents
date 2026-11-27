@@ -48,3 +48,51 @@ public class OrdainketaErantzunaDto
     public decimal Azpitotala { get; set; }
     public decimal Bez { get; set; }
 }
+
+/// <summary>
+/// Ordainketa zatituaren zati bakoitza (adib. 20 EUR Eskudirua + 35 EUR Txartela).
+/// </summary>
+public class OrdainketaZatiaDto
+{
+    [Required]
+    public string Mota { get; set; } = "Txartela";
+
+    [Required]
+    [Range(0.01, 99999.99)]
+    public decimal Zenbatekoa { get; set; }
+
+    public decimal? Jasotakoa { get; set; }
+    public string? TxartelZenbakia { get; set; }
+    public string? BizumTelefonoa { get; set; }
+}
+
+/// <summary>
+/// Transakzio konposatua: eskaera bakarra hainbat ordainketa-motatan zatitu eta salmenta-faktura sortu.
+/// </summary>
+public class OrdainketaZatikatuDto
+{
+    [Required]
+    public int EskaeraId { get; set; }
+
+    public int? LangileaId { get; set; }
+
+    public bool SortuFaktura { get; set; } = true;
+    public string? BezeroNif { get; set; }
+    public string? BezeroIzena { get; set; }
+    public string? BezeroHelbidea { get; set; }
+
+    [Required]
+    [MinLength(1, ErrorMessage = "Gutxienez ordainketa-zati bat zehaztu behar da.")]
+    public List<OrdainketaZatiaDto> Zatiak { get; set; } = new();
+}
+
+public class OrdainketaZatikatuErantzunaDto
+{
+    public int EskaeraId { get; set; }
+    public decimal EskaeraGuztira { get; set; }
+    public decimal OrdaindutakoaGuztira { get; set; }
+    public decimal Azpitotala { get; set; }
+    public decimal Bez { get; set; }
+    public List<OrdainketaErantzunaDto> Ordainketak { get; set; } = new();
+    public FakturaDTO? Faktura { get; set; }
+}

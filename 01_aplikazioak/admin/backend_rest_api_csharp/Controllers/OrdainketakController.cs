@@ -3,8 +3,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Jatetxea.Api.Controllers;
 
@@ -12,10 +14,10 @@ namespace Jatetxea.Api.Controllers;
 [Route("api/v1/ordainketak")]
 public class OrdainketakController : BaseApiKontroladorea
 {
-    public OrdainketakController(IConfiguration config) : base(config) { }
+    public OrdainketakController(ISessionFactory sessionFactory) : base(sessionFactory) { }
 
     /// <summary>
-    /// Eskaera baten ordainketa segurua prozesatzen du (Eskudirua, Kreditu Txartela, Bizum, Google/Apple Pay)
+    /// Eskaera baten ordainketa segurua prozesatzen du transakzio pesimistan (LockMode.Upgrade)
     /// eta 80mm-ko inprimagailu termikorako tiket fiskal ofiziala sortzen du.
     /// </summary>
     [HttpPost]
@@ -26,91 +28,54 @@ public class OrdainketakController : BaseApiKontroladorea
 
         string motaNormalizatua = NormalizatuMota(dto.Mota);
 
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            // 1. Egiaztatu eskaera aktiboa eta lortu datuak
-            const string sqlEskaera = @"
-                SELECT e.id, e.mahaia_id, m.zenbakia AS mahai_zenbakia, m.edukiera,
-                       e.langilea_id, l.izena AS langile_izena,
-                       e.egoera, e.guztira, e.ezabatua, e.sortze_data
-                FROM eskaerak e
-                JOIN mahaiak m ON e.mahaia_id = m.id
-                JOIN langileak l ON e.langilea_id = l.id
-                WHERE e.id = @eskaeraId FOR UPDATE;";
-
-            int mahaiaId;
-            int mahaiZenbakia;
-            int edukiera;
-            int langileaId;
-            string langileIzena;
-            string unekoEgoera;
-            decimal eskaeraGuztira;
-            DateTime sortzeData;
-
-            await using (var cmdE = new MySqlCommand(sqlEskaera, kon, tx))
+            // 1. Blokeatu eskaera (SELECT ... FROM eskaerak WHERE id = ? FOR UPDATE) kobrantza bikoitzak saihesteko
+            var eskaera = await session.GetAsync<Eskaera>(dto.EskaeraId, LockMode.Upgrade);
+            if (eskaera == null)
             {
-                cmdE.Parameters.AddWithValue("@eskaeraId", dto.EskaeraId);
-                await using var readerE = await cmdE.ExecuteReaderAsync();
-                if (!await readerE.ReadAsync())
-                {
-                    await tx.RollbackAsync();
-                    return NotFoundError($"Ez da aurkitu #{dto.EskaeraId} ID-a duen eskaerarik.");
-                }
-
-                if (readerE.GetBoolean("ezabatua"))
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError("Eskaera hau ezabatuta dago.");
-                }
-
-                unekoEgoera = readerE.GetString("egoera");
-                if (unekoEgoera == "Kobratua")
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError($"#{dto.EskaeraId} eskaera dagoeneko kobratuta eta itxita dago.");
-                }
-                if (unekoEgoera == "Ezeztatua")
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError($"#{dto.EskaeraId} eskaera ezeztatuta dago, ezin da kobratu.");
-                }
-
-                mahaiaId = readerE.GetInt32("mahaia_id");
-                mahaiZenbakia = readerE.GetInt32("mahai_zenbakia");
-                edukiera = readerE.GetInt32("edukiera");
-                langileaId = dto.LangileaId ?? readerE.GetInt32("langilea_id");
-                langileIzena = readerE.GetString("langile_izena");
-                eskaeraGuztira = readerE.GetDecimal("guztira");
-                sortzeData = readerE.GetDateTime("sortze_data");
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu #{dto.EskaeraId} ID-a duen eskaerarik.");
+            }
+            if (eskaera.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Eskaera hau ezabatuta dago.");
+            }
+            if (eskaera.Egoera == "Kobratua")
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError($"#{dto.EskaeraId} eskaera dagoeneko kobratuta eta itxita dago.");
+            }
+            if (eskaera.Egoera == "Ezeztatua")
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError($"#{dto.EskaeraId} eskaera ezeztatuta dago, ezin da kobratu.");
             }
 
-            // 2. Lortu eskaerako plater guztiak tiketa eraikitzeko
-            const string sqlLerroak = @"
-                SELECT el.id, el.platera_id, p.izena AS plater_izena, el.kantitatea, el.unitate_prezioa, el.egoera
-                FROM eskaera_lerroak el
-                JOIN platerak p ON el.platera_id = p.id
-                WHERE el.eskaera_id = @eskaeraId
-                ORDER BY el.id ASC;";
+            var mahaia = await session.GetAsync<Mahaia>(eskaera.Mahaia.Id, LockMode.Upgrade);
+            var langilea = await session.GetAsync<Langilea>(eskaera.Langilea.Id);
+            int mahaiZenbakia = mahaia?.Zenbakia ?? 0;
+            int edukiera = mahaia?.Edukiera ?? 4;
+            int langileaId = dto.LangileaId ?? eskaera.Langilea.Id;
+            string langileIzena = langilea?.Izena ?? "Zerbitzaria";
 
-            var lerroak = new List<(string Izena, int Kantitatea, decimal UnitatePrezioa, decimal Guztira)>();
-            await using (var cmdL = new MySqlCommand(sqlLerroak, kon, tx))
-            {
-                cmdL.Parameters.AddWithValue("@eskaeraId", dto.EskaeraId);
-                await using var readerL = await cmdL.ExecuteReaderAsync();
-                while (await readerL.ReadAsync())
-                {
-                    string izena = readerL.GetString("plater_izena");
-                    int kop = readerL.GetInt32("kantitatea");
-                    decimal prez = readerL.GetDecimal("unitate_prezioa");
-                    lerroak.Add((izena, kop, prez, kop * prez));
-                }
-            }
+            // 2. Lortu eskaerako plater guztiak tiketa eraikitzeko (Fetch bidez)
+            var lerroEntitateak = await session.Query<EskaeraLerroa>()
+                .Fetch(el => el.Platera)
+                .Where(el => el.Eskaera.Id == dto.EskaeraId)
+                .OrderBy(el => el.Id)
+                .ToListAsync();
 
-            // 3. Ordainketa motaren balidazio zorrotzak (Zibersegurtasuna eta kalkuluak)
-            decimal ordainduBeharrekoa = eskaeraGuztira > 0 ? eskaeraGuztira : dto.Zenbatekoa;
+            var lerroak = lerroEntitateak
+                .Select(el => (el.Platera.Izena, el.Kantitatea, el.UnitatePrezioa, el.Kantitatea * el.UnitatePrezioa))
+                .ToList();
+
+            // 3. Ordainketa motaren balidazio zorrotzak
+            decimal ordainduBeharrekoa = eskaera.Guztira > 0 ? eskaera.Guztira : dto.Zenbatekoa;
             decimal? jasotakoa = null;
             decimal? itzulitakoa = null;
             string? txartelMaskaratua = null;
@@ -123,7 +88,7 @@ public class OrdainketakController : BaseApiKontroladorea
                 jasotakoa = dto.Jasotakoa ?? ordainduBeharrekoa;
                 if (jasotakoa.Value < ordainduBeharrekoa)
                 {
-                    await tx.RollbackAsync();
+                    await RollbackSeguruaAsync(tx);
                     return BadRequestError($"Jasotako dirua ({jasotakoa.Value:F2} €) ez da nahikoa kontua ordaintzeko ({ordainduBeharrekoa:F2} €).");
                 }
                 itzulitakoa = Math.Round(jasotakoa.Value - ordainduBeharrekoa, 2);
@@ -147,7 +112,7 @@ public class OrdainketakController : BaseApiKontroladorea
                 string tlf = (dto.BizumTelefonoa ?? "").Replace(" ", "").Trim();
                 if (!string.IsNullOrWhiteSpace(tlf) && !Regex.IsMatch(tlf, @"^[67]\d{8}$"))
                 {
-                    await tx.RollbackAsync();
+                    await RollbackSeguruaAsync(tx);
                     return BadRequestError("Bizum telefono zenbakiak 9 digitu izan behar ditu eta 6 edo 7z hasi.");
                 }
                 operazioKodea = $"BIZUM-{Random.Shared.Next(100000, 999999)}";
@@ -163,11 +128,12 @@ public class OrdainketakController : BaseApiKontroladorea
             // 5. Zergak kalkulatu (%10eko ostalaritza BEZ-a barne)
             decimal subtotal = Math.Round(ordainduBeharrekoa / 1.10m, 2);
             decimal bez = ordainduBeharrekoa - subtotal;
+            DateTime orain = DateTime.Now;
 
-            // 6. 80mm-ko Tiket Testu Profesionala Sortu (Inprimagailu Termikorako ESC/POS formatua)
+            // 6. 80mm-ko Tiket Testu Profesionala Sortu
             string tiketTestua = EraikiTiketTestua(
                 tiketZenbakia: tiketZenbakia,
-                data: DateTime.Now,
+                data: orain,
                 mahaiZenbakia: mahaiZenbakia,
                 edukiera: edukiera,
                 eskaeraId: dto.EskaeraId,
@@ -186,67 +152,52 @@ public class OrdainketakController : BaseApiKontroladorea
                 tokenZifratua: tokenZifratua
             );
 
-            // 7. Txertatu ordainketa datu-basean
-            const string sqlInsOrdainketa = @"
-                INSERT INTO ordainketak 
-                    (eskaera_id, tiket_zenbakia, mota, zenbatekoa, jasotakoa, itzulitakoa, 
-                     txartel_maskaratua, txartel_marka, operazio_kodea, token_zifratua, egoera, langilea_id, tiket_testua, data)
-                VALUES 
-                    (@eskaeraId, @tiketZenbakia, @mota, @zenbatekoa, @jasotakoa, @itzulitakoa,
-                     @txartelMaskaratua, @txartelMarka, @operazioKodea, @tokenZifratua, 'Arrakastatsua', @langileaId, @tiketTestua, CURRENT_TIMESTAMP);
-                SELECT LAST_INSERT_ID();";
-
-            int ordainketaId;
-            await using (var cmdInsO = new MySqlCommand(sqlInsOrdainketa, kon, tx))
+            // 7. Gorde ordainketa NHibernate bidez
+            var ordainketa = new Ordainketa
             {
-                cmdInsO.Parameters.AddWithValue("@eskaeraId", dto.EskaeraId);
-                cmdInsO.Parameters.AddWithValue("@tiketZenbakia", tiketZenbakia);
-                cmdInsO.Parameters.AddWithValue("@mota", motaNormalizatua);
-                cmdInsO.Parameters.AddWithValue("@zenbatekoa", ordainduBeharrekoa);
-                cmdInsO.Parameters.AddWithValue("@jasotakoa", (object?)jasotakoa ?? DBNull.Value);
-                cmdInsO.Parameters.AddWithValue("@itzulitakoa", (object?)itzulitakoa ?? DBNull.Value);
-                cmdInsO.Parameters.AddWithValue("@txartelMaskaratua", (object?)txartelMaskaratua ?? DBNull.Value);
-                cmdInsO.Parameters.AddWithValue("@txartelMarka", (object?)txartelMarka ?? DBNull.Value);
-                cmdInsO.Parameters.AddWithValue("@operazioKodea", operazioKodea);
-                cmdInsO.Parameters.AddWithValue("@tokenZifratua", tokenZifratua);
-                cmdInsO.Parameters.AddWithValue("@langileaId", (object?)langileaId ?? DBNull.Value);
-                cmdInsO.Parameters.AddWithValue("@tiketTestua", tiketTestua);
-
-                ordainketaId = Convert.ToInt32(await cmdInsO.ExecuteScalarAsync());
-            }
+                Eskaera = eskaera,
+                TiketZenbakia = tiketZenbakia,
+                Mota = motaNormalizatua,
+                Zenbatekoa = ordainduBeharrekoa,
+                Jasotakoa = jasotakoa,
+                Itzulitakoa = itzulitakoa,
+                TxartelMaskaratua = txartelMaskaratua,
+                TxartelMarka = txartelMarka,
+                OperazioKodea = operazioKodea,
+                TokenZifratua = tokenZifratua,
+                Egoera = "Arrakastatsua",
+                LangileaId = langileaId,
+                TiketTestua = tiketTestua,
+                Data = orain
+            };
+            await session.SaveAsync(ordainketa);
 
             // 8. Eskaera 'Kobratua' moduan markatu
-            const string sqlUpdEskaera = "UPDATE eskaerak SET egoera = 'Kobratua' WHERE id = @eskaeraId;";
-            await using (var cmdUpdE = new MySqlCommand(sqlUpdEskaera, kon, tx))
-            {
-                cmdUpdE.Parameters.AddWithValue("@eskaeraId", dto.EskaeraId);
-                await cmdUpdE.ExecuteNonQueryAsync();
-            }
+            eskaera.Egoera = "Kobratua";
+            await session.UpdateAsync(eskaera);
 
             // 9. Mahai berean beste eskaera aktiborik ez badago, mahaia 'Garbitzen' jarri
-            const string sqlUpdMahaia = @"
-                UPDATE mahaiak m
-                SET m.egoera = 'Garbitzen'
-                WHERE m.id = @mahaiaId
-                  AND NOT EXISTS (
-                      SELECT 1 FROM eskaerak e2
-                      WHERE e2.mahaia_id = m.id
-                        AND e2.id <> @eskaeraId
-                        AND e2.ezabatua = 0
-                        AND e2.egoera NOT IN ('Kobratua', 'Ezeztatua')
-                  );";
-            await using (var cmdUpdM = new MySqlCommand(sqlUpdMahaia, kon, tx))
+            if (mahaia != null)
             {
-                cmdUpdM.Parameters.AddWithValue("@mahaiaId", mahaiaId);
-                cmdUpdM.Parameters.AddWithValue("@eskaeraId", dto.EskaeraId);
-                await cmdUpdM.ExecuteNonQueryAsync();
+                var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+                bool badiraBesteak = await session.Query<Eskaera>()
+                    .AnyAsync(e2 => e2.Mahaia.Id == mahaia.Id
+                                 && e2.Id != dto.EskaeraId
+                                 && !e2.Ezabatua
+                                 && !itxitakoak.Contains(e2.Egoera));
+
+                if (!badiraBesteak)
+                {
+                    mahaia.Egoera = "Garbitzen";
+                    await session.UpdateAsync(mahaia);
+                }
             }
 
             await tx.CommitAsync();
 
             var erantzuna = new OrdainketaErantzunaDto
             {
-                Id = ordainketaId,
+                Id = ordainketa.Id,
                 EskaeraId = dto.EskaeraId,
                 TiketZenbakia = tiketZenbakia,
                 Mota = motaNormalizatua,
@@ -258,7 +209,7 @@ public class OrdainketakController : BaseApiKontroladorea
                 OperazioKodea = operazioKodea,
                 TokenZifratua = tokenZifratua,
                 Egoera = "Arrakastatsua",
-                Data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                Data = orain.ToString("yyyy-MM-dd HH:mm:ss"),
                 TiketTestua = tiketTestua,
                 Azpitotala = subtotal,
                 Bez = bez
@@ -266,10 +217,282 @@ public class OrdainketakController : BaseApiKontroladorea
 
             return CreatedResult(erantzuna, 201, $"#{dto.EskaeraId} eskaeraren ordainketa arrakastaz burutu da ({motaNormalizatua}) eta tiketa sortu da.");
         }
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
+        {
+            await RollbackSeguruaAsync(tx);
+            return ConflictError($"#{dto.EskaeraId} eskaeraren tiketa dagoeneko sortuta dago (kobrantza bikoitza eragotzita).");
+        }
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1213)
+        {
+            await RollbackSeguruaAsync(tx);
+            return ConflictError("Deadlock gertatu da ordainketa prozesatzean. Mesedez, saiatu berriro.");
+        }
         catch (Exception ex)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ServerError("Errorea ordainketa prozesatzean: " + ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// TRANSAKZIO KONPOSATUA: Eskaera baten ordainketa hainbat ordainketa-motatan zatitzen du
+    /// (adib. Eskudirua + Txartela + Bizum) eta nahi izanez gero salmenta-faktura ofiziala automatikoki
+    /// sortzen du transakzio pesimista bakarrean (ordainketak + fakturak + eskaerak + mahaiak).
+    /// </summary>
+    [HttpPost("zatikatu")]
+    public async Task<IActionResult> ProzesatuOrdainketaZatitua([FromBody] OrdainketaZatikatuDto dto)
+    {
+        if (!ModelState.IsValid || dto.Zatiak == null || dto.Zatiak.Count == 0)
+            return BadRequestError("EskaeraId eta gutxienez ordainketa-zati bat beharrezkoak dira.");
+
+        if (dto.Zatiak.Any(z => z.Zenbatekoa <= 0))
+            return BadRequestError("Ordainketa-zati guztien zenbatekoak 0 baino handiagoa izan behar du.");
+
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
+
+        try
+        {
+            // 1. Blokeatu eskaera eta mahaia
+            var eskaera = await session.GetAsync<Eskaera>(dto.EskaeraId, LockMode.Upgrade);
+            if (eskaera == null)
+            {
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu #{dto.EskaeraId} ID-a duen eskaerarik.");
+            }
+            if (eskaera.Ezabatua || eskaera.Egoera is "Kobratua" or "Ezeztatua")
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError($"#{dto.EskaeraId} eskaera ezin da kobratu (egoera: {eskaera.Egoera}).");
+            }
+
+            decimal ordaindutakoaGuztira = Math.Round(dto.Zatiak.Sum(z => z.Zenbatekoa), 2);
+            if (eskaera.Guztira > 0 && ordaindutakoaGuztira < eskaera.Guztira)
+            {
+                await RollbackSeguruaAsync(tx);
+                return BadRequestError(
+                    $"Zatien batura ({ordaindutakoaGuztira:F2} €) eskaeraren totala ({eskaera.Guztira:F2} €) baino txikiagoa da.");
+            }
+
+            var mahaia = await session.GetAsync<Mahaia>(eskaera.Mahaia.Id, LockMode.Upgrade);
+            var langilea = await session.GetAsync<Langilea>(eskaera.Langilea.Id);
+            int mahaiZenbakia = mahaia?.Zenbakia ?? 0;
+            int edukiera = mahaia?.Edukiera ?? 4;
+            int langileaId = dto.LangileaId ?? eskaera.Langilea.Id;
+            string langileIzena = langilea?.Izena ?? "Zerbitzaria";
+
+            var lerroEntitateak = await session.Query<EskaeraLerroa>()
+                .Fetch(el => el.Platera)
+                .Where(el => el.Eskaera.Id == dto.EskaeraId)
+                .OrderBy(el => el.Id)
+                .ToListAsync();
+
+            var lerroak = lerroEntitateak
+                .Select(el => (el.Platera.Izena, el.Kantitatea, el.UnitatePrezioa, el.Kantitatea * el.UnitatePrezioa))
+                .ToList();
+
+            DateTime orain = DateTime.Now;
+            var sortutakoOrdainketak = new List<OrdainketaErantzunaDto>();
+
+            // 2. Zati bakoitza balidatu eta ordainketak taulan gorde
+            for (int i = 0; i < dto.Zatiak.Count; i++)
+            {
+                var zatia = dto.Zatiak[i];
+                string motaNorm = NormalizatuMota(zatia.Mota);
+                decimal? jasotakoa = null;
+                decimal? itzulitakoa = null;
+                string? txartelMask = null;
+                string? txartelMarka = null;
+                string operazioKodea;
+                string tokenZifratua = SortuTokenZifratua();
+
+                if (motaNorm == "Eskudirua")
+                {
+                    jasotakoa = zatia.Jasotakoa ?? zatia.Zenbatekoa;
+                    if (jasotakoa.Value < zatia.Zenbatekoa)
+                    {
+                        await RollbackSeguruaAsync(tx);
+                        return BadRequestError($"{i + 1}. zatiko jasotako dirua ({jasotakoa.Value:F2} €) ez da nahikoa ({zatia.Zenbatekoa:F2} €).");
+                    }
+                    itzulitakoa = Math.Round(jasotakoa.Value - zatia.Zenbatekoa, 2);
+                    operazioKodea = $"CASH-S{i + 1}-{orain:yyyyMMddHHmmss}-{Random.Shared.Next(100, 999)}";
+                }
+                else if (motaNorm == "Txartela")
+                {
+                    string raw = (zatia.TxartelZenbakia ?? "").Replace(" ", "").Trim();
+                    if (string.IsNullOrWhiteSpace(raw) || raw.Length < 13)
+                        raw = "453200000000" + Random.Shared.Next(1000, 9999);
+                    txartelMarka = DetektatuTxartelMarka(raw);
+                    txartelMask = $"**** **** **** {raw[^4..]}";
+                    operazioKodea = $"AUTH-S{i + 1}-{Random.Shared.Next(100000, 999999)}";
+                }
+                else if (motaNorm == "Bizum")
+                {
+                    string tlf = (zatia.BizumTelefonoa ?? "").Replace(" ", "").Trim();
+                    if (!string.IsNullOrWhiteSpace(tlf) && !Regex.IsMatch(tlf, @"^[67]\d{8}$"))
+                    {
+                        await RollbackSeguruaAsync(tx);
+                        return BadRequestError($"{i + 1}. zatiko Bizum telefono zenbakia ez da baliozkoa.");
+                    }
+                    operazioKodea = $"BIZUM-S{i + 1}-{Random.Shared.Next(100000, 999999)}";
+                }
+                else
+                {
+                    operazioKodea = $"WALLET-S{i + 1}-{Random.Shared.Next(100000, 999999)}";
+                }
+
+                string tiketZenbakia = $"TK-{orain:yyyyMMdd}-{dto.EskaeraId:D4}-P{i + 1}";
+                decimal zatiSubtotal = Math.Round(zatia.Zenbatekoa / 1.10m, 2);
+                decimal zatiBez = zatia.Zenbatekoa - zatiSubtotal;
+
+                string tiketTestua = EraikiTiketTestua(
+                    tiketZenbakia, orain, mahaiZenbakia, edukiera, dto.EskaeraId, langileIzena,
+                    lerroak, zatiSubtotal, zatiBez, zatia.Zenbatekoa, motaNorm, jasotakoa, itzulitakoa,
+                    txartelMask, txartelMarka, zatia.BizumTelefonoa, operazioKodea, tokenZifratua);
+
+                var ordainketa = new Ordainketa
+                {
+                    Eskaera = eskaera,
+                    TiketZenbakia = tiketZenbakia,
+                    Mota = motaNorm,
+                    Zenbatekoa = zatia.Zenbatekoa,
+                    Jasotakoa = jasotakoa,
+                    Itzulitakoa = itzulitakoa,
+                    TxartelMaskaratua = txartelMask,
+                    TxartelMarka = txartelMarka,
+                    OperazioKodea = operazioKodea,
+                    TokenZifratua = tokenZifratua,
+                    Egoera = "Arrakastatsua",
+                    LangileaId = langileaId,
+                    TiketTestua = tiketTestua,
+                    Data = orain
+                };
+                await session.SaveAsync(ordainketa);
+
+                sortutakoOrdainketak.Add(new OrdainketaErantzunaDto
+                {
+                    Id = ordainketa.Id,
+                    EskaeraId = dto.EskaeraId,
+                    TiketZenbakia = tiketZenbakia,
+                    Mota = motaNorm,
+                    Zenbatekoa = zatia.Zenbatekoa,
+                    Jasotakoa = jasotakoa,
+                    Itzulitakoa = itzulitakoa,
+                    TxartelMaskaratua = txartelMask,
+                    TxartelMarka = txartelMarka,
+                    OperazioKodea = operazioKodea,
+                    TokenZifratua = tokenZifratua,
+                    Egoera = "Arrakastatsua",
+                    Data = orain.ToString("yyyy-MM-dd HH:mm:ss"),
+                    TiketTestua = tiketTestua,
+                    Azpitotala = zatiSubtotal,
+                    Bez = zatiBez
+                });
+            }
+
+            // 3. Salmenta-faktura ofiziala automatikoki sortu (aukerakoa, lehenetsita true)
+            decimal oinarriaOsoa = Math.Round(ordaindutakoaGuztira / 1.10m, 2);
+            decimal bezOsoa = ordaindutakoaGuztira - oinarriaOsoa;
+            FakturaDTO? fakturaDto = null;
+
+            if (dto.SortuFaktura)
+            {
+                string fakturaZenbakia = $"F{orain.Year}-S{dto.EskaeraId:D5}-{Random.Shared.Next(10, 99)}";
+                string metodoLaburpena = string.Join(" + ", sortutakoOrdainketak.Select(o => o.Mota).Distinct());
+                if (metodoLaburpena.Length > 50) metodoLaburpena = metodoLaburpena[..50];
+
+                var faktura = new Faktura
+                {
+                    Eskaera = eskaera,
+                    FakturaZenbakia = fakturaZenbakia,
+                    Mota = "Salmenta",
+                    Azpimota = string.IsNullOrWhiteSpace(dto.BezeroNif) ? "Sinplifikatua" : "Osoa",
+                    Kontzeptua = $"#{dto.EskaeraId} eskaera (Mahaia {mahaiZenbakia}) — Ordainketa zatitua ({dto.Zatiak.Count} zati)",
+                    BezeroNif = dto.BezeroNif,
+                    BezeroIzena = dto.BezeroIzena,
+                    BezeroHelbidea = dto.BezeroHelbidea,
+                    OinarriZergagarria = oinarriaOsoa,
+                    BezEhunekoa = 10.00m,
+                    BezZenbatekoa = bezOsoa,
+                    Guztira = ordaindutakoaGuztira,
+                    OrdainketaMetodoa = metodoLaburpena,
+                    Egoera = "Ordaindua",
+                    Data = orain,
+                    Ezabatua = false,
+                    SortzeData = orain
+                };
+                await session.SaveAsync(faktura);
+
+                fakturaDto = new FakturaDTO
+                {
+                    Id = faktura.Id,
+                    EskaeraId = eskaera.Id,
+                    FakturaZenbakia = faktura.FakturaZenbakia,
+                    Mota = faktura.Mota,
+                    Azpimota = faktura.Azpimota,
+                    Kontzeptua = faktura.Kontzeptua,
+                    BezeroNif = faktura.BezeroNif,
+                    BezeroIzena = faktura.BezeroIzena,
+                    BezeroHelbidea = faktura.BezeroHelbidea,
+                    OinarriZergagarria = faktura.OinarriZergagarria,
+                    BezEhunekoa = faktura.BezEhunekoa,
+                    BezZenbatekoa = faktura.BezZenbatekoa,
+                    Guztira = faktura.Guztira,
+                    OrdainketaMetodoa = faktura.OrdainketaMetodoa,
+                    Egoera = faktura.Egoera,
+                    Data = faktura.Data,
+                    Ezabatua = false
+                };
+            }
+
+            // 4. Eskaera 'Kobratua' eta mahaia 'Garbitzen' (beste konturik ez badago)
+            eskaera.Egoera = "Kobratua";
+            await session.UpdateAsync(eskaera);
+
+            if (mahaia != null)
+            {
+                var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+                bool badiraBesteak = await session.Query<Eskaera>()
+                    .AnyAsync(e2 => e2.Mahaia.Id == mahaia.Id
+                                 && e2.Id != dto.EskaeraId
+                                 && !e2.Ezabatua
+                                 && !itxitakoak.Contains(e2.Egoera));
+                if (!badiraBesteak)
+                {
+                    mahaia.Egoera = "Garbitzen";
+                    await session.UpdateAsync(mahaia);
+                }
+            }
+
+            await tx.CommitAsync();
+
+            var erantzuna = new OrdainketaZatikatuErantzunaDto
+            {
+                EskaeraId = dto.EskaeraId,
+                EskaeraGuztira = eskaera.Guztira,
+                OrdaindutakoaGuztira = ordaindutakoaGuztira,
+                Azpitotala = oinarriaOsoa,
+                Bez = bezOsoa,
+                Ordainketak = sortutakoOrdainketak,
+                Faktura = fakturaDto
+            };
+
+            return CreatedResult(erantzuna, 201, $"#{dto.EskaeraId} eskaera {dto.Zatiak.Count} zatitan kobratu da eta faktura erregistratu da.");
+        }
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
+        {
+            await RollbackSeguruaAsync(tx);
+            return ConflictError($"#{dto.EskaeraId} eskaeraren ordainketa zatitua dagoeneko erregistratuta dago.");
+        }
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1213)
+        {
+            await RollbackSeguruaAsync(tx);
+            return ConflictError("Deadlock gertatu da ordainketa zatitua prozesatzean. Mesedez, saiatu berriro.");
+        }
+        catch (Exception ex)
+        {
+            await RollbackSeguruaAsync(tx);
+            return ServerError("Errorea ordainketa zatitua prozesatzean: " + ex.Message);
         }
     }
 
@@ -279,42 +502,35 @@ public class OrdainketakController : BaseApiKontroladorea
     [HttpGet("eskaera/{eskaeraId:int}")]
     public async Task<IActionResult> LortuEskaerarenOrdainketa(int eskaeraId)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT id, eskaera_id, tiket_zenbakia, mota, zenbatekoa, jasotakoa, itzulitakoa,
-                   txartel_maskaratua, txartel_marka, operazio_kodea, token_zifratua,
-                   egoera, tiket_testua, data
-            FROM ordainketak
-            WHERE eskaera_id = @eskaeraId
-            ORDER BY id DESC LIMIT 1;";
+        using var session = IrekiSaioa();
+        var o = await session.Query<Ordainketa>()
+            .Where(x => x.Eskaera.Id == eskaeraId)
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync();
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@eskaeraId", eskaeraId);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
+        if (o == null)
             return NotFoundError($"Ez da aurkitu #{eskaeraId} eskaeraren ordainketarik.");
 
-        decimal zenbatekoa = reader.GetDecimal("zenbatekoa");
-        decimal subtotal = Math.Round(zenbatekoa / 1.10m, 2);
+        decimal subtotal = Math.Round(o.Zenbatekoa / 1.10m, 2);
 
         var dto = new OrdainketaErantzunaDto
         {
-            Id = reader.GetInt32("id"),
-            EskaeraId = reader.GetInt32("eskaera_id"),
-            TiketZenbakia = reader.GetString("tiket_zenbakia"),
-            Mota = reader.GetString("mota"),
-            Zenbatekoa = zenbatekoa,
-            Jasotakoa = reader.IsDBNull(reader.GetOrdinal("jasotakoa")) ? null : reader.GetDecimal("jasotakoa"),
-            Itzulitakoa = reader.IsDBNull(reader.GetOrdinal("itzulitakoa")) ? null : reader.GetDecimal("itzulitakoa"),
-            TxartelMaskaratua = reader.IsDBNull(reader.GetOrdinal("txartel_maskaratua")) ? null : reader.GetString("txartel_maskaratua"),
-            TxartelMarka = reader.IsDBNull(reader.GetOrdinal("txartel_marka")) ? null : reader.GetString("txartel_marka"),
-            OperazioKodea = reader.GetString("operazio_kodea"),
-            TokenZifratua = reader.IsDBNull(reader.GetOrdinal("token_zifratua")) ? null : reader.GetString("token_zifratua"),
-            Egoera = reader.GetString("egoera"),
-            Data = reader.GetDateTime("data").ToString("yyyy-MM-dd HH:mm:ss"),
-            TiketTestua = reader.IsDBNull(reader.GetOrdinal("tiket_testua")) ? "" : reader.GetString("tiket_testua"),
+            Id = o.Id,
+            EskaeraId = eskaeraId,
+            TiketZenbakia = o.TiketZenbakia,
+            Mota = o.Mota,
+            Zenbatekoa = o.Zenbatekoa,
+            Jasotakoa = o.Jasotakoa,
+            Itzulitakoa = o.Itzulitakoa,
+            TxartelMaskaratua = o.TxartelMaskaratua,
+            TxartelMarka = o.TxartelMarka,
+            OperazioKodea = o.OperazioKodea,
+            TokenZifratua = o.TokenZifratua,
+            Egoera = o.Egoera,
+            Data = o.Data.ToString("yyyy-MM-dd HH:mm:ss"),
+            TiketTestua = o.TiketTestua ?? "",
             Azpitotala = subtotal,
-            Bez = zenbatekoa - subtotal
+            Bez = o.Zenbatekoa - subtotal
         };
 
         return Success(dto, 200, "Ordainketa eta tiketa ondo berreskuratu dira.");
@@ -327,14 +543,12 @@ public class OrdainketakController : BaseApiKontroladorea
     [Produces("text/plain")]
     public async Task<IActionResult> InprimatuTiketa(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = "SELECT tiket_testua FROM ordainketak WHERE id = @id LIMIT 1;";
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        var testua = await cmd.ExecuteScalarAsync();
-        if (testua == null) return NotFoundError($"Ez da aurkitu {id} ID-a duen tiketarik.");
+        using var session = IrekiSaioa();
+        var ordainketa = await session.GetAsync<Ordainketa>(id);
+        if (ordainketa == null || ordainketa.TiketTestua == null)
+            return NotFoundError($"Ez da aurkitu {id} ID-a duen tiketarik.");
 
-        return Content(testua.ToString()!, "text/plain", Encoding.UTF8);
+        return Content(ordainketa.TiketTestua, "text/plain", Encoding.UTF8);
     }
 
     // =========================================================================
@@ -388,7 +602,7 @@ public class OrdainketakController : BaseApiKontroladorea
         string tokenZifratua)
     {
         var sb = new StringBuilder();
-        const int W = 46; // 80mm-ko inprimagailurako zabalera estandarra (46 karaktere)
+        const int W = 46;
         string marraBikoitza = new('=', W);
         string marraBakarra = new('-', W);
 
@@ -406,7 +620,6 @@ public class OrdainketakController : BaseApiKontroladorea
             return ezker + new string(' ', hutsunea) + eskuin;
         }
 
-        // 1. Jatetxearen Burua
         sb.AppendLine(marraBikoitza);
         sb.AppendLine(Zentroan("T1 JATETXEA"));
         sb.AppendLine(Zentroan("Italo-Euskal Gastronomia Bikaina"));
@@ -415,14 +628,12 @@ public class OrdainketakController : BaseApiKontroladorea
         sb.AppendLine(Zentroan("Tel: +34 943 12 34 56 · www.t1jatetxea.eus"));
         sb.AppendLine(marraBikoitza);
 
-        // 2. Tiket eta Zerbitzu Datuak
         sb.AppendLine(Banatuta("TIKET FISKALA:", tiketZenbakia));
         sb.AppendLine(Banatuta("DATA:", data.ToString("yyyy/MM/dd HH:mm:ss")));
         sb.AppendLine(Banatuta($"MAHAIA: {mahaiZenbakia} ({edukiera} pax)", $"ESKAERA: #{eskaeraId}"));
         sb.AppendLine(Banatuta("ZERBITZARIA:", langileIzena));
         sb.AppendLine(marraBakarra);
 
-        // 3. Produktuen Taula
         sb.AppendLine("KOP  DESKRIBAPENA           P.UNT     GUZTIRA");
         sb.AppendLine(marraBakarra);
 
@@ -433,7 +644,6 @@ public class OrdainketakController : BaseApiKontroladorea
             sb.AppendLine(lerroTestua);
         }
 
-        // 4. Zergak eta Totala
         sb.AppendLine(marraBakarra);
         sb.AppendLine(Banatuta("AZPITOTALA (Zergarik gabe):", $"{subtotal:F2} EUR"));
         sb.AppendLine(Banatuta("BEZ (%10 barne):", $"{bez:F2} EUR"));
@@ -441,7 +651,6 @@ public class OrdainketakController : BaseApiKontroladorea
         sb.AppendLine(Banatuta("TOTALA ORDAINTZEKO:", $"{totala:F2} EUR"));
         sb.AppendLine(marraBikoitza);
 
-        // 5. Ordainketa eta Zibersegurtasun Datuak
         sb.AppendLine("ORDAINKETA DATUAK (SEGREDU FISKALA):");
         sb.AppendLine(Banatuta("MODUA:", mota.ToUpperInvariant()));
 
@@ -470,7 +679,6 @@ public class OrdainketakController : BaseApiKontroladorea
         sb.AppendLine(Banatuta("TOKEN ZIFRATUA:", tokenLaburtua));
         sb.AppendLine(Banatuta("EGOERA:", "BAIMENDUA ETA KOBRATUA"));
 
-        // 6. Oina eta Agurra
         sb.AppendLine(marraBikoitza);
         sb.AppendLine(Zentroan("Eskerrik asko gurekin bazkaltzeagatik!"));
         sb.AppendLine(Zentroan("Grazie mille per la vostra visita!"));

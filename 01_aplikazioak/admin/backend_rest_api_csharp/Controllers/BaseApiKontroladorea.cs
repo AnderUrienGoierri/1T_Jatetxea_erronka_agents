@@ -1,56 +1,75 @@
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Jatetxea.Api.Responses;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
+using ISession = NHibernate.ISession;
 
 namespace Jatetxea.Api.Controllers;
 
 [ApiController]
 public abstract class BaseApiKontroladorea : ControllerBase
 {
-    protected readonly IConfiguration _config;
+    protected readonly ISessionFactory _sessionFactory;
 
-    protected BaseApiKontroladorea(IConfiguration config)
+    protected static readonly string[] EdariKategoriak =
     {
-        _config = config;
+        "urak", "freskagarriak", "garagardoak", "sagardoak", "ardoak",
+        "kafeak", "infusioak", "likoreak", "konbinatuak", "koktailak"
+    };
+
+    protected BaseApiKontroladorea(ISessionFactory sessionFactory)
+    {
+        _sessionFactory = sessionFactory;
     }
 
     /// <summary>
-    /// MySQL datu-basearekin konexio asinkronoa irekitzen du.
-    /// Ingurune aldagaia lehenesten da, bestela appsettings konfigurazioa.
+    /// NHibernate lan-saio (ISession) berria irekitzen du.
+    /// Beti 'using' bloke batean erabili behar da eskaera bakoitzean itxi dadin.
     /// </summary>
-    protected async Task<MySqlConnection> SortuKonexioaAsync()
-    {
-        string? envConn = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-        string katea = !string.IsNullOrWhiteSpace(envConn)
-            ? envConn
-            : (_config.GetConnectionString("Jatetxea") ?? _config.GetConnectionString("JatetxeaRoot") ?? "");
+    protected ISession IrekiSaioa() => _sessionFactory.OpenSession();
 
-        var kon = new MySqlConnection(katea);
-        await kon.OpenAsync();
-        return kon;
+    /// <summary>
+    /// NHibernate-ren GenericADOException barruan bildutako MySqlException-a ateratzen du
+    /// (adib. 1062 Unique, 1451/1452 FK, 1213 Deadlock).
+    /// </summary>
+    protected static MySqlException? LortuMySqlSalbuespena(Exception ex)
+    {
+        for (Exception? unekoa = ex; unekoa != null; unekoa = unekoa.InnerException)
+        {
+            if (unekoa is MySqlException mysqlEx)
+                return mysqlEx;
+        }
+        return null;
     }
 
-    protected async Task<ServiceStatusDto> LortuZerbitzuEgoeraAsync(
-        MySqlConnection kon,
-        MySqlTransaction? transakzioa = null)
+    protected static async Task RollbackSeguruaAsync(ITransaction tx)
     {
-        const string sql = @"
-            SELECT COUNT(DISTINCT m.id)
-            FROM mahaiak m
-            WHERE m.ezabatua = 0
-              AND (
-                    m.egoera = 'Okupatuta'
-                    OR EXISTS (
-                        SELECT 1
-                        FROM eskaerak e
-                        WHERE e.mahaia_id = m.id
-                          AND e.ezabatua = 0
-                          AND e.egoera NOT IN ('Kobratua', 'Ezeztatua')
-                    )
-              );";
-        await using var cmd = new MySqlCommand(sql, kon, transakzioa);
-        int openTables = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        if (tx.IsActive)
+        {
+            await tx.RollbackAsync();
+        }
+    }
+
+    /// <summary>
+    /// Zerbitzua aktibo dagoen egiaztatzen du NHibernate LINQ kontsulta bidez
+    /// (okupatutako mahaiak edo kobratu/ezeztatu gabeko eskaerak dituzten mahaiak).
+    /// </summary>
+    protected async Task<ServiceStatusDto> LortuZerbitzuEgoeraAsync(ISession session)
+    {
+        var itxitakoEgoerak = new[] { "Kobratua", "Ezeztatua" };
+
+        int openTables = await session.Query<Mahaia>()
+            .Where(m => !m.Ezabatua && (
+                m.Egoera == "Okupatuta" ||
+                session.Query<Eskaera>().Any(e =>
+                    e.Mahaia.Id == m.Id &&
+                    !e.Ezabatua &&
+                    !itxitakoEgoerak.Contains(e.Egoera))))
+            .CountAsync();
+
         return new ServiceStatusDto
         {
             ServiceActive = openTables > 0,
@@ -58,9 +77,9 @@ public abstract class BaseApiKontroladorea : ControllerBase
         };
     }
 
-    protected async Task<IActionResult?> EgiaztatuZerbitzuaItxitaDagoelaAsync(MySqlConnection kon)
+    protected async Task<IActionResult?> EgiaztatuZerbitzuaItxitaDagoelaAsync(ISession session)
     {
-        ServiceStatusDto status = await LortuZerbitzuEgoeraAsync(kon);
+        ServiceStatusDto status = await LortuZerbitzuEgoeraAsync(session);
         if (status.ServiceActive)
         {
             return ConflictError(
@@ -68,6 +87,10 @@ public abstract class BaseApiKontroladorea : ControllerBase
         }
         return null;
     }
+
+    protected static bool DaEdaria(string? kategoria)
+        => !string.IsNullOrWhiteSpace(kategoria) &&
+            EdariKategoriak.Contains(kategoria.Trim().ToLowerInvariant());
 
     // =========================================================================
     // ARRAKASTA ERANTZUNAK (ApiResponse<T>)

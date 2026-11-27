@@ -65,3 +65,24 @@ public class EskaeraLerroEgoeraEguneratuDto
     [Required]
     public string Egoera { get; set; } = string.Empty; // 'Eskatua', 'Sukaldean', 'Prestatua', 'Zerbitzatua'
 }
+
+/// <summary>
+/// Batch transakzio konposatua: mahai batean komanda ireki eta hainbat plater batera eskatzea.
+/// Osagai bakar bat falta bada, komanda osoa eta stock guztiak atzera botatzen dira (Rollback).
+/// </summary>
+public class KomandaOsoaSortuDto
+{
+    [Required]
+    public int MahaiaId { get; set; }
+
+    [Required]
+    public int LangileaId { get; set; }
+
+    public int PertsonaKopurua { get; set; } = 2;
+
+    public bool BidaliSukaldera { get; set; } = false;
+
+    [Required]
+    [MinLength(1, ErrorMessage = "Gutxienez plater bat sartu behar da komanda osoan.")]
+    public List<EskaeraLerroaGehituDto> Lerroak { get; set; } = new();
+}

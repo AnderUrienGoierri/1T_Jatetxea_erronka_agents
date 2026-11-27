@@ -1,7 +1,9 @@
 using System.Data;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Jatetxea.Api.Controllers;
 
@@ -9,10 +11,10 @@ namespace Jatetxea.Api.Controllers;
 [Route("api/v1/erreserbak")]
 public class ErreserbakController : BaseApiKontroladorea
 {
-    public ErreserbakController(IConfiguration config) : base(config) { }
+    public ErreserbakController(ISessionFactory sessionFactory) : base(sessionFactory) { }
 
     /// <summary>
-    /// Erreserben zerrenda lortzen du (dataren, txandaren eta ezabatuen arabera iragazgarria).
+    /// Erreserben zerrenda lortzen du (Fetch bidez Bezeroa eta Mahaia kargatuz N+1 saihesteko).
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> LortuGuztiak(
@@ -20,50 +22,25 @@ public class ErreserbakController : BaseApiKontroladorea
         [FromQuery] string? txanda = null,
         [FromQuery] bool barneEzabatuak = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = @"
-            SELECT e.id, e.bezeroa_id, b.izena AS bezero_izena, b.abizena AS bezero_abizena,
-                   b.emaila AS bezero_emaila, b.telefonoa AS bezero_telefonoa,
-                   e.mahaia_id, m.zenbakia AS mahai_zenbakia, m.kokapena,
-                   e.data, e.txanda, e.pertsona_kopurua, e.egoera, e.oharrak, e.ezabatua
-            FROM erreserbak e
-            JOIN bezeroak b ON e.bezeroa_id = b.id
-            JOIN mahaiak m ON e.mahaia_id = m.id
-            WHERE 1=1";
+        using var session = IrekiSaioa();
+        IQueryable<Erreserba> query = session.Query<Erreserba>();
 
-        if (!barneEzabatuak) sql += " AND e.ezabatua = 0";
-        if (!string.IsNullOrWhiteSpace(data)) sql += " AND e.data = @data";
-        if (!string.IsNullOrWhiteSpace(txanda)) sql += " AND e.txanda = @txanda";
-        sql += " ORDER BY e.data DESC, e.txanda ASC, m.zenbakia ASC;";
+        if (!barneEzabatuak)
+            query = query.Where(e => !e.Ezabatua);
+        if (!string.IsNullOrWhiteSpace(data) && DateTime.TryParse(data, out DateTime egunData))
+            query = query.Where(e => e.Data == egunData.Date);
+        if (!string.IsNullOrWhiteSpace(txanda))
+            query = query.Where(e => e.Txanda == txanda);
 
-        var zerrenda = new List<ErreserbaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        if (!string.IsNullOrWhiteSpace(data)) cmd.Parameters.AddWithValue("@data", data);
-        if (!string.IsNullOrWhiteSpace(txanda)) cmd.Parameters.AddWithValue("@txanda", txanda);
+        var erreserbak = await query
+            .Fetch(e => e.Bezeroa)
+            .Fetch(e => e.Mahaia)
+            .OrderByDescending(e => e.Data)
+            .ThenBy(e => e.Txanda)
+            .ThenBy(e => e.Mahaia.Zenbakia)
+            .ToListAsync();
 
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            zerrenda.Add(new ErreserbaDTO
-            {
-                Id = reader.GetInt32("id"),
-                BezeroaId = reader.GetInt32("bezeroa_id"),
-                BezeroIzena = reader.GetString("bezero_izena"),
-                BezeroAbizena = reader.GetString("bezero_abizena"),
-                BezeroEmaila = reader.GetString("bezero_emaila"),
-                BezeroTelefonoa = reader.GetString("bezero_telefonoa"),
-                MahaiaId = reader.GetInt32("mahaia_id"),
-                MahaiZenbakia = reader.GetInt32("mahai_zenbakia"),
-                Kokapena = reader.GetString("kokapena"),
-                Data = reader.GetDateTime("data").ToString("yyyy-MM-dd"),
-                Txanda = reader.GetString("txanda"),
-                PertsonaKopurua = reader.GetInt32("pertsona_kopurua"),
-                Egoera = reader.GetString("egoera"),
-                Oharrak = reader.IsDBNull("oharrak") ? null : reader.GetString("oharrak"),
-                Ezabatua = reader.GetBoolean("ezabatua")
-            });
-        }
-
+        var zerrenda = erreserbak.Select(MapErreserbaDto).ToList();
         return SuccessList(zerrenda, 200, "Erreserbak ondo berreskuratu dira.");
     }
 
@@ -73,47 +50,20 @@ public class ErreserbakController : BaseApiKontroladorea
     [HttpGet("{id:int}")]
     public async Task<IActionResult> LortuIdBidez(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT e.id, e.bezeroa_id, b.izena AS bezero_izena, b.abizena AS bezero_abizena,
-                   b.emaila AS bezero_emaila, b.telefonoa AS bezero_telefonoa,
-                   e.mahaia_id, m.zenbakia AS mahai_zenbakia, m.kokapena,
-                   e.data, e.txanda, e.pertsona_kopurua, e.egoera, e.oharrak, e.ezabatua
-            FROM erreserbak e
-            JOIN bezeroak b ON e.bezeroa_id = b.id
-            JOIN mahaiak m ON e.mahaia_id = m.id
-            WHERE e.id = @id LIMIT 1;";
+        using var session = IrekiSaioa();
+        var erreserba = await session.Query<Erreserba>()
+            .Fetch(e => e.Bezeroa)
+            .Fetch(e => e.Mahaia)
+            .FirstOrDefaultAsync(e => e.Id == id);
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
+        if (erreserba == null)
             return NotFoundError($"Ez da aurkitu {id} ID-a duen erreserbarik.");
 
-        var dto = new ErreserbaDTO
-        {
-            Id = reader.GetInt32("id"),
-            BezeroaId = reader.GetInt32("bezeroa_id"),
-            BezeroIzena = reader.GetString("bezero_izena"),
-            BezeroAbizena = reader.GetString("bezero_abizena"),
-            BezeroEmaila = reader.GetString("bezero_emaila"),
-            BezeroTelefonoa = reader.GetString("bezero_telefonoa"),
-            MahaiaId = reader.GetInt32("mahaia_id"),
-            MahaiZenbakia = reader.GetInt32("mahai_zenbakia"),
-            Kokapena = reader.GetString("kokapena"),
-            Data = reader.GetDateTime("data").ToString("yyyy-MM-dd"),
-            Txanda = reader.GetString("txanda"),
-            PertsonaKopurua = reader.GetInt32("pertsona_kopurua"),
-            Egoera = reader.GetString("egoera"),
-            Oharrak = reader.IsDBNull("oharrak") ? null : reader.GetString("oharrak"),
-            Ezabatua = reader.GetBoolean("ezabatua")
-        };
-
-        return Success(dto, 200, "Erreserba ondo aurkitu da.");
+        return Success(MapErreserbaDto(erreserba), 200, "Erreserba ondo aurkitu da.");
     }
 
     /// <summary>
-    /// Erreserba berria egiten du transakzio pesimistan (SELECT ... FOR UPDATE bidez).
+    /// Erreserba berria egiten du transakzio pesimistan (NHibernate LockMode.Upgrade -> SELECT ... FOR UPDATE).
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Sortu([FromBody] ErreserbaSortuDto dto)
@@ -121,149 +71,119 @@ public class ErreserbakController : BaseApiKontroladorea
         if (!ModelState.IsValid)
             return BadRequestError("Datu baliogabeak bidali dira.");
 
-        if (DateTime.TryParse(dto.Data, out var dataParsed) && dataParsed.DayOfWeek == DayOfWeek.Monday)
+        if (!DateTime.TryParse(dto.Data, out DateTime dataParsed))
+            return BadRequestError("Data formatua ez da baliozkoa (erabili yyyy-MM-dd).");
+
+        if (dataParsed.DayOfWeek == DayOfWeek.Monday)
             return BadRequestError("Astelehenetan jatetxea itxita dago (atseden eguna). Mesedez, aukeratu beste egun bat.");
 
-        await using var kon = await SortuKonexioaAsync();
+        DateTime erreserbaData = dataParsed.Date;
 
-        // 1. Mahaia zehaztu (ID bidez edo Zenbaki bidez)
+        using var session = IrekiSaioa();
+
+        // 1. Mahaia zehaztu (ID bidez, zenbaki bidez edo automatikoki esleituta)
         int mahaiaId = dto.MahaiaId ?? 0;
         if (mahaiaId <= 0 && dto.MahaiZenbakia.HasValue && dto.MahaiZenbakia.Value > 0)
         {
-            const string sqlM = "SELECT id FROM mahaiak WHERE zenbakia = @zenbaki AND ezabatua = 0 LIMIT 1;";
-            await using var cmdM = new MySqlCommand(sqlM, kon);
-            cmdM.Parameters.AddWithValue("@zenbaki", dto.MahaiZenbakia.Value);
-            var mId = await cmdM.ExecuteScalarAsync();
-            if (mId != null) mahaiaId = Convert.ToInt32(mId);
+            var mahaiBilatua = await session.Query<Mahaia>()
+                .FirstOrDefaultAsync(m => m.Zenbakia == dto.MahaiZenbakia.Value && !m.Ezabatua);
+            if (mahaiBilatua != null) mahaiaId = mahaiBilatua.Id;
         }
 
         if (mahaiaId <= 0)
         {
-            // Bezeroak ez badu mahai zehatzik hautatu, esleitu data, txanda eta pertsona kopuruarentzat egokia den lehen mahai librea
-            const string sqlAuto = @"
-                SELECT m.id FROM mahaiak m
-                WHERE m.ezabatua = 0 
-                  AND m.edukiera >= @pax
-                  AND m.id NOT IN (
-                      SELECT e.mahaia_id FROM erreserbak e 
-                      WHERE e.data = @data AND e.txanda = @txanda AND e.ezabatua = 0
-                  )
-                ORDER BY m.edukiera ASC, m.zenbakia ASC 
-                LIMIT 1;";
-            await using var cmdAuto = new MySqlCommand(sqlAuto, kon);
-            cmdAuto.Parameters.AddWithValue("@pax", dto.PertsonaKopurua);
-            cmdAuto.Parameters.AddWithValue("@data", dto.Data);
-            cmdAuto.Parameters.AddWithValue("@txanda", dto.Txanda);
-            var autoId = await cmdAuto.ExecuteScalarAsync();
-            if (autoId != null)
-            {
-                mahaiaId = Convert.ToInt32(autoId);
-            }
+            var okupatutakoak = await session.Query<Erreserba>()
+                .Where(r => r.Data == erreserbaData && r.Txanda == dto.Txanda && !r.Ezabatua)
+                .Select(r => r.Mahaia.Id)
+                .ToListAsync();
+
+            var libreQuery = session.Query<Mahaia>()
+                .Where(m => !m.Ezabatua && m.Edukiera >= dto.PertsonaKopurua);
+            if (okupatutakoak.Count > 0)
+                libreQuery = libreQuery.Where(m => !okupatutakoak.Contains(m.Id));
+
+            var autoMahaia = await libreQuery
+                .OrderBy(m => m.Edukiera)
+                .ThenBy(m => m.Zenbakia)
+                .FirstOrDefaultAsync();
+
+            if (autoMahaia != null)
+                mahaiaId = autoMahaia.Id;
             else
-            {
                 return ConflictError("Ez dago mahai librerik aukeratutako data eta txandarako.");
-            }
         }
 
         if (mahaiaId <= 0)
             return BadRequestError("Mahaia hautatzea beharrezkoa da.");
 
-        // 2. Bezeroa zehaztu edo automatikoki erregistratu
-        int bezeroaId = dto.BezeroaId ?? 0;
-        string bezeroIzena = dto.BezeroIzena ?? "Bezeroa";
-        string bezeroAbizena = dto.BezeroAbizena ?? "-";
-        string bezeroEmaila = dto.BezeroEmaila ?? "";
-        string bezeroTelefonoa = dto.BezeroTelefonoa ?? "-";
-
-        if (bezeroaId <= 0 && !string.IsNullOrWhiteSpace(dto.BezeroEmaila))
-        {
-            const string sqlB = "SELECT id, izena, abizena, telefonoa FROM bezeroak WHERE emaila = @email LIMIT 1;";
-            await using var cmdB = new MySqlCommand(sqlB, kon);
-            cmdB.Parameters.AddWithValue("@email", dto.BezeroEmaila.Trim().ToLower());
-            await using var readerB = await cmdB.ExecuteReaderAsync();
-            if (await readerB.ReadAsync())
-            {
-                bezeroaId = readerB.GetInt32("id");
-                bezeroIzena = readerB.GetString("izena");
-                bezeroAbizena = readerB.GetString("abizena");
-                bezeroTelefonoa = readerB.GetString("telefonoa");
-            }
-            await readerB.CloseAsync();
-
-            if (bezeroaId <= 0)
-            {
-                const string sqlInsB = @"
-                    INSERT INTO bezeroak (izena, abizena, telefonoa, emaila, ezabatua, sortze_data)
-                    VALUES (@izena, @abizena, @telefonoa, @emaila, 0, CURRENT_TIMESTAMP);
-                    SELECT LAST_INSERT_ID();";
-                await using var cmdInsB = new MySqlCommand(sqlInsB, kon);
-                cmdInsB.Parameters.AddWithValue("@izena", bezeroIzena);
-                cmdInsB.Parameters.AddWithValue("@abizena", bezeroAbizena);
-                cmdInsB.Parameters.AddWithValue("@telefonoa", bezeroTelefonoa);
-                cmdInsB.Parameters.AddWithValue("@emaila", dto.BezeroEmaila.Trim().ToLower());
-                bezeroaId = Convert.ToInt32(await cmdInsB.ExecuteScalarAsync());
-            }
-        }
-
-        if (bezeroaId <= 0)
-            return BadRequestError("Bezeroa zehaztu behar da (BezeroaId edo BezeroEmaila bidaliz).");
-
-        // 3. Transakzio pesimista hasi
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        // 2. Transakzio pesimista hasi (IsolationLevel.ReadCommitted + LockMode.Upgrade)
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            // Mahaia blokeatu eta erabilgarritasuna egiaztatu
-            const string sqlBlokeatuMahaia = "SELECT zenbakia, edukiera, kokapena, ezabatua FROM mahaiak WHERE id = @mId FOR UPDATE;";
-            int mahaiZenbakia;
-            string kokapena;
-            int edukiera;
-
-            await using (var cmdLock = new MySqlCommand(sqlBlokeatuMahaia, kon, tx))
+            // Bezeroa zehaztu edo automatikoki erregistratu
+            Bezeroa? bezeroa = null;
+            if (dto.BezeroaId.HasValue && dto.BezeroaId.Value > 0)
             {
-                cmdLock.Parameters.AddWithValue("@mId", mahaiaId);
-                await using var readerM = await cmdLock.ExecuteReaderAsync();
-                if (!await readerM.ReadAsync())
-                {
-                    await tx.RollbackAsync();
-                    return NotFoundError($"Ez da aurkitu {mahaiaId} ID-a duen mahaia.");
-                }
+                bezeroa = await session.GetAsync<Bezeroa>(dto.BezeroaId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(dto.BezeroEmaila))
+            {
+                string emailNorm = dto.BezeroEmaila.Trim().ToLower();
+                bezeroa = await session.Query<Bezeroa>()
+                    .FirstOrDefaultAsync(b => b.Emaila == emailNorm);
 
-                if (readerM.GetBoolean("ezabatua"))
+                if (bezeroa == null)
                 {
-                    await tx.RollbackAsync();
-                    return ConflictError("Mahaia desgaituta dago. Ezin da erreserbarik egin bertan.");
+                    bezeroa = new Bezeroa
+                    {
+                        Izena = string.IsNullOrWhiteSpace(dto.BezeroIzena) ? "Bezeroa" : dto.BezeroIzena.Trim(),
+                        Abizena = string.IsNullOrWhiteSpace(dto.BezeroAbizena) ? "-" : dto.BezeroAbizena.Trim(),
+                        Telefonoa = string.IsNullOrWhiteSpace(dto.BezeroTelefonoa) ? "-" : dto.BezeroTelefonoa.Trim(),
+                        Emaila = emailNorm,
+                        Ezabatua = false,
+                        SortzeData = DateTime.Now
+                    };
+                    await session.SaveAsync(bezeroa);
                 }
-
-                mahaiZenbakia = readerM.GetInt32("zenbakia");
-                edukiera = readerM.GetInt32("edukiera");
-                kokapena = readerM.GetString("kokapena");
             }
 
-            // Balidatu aforoa / gehieneko edukiera
-            if (dto.PertsonaKopurua > edukiera)
+            if (bezeroa == null)
             {
-                await tx.RollbackAsync();
-                return BadRequestError($"Mahaiaren aforoa gainditu da: {mahaiZenbakia}. mahaiak gehienez {edukiera} lagunentzako lekua du ({dto.PertsonaKopurua} pertsona eskatu dira).");
+                await RollbackSeguruaAsync(tx);
+                return BadRequestError("Bezeroa zehaztu behar da (BezeroaId edo BezeroEmaila bidaliz).");
             }
 
-            // Data eta txanda berean erreserbarik dagoen egiaztatu (SELECT ... FOR UPDATE)
-            const string sqlCheckErreserba = @"
-                SELECT id FROM erreserbak 
-                WHERE mahaia_id = @mId AND data = @data AND txanda = @txanda AND ezabatua = 0 
-                FOR UPDATE;";
-
-            await using (var cmdCheck = new MySqlCommand(sqlCheckErreserba, kon, tx))
+            // Mahaia blokeatu (SELECT ... FROM mahaiak WHERE id = ? FOR UPDATE)
+            var mahaia = await session.GetAsync<Mahaia>(mahaiaId, LockMode.Upgrade);
+            if (mahaia == null)
             {
-                cmdCheck.Parameters.AddWithValue("@mId", mahaiaId);
-                cmdCheck.Parameters.AddWithValue("@data", dto.Data);
-                cmdCheck.Parameters.AddWithValue("@txanda", dto.Txanda);
-                var dagoenId = await cmdCheck.ExecuteScalarAsync();
-                if (dagoenId != null)
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError($"{mahaiZenbakia}. mahaia jada erreserbatuta dago {dto.Data} datan eta {dto.Txanda} txandan.");
-                }
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {mahaiaId} ID-a duen mahaia.");
+            }
+
+            if (mahaia.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Mahaia desgaituta dago. Ezin da erreserbarik egin bertan.");
+            }
+
+            if (dto.PertsonaKopurua > mahaia.Edukiera)
+            {
+                await RollbackSeguruaAsync(tx);
+                return BadRequestError($"Mahaiaren aforoa gainditu da: {mahaia.Zenbakia}. mahaiak gehienez {mahaia.Edukiera} lagunentzako lekua du ({dto.PertsonaKopurua} pertsona eskatu dira).");
+            }
+
+            // Data eta txanda berean erreserbarik dagoen egiaztatu (WithLock(LockMode.Upgrade))
+            var dagoenErreserba = await session.Query<Erreserba>()
+                .Where(r => r.Mahaia.Id == mahaiaId && r.Data == erreserbaData && r.Txanda == dto.Txanda && !r.Ezabatua)
+                .WithLock(LockMode.Upgrade)
+                .FirstOrDefaultAsync();
+
+            if (dagoenErreserba != null)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError($"{mahaia.Zenbakia}. mahaia jada erreserbatuta dago {dto.Data} datan eta {dto.Txanda} txandan.");
             }
 
             // Simulazio-itxaronaldia (konkurrentzia probetarako)
@@ -273,60 +193,37 @@ public class ErreserbakController : BaseApiKontroladorea
             }
 
             // Erreserba txertatu
-            const string sqlInsert = @"
-                INSERT INTO erreserbak (bezeroa_id, mahaia_id, data, txanda, pertsona_kopurua, egoera, oharrak, ezabatua, sortze_data)
-                VALUES (@bezeroaId, @mahaiaId, @data, @txanda, @pertsonak, 'Baieztatua', @oharrak, 0, CURRENT_TIMESTAMP);
-                SELECT LAST_INSERT_ID();";
-
-            int erreserbaId;
-            await using (var cmdIns = new MySqlCommand(sqlInsert, kon, tx))
+            var erreserba = new Erreserba
             {
-                cmdIns.Parameters.AddWithValue("@bezeroaId", bezeroaId);
-                cmdIns.Parameters.AddWithValue("@mahaiaId", mahaiaId);
-                cmdIns.Parameters.AddWithValue("@data", dto.Data);
-                cmdIns.Parameters.AddWithValue("@txanda", dto.Txanda);
-                cmdIns.Parameters.AddWithValue("@pertsonak", dto.PertsonaKopurua);
-                cmdIns.Parameters.AddWithValue("@oharrak", (object?)dto.Oharrak ?? DBNull.Value);
-
-                erreserbaId = Convert.ToInt32(await cmdIns.ExecuteScalarAsync());
-            }
-
-            await tx.CommitAsync();
-
-            var emaitza = new ErreserbaDTO
-            {
-                Id = erreserbaId,
-                BezeroaId = bezeroaId,
-                BezeroIzena = bezeroIzena,
-                BezeroAbizena = bezeroAbizena,
-                BezeroEmaila = bezeroEmaila,
-                BezeroTelefonoa = bezeroTelefonoa,
-                MahaiaId = mahaiaId,
-                MahaiZenbakia = mahaiZenbakia,
-                Kokapena = kokapena,
-                Data = dto.Data,
+                Bezeroa = bezeroa,
+                Mahaia = mahaia,
+                Data = erreserbaData,
                 Txanda = dto.Txanda,
                 PertsonaKopurua = dto.PertsonaKopurua,
                 Egoera = "Baieztatua",
                 Oharrak = dto.Oharrak,
-                Ezabatua = false
+                Ezabatua = false,
+                SortzeData = DateTime.Now
             };
 
-            return CreatedResult(emaitza, 201, "Erreserba arrakastaz baieztatu da.");
+            await session.SaveAsync(erreserba);
+            await tx.CommitAsync();
+
+            return CreatedResult(MapErreserbaDto(erreserba), 201, "Erreserba arrakastaz baieztatu da.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
-            await tx.RollbackAsync();
-            return ConflictError($"Erreserba gatazka: mahaia jada erreserbatuta dago data eta txanda horretan.");
+            await RollbackSeguruaAsync(tx);
+            return ConflictError("Erreserba gatazka: mahaia jada erreserbatuta dago data eta txanda horretan.");
         }
-        catch (MySqlException ex) when (ex.Number == 1213)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1213)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ConflictError("Deadlock gertatu da aldi bereko erreserbak kudeatzean. Mesedez, saiatu berriro.");
         }
         catch (Exception ex)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ServerError("Errorea erreserba egitean: " + ex.Message);
         }
     }
@@ -337,98 +234,103 @@ public class ErreserbakController : BaseApiKontroladorea
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Ezabatu(int id, [FromQuery] bool hard = false)
     {
-        await using var kon = await SortuKonexioaAsync();
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
+        var erreserba = await session.GetAsync<Erreserba>(id, LockMode.Upgrade);
         if (hard)
         {
-            const string sqlHard = "DELETE FROM erreserbak WHERE id = @id;";
-            await using var cmd = new MySqlCommand(sqlHard, kon);
-            cmd.Parameters.AddWithValue("@id", id);
-            int rows = await cmd.ExecuteNonQueryAsync();
-            if (rows == 0) return NotFoundError($"Ez da aurkitu {id} ID-a duen erreserbarik.");
+            if (erreserba == null)
+            {
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen erreserbarik.");
+            }
+
+            await session.DeleteAsync(erreserba);
+            await tx.CommitAsync();
             return Success(new { id, ezabatua = true, mota = "hard" }, 200, "Erreserba behin betiko ezabatu da.");
         }
         else
         {
-            const string sqlSoft = @"
-                UPDATE erreserbak 
-                SET ezabatua = 1, egoera = 'Ezeztatua', ezabatze_data = CURRENT_TIMESTAMP 
-                WHERE id = @id AND ezabatua = 0;";
-            await using var cmd = new MySqlCommand(sqlSoft, kon);
-            cmd.Parameters.AddWithValue("@id", id);
-            int rows = await cmd.ExecuteNonQueryAsync();
-            if (rows == 0) return NotFoundError($"Ez da aurkitu {id} ID-a duen erreserba aktiborik.");
+            if (erreserba == null || erreserba.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen erreserba aktiborik.");
+            }
+
+            erreserba.Ezabatua = true;
+            erreserba.Egoera = "Ezeztatua";
+            erreserba.EzabatzeData = DateTime.Now;
+            await session.UpdateAsync(erreserba);
+            await tx.CommitAsync();
             return Success(new { id, ezabatua = true, mota = "soft" }, 200, "Erreserba ezeztatu da (soft delete).");
         }
     }
 
     /// <summary>
-    /// Ezeztatutako erreserba berreskuratzen du (mahai librearen egiaztapenarekin).
+    /// Ezeztatutako erreserba berreskuratzen du transakzio pesimistan (mahai librearen egiaztapenarekin).
     /// </summary>
     [HttpPut("{id:int}/restore")]
     public async Task<IActionResult> Berreskuratu(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
         try
         {
-            const string sqlDatuak = "SELECT mahaia_id, data, txanda FROM erreserbak WHERE id = @id AND ezabatua = 1 FOR UPDATE;";
-            int mahaiaId;
-            DateTime data;
-            string txanda;
-
-            await using (var cmdD = new MySqlCommand(sqlDatuak, kon, tx))
+            var erreserba = await session.GetAsync<Erreserba>(id, LockMode.Upgrade);
+            if (erreserba == null || !erreserba.Ezabatua)
             {
-                cmdD.Parameters.AddWithValue("@id", id);
-                await using var readerD = await cmdD.ExecuteReaderAsync();
-                if (!await readerD.ReadAsync())
-                {
-                    await tx.RollbackAsync();
-                    return NotFoundError($"Ez da aurkitu berreskuratzeko {id} ID-a duen erreserbarik.");
-                }
-
-                mahaiaId = readerD.GetInt32("mahaia_id");
-                data = readerD.GetDateTime("data");
-                txanda = readerD.GetString("txanda");
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu berreskuratzeko {id} ID-a duen erreserbarik.");
             }
 
-            // Egiaztatu hutsunea ez ote dagoen okupatuta beste erreserba aktibo batekin
-            const string sqlCheck = @"
-                SELECT id FROM erreserbak 
-                WHERE mahaia_id = @mId AND data = @data AND txanda = @txanda AND ezabatua = 0 LIMIT 1;";
+            // Blokeatu mahaia aldi bereko erreserba berriekin gatazkarik ez izateko
+            await session.GetAsync<Mahaia>(erreserba.Mahaia.Id, LockMode.Upgrade);
 
-            await using (var cmdC = new MySqlCommand(sqlCheck, kon, tx))
+            bool okupatuta = await session.Query<Erreserba>()
+                .AnyAsync(r => r.Mahaia.Id == erreserba.Mahaia.Id
+                            && r.Data == erreserba.Data
+                            && r.Txanda == erreserba.Txanda
+                            && !r.Ezabatua);
+
+            if (okupatuta)
             {
-                cmdC.Parameters.AddWithValue("@mId", mahaiaId);
-                cmdC.Parameters.AddWithValue("@data", data.ToString("yyyy-MM-dd"));
-                cmdC.Parameters.AddWithValue("@txanda", txanda);
-                var okupatuta = await cmdC.ExecuteScalarAsync();
-                if (okupatuta != null)
-                {
-                    await tx.RollbackAsync();
-                    return ConflictError("Ezin da berreskuratu: mahaia jada beste erreserba aktibo batek okupatu du txanda horretan.");
-                }
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Ezin da berreskuratu: mahaia jada beste erreserba aktibo batek okupatu du txanda horretan.");
             }
 
-            const string sqlRestore = @"
-                UPDATE erreserbak 
-                SET ezabatua = 0, egoera = 'Baieztatua', ezabatze_data = NULL 
-                WHERE id = @id;";
-
-            await using (var cmdR = new MySqlCommand(sqlRestore, kon, tx))
-            {
-                cmdR.Parameters.AddWithValue("@id", id);
-                await cmdR.ExecuteNonQueryAsync();
-            }
+            erreserba.Ezabatua = false;
+            erreserba.Egoera = "Baieztatua";
+            erreserba.EzabatzeData = null;
+            await session.UpdateAsync(erreserba);
 
             await tx.CommitAsync();
             return Success(new { id, berreskuratua = true }, 200, "Erreserba arrakastaz berreskuratu da.");
         }
         catch (Exception ex)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ServerError("Errorea erreserba berreskuratzean: " + ex.Message);
         }
     }
+
+    private static ErreserbaDTO MapErreserbaDto(Erreserba e) => new()
+    {
+        Id = e.Id,
+        BezeroaId = e.Bezeroa.Id,
+        BezeroIzena = e.Bezeroa.Izena,
+        BezeroAbizena = e.Bezeroa.Abizena,
+        BezeroEmaila = e.Bezeroa.Emaila,
+        BezeroTelefonoa = e.Bezeroa.Telefonoa,
+        MahaiaId = e.Mahaia.Id,
+        MahaiZenbakia = e.Mahaia.Zenbakia,
+        Kokapena = e.Mahaia.Kokapena,
+        Data = e.Data.ToString("yyyy-MM-dd"),
+        Txanda = e.Txanda,
+        PertsonaKopurua = e.PertsonaKopurua,
+        Egoera = e.Egoera,
+        Oharrak = e.Oharrak,
+        Ezabatua = e.Ezabatua
+    };
 }

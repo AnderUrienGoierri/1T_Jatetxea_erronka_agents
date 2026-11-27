@@ -1,5 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using MySqlConnector;
+using NHibernate;
+using NHibernate.Exceptions;
+using Jatetxea.Api.Data;
+using Jatetxea.Api.Helpers;
+using Jatetxea.Api.Responses;
 using Jatetxea.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +16,42 @@ builder.WebHost.UseUrls(Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
 // Zerbitzuak gehitu kontainerrean
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+// JWT Bearer autentifikazioa + Rol bidezko baimenak (RBAC)
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = JwtHelper.LortuBalidazioParametroak(builder.Configuration);
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(ApiError.Create(
+                    401,
+                    "UNAUTHORIZED",
+                    "Autentifikazioa beharrezkoa da (Authorization: Bearer <token>).",
+                    "Hasi saioa POST /api/v1/langileak/login endpoint-ean JWT tokena eskuratzeko."));
+            },
+            OnForbidden = async context =>
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(ApiError.Create(
+                    403,
+                    "FORBIDDEN",
+                    "Ez duzu beharrezko rolik baliabide hau kontsultatzeko.",
+                    "Admin, AdminIT edo Kudeatzailea rola behar da."));
+            }
+        };
+    });
+builder.Services.AddAuthorization();
+
+// NHibernate + FluentNHibernate ISessionFactory Singleton gisa erregistratu (behin bakarrik eraikitzen da)
+builder.Services.AddSingleton<ISessionFactory>(_ => NHibernateHelper.SortuSessionFactory(builder.Configuration));
 
 // Datu-basearen konexioa denbora errealean (atzeko planoan) monitorizatzen duen zerbitzua
 builder.Services.AddHostedService<DatuBaseaMonitorZerbitzua>();
@@ -27,11 +69,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// HTTP eskaeren hoditeria konfiguratu
-if (app.Environment.IsDevelopment())
+// HTTP eskaeren hoditeria konfiguratu — OpenAPI + Swagger UI ingurune guztietan (Docker barne)
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
 {
-    app.MapOpenApi();
-}
+    options.SwaggerEndpoint("/openapi/v1.json", "1T Jatetxea REST API v1 (NHibernate)");
+    options.RoutePrefix = "swagger";
+    options.DocumentTitle = "1T Jatetxea — REST API Dokumentazio Interaktiboa";
+});
 
 app.UseCors("AllowAll");
 
@@ -73,8 +118,9 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-    catch (MySqlException ex)
+    catch (Exception ex) when (ex is MySqlException || ex is GenericADOException || ex.InnerException is MySqlException)
     {
+        var mysqlEx = ex as MySqlException ?? ex.InnerException as MySqlException;
         context.Response.StatusCode = 503;
         context.Response.ContentType = "application/json";
         var errorea = new
@@ -82,7 +128,7 @@ app.Use(async (context, next) =>
             status = "error",
             code = 503,
             message = "Datu-basea ez dago erabilgarri une honetan.",
-            xehetasuna = ex.Message,
+            xehetasuna = mysqlEx?.Message ?? ex.Message,
             soluzioa = "Egiaztatu Docker edukiontzia ('jatetxea_mysql') 3308 portuan martxan dagoela ('docker compose up -d')."
         };
         await context.Response.WriteAsJsonAsync(errorea);
@@ -105,6 +151,7 @@ if (Directory.Exists(webAppPath))
     });
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Erro bidean APIaren deskribapen, datu-basearen egoera eta endpoint zerrenda osoa eskaini
@@ -132,9 +179,13 @@ app.MapGet("/", () =>
             ? null
             : "Datu-basea pizteko IT Kontrol Zentroa (http://localhost:5000) erabili edo kontsolan 'docker compose up -d jatetxea-db' exekutatu.",
         bertsioa = "v1",
-        arkitektura = "3-mailako arkitektura (Web PHP, Desktop C#, Desktop JavaFX)",
-        transakzioak = "SELECT ... FOR UPDATE errenkada-mailako blokeo pesimistak lehengaietan eta erreserbetan",
-        endpointsGuztira = 32,
+        orm = "NHibernate 5.7 + FluentNHibernate 3.5 (MySQL8InnoDBDialect)",
+        segurtasuna = "BCrypt PIN/Pasahitzak + JWT Bearer (HS256) + RBAC",
+        swagger = "/swagger",
+        openapi = "/openapi/v1.json",
+        arkitektura = "3-mailako arkitektura (Web PHP, Desktop C#, Desktop JavaFX, Android/TV Kotlin, Flutter)",
+        transakzioak = "NHibernate ITransaction (IsolationLevel.ReadCommitted) + LockMode.Upgrade (SELECT ... FOR UPDATE) blokeo pesimistak",
+        endpointsGuztira = 38,
         endpoints = new[]
         {
             // 1. Mahaiak (/api/v1/mahaiak)
@@ -204,7 +255,16 @@ app.MapGet("/", () =>
             "GET    /api/v1/fakturak/{id} - Faktura bakarra ID bidez",
             "POST   /api/v1/fakturak - Faktura berria erregistratu (salmenta edo hornitzaile gastua)",
             "PUT    /api/v1/fakturak/{id}/egoera - Fakturaren egoera aldatu (Ordaindua, Zain, Ezeztatua)",
-            "DELETE /api/v1/fakturak/{id} - Faktura ezabatu"
+            "DELETE /api/v1/fakturak/{id} - Faktura ezabatu",
+
+            // 10. Analitika, Paginazioa, Batch Transakzioak eta JWT Segurtasuna
+            "GET    /swagger - OpenAPI / Swagger UI dokumentazio interaktiboa",
+            "GET    /api/v1/langileak/nire-profila [JWT] - Autentifikatutako langilearen profila",
+            "GET    /api/v1/txostenak/laburpena (?hasiera=...&amaiera=...&top=5) - Analitika agregatua (Top platerak, ordainketak, langileak, biltegia)",
+            "GET    /api/v1/txostenak/platerak-bilatu (?search=...&kategoria=...&minPrezioa=...&maxPrezioa=...&sortBy=...&page=1&pageSize=10) - Bilaketa eta paginazio dinamikoa",
+            "GET    /api/v1/txostenak/auditoria-segurua [JWT: Admin/AdminIT/Kudeatzailea] - Rol bidez babestutako auditoria",
+            "POST   /api/v1/eskaerak/komanda-osoa - Batch transakzio atomikoa (komanda + hainbat plater + stock deskontu metatua)",
+            "POST   /api/v1/ordainketak/zatikatu - Ordainketa zatitua hainbat metodotan + faktura automatikoa transakzio bakarrean"
         }
     });
 });

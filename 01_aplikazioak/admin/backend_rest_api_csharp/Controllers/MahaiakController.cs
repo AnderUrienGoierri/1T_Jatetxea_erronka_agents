@@ -1,7 +1,9 @@
 using System.Data;
 using Jatetxea.Api.DTO;
+using Jatetxea.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Jatetxea.Api.Controllers;
 
@@ -9,55 +11,55 @@ namespace Jatetxea.Api.Controllers;
 [Route("api/v1/mahaiak")]
 public class MahaiakController : BaseApiKontroladorea
 {
-    public MahaiakController(IConfiguration config) : base(config) { }
+    public MahaiakController(ISessionFactory sessionFactory) : base(sessionFactory) { }
 
     /// <summary>
-    /// Mahai guztien zerrenda lortzen du.
+    /// Mahai guztien zerrenda lortzen du (zerbitzu eta erreserba aktiboen adierazleekin).
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> LortuGuztiak([FromQuery] bool barneEzabatuak = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = @"
-            SELECT m.id, m.zenbakia, m.edukiera, m.kokapena, m.egoera, m.ezabatua,
-                   (m.egoera IN ('Okupatuta', 'Garbitzen') OR EXISTS (
-                       SELECT 1 FROM eskaerak e
-                       WHERE e.mahaia_id = m.id AND e.ezabatua = 0
-                         AND e.egoera NOT IN ('Kobratua', 'Ezeztatua')
-                   )) AS zerbitzuan,
-                   EXISTS (
-                       SELECT 1 FROM erreserbak r
-                       WHERE r.mahaia_id = m.id AND r.ezabatua = 0
-                         AND r.data >= CURRENT_DATE
-                         AND r.egoera IN ('Baieztatua', 'Eserita')
-                   ) AS erreserba_aktiboa
-            FROM mahaiak m";
-        if (!barneEzabatuak) sql += " WHERE ezabatua = 0";
-        sql += " ORDER BY zenbakia ASC;";
+        using var session = IrekiSaioa();
+        var query = session.Query<Mahaia>();
+        if (!barneEzabatuak)
+            query = query.Where(m => !m.Ezabatua);
 
-        var zerrenda = new List<MahaiaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var mahaiak = await query
+            .OrderBy(m => m.Zenbakia)
+            .ToListAsync();
+
+        var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+        var eskaeraAktiboMahaiak = (await session.Query<Eskaera>()
+            .Where(e => !e.Ezabatua && !itxitakoak.Contains(e.Egoera))
+            .Select(e => e.Mahaia.Id)
+            .Distinct()
+            .ToListAsync()).ToHashSet();
+
+        DateTime gaur = DateTime.Today;
+        var erreserbaEgoeraAktiboak = new[] { "Baieztatua", "Eserita" };
+        var erreserbaAktiboMahaiak = (await session.Query<Erreserba>()
+            .Where(r => !r.Ezabatua && r.Data >= gaur && erreserbaEgoeraAktiboak.Contains(r.Egoera))
+            .Select(r => r.Mahaia.Id)
+            .Distinct()
+            .ToListAsync()).ToHashSet();
+
+        var zerrenda = mahaiak.Select(m => new MahaiaDTO
         {
-            zerrenda.Add(new MahaiaDTO
-            {
-                Id = reader.GetInt32("id"),
-                Zenbakia = reader.GetInt32("zenbakia"),
-                Edukiera = reader.GetInt32("edukiera"),
-                Kokapena = reader.GetString("kokapena"),
-                Egoera = reader.GetString("egoera"),
-                Zerbitzuan = reader.GetBoolean("zerbitzuan"),
-                ErreserbaAktiboa = reader.GetBoolean("erreserba_aktiboa"),
-                Ezabatua = reader.GetBoolean("ezabatua")
-            });
-        }
+            Id = m.Id,
+            Zenbakia = m.Zenbakia,
+            Edukiera = m.Edukiera,
+            Kokapena = m.Kokapena,
+            Egoera = m.Egoera,
+            Zerbitzuan = m.Egoera is "Okupatuta" or "Garbitzen" || eskaeraAktiboMahaiak.Contains(m.Id),
+            ErreserbaAktiboa = erreserbaAktiboMahaiak.Contains(m.Id),
+            Ezabatua = m.Ezabatua
+        }).ToList();
 
         return SuccessList(zerrenda, 200, "Mahaiak ondo berreskuratu dira.");
     }
 
     /// <summary>
-    /// Data eta txanda jakin baterako libre dauden mahaiak lortzen ditu (kokapena eta pertsona kopuruaren arabera iragazgarria).
+    /// Data eta txanda jakin baterako libre dauden mahaiak lortzen ditu.
     /// </summary>
     [HttpGet("disponibleak")]
     public async Task<IActionResult> LortuDisponibleak(
@@ -66,45 +68,42 @@ public class MahaiakController : BaseApiKontroladorea
         [FromQuery] int? pertsonaKopurua = null,
         [FromQuery] string? kokapena = null)
     {
-        await using var kon = await SortuKonexioaAsync();
-        string sql = @"
-            SELECT m.id, m.zenbakia, m.edukiera, m.kokapena, m.egoera, m.ezabatua 
-            FROM mahaiak m
-            WHERE m.ezabatua = 0
-              AND m.id NOT IN (
-                  SELECT e.mahaia_id FROM erreserbak e 
-                  WHERE e.data = @data AND e.txanda = @txanda AND e.ezabatua = 0
-              )";
+        if (!DateTime.TryParse(data, out DateTime dataParsed))
+            return BadRequestError("Data formatua ez da baliozkoa (erabili yyyy-MM-dd).");
 
+        using var session = IrekiSaioa();
+        DateTime egunData = dataParsed.Date;
+
+        var okupatutakoMahaiIdak = await session.Query<Erreserba>()
+            .Where(r => r.Data == egunData && r.Txanda == txanda && !r.Ezabatua)
+            .Select(r => r.Mahaia.Id)
+            .Distinct()
+            .ToListAsync();
+
+        var query = session.Query<Mahaia>()
+            .Where(m => !m.Ezabatua);
+
+        if (okupatutakoMahaiIdak.Count > 0)
+            query = query.Where(m => !okupatutakoMahaiIdak.Contains(m.Id));
         if (pertsonaKopurua.HasValue && pertsonaKopurua.Value > 0)
-            sql += " AND m.edukiera >= @pax";
+            query = query.Where(m => m.Edukiera >= pertsonaKopurua.Value);
         if (!string.IsNullOrWhiteSpace(kokapena) && kokapena != "Guztiak")
-            sql += " AND m.kokapena = @kokapena";
+            query = query.Where(m => m.Kokapena == kokapena);
 
-        sql += " ORDER BY m.kokapena ASC, m.zenbakia ASC;";
+        var libreak = await query
+            .OrderBy(m => m.Kokapena)
+            .ThenBy(m => m.Zenbakia)
+            .ToListAsync();
 
-        var zerrenda = new List<MahaiaDTO>();
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@data", data);
-        cmd.Parameters.AddWithValue("@txanda", txanda);
-        if (pertsonaKopurua.HasValue && pertsonaKopurua.Value > 0)
-            cmd.Parameters.AddWithValue("@pax", pertsonaKopurua.Value);
-        if (!string.IsNullOrWhiteSpace(kokapena) && kokapena != "Guztiak")
-            cmd.Parameters.AddWithValue("@kokapena", kokapena);
-
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var zerrenda = libreak.Select(m => new MahaiaDTO
         {
-            zerrenda.Add(new MahaiaDTO
-            {
-                Id = reader.GetInt32("id"),
-                Zenbakia = reader.GetInt32("zenbakia"),
-                Edukiera = reader.GetInt32("edukiera"),
-                Kokapena = reader.GetString("kokapena"),
-                Egoera = "Libre",
-                Ezabatua = false
-            });
-        }
+            Id = m.Id,
+            Zenbakia = m.Zenbakia,
+            Edukiera = m.Edukiera,
+            Kokapena = m.Kokapena,
+            Egoera = "Libre",
+            Ezabatua = false
+        }).ToList();
 
         return SuccessList(zerrenda, 200, "Mahai libreak ondo berreskuratu dira.");
     }
@@ -115,40 +114,30 @@ public class MahaiakController : BaseApiKontroladorea
     [HttpGet("{id:int}")]
     public async Task<IActionResult> LortuIdBidez(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        const string sql = @"
-            SELECT m.id, m.zenbakia, m.edukiera, m.kokapena, m.egoera, m.ezabatua,
-                   (m.egoera IN ('Okupatuta', 'Garbitzen') OR EXISTS (
-                       SELECT 1 FROM eskaerak e
-                       WHERE e.mahaia_id = m.id AND e.ezabatua = 0
-                         AND e.egoera NOT IN ('Kobratua', 'Ezeztatua')
-                   )) AS zerbitzuan,
-                   EXISTS (
-                       SELECT 1 FROM erreserbak r
-                       WHERE r.mahaia_id = m.id AND r.ezabatua = 0
-                         AND r.data >= CURRENT_DATE
-                         AND r.egoera IN ('Baieztatua', 'Eserita')
-                   ) AS erreserba_aktiboa
-            FROM mahaiak m
-            WHERE m.id = @id
-            LIMIT 1;";
-
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
+        using var session = IrekiSaioa();
+        var m = await session.GetAsync<Mahaia>(id);
+        if (m == null)
             return NotFoundError($"Ez da aurkitu {id} ID-a duen mahaia.");
+
+        var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+        bool eskaeraAktiboa = await session.Query<Eskaera>()
+            .AnyAsync(e => e.Mahaia.Id == m.Id && !e.Ezabatua && !itxitakoak.Contains(e.Egoera));
+
+        DateTime gaur = DateTime.Today;
+        var erreserbaAktiboak = new[] { "Baieztatua", "Eserita" };
+        bool erreserbaAktiboa = await session.Query<Erreserba>()
+            .AnyAsync(r => r.Mahaia.Id == m.Id && !r.Ezabatua && r.Data >= gaur && erreserbaAktiboak.Contains(r.Egoera));
 
         var dto = new MahaiaDTO
         {
-            Id = reader.GetInt32("id"),
-            Zenbakia = reader.GetInt32("zenbakia"),
-            Edukiera = reader.GetInt32("edukiera"),
-            Kokapena = reader.GetString("kokapena"),
-            Egoera = reader.GetString("egoera"),
-            Zerbitzuan = reader.GetBoolean("zerbitzuan"),
-            ErreserbaAktiboa = reader.GetBoolean("erreserba_aktiboa"),
-            Ezabatua = reader.GetBoolean("ezabatua")
+            Id = m.Id,
+            Zenbakia = m.Zenbakia,
+            Edukiera = m.Edukiera,
+            Kokapena = m.Kokapena,
+            Egoera = m.Egoera,
+            Zerbitzuan = m.Egoera is "Okupatuta" or "Garbitzen" || eskaeraAktiboa,
+            ErreserbaAktiboa = erreserbaAktiboa,
+            Ezabatua = m.Ezabatua
         };
 
         return Success(dto, 200, "Mahaia ondo aurkitu da.");
@@ -163,43 +152,48 @@ public class MahaiakController : BaseApiKontroladorea
         if (!ModelState.IsValid)
             return BadRequestError("Datu baliogabeak bidali dira.");
 
-        await using var kon = await SortuKonexioaAsync();
-        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        using var session = IrekiSaioa();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(session);
         if (lockError != null)
             return lockError;
-        const string sql = @"
-            INSERT INTO mahaiak (zenbakia, edukiera, kokapena, egoera, ezabatua, sortze_data)
-            VALUES (@zenbakia, @edukiera, @kokapena, 'Libre', 0, CURRENT_TIMESTAMP);
-            SELECT LAST_INSERT_ID();";
 
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
         try
         {
-            await using var cmd = new MySqlCommand(sql, kon);
-            cmd.Parameters.AddWithValue("@zenbakia", dto.Zenbakia);
-            cmd.Parameters.AddWithValue("@edukiera", dto.Edukiera);
-            cmd.Parameters.AddWithValue("@kokapena", dto.Kokapena);
-
-            var sortutakoId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-            var emaitza = new MahaiaDTO
+            var mahaia = new Mahaia
             {
-                Id = sortutakoId,
                 Zenbakia = dto.Zenbakia,
                 Edukiera = dto.Edukiera,
                 Kokapena = dto.Kokapena,
+                Egoera = "Libre",
+                Ezabatua = false,
+                SortzeData = DateTime.Now
+            };
+
+            await session.SaveAsync(mahaia);
+            await tx.CommitAsync();
+
+            var emaitza = new MahaiaDTO
+            {
+                Id = mahaia.Id,
+                Zenbakia = mahaia.Zenbakia,
+                Edukiera = mahaia.Edukiera,
+                Kokapena = mahaia.Kokapena,
                 Egoera = "Libre",
                 Ezabatua = false
             };
 
             return CreatedResult(emaitza, 201, "Mahaia arrakastaz sortu da.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
+            await RollbackSeguruaAsync(tx);
             return ConflictError($"Dagoeneko existitzen da {dto.Zenbakia} zenbakia duen mahaia.");
         }
     }
 
     /// <summary>
-    /// Mahaiaren xehetasunak aldatzen ditu mahaia libre eta erreserbarik gabe dagoenean.
+    /// Mahaiaren xehetasunak aldatzen ditu blokeo pesimistan (LockMode.Upgrade), mahaia libre eta erreserbarik gabe dagoenean.
     /// </summary>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Eguneratu(int id, [FromBody] MahaiaEguneratuDto dto)
@@ -211,77 +205,66 @@ public class MahaiakController : BaseApiKontroladorea
         if (!kokapenBaliozkoak.Contains(dto.Kokapena, StringComparer.Ordinal))
             return BadRequestError($"Kokapena ez da baliozkoa. Balio onargarriak: {string.Join(", ", kokapenBaliozkoak)}");
 
-        await using var kon = await SortuKonexioaAsync();
-        await using var tx = await kon.BeginTransactionAsync(IsolationLevel.ReadCommitted);
-        const string lockSql = "SELECT egoera, ezabatua FROM mahaiak WHERE id = @id FOR UPDATE;";
-        string egoera;
-        await using (var lockCmd = new MySqlCommand(lockSql, kon, tx))
-        {
-            lockCmd.Parameters.AddWithValue("@id", id);
-            await using var reader = await lockCmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync())
-                return NotFoundError($"Ez da aurkitu {id} ID-a duen mahaia.");
-            if (reader.GetBoolean("ezabatua"))
-                return ConflictError("Desgaitutako mahaia ezin da editatu.");
-            egoera = reader.GetString("egoera");
-        }
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        const string orderSql = @"
-            SELECT EXISTS(
-                SELECT 1 FROM eskaerak
-                WHERE mahaia_id = @id AND ezabatua = 0
-                  AND egoera NOT IN ('Kobratua', 'Ezeztatua')
-            );";
-        await using (var orderCmd = new MySqlCommand(orderSql, kon, tx))
-        {
-            orderCmd.Parameters.AddWithValue("@id", id);
-            if (Convert.ToInt32(await orderCmd.ExecuteScalarAsync()) != 0)
-                return ConflictError("Mahaia ezin da editatu eskaera aktibo bat duen bitartean.");
-        }
-
-        const string reservationSql = @"
-            SELECT EXISTS(
-                SELECT 1 FROM erreserbak
-                WHERE mahaia_id = @id AND ezabatua = 0
-                  AND data >= CURRENT_DATE
-                  AND egoera IN ('Baieztatua', 'Eserita')
-            );";
-        await using (var reservationCmd = new MySqlCommand(reservationSql, kon, tx))
-        {
-            reservationCmd.Parameters.AddWithValue("@id", id);
-            if (Convert.ToInt32(await reservationCmd.ExecuteScalarAsync()) != 0)
-                return ConflictError("Mahaia ezin da editatu gaurko edo etorkizuneko erreserba aktiboak dituen bitartean.");
-        }
-
-        if (!string.Equals(egoera, "Libre", StringComparison.Ordinal))
-            return ConflictError($"Mahaia '{egoera}' egoeran dago. Libre dagoenean bakarrik editatu daiteke.");
-
-        const string updateSql = @"
-            UPDATE mahaiak
-            SET zenbakia = @zenbakia, edukiera = @edukiera, kokapena = @kokapena
-            WHERE id = @id AND ezabatua = 0;";
         try
         {
-            await using var cmd = new MySqlCommand(updateSql, kon, tx);
-            cmd.Parameters.AddWithValue("@zenbakia", dto.Zenbakia);
-            cmd.Parameters.AddWithValue("@edukiera", dto.Edukiera);
-            cmd.Parameters.AddWithValue("@kokapena", dto.Kokapena);
-            cmd.Parameters.AddWithValue("@id", id);
-            await cmd.ExecuteNonQueryAsync();
+            var mahaia = await session.GetAsync<Mahaia>(id, LockMode.Upgrade);
+            if (mahaia == null)
+            {
+                await RollbackSeguruaAsync(tx);
+                return NotFoundError($"Ez da aurkitu {id} ID-a duen mahaia.");
+            }
+            if (mahaia.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Desgaitutako mahaia ezin da editatu.");
+            }
+
+            var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+            bool baduEskaera = await session.Query<Eskaera>()
+                .AnyAsync(e => e.Mahaia.Id == id && !e.Ezabatua && !itxitakoak.Contains(e.Egoera));
+            if (baduEskaera)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Mahaia ezin da editatu eskaera aktibo bat duen bitartean.");
+            }
+
+            DateTime gaur = DateTime.Today;
+            var erreserbaAktiboak = new[] { "Baieztatua", "Eserita" };
+            bool baduErreserba = await session.Query<Erreserba>()
+                .AnyAsync(r => r.Mahaia.Id == id && !r.Ezabatua && r.Data >= gaur && erreserbaAktiboak.Contains(r.Egoera));
+            if (baduErreserba)
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError("Mahaia ezin da editatu gaurko edo etorkizuneko erreserba aktiboak dituen bitartean.");
+            }
+
+            if (!string.Equals(mahaia.Egoera, "Libre", StringComparison.Ordinal))
+            {
+                await RollbackSeguruaAsync(tx);
+                return ConflictError($"Mahaia '{mahaia.Egoera}' egoeran dago. Libre dagoenean bakarrik editatu daiteke.");
+            }
+
+            mahaia.Zenbakia = dto.Zenbakia;
+            mahaia.Edukiera = dto.Edukiera;
+            mahaia.Kokapena = dto.Kokapena;
+            await session.UpdateAsync(mahaia);
             await tx.CommitAsync();
 
             return Success(new
             {
                 id,
-                zenbakia = dto.Zenbakia,
-                edukiera = dto.Edukiera,
-                kokapena = dto.Kokapena,
-                egoera
+                zenbakia = mahaia.Zenbakia,
+                edukiera = mahaia.Edukiera,
+                kokapena = mahaia.Kokapena,
+                egoera = mahaia.Egoera
             }, 200, "Mahaiaren datuak eguneratu dira.");
         }
-        catch (MySqlException ex) when (ex.Number == 1062)
+        catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1062)
         {
-            await tx.RollbackAsync();
+            await RollbackSeguruaAsync(tx);
             return ConflictError($"Dagoeneko existitzen da {dto.Zenbakia} zenbakia duen mahaia.");
         }
     }
@@ -296,34 +279,36 @@ public class MahaiakController : BaseApiKontroladorea
         if (!baliozkoak.Contains(dto.Egoera))
             return BadRequestError($"Egoera ez da baliozkoa. Balio onargarriak: {string.Join(", ", baliozkoak)}");
 
-        await using var kon = await SortuKonexioaAsync();
+        using var session = IrekiSaioa();
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
+
+        var mahaia = await session.GetAsync<Mahaia>(id, LockMode.Upgrade);
+        if (mahaia == null || mahaia.Ezabatua)
+        {
+            await RollbackSeguruaAsync(tx);
+            return NotFoundError($"Ez da aurkitu {id} ID-a duen mahai aktiborik.");
+        }
 
         if (dto.Egoera.Equals("Libre", StringComparison.OrdinalIgnoreCase) ||
             dto.Egoera.Equals("Garbitzen", StringComparison.OrdinalIgnoreCase))
         {
-            const string sqlCheckPlaterak = @"
-                SELECT COUNT(*) 
-                FROM eskaerak e 
-                JOIN eskaera_lerroak el ON e.id = el.eskaera_id
-                WHERE e.mahaia_id = @id AND e.ezabatua = 0 AND e.egoera NOT IN ('Kobratua', 'Ezeztatua');";
-            await using var cmdCheckP = new MySqlCommand(sqlCheckPlaterak, kon);
-            cmdCheckP.Parameters.AddWithValue("@id", id);
-            long platerKop = Convert.ToInt64(await cmdCheckP.ExecuteScalarAsync());
+            var itxitakoak = new[] { "Kobratua", "Ezeztatua" };
+            long platerKop = await session.Query<EskaeraLerroa>()
+                .LongCountAsync(el =>
+                    el.Eskaera.Mahaia.Id == id &&
+                    !el.Eskaera.Ezabatua &&
+                    !itxitakoak.Contains(el.Eskaera.Egoera));
+
             if (platerKop > 0)
             {
+                await RollbackSeguruaAsync(tx);
                 return ConflictError($"Mahaia ezin da '{dto.Egoera}' jarri {platerKop} produktu daudelako kobratzeko eskari aktiboan. Kontua kobratu edo produktuak ezabatu behar dira lehenik.");
             }
         }
 
-        const string sql = "UPDATE mahaiak SET egoera = @egoera WHERE id = @id AND ezabatua = 0;";
-
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@egoera", dto.Egoera);
-        cmd.Parameters.AddWithValue("@id", id);
-
-        int errenkadak = await cmd.ExecuteNonQueryAsync();
-        if (errenkadak == 0)
-            return NotFoundError($"Ez da aurkitu {id} ID-a duen mahai aktiborik.");
+        mahaia.Egoera = dto.Egoera;
+        await session.UpdateAsync(mahaia);
+        await tx.CommitAsync();
 
         return Success(new { id, egoera = dto.Egoera }, 200, "Mahaiaren egoera eguneratu da.");
     }
@@ -334,37 +319,48 @@ public class MahaiakController : BaseApiKontroladorea
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Ezabatu(int id, [FromQuery] bool hard = false)
     {
-        await using var kon = await SortuKonexioaAsync();
-        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        using var session = IrekiSaioa();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(session);
         if (lockError != null)
             return lockError;
 
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
+
         if (hard)
         {
-            const string sqlHard = "DELETE FROM mahaiak WHERE id = @id;";
             try
             {
-                await using var cmd = new MySqlCommand(sqlHard, kon);
-                cmd.Parameters.AddWithValue("@id", id);
-                int errenkadak = await cmd.ExecuteNonQueryAsync();
-                if (errenkadak == 0)
+                var mahaia = await session.GetAsync<Mahaia>(id, LockMode.Upgrade);
+                if (mahaia == null)
+                {
+                    await RollbackSeguruaAsync(tx);
                     return NotFoundError($"Ez da aurkitu {id} ID-a duen mahaia.");
+                }
+
+                await session.DeleteAsync(mahaia);
+                await tx.CommitAsync();
 
                 return Success(new { id, ezabatua = true, mota = "hard" }, 200, "Mahaia behin betiko ezabatu da.");
             }
-            catch (MySqlException ex) when (ex.Number == 1451)
+            catch (Exception ex) when (LortuMySqlSalbuespena(ex)?.Number == 1451)
             {
+                await RollbackSeguruaAsync(tx);
                 return ConflictError("Mahaia ezin da behin betiko ezabatu, erlazionatutako erreserbak edo eskaerak dituelako.");
             }
         }
         else
         {
-            const string sqlSoft = "UPDATE mahaiak SET ezabatua = 1, ezabatze_data = CURRENT_TIMESTAMP WHERE id = @id AND ezabatua = 0;";
-            await using var cmd = new MySqlCommand(sqlSoft, kon);
-            cmd.Parameters.AddWithValue("@id", id);
-            int errenkadak = await cmd.ExecuteNonQueryAsync();
-            if (errenkadak == 0)
+            var mahaia = await session.GetAsync<Mahaia>(id, LockMode.Upgrade);
+            if (mahaia == null || mahaia.Ezabatua)
+            {
+                await RollbackSeguruaAsync(tx);
                 return NotFoundError($"Ez da aurkitu {id} ID-a duen mahai aktiborik.");
+            }
+
+            mahaia.Ezabatua = true;
+            mahaia.EzabatzeData = DateTime.Now;
+            await session.UpdateAsync(mahaia);
+            await tx.CommitAsync();
 
             return Success(new { id, ezabatua = true, mota = "soft" }, 200, "Mahaia desgaitu da (soft delete).");
         }
@@ -376,17 +372,24 @@ public class MahaiakController : BaseApiKontroladorea
     [HttpPut("{id:int}/restore")]
     public async Task<IActionResult> Berreskuratu(int id)
     {
-        await using var kon = await SortuKonexioaAsync();
-        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(kon);
+        using var session = IrekiSaioa();
+        IActionResult? lockError = await EgiaztatuZerbitzuaItxitaDagoelaAsync(session);
         if (lockError != null)
             return lockError;
-        const string sql = "UPDATE mahaiak SET ezabatua = 0, ezabatze_data = NULL WHERE id = @id AND ezabatua = 1;";
 
-        await using var cmd = new MySqlCommand(sql, kon);
-        cmd.Parameters.AddWithValue("@id", id);
-        int errenkadak = await cmd.ExecuteNonQueryAsync();
-        if (errenkadak == 0)
+        using var tx = session.BeginTransaction(IsolationLevel.ReadCommitted);
+
+        var mahaia = await session.GetAsync<Mahaia>(id, LockMode.Upgrade);
+        if (mahaia == null || !mahaia.Ezabatua)
+        {
+            await RollbackSeguruaAsync(tx);
             return NotFoundError($"Ez da aurkitu berreskuratzeko {id} ID-a duen mahairik.");
+        }
+
+        mahaia.Ezabatua = false;
+        mahaia.EzabatzeData = null;
+        await session.UpdateAsync(mahaia);
+        await tx.CommitAsync();
 
         return Success(new { id, berreskuratua = true }, 200, "Mahaia berreskuratu da.");
     }
