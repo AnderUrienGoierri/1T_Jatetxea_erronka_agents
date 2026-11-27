@@ -90,7 +90,7 @@ Guztia eguneratuta geratzen denez, mugikorreko emuladorea edo JavaFX aplikazioa 
 
 #### Ubuntu DMZ zerbitzariko Odoo
 
-Ubuntu zerbitzariko instalazioa `/home/taldea1/odoo-erp` karpetan dago, tokiko simulazioko Compose konfiguraziotik bereizita. Odoo `127.0.0.1:8070` helbidean bakarrik entzuten du, eta Tailscale Serve-k tailnetera bideratzen du; PostgreSQL-k ez du hostean atakarik argitaratzen. Erabili `tailscale serve status` komandoak erakusten duen izen osoa, ez Tailscale IPa, proxyak host-izena behar baitu.
+Ubuntu zerbitzariko instalazioa `/home/taldea1/odoo-erp` karpetan dago, tokiko simulazioko Compose konfiguraziotik bereizita. Odoo `127.0.0.1:8070` helbidean bakarrik entzuten du, eta Tailscale Serve-k TCP bidez tailnetera bideratzen du; PostgreSQL-k ez du hostean atakarik argitaratzen. Erabili `tailscale serve status` komandoak erakusten duen Tailscale IPa edo izen osoa.
 
 ```bash
 cd ~/odoo-erp
