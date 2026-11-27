@@ -87,6 +87,8 @@ desktop.ini
 *.log
 ~$*.xlsx
 ~$*.docx
+__pycache__/
+*.py[cod]
 
 # 9. Tokiko Instalazio Markatzaileak (Makina bakoitzak berea sortuko du morroiarekin)
 konfigurazioa_amaituta.json
