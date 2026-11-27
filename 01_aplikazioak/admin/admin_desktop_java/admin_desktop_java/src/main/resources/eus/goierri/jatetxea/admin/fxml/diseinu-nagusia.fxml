@@ -32,6 +32,7 @@
             <Button text="Osagaiak eta inbentarioa" onAction="#showIngredients" maxWidth="Infinity" styleClass="nav-button"/>
             <Button text="Mahaiak" onAction="#showTables" maxWidth="Infinity" styleClass="nav-button"/>
             <Button text="Fakturak eta kontuak" onAction="#showInvoices" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Barne Txata" onAction="#showChat" maxWidth="Infinity" styleClass="nav-button"/>
             <VBox VBox.vgrow="ALWAYS"/>
             <Label text="Kudeatzailearen gunea" styleClass="sidebar-note"/>
         </VBox>

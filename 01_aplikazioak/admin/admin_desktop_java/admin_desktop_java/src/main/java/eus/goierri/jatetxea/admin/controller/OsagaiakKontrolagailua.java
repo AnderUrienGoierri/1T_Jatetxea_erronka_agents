@@ -1,6 +1,6 @@
 package eus.goierri.jatetxea.admin.controller;
 
-import eus.goierri.jatetxea.admin.api.ApiBezeroa;
+import eus.goierri.jatetxea.admin.api.ApiKontratua;
 import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.model.Lehengaia;
 import eus.goierri.jatetxea.admin.model.LehengaiaAlerta;
@@ -18,8 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class OsagaiakKontrolagailua {
-    private final ApiBezeroa apiClient;
+public final class OsagaiakKontrolagailua extends BaseAdminKontrolagailua {
     private final ObservableList<Lehengaia> ingredients = FXCollections.observableArrayList();
     private final ObservableList<String> stockAlerts = FXCollections.observableArrayList();
 
@@ -54,8 +53,13 @@ public final class OsagaiakKontrolagailua {
         this(null);
     }
 
-    public OsagaiakKontrolagailua(ApiBezeroa apiClient) {
-        this.apiClient = apiClient;
+    public OsagaiakKontrolagailua(ApiKontratua apiClient) {
+        super(apiClient, null);
+    }
+
+    @Override
+    public String getPantailaIzena() {
+        return "Osagaiak eta inbentarioa";
     }
 
     @FXML
@@ -90,7 +94,8 @@ public final class OsagaiakKontrolagailua {
     }
 
     @FXML
-    private void refresh() {
+    @Override
+    public void refresh() {
         ingredientsMessage.setText("Osagaiak kargatzen...");
         EkintzaAsinkronoak.run(() -> new InventoryData(
                         apiClient.getList("/lehengaiak", Lehengaia.class),

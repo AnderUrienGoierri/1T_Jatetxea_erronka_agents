@@ -1,12 +1,13 @@
 package eus.goierri.jatetxea.admin.controller;
 
-import eus.goierri.jatetxea.admin.api.ApiBezeroa;
-import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.KudeatzaileSaioa;
+import eus.goierri.jatetxea.admin.api.ApiKontratua;
+import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.model.Langilea;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,9 +20,7 @@ import javafx.scene.control.TextField;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class LangileakKontrolagailua {
-    private final ApiBezeroa apiClient;
-    private final KudeatzaileSaioa session;
+public final class LangileakKontrolagailua extends BaseAdminKontrolagailua {
     private final ObservableList<Langilea> employees = FXCollections.observableArrayList();
 
     @FXML private TableView<Langilea> staffTable;
@@ -30,6 +29,7 @@ public final class LangileakKontrolagailua {
     @FXML private TableColumn<Langilea, String> usernameColumn;
     @FXML private TableColumn<Langilea, String> roleColumn;
     @FXML private TableColumn<Langilea, String> activeColumn;
+    @FXML private TableColumn<Langilea, String> chatColumn;
     @FXML private TextField nameField;
     @FXML private TextField surnameField;
     @FXML private TextField usernameField;
@@ -41,6 +41,8 @@ public final class LangileakKontrolagailua {
     @FXML private Button createButton;
     @FXML private Button editButton;
     @FXML private Button cancelEditButton;
+    @FXML private Button toggleChatButton;
+    @FXML private Button toggleActiveButton;
     @FXML private Button deactivateButton;
     @FXML private Label staffMessage;
     private int editingEmployeeId;
@@ -49,24 +51,29 @@ public final class LangileakKontrolagailua {
         this(null, null);
     }
 
-    public LangileakKontrolagailua(ApiBezeroa apiClient) {
+    public LangileakKontrolagailua(ApiKontratua apiClient) {
         this(apiClient, null);
     }
 
-    public LangileakKontrolagailua(ApiBezeroa apiClient, KudeatzaileSaioa session) {
-        this.apiClient = apiClient;
-        this.session = session;
+    public LangileakKontrolagailua(ApiKontratua apiClient, KudeatzaileSaioa session) {
+        super(apiClient, session);
+    }
+
+    @Override
+    public String getPantailaIzena() {
+        return "Langileak";
     }
 
     @FXML
     private void initialize() {
         idColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue().id));
-        nameColumn.setCellValueFactory(cell -> new javafx.beans.property.ReadOnlyStringWrapper(cell.getValue().izena));
-        usernameColumn.setCellValueFactory(
-                cell -> new javafx.beans.property.ReadOnlyStringWrapper(cell.getValue().erabiltzailea));
-        roleColumn.setCellValueFactory(cell -> new javafx.beans.property.ReadOnlyStringWrapper(cell.getValue().rola));
-        activeColumn.setCellValueFactory(cell -> new javafx.beans.property.ReadOnlyStringWrapper(
+        nameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().izena));
+        usernameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().erabiltzailea));
+        roleColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().rola));
+        activeColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
                 cell.getValue().aktibo ? "Bai" : "Ez"));
+        chatColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
+                cell.getValue().txataAktibo ? "Aktibatuta" : "Desaktibatuta"));
         staffTable.setItems(employees);
         roleCombo.setItems(FXCollections.observableArrayList(
                 "Zerbitzaria", "Sukaldaria", "Barrakoa", "Biltegikoa",
@@ -76,20 +83,25 @@ public final class LangileakKontrolagailua {
                 (observable, oldValue, selected) -> updateSelectionButtons());
         beginNewStaff();
         updateSelectionButtons();
-        if (apiClient != null) {
+        if (apiPrestDago()) {
             refresh();
         }
     }
 
     @FXML
-    private void refresh() {
-        staffMessage.setText("Langileak kargatzen...");
+    @Override
+    public void refresh() {
+        if (!apiPrestDago()) {
+            return;
+        }
+        ezarriMezua(staffMessage, "Langileak kargatzen...", null);
         EkintzaAsinkronoak.run(() -> apiClient.getList("/langileak", Langilea.class),
                 data -> {
                     employees.setAll(data);
-                    staffMessage.setText(data.size() + " langile.");
+                    ezarriMezua(staffMessage, data.size() + " langile.", null);
+                    updateSelectionButtons();
                 },
-                error -> staffMessage.setText("Ezin izan dira langileak kargatu: " + error.getMessage()));
+                error -> ezarriMezua(staffMessage, "Ezin izan dira langileak kargatu: " + error.getMessage(), "status-error"));
     }
 
     @FXML
@@ -103,16 +115,16 @@ public final class LangileakKontrolagailua {
         String role = roleCombo.getValue();
         if (name.isBlank() || surname.isBlank() || username.isBlank() || nationalId.isBlank()
                 || email.isBlank() || role == null) {
-            staffMessage.setText("Bete izena, abizenak, erabiltzailea, NANa, emaila eta rola.");
+            ezarriMezua(staffMessage, "Bete izena, abizenak, erabiltzailea, NANa, emaila eta rola.", "status-warning");
             return;
         }
         if (!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            staffMessage.setText("Email helbidea ez da baliozkoa.");
+            ezarriMezua(staffMessage, "Email helbidea ez da baliozkoa.", "status-warning");
             return;
         }
         if ((editingEmployeeId == 0 && pin.isBlank())
                 || (!pin.isBlank() && pin.length() < 4)) {
-            staffMessage.setText("PINak gutxienez 4 karaktere izan behar ditu.");
+            ezarriMezua(staffMessage, "PINak gutxienez 4 karaktere izan behar ditu.", "status-warning");
             return;
         }
 
@@ -121,7 +133,7 @@ public final class LangileakKontrolagailua {
         createButton.setDisable(true);
         editButton.setDisable(true);
         cancelEditButton.setDisable(true);
-        staffMessage.setText(creating ? "Langilea sortzen..." : "Langilea eguneratzen...");
+        ezarriMezua(staffMessage, creating ? "Langilea sortzen..." : "Langilea eguneratzen...", null);
         EkintzaAsinkronoak.run(() -> {
                     Map<String, Object> body = new LinkedHashMap<>();
                     body.put("izena", name);
@@ -142,12 +154,12 @@ public final class LangileakKontrolagailua {
                 },
                 ignored -> {
                     beginNewStaff();
-                    staffMessage.setText(creating ? "Langilea sortu da." : "Langilearen datuak eguneratu dira.");
+                    ezarriMezua(staffMessage, creating ? "Langilea sortu da." : "Langilearen datuak eguneratu dira.", "status-ok");
                     createButton.setDisable(false);
                     refresh();
                 },
                 error -> {
-                    staffMessage.setText("Ezin izan da langilea gorde: " + error.getMessage());
+                    ezarriMezua(staffMessage, "Ezin izan da langilea gorde: " + error.getMessage(), "status-error");
                     createButton.setDisable(false);
                     cancelEditButton.setDisable(false);
                     updateSelectionButtons();
@@ -158,7 +170,7 @@ public final class LangileakKontrolagailua {
     private void editStaff() {
         Langilea selected = staffTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            staffMessage.setText("Hautatu editatu nahi duzun langilea.");
+            ezarriMezua(staffMessage, "Hautatu editatu nahi duzun langilea.", "status-warning");
             return;
         }
         editingEmployeeId = selected.id;
@@ -174,24 +186,79 @@ public final class LangileakKontrolagailua {
         pinField.setPromptText("Utzi hutsik PINa mantentzeko");
         cancelEditButton.setVisible(true);
         cancelEditButton.setManaged(true);
-        staffMessage.setText(selected.izena + " editatzeko prest.");
+        ezarriMezua(staffMessage, selected.izena + " editatzeko prest.", null);
     }
 
     @FXML
     private void cancelEdit() {
         beginNewStaff();
-        staffMessage.setText("Langile berria sortzeko formularioa prest.");
+        ezarriMezua(staffMessage, "Langile berria sortzeko formularioa prest.", null);
+    }
+
+    @FXML
+    private void toggleStaffChat() {
+        Langilea selected = staffTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ezarriMezua(staffMessage, "Hautatu langile bat txata aktibatu edo desaktibatzeko.", "status-warning");
+            return;
+        }
+        boolean egoeraBerria = !selected.txataAktibo;
+        toggleChatButton.setDisable(true);
+        ezarriMezua(staffMessage, egoeraBerria ? "Txata aktibatzen..." : "Txata desaktibatzen...", null);
+        EkintzaAsinkronoak.run(() -> {
+                    apiClient.eguneratuLangileTxata(selected.id, egoeraBerria);
+                    return null;
+                },
+                ignored -> {
+                    ezarriMezua(staffMessage, selected.izena + " langilearen txata "
+                            + (egoeraBerria ? "aktibatu" : "desaktibatu") + " da.", "status-ok");
+                    refresh();
+                },
+                error -> {
+                    ezarriMezua(staffMessage, "Ezin izan da txat-egoera aldatu: " + error.getMessage(), "status-error");
+                    updateSelectionButtons();
+                });
+    }
+
+    @FXML
+    private void toggleStaffActive() {
+        Langilea selected = staffTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ezarriMezua(staffMessage, "Hautatu langile bat aktibatu edo desaktibatzeko.", "status-warning");
+            return;
+        }
+        if (saioaAktiboDago() && selected.id == session.getUser().id && selected.aktibo) {
+            ezarriMezua(staffMessage, "Ezin duzu zure erabiltzailea desaktibatu saioa irekita dagoen bitartean.", "status-warning");
+            return;
+        }
+        boolean egoeraBerria = !selected.aktibo;
+        toggleActiveButton.setDisable(true);
+        ezarriMezua(staffMessage, egoeraBerria ? "Langilea aktibatzen..." : "Langilea desaktibatzen...", null);
+        EkintzaAsinkronoak.run(() -> {
+                    apiClient.eguneratuLangileAktibo(selected.id, egoeraBerria);
+                    return null;
+                },
+                ignored -> {
+                    ezarriMezua(staffMessage, selected.izena + " langilea "
+                            + (egoeraBerria ? "aktibatu da (TPV login baimenduta)." : "desaktibatu da (TPV login blokeatuta)."),
+                            "status-ok");
+                    refresh();
+                },
+                error -> {
+                    ezarriMezua(staffMessage, "Ezin izan da aktibo-egoera aldatu: " + error.getMessage(), "status-error");
+                    updateSelectionButtons();
+                });
     }
 
     @FXML
     private void deactivateStaff() {
         Langilea selected = staffTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            staffMessage.setText("Hautatu desgaitu nahi duzun langilea.");
+            ezarriMezua(staffMessage, "Hautatu desgaitu nahi duzun langilea.", "status-warning");
             return;
         }
-        if (session != null && selected.id == session.getUser().id) {
-            staffMessage.setText("Ezin duzu zure erabiltzailea desgaitu saioa irekita dagoen bitartean.");
+        if (saioaAktiboDago() && selected.id == session.getUser().id) {
+            ezarriMezua(staffMessage, "Ezin duzu zure erabiltzailea desgaitu saioa irekita dagoen bitartean.", "status-warning");
             return;
         }
         if (!PantailaLaguntza.confirm("Langilea desgaitu",
@@ -200,25 +267,36 @@ public final class LangileakKontrolagailua {
         }
 
         deactivateButton.setDisable(true);
-        staffMessage.setText("Langilea desgaitzen...");
+        ezarriMezua(staffMessage, "Langilea desgaitzen...", null);
         EkintzaAsinkronoak.run(() -> {
                     apiClient.delete("/langileak/" + selected.id);
                     return null;
                 },
                 ignored -> {
-                    staffMessage.setText("Langilea desgaitu da.");
+                    ezarriMezua(staffMessage, "Langilea desgaitu da.", "status-ok");
                     refresh();
                 },
                 error -> {
-                    staffMessage.setText("Ezin izan da langilea desgaitu: " + error.getMessage());
+                    ezarriMezua(staffMessage, "Ezin izan da langilea desgaitu: " + error.getMessage(), "status-error");
                     updateSelectionButtons();
                 });
     }
 
     private void updateSelectionButtons() {
-        boolean selected = staffTable.getSelectionModel().getSelectedItem() != null;
-        editButton.setDisable(session == null || !selected);
-        deactivateButton.setDisable(session == null || !selected);
+        Langilea selected = staffTable.getSelectionModel().getSelectedItem();
+        boolean hasSelection = selected != null;
+        boolean enabled = session != null && hasSelection;
+        editButton.setDisable(!enabled);
+        toggleChatButton.setDisable(!enabled);
+        toggleActiveButton.setDisable(!enabled);
+        deactivateButton.setDisable(!enabled);
+        if (hasSelection) {
+            toggleChatButton.setText(selected.txataAktibo ? "Txata desaktibatu" : "Txata aktibatu");
+            toggleActiveButton.setText(selected.aktibo ? "Desaktibatu (TPV)" : "Aktibatu (TPV)");
+        } else {
+            toggleChatButton.setText("Txata aktibatu / desaktibatu");
+            toggleActiveButton.setText("Aktibatu / Desaktibatu");
+        }
     }
 
     private void beginNewStaff() {

@@ -2,6 +2,7 @@ package eus.goierri.jatetxea.admin.controller;
 
 import eus.goierri.jatetxea.admin.KudeatzaileSaioa;
 import eus.goierri.jatetxea.admin.api.ApiBezeroa;
+import eus.goierri.jatetxea.admin.api.ApiKontratua;
 import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.model.Mahaia;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -20,9 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class MahaiakKontrolagailua {
-    private final ApiBezeroa apiClient;
-    private final KudeatzaileSaioa session;
+public final class MahaiakKontrolagailua extends BaseAdminKontrolagailua {
     private final ObservableList<Mahaia> tables = FXCollections.observableArrayList();
     private boolean busy;
 
@@ -47,9 +46,13 @@ public final class MahaiakKontrolagailua {
         this(null, null);
     }
 
-    public MahaiakKontrolagailua(ApiBezeroa apiClient, KudeatzaileSaioa session) {
-        this.apiClient = apiClient;
-        this.session = session;
+    public MahaiakKontrolagailua(ApiKontratua apiClient, KudeatzaileSaioa session) {
+        super(apiClient, session);
+    }
+
+    @Override
+    public String getPantailaIzena() {
+        return "Mahaiak";
     }
 
     @FXML
@@ -96,7 +99,8 @@ public final class MahaiakKontrolagailua {
     }
 
     @FXML
-    private void refresh() {
+    @Override
+    public void refresh() {
         tablesMessage.setText("Mahaiak kargatzen...");
         EkintzaAsinkronoak.run(() -> apiClient.getList("/mahaiak", Mahaia.class),
                 data -> {

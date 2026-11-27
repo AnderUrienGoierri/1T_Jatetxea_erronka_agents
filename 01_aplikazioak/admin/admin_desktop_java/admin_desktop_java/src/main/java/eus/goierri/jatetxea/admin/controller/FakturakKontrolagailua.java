@@ -1,7 +1,7 @@
 package eus.goierri.jatetxea.admin.controller;
 
 import eus.goierri.jatetxea.admin.KudeatzaileSaioa;
-import eus.goierri.jatetxea.admin.api.ApiBezeroa;
+import eus.goierri.jatetxea.admin.api.ApiKontratua;
 import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.model.Faktura;
 import eus.goierri.jatetxea.admin.model.FinantzaLaburpena;
@@ -17,10 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class FakturakKontrolagailua {
-    private final ApiBezeroa apiClient;
-    private final KudeatzaileSaioa session;
-
+public final class FakturakKontrolagailua extends BaseAdminKontrolagailua {
     private final ObservableList<Faktura> masterList = FXCollections.observableArrayList();
     private FilteredList<Faktura> filteredList;
 
@@ -68,9 +65,13 @@ public final class FakturakKontrolagailua {
         this(null, null);
     }
 
-    public FakturakKontrolagailua(ApiBezeroa apiClient, KudeatzaileSaioa session) {
-        this.apiClient = apiClient;
-        this.session = session;
+    public FakturakKontrolagailua(ApiKontratua apiClient, KudeatzaileSaioa session) {
+        super(apiClient, session);
+    }
+
+    @Override
+    public String getPantailaIzena() {
+        return "Fakturak eta Finantzak";
     }
 
     @FXML
@@ -155,6 +156,7 @@ public final class FakturakKontrolagailua {
     }
 
     @FXML
+    @Override
     public void refresh() {
         if (apiClient == null) return;
         invoiceMessage.setText("Fakturak eta finantza-laburpena kargatzen...");

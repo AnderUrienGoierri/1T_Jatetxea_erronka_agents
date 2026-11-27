@@ -1,6 +1,6 @@
 package eus.goierri.jatetxea.admin.controller;
 
-import eus.goierri.jatetxea.admin.api.ApiBezeroa;
+import eus.goierri.jatetxea.admin.api.ApiKontratua;
 import eus.goierri.jatetxea.admin.api.EkintzaAsinkronoak;
 import eus.goierri.jatetxea.admin.model.Langilea;
 import eus.goierri.jatetxea.admin.model.Lehengaia;
@@ -9,9 +9,7 @@ import eus.goierri.jatetxea.admin.model.Mahaia;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public final class LaburpenKontrolagailua {
-    private final ApiBezeroa apiClient;
-
+public final class LaburpenKontrolagailua extends BaseAdminKontrolagailua {
     @FXML private Label staffCountLabel;
     @FXML private Label menuCountLabel;
     @FXML private Label lowStockCountLabel;
@@ -22,19 +20,25 @@ public final class LaburpenKontrolagailua {
         this(null);
     }
 
-    public LaburpenKontrolagailua(ApiBezeroa apiClient) {
-        this.apiClient = apiClient;
+    public LaburpenKontrolagailua(ApiKontratua apiClient) {
+        super(apiClient, null);
+    }
+
+    @Override
+    public String getPantailaIzena() {
+        return "Laburpena";
     }
 
     @FXML
     private void initialize() {
-        if (apiClient != null) {
+        if (apiPrestDago()) {
             refresh();
         }
     }
 
     @FXML
-    private void refresh() {
+    @Override
+    public void refresh() {
         dashboardMessage.setText("Datuak APItik kargatzen...");
         EkintzaAsinkronoak.run(() -> {
                     var employees = apiClient.getList("/langileak", Langilea.class);

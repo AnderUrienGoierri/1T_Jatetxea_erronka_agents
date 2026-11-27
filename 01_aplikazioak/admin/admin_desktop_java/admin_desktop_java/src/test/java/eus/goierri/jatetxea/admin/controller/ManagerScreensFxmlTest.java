@@ -33,7 +33,7 @@ class ManagerScreensFxmlTest {
     void managerScreensLoadWithTheirControllers() throws Exception {
         for (String screen : new String[] {
                 "saio-hasiera.fxml", "diseinu-nagusia.fxml", "laburpena.fxml",
-                "langileak.fxml", "menua.fxml", "osagaiak.fxml", "mahaiak.fxml", "fakturak.fxml"
+                "langileak.fxml", "menua.fxml", "osagaiak.fxml", "mahaiak.fxml", "fakturak.fxml", "txata.fxml"
         }) {
             URL resource = getClass().getResource(
                     "/eus/goierri/jatetxea/admin/fxml/" + screen);

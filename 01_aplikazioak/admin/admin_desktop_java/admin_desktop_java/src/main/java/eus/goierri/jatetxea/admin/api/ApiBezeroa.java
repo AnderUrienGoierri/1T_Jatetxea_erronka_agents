@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public final class ApiBezeroa {
+public final class ApiBezeroa implements ApiKontratua {
     private final String baseUrl;
     private final HttpClient httpClient;
     private final Gson gson = new Gson();
@@ -157,6 +157,41 @@ public final class ApiBezeroa {
 
     public void aldatuFakturaEgoera(int id, String egoera) throws IOException, InterruptedException {
         put("/fakturak/" + id + "/egoera", Map.of("egoera", egoera));
+    }
+
+    @Override
+    public void eguneratuLangileTxata(int id, boolean txataAktibo) throws IOException, InterruptedException {
+        put("/langileak/" + id + "/txata", Map.of("txataAktibo", txataAktibo));
+    }
+
+    @Override
+    public void eguneratuLangileAktibo(int id, boolean aktibo) throws IOException, InterruptedException {
+        put("/langileak/" + id + "/aktibo", Map.of("aktibo", aktibo));
+    }
+
+    @Override
+    public TxatEgoera getTxatEgoera(int langileaId) throws IOException, InterruptedException {
+        return getData("/txata/egoera/" + langileaId, TxatEgoera.class);
+    }
+
+    @Override
+    public List<TxatMezua> getTxatMezuak(String gela, Integer langileaId) throws IOException, InterruptedException {
+        String encodedGela = java.net.URLEncoder.encode(
+                gela == null || gela.isBlank() ? "Orokorra" : gela,
+                java.nio.charset.StandardCharsets.UTF_8);
+        String path = "/txata/mezuak?gela=" + encodedGela + "&limit=80";
+        if (langileaId != null && langileaId > 0) {
+            path += "&langileaId=" + langileaId;
+        }
+        return getList(path, TxatMezua.class);
+    }
+
+    @Override
+    public void bidaliTxatMezua(int langileaId, String gela, String testua) throws IOException, InterruptedException {
+        post("/txata/mezuak", Map.of(
+                "langileaId", langileaId,
+                "gela", gela == null || gela.isBlank() ? "Orokorra" : gela,
+                "testua", testua));
     }
 
     public ServiceStatus getServiceStatus() throws IOException, InterruptedException {

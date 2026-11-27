@@ -19,6 +19,7 @@ public final class DiseinuNagusiaKontrolagailua {
     private final KudeatzaileSaioa session;
     private final JatetxeaKudeaketaAplikazioa application;
     private final Stage stage;
+    private PantailaFreskagarria activeController;
 
     @FXML private StackPane contentHost;
     @FXML private Label titleLabel;
@@ -54,6 +55,7 @@ public final class DiseinuNagusiaKontrolagailua {
     @FXML private void showIngredients() { loadScreen("osagaiak.fxml", "Osagaiak eta inbentarioa"); }
     @FXML private void showTables() { loadScreen("mahaiak.fxml", "Mahaiak"); }
     @FXML private void showInvoices() { loadScreen("fakturak.fxml", "Fakturak eta Finantzak"); }
+    @FXML private void showChat() { loadScreen("txata.fxml", "Barne Txata"); }
 
     @FXML
     private void refreshServiceStatus() {
@@ -83,6 +85,10 @@ public final class DiseinuNagusiaKontrolagailua {
     @FXML
     private void signOut() {
         try {
+            if (activeController != null) {
+                activeController.garbitu();
+                activeController = null;
+            }
             application.showLogin();
         } catch (IOException ex) {
             serviceStatusLabel.setText("Ezin izan da saioa itxi: " + ex.getMessage());
@@ -92,10 +98,18 @@ public final class DiseinuNagusiaKontrolagailua {
 
     private void loadScreen(String fileName, String title) {
         try {
+            if (activeController != null) {
+                activeController.garbitu();
+                activeController = null;
+            }
             FXMLLoader loader = new FXMLLoader(DiseinuNagusiaKontrolagailua.class.getResource(
                     "/eus/goierri/jatetxea/admin/fxml/" + fileName));
             loader.setControllerFactory(new KontrolagailuFabrika(apiClient, stage, session));
             Parent page = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof PantailaFreskagarria freskagarria) {
+                activeController = freskagarria;
+            }
             contentHost.getChildren().setAll(page);
             titleLabel.setText(title);
         } catch (IOException ex) {

@@ -9,5 +9,6 @@ public final class Langilea {
     public String emaila;
     public String rola;
     public boolean aktibo;
+    public boolean txataAktibo = true;
     public boolean ezabatua;
 }

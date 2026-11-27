@@ -22,53 +22,63 @@
     <HBox alignment="CENTER_LEFT" spacing="14">
         <VBox spacing="4" HBox.hgrow="ALWAYS">
             <Label text="Langileen kudeaketa" styleClass="page-title"/>
-            <Label text="Ikusi langileen rolak eta sortu erabiltzaile berriak." styleClass="muted-text"/>
+            <Label text="Kudeatu langileak, TPV sarbide aktiboa eta barne-txataren baimenak." styleClass="muted-text"/>
         </VBox>
         <Button text="Zerrenda berritu" onAction="#refresh" styleClass="secondary-button"/>
     </HBox>
     <HBox spacing="18" VBox.vgrow="ALWAYS">
-        <VBox HBox.hgrow="ALWAYS" styleClass="card">
+        <VBox HBox.hgrow="ALWAYS" spacing="10" styleClass="card">
             <Label text="Langileen zerrenda" styleClass="section-title"/>
             <TableView fx:id="staffTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
-                    <TableColumn fx:id="nameColumn" text="Izena" prefWidth="170"/>
-                    <TableColumn fx:id="usernameColumn" text="Erabiltzailea" prefWidth="150"/>
-                    <TableColumn fx:id="roleColumn" text="Rola" prefWidth="130"/>
-                    <TableColumn fx:id="activeColumn" text="Aktiboa" prefWidth="80"/>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="nameColumn" text="Izena" prefWidth="155"/>
+                    <TableColumn fx:id="usernameColumn" text="Erabiltzailea" prefWidth="135"/>
+                    <TableColumn fx:id="roleColumn" text="Rola" prefWidth="120"/>
+                    <TableColumn fx:id="activeColumn" text="Aktiboa" prefWidth="75"/>
+                    <TableColumn fx:id="chatColumn" text="Txata" prefWidth="110"/>
                 </columns>
             </TableView>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Button fx:id="editButton" text="Editatu" onAction="#editStaff" styleClass="secondary-button"/>
+                <Button fx:id="toggleChatButton" text="Txata aktibatu / desaktibatu" onAction="#toggleStaffChat"
+                        styleClass="secondary-button"/>
+                <Button fx:id="toggleActiveButton" text="Aktibatu / Desaktibatu" onAction="#toggleStaffActive"
+                        styleClass="secondary-button"/>
+                <Button fx:id="deactivateButton" text="Desgaitu (ezabatu)"
+                        onAction="#deactivateStaff" styleClass="danger-button"/>
+            </HBox>
             <Label fx:id="staffMessage" text="Langileak kargatzen..." wrapText="true" styleClass="inline-message"/>
         </VBox>
-        <VBox prefWidth="360" spacing="10" styleClass="card">
+        <VBox prefWidth="340" spacing="9" styleClass="card">
             <Label fx:id="formTitle" text="Langile berria" styleClass="section-title"/>
-            <Label text="PINa APIak hash bidez gordetzen du; PIN eremua hutsik utzi editatzean bere horretan mantentzeko."
+            <Label text="PINa APIak BCrypt hash bidez gordetzen du; editatzean hutsik utzi daiteke mantentzeko."
                    wrapText="true" styleClass="muted-text"/>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="Izena" styleClass="field-label"/>
                 <TextField fx:id="nameField" promptText="Adib. Ane"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="Abizenak" styleClass="field-label"/>
                 <TextField fx:id="surnameField" promptText="Adib. Goikoetxea"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="Erabiltzailea" styleClass="field-label"/>
                 <TextField fx:id="usernameField" promptText="Erabiltzaile-izena"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="NAN / DNI" styleClass="field-label"/>
                 <TextField fx:id="nationalIdField" promptText="NAN / DNI"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="Emaila" styleClass="field-label"/>
                 <TextField fx:id="emailField" promptText="izena@jatetxea.eus"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="PINa / pasahitza" styleClass="field-label"/>
                 <PasswordField fx:id="pinField" promptText="Gutxienez 4 karaktere"/>
             </VBox>
-            <VBox spacing="6">
+            <VBox spacing="5">
                 <Label text="Rola" styleClass="field-label"/>
                 <ComboBox fx:id="roleCombo" maxWidth="Infinity"/>
             </VBox>
@@ -76,10 +86,6 @@
                     maxWidth="Infinity" styleClass="primary-button"/>
             <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"
                     maxWidth="Infinity" styleClass="secondary-button"/>
-            <Button fx:id="editButton" text="Hautatutakoa editatu" onAction="#editStaff"
-                    maxWidth="Infinity" styleClass="secondary-button"/>
-            <Button fx:id="deactivateButton" text="Hautatutako langilea desgaitu"
-                    onAction="#deactivateStaff" maxWidth="Infinity" styleClass="danger-button"/>
         </VBox>
     </HBox>
 </VBox>

@@ -9,6 +9,7 @@ public final class KudeatzaileErabiltzailea {
     public String izena;
     public String rola;
     public boolean aktibo;
+    public boolean txataAktibo = true;
 
     public boolean isManager() {
         if (rola == null) {
