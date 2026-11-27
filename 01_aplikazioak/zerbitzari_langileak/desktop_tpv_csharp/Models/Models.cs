@@ -36,6 +36,9 @@ public class LangileaDto
 
     [JsonPropertyName("aktibo")]
     public bool Aktibo { get; set; }
+
+    [JsonPropertyName("txataAktibo")]
+    public bool TxataAktibo { get; set; } = true;
 }
 
 public class LoginEmaitzaDto
@@ -355,4 +358,49 @@ public class ErreserbaSortuEskaeraDto
 
     [JsonPropertyName("bezeroTelefonoa")]
     public string? BezeroTelefonoa { get; set; }
+}
+
+public class TxatEgoeraDto
+{
+    [JsonPropertyName("langileaId")]
+    public int LangileaId { get; set; }
+
+    [JsonPropertyName("izena")]
+    public string Izena { get; set; } = string.Empty;
+
+    [JsonPropertyName("aktibo")]
+    public bool Aktibo { get; set; }
+
+    [JsonPropertyName("txataAktibo")]
+    public bool TxataAktibo { get; set; }
+
+    [JsonPropertyName("baimenduta")]
+    public bool Baimenduta { get; set; }
+}
+
+public class TxatMezuaDto
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("langileaId")]
+    public int LangileaId { get; set; }
+
+    [JsonPropertyName("langileIzena")]
+    public string LangileIzena { get; set; } = string.Empty;
+
+    [JsonPropertyName("erabiltzailea")]
+    public string Erabiltzailea { get; set; } = string.Empty;
+
+    [JsonPropertyName("rola")]
+    public string Rola { get; set; } = string.Empty;
+
+    [JsonPropertyName("gela")]
+    public string Gela { get; set; } = "Orokorra";
+
+    [JsonPropertyName("testua")]
+    public string Testua { get; set; } = string.Empty;
+
+    [JsonPropertyName("sortzeData")]
+    public string SortzeData { get; set; } = string.Empty;
 }

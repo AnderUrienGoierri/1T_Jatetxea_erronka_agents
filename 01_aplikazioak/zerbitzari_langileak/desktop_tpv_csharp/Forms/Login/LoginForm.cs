@@ -5,7 +5,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class LoginForm : Form
+public partial class LoginForm : BaseTpvForm
 {
     private sealed class AvatarCardInfo
     {
@@ -528,9 +528,9 @@ public partial class LoginForm : Form
 
     private void BistaratuLangileak(List<LangileaDto> langileak)
     {
-        // Iragazi eta ordenatu: Zerbitzariak lehenik (Mikel Maître buru), gero Barrakoak, ondoren AdminIT eta Kudeatzaileak.
+        // Iragazi eta ordenatu: soilik AKTIBATUTAKO eta baimendutako langileak (TPV sarbide-kontrola).
         var berriak = langileak
-            .Where(DaBaimendua)
+            .Where(l => l.Aktibo && DaBaimendua(l))
             .OrderBy(l => LortuRolaLehentasuna(l.Rola))
             .ThenBy(l => l.Erabiltzailea == "mikel_zerb" ? 0 :
                          l.Erabiltzailea == "gorka_barra" ? 0 :

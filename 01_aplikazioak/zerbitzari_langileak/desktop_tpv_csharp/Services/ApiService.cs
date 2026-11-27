@@ -4,7 +4,7 @@ using Jatetxea.Desktop.Models;
 
 namespace Jatetxea.Desktop.Services;
 
-public class ApiService
+public class ApiService : IApiService
 {
     private HttpClient _http;
     private string _baseUrl;
@@ -201,7 +201,16 @@ public class ApiService
             
             if (!response.IsSuccessStatusCode)
             {
-                var errContent = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                    {
+                        return (false, apiErr.Message, null);
+                    }
+                }
+                catch { }
+
                 return (false, "PIN edo erabiltzaile okerra.", null);
             }
 
@@ -667,6 +676,86 @@ public class ApiService
         catch (Exception ex)
         {
             return (false, $"Errorea erreserba ezeztatzean: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Langileak barne-txata aktibatuta daukan egiaztatzen du.
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua, TxatEgoeraDto? Egoera)> GetTxatEgoeraAsync(int langileaId)
+    {
+        try
+        {
+            var response = await _http.GetAsync($"txata/egoera/{langileaId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                return (false, apiErr?.Message ?? "Ezin izan da txat-egoera egiaztatu.", null);
+            }
+            var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<TxatEgoeraDto>>(JsonOptions);
+            return (true, apiRes?.Message ?? "", apiRes?.Data);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Konexio errorea: {ex.Message}", null);
+        }
+    }
+
+    /// <summary>
+    /// Gela bateko azken txat mezuak eskuratzen ditu.
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua, List<TxatMezuaDto> Mezuak)> GetTxatMezuakAsync(string gela, int langileaId)
+    {
+        try
+        {
+            string url = $"txata/mezuak?gela={Uri.EscapeDataString(gela)}&limit=80&langileaId={langileaId}";
+            var response = await _http.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                        return (false, apiErr.Message, new List<TxatMezuaDto>());
+                }
+                catch { }
+                return (false, "Txata ez dago erabilgarri.", new List<TxatMezuaDto>());
+            }
+
+            var apiRes = await response.Content.ReadFromJsonAsync<ApiResponse<TxatMezuaDto>>(JsonOptions);
+            return (true, apiRes?.Message ?? "", apiRes?.DataList ?? new List<TxatMezuaDto>());
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Konexio errorea: {ex.Message}", new List<TxatMezuaDto>());
+        }
+    }
+
+    /// <summary>
+    /// Txat mezu berria bidaltzen du REST APIra.
+    /// </summary>
+    public async Task<(bool Arrakasta, string Mezua)> BidaliTxatMezuaAsync(int langileaId, string gela, string testua)
+    {
+        try
+        {
+            var payload = new { langileaId, gela, testua };
+            var response = await _http.PostAsJsonAsync("txata/mezuak", payload);
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var apiErr = await response.Content.ReadFromJsonAsync<ApiResponse<object>>(JsonOptions);
+                    if (!string.IsNullOrWhiteSpace(apiErr?.Message))
+                        return (false, apiErr.Message);
+                }
+                catch { }
+                return (false, "Ezin izan da mezua bidali.");
+            }
+            return (true, "Mezua bidali da.");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Konexio errorea: {ex.Message}");
         }
     }
 }

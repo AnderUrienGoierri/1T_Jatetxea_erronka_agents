@@ -4,7 +4,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class TiketIkusteaForm : Form
+public partial class TiketIkusteaForm : BaseTpvForm
 {
     private readonly OrdainketaErantzunaDto _ordainketa;
 

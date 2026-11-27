@@ -5,7 +5,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class MahaiakForm : Form
+public partial class MahaiakForm : BaseTpvForm
 {
     private sealed class MahaiTxartelUi
     {
@@ -29,6 +29,7 @@ public partial class MahaiakForm : Form
     private readonly Dictionary<int, MahaiTxartelUi> _txartelakById = new();
     private string _aukeratutakoEremua = "Jangela Nagusia";
     private readonly System.Windows.Forms.Timer _tenporizadorea;
+    private readonly Button _btnTxata;
     private bool _kargatzen = false;
 
     /// <summary>
@@ -45,6 +46,16 @@ public partial class MahaiakForm : Form
         _api = api;
 
         Text = $"T1 Jatetxea - Mahaiak ({_langilea.Izena})";
+
+        // Barne Txata botoia (Gerente aplikaziotik aktibatu/desaktibatu daiteke)
+        _btnTxata = new Button
+        {
+            Name = "btnTxata",
+            Text = "Txata",
+            Size = new Size(92, 42),
+            Cursor = Cursors.Hand
+        };
+        pnlProfile.Controls.Add(_btnTxata);
 
         // T1 Warm Hospitality v2.0 diseinua + parpadeorik gabeko DoubleBuffering aplikatu
         AplikatuEstiloBerria();
@@ -75,6 +86,11 @@ public partial class MahaiakForm : Form
         LotuFitxak();
 
         // Ekintza nagusiak
+        _btnTxata.Click += (s, e) =>
+        {
+            using var txataForm = new TxataForm(_langilea, _api);
+            txataForm.ShowDialog(this);
+        };
         btnErreserbak.Click += (s, e) =>
         {
             using var erreserbakForm = new ErreserbakForm(_langilea, _api, _mahaiak);
@@ -136,6 +152,7 @@ public partial class MahaiakForm : Form
         lblSummary.ForeColor = Theme.WarmSlate;
         lblSummary.Font = Theme.MonoFont(9.5f, bold: false);
 
+        Theme.StyleButton(_btnTxata, Theme.InfoBg, Theme.Info, Theme.InfoBorder, radius: 10, fontSize: 9.5f);
         Theme.StyleButton(btnErreserbak, Theme.PurpleBg, Theme.Purple, Theme.PurpleBorder, radius: 10, fontSize: 9.5f);
         Theme.StyleButton(btnFreskatu, Theme.StoneMist, Theme.EspressoInk, Theme.WarmTaupe, radius: 10, fontSize: 9.5f);
         Theme.StyleButton(btnLogout, Theme.ChiantiPrimary, Theme.MarbleWhite, null, radius: 10, fontSize: 9.5f);
@@ -144,7 +161,7 @@ public partial class MahaiakForm : Form
     private void EgokituResponsiveDiseinua()
     {
         int S(int px) => Theme.S(this, px);
-        bool estua = ClientSize.Width < S(1040);
+        bool estua = ClientSize.Width < S(1140);
 
         // 1. Goiko barra DPI-rekin eskalatuta, gainjarpenik eta testu-mozketarik gabe
         pnlTopBar.Height = ClientSize.Height < S(580) ? S(68) : S(84);
@@ -157,26 +174,28 @@ public partial class MahaiakForm : Form
         lblBrand.Location = new Point(lblLogo.Right + S(12), (pnlTopBar.Height - logoSz) / 2);
         lblBrand.Text = estua ? "T1 MAHAIAK" : "T1 JATETXEA · MAHAIAK";
         lblBrand.Font = Theme.DisplayFont(this, estua ? 12.5f : 15f);
-        lblBrand.Size = new Size(estua ? S(200) : S(390), logoSz);
+        lblBrand.Size = new Size(estua ? S(180) : S(360), logoSz);
 
         int btnH = S(42);
-        int gap = S(10);
-        int wErr = S(132);
-        int wFres = S(104);
-        int wOut = S(116);
+        int gap = S(8);
+        int wTxat = S(86);
+        int wErr = S(124);
+        int wFres = S(98);
+        int wOut = S(110);
 
         if (estua)
         {
             lblAvatarCircle.Visible = false;
-            int wName = S(115);
-            pnlProfile.Width = wName + wErr + wFres + wOut + gap * 4 + S(14);
+            int wName = S(105);
+            pnlProfile.Width = wName + wTxat + wErr + wFres + wOut + gap * 5 + S(14);
             lblServerName.Location = new Point(S(4), yBtn);
             lblServerName.Size = new Size(wName, S(22));
             lblServerStatus.Location = new Point(S(4), yBtn + S(21));
             lblServerStatus.Size = new Size(wName, S(20));
 
             int x = lblServerName.Right + gap;
-            btnErreserbak.SetBounds(x, yBtn, wErr, btnH);
+            _btnTxata.SetBounds(x, yBtn, wTxat, btnH);
+            btnErreserbak.SetBounds(_btnTxata.Right + gap, yBtn, wErr, btnH);
             btnFreskatu.SetBounds(btnErreserbak.Right + gap, yBtn, wFres, btnH);
             btnLogout.SetBounds(btnFreskatu.Right + gap, yBtn, wOut, btnH);
         }
@@ -184,14 +203,15 @@ public partial class MahaiakForm : Form
         {
             lblAvatarCircle.Visible = true;
             int avSz = S(46);
-            int wName = S(130);
-            pnlProfile.Width = avSz + wName + wErr + wFres + wOut + gap * 5 + S(20);
+            int wName = S(125);
+            pnlProfile.Width = avSz + wName + wTxat + wErr + wFres + wOut + gap * 6 + S(20);
             lblAvatarCircle.SetBounds(S(6), (pnlTopBar.Height - avSz) / 2, avSz, avSz);
             lblServerName.SetBounds(lblAvatarCircle.Right + S(10), yBtn, wName, S(22));
             lblServerStatus.SetBounds(lblAvatarCircle.Right + S(10), yBtn + S(21), wName, S(20));
 
             int x = lblServerName.Right + gap;
-            btnErreserbak.SetBounds(x, yBtn, wErr, btnH);
+            _btnTxata.SetBounds(x, yBtn, wTxat, btnH);
+            btnErreserbak.SetBounds(_btnTxata.Right + gap, yBtn, wErr, btnH);
             btnFreskatu.SetBounds(btnErreserbak.Right + gap, yBtn, wFres, btnH);
             btnLogout.SetBounds(btnFreskatu.Right + gap, yBtn, wOut, btnH);
         }

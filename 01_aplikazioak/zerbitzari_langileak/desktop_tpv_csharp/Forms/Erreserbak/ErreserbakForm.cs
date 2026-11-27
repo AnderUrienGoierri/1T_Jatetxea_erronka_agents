@@ -5,7 +5,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class ErreserbakForm : Form
+public partial class ErreserbakForm : BaseTpvForm
 {
     private readonly LangileaDto _langilea;
     private readonly ApiService _api;

@@ -6,7 +6,7 @@ using Jatetxea.Desktop.UI;
 
 namespace Jatetxea.Desktop.Forms;
 
-public partial class OrdainketaForm : Form
+public partial class OrdainketaForm : BaseTpvForm
 {
     private readonly MahaiaDto _mahaia;
     private readonly EskaeraDto _eskaera;
