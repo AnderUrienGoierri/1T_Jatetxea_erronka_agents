@@ -667,4 +667,309 @@
       </root>
     </mxGraphModel>
   </diagram>
+  <diagram id="gerente-javafx-uml" name="Gerente Aplikazioa (JavaFX MVC)">
+    <mxGraphModel dx="1900" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2300" pageHeight="1450" background="#f8fafc" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="g_title" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#881337;strokeColor=#881337;fontColor=#ffffff;fontSize=15;align=center;" value="&lt;b&gt;GERENTE APLIKAZIOA (admin_desktop_java) — JAVAFX 21 MVC + OOP KLASE DIAGRAMA&lt;/b&gt;&lt;br&gt;&lt;i&gt;Interfazeak (ApiKontratua, PantailaFreskagarria, Callback, CheckedSupplier) • Klase Abstraktua (BaseAdminKontrolagailua) • 8 Kontroladore + Barne Txata&lt;/i&gt;" vertex="1">
+          <mxGeometry height="62" width="2180" x="40" y="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_app" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;JatetxeaKudeaketaAplikazioa&lt;/b&gt;&lt;br&gt;&lt;i&gt;extends javafx.application.Application&lt;/i&gt;" vertex="1">
+          <mxGeometry height="140" width="250" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_app_body" parent="g_app" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- apiClient: ApiBezeroa&#xa;- stage: Stage&#xa;---&#xa;+ start(primaryStage: Stage): void&#xa;+ showLogin(): void&#xa;+ showWorkspace(session): void" vertex="1">
+          <mxGeometry height="108" width="250" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_fabrika" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#0f766e;swimlaneFillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;KontrolagailuFabrika&lt;/b&gt;&lt;br&gt;&lt;i&gt;implements Callback&amp;lt;Class&amp;lt;?&amp;gt;, Object&amp;gt;&lt;/i&gt;" vertex="1">
+          <mxGeometry height="130" width="250" x="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_fabrika_body" parent="g_fabrika" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- apiClient: ApiBezeroa&#xa;- stage: Stage&#xa;- session: KudeatzaileSaioa&#xa;---&#xa;+ call(controllerType: Class&amp;lt;?&amp;gt;): Object" vertex="1">
+          <mxGeometry height="98" width="250" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_saioa" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#1e3a8a;swimlaneFillColor=#ffffff;strokeColor=#1e3a8a;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;KudeatzaileSaioa&lt;/b&gt;" vertex="1">
+          <mxGeometry height="140" width="250" x="640" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_saioa_body" parent="g_saioa" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- user: KudeatzaileErabiltzailea&#xa;- configurationWritable: BooleanProperty&#xa;- serviceStatusText: StringProperty&#xa;---&#xa;+ isConfigurationWritable(): boolean&#xa;+ setServiceState(writable, msg): void" vertex="1">
+          <mxGeometry height="112" width="250" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_iapi" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#7c3aed;swimlaneFillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ApiKontratua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="190" width="290" x="950" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_iapi_body" parent="g_iapi" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="+ checkHealth(): ApiHealth&#xa;+ login(user, pass): KudeatzaileErabiltzailea&#xa;+ getList&amp;lt;T&amp;gt;(path, type): List&amp;lt;T&amp;gt;&#xa;+ getData&amp;lt;T&amp;gt;(path, type): T&#xa;+ post/put/delete(path, body): void&#xa;+ eguneratuLangileTxata(id, aktibo): void&#xa;+ eguneratuLangileAktibo(id, aktibo): void&#xa;+ getTxatMezuak(gela, langileaId): List&#xa;+ bidaliTxatMezua(id, gela, testua): void" vertex="1">
+          <mxGeometry height="158" width="290" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_api" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#4338ca;swimlaneFillColor=#ffffff;strokeColor=#4338ca;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;ApiBezeroa&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="290" x="1310" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_api_body" parent="g_api" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- baseUrl: String&#xa;- httpClient: HttpClient&#xa;- gson: Gson&#xa;---&#xa;+ fromEnvironment(): ApiBezeroa&#xa;+ getServiceStatus(): ServiceStatus&#xa;+ getFakturak / getFinantzaLaburpena()" vertex="1">
+          <mxGeometry height="117" width="290" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_async" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#0284c7;swimlaneFillColor=#ffffff;strokeColor=#0284c7;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;EkintzaAsinkronoak + CheckedSupplier&amp;lt;T&amp;gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="120" width="270" x="1660" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_async_body" parent="g_async" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- EXECUTOR: ExecutorService (4 daemon)&#xa;---&#xa;+ run&amp;lt;T&amp;gt;(action, success, failure): void&#xa;&amp;lt;&amp;lt;FunctionalInterface&amp;gt;&amp;gt; CheckedSupplier&amp;lt;T&amp;gt;" vertex="1">
+          <mxGeometry height="92" width="270" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_exc" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#dc2626;swimlaneFillColor=#ffffff;strokeColor=#dc2626;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;ApiSalbuespena&lt;/b&gt;&lt;br&gt;&lt;i&gt;extends IOException&lt;/i&gt;" vertex="1">
+          <mxGeometry height="95" width="210" x="1990" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g_exc_body" parent="g_exc" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- statusCode: int&#xa;+ getStatusCode(): int" vertex="1">
+          <mxGeometry height="63" width="210" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_ifresk" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#7c3aed;swimlaneFillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PantailaFreskagarria&lt;/b&gt;" vertex="1">
+          <mxGeometry height="110" width="240" x="450" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="g_ifresk_body" parent="g_ifresk" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="+ refresh(): void&#xa;+ getPantailaIzena(): String&#xa;+ garbitu(): void (default)" vertex="1">
+          <mxGeometry height="78" width="240" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_base" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#b45309;swimlaneFillColor=#ffffff;strokeColor=#b45309;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&amp;lt;&amp;lt;abstract&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BaseAdminKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="135" width="290" x="850" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="g_base_body" parent="g_base" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="# apiClient: ApiKontratua&#xa;# session: KudeatzaileSaioa&#xa;---&#xa;# apiPrestDago(): boolean&#xa;# saioaAktiboDago(): boolean&#xa;# ezarriMezua(lbl, txt, style): void" vertex="1">
+          <mxGeometry height="103" width="290" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_shell" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#db2777;swimlaneFillColor=#ffffff;strokeColor=#db2777;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;DiseinuNagusiaKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="165" width="260" x="40" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="g_shell_body" parent="g_shell" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- contentHost: StackPane&#xa;- activeController: PantailaFreskagarria&#xa;---&#xa;+ showDashboard / showStaff / showMenu()&#xa;+ showIngredients / showTables()&#xa;+ showInvoices / showChat()&#xa;+ refreshServiceStatus / signOut()" vertex="1">
+          <mxGeometry height="137" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_login" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#db2777;swimlaneFillColor=#ffffff;strokeColor=#db2777;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;SaioHasieraKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="125" width="250" x="1310" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="g_login_body" parent="g_login" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- healthCheckTimeline: Timeline&#xa;- usernameField / pinField&#xa;---&#xa;+ refreshApiStatus(): void&#xa;+ signIn(): void" vertex="1">
+          <mxGeometry height="97" width="250" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_lab" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;LaburpenKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="110" width="240" x="40" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_lab_body" parent="g_c_lab" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="+ refresh(): void&#xa;+ getPantailaIzena(): String&#xa;KPI: langileak, platerak,&#xa;stock-alertak, mahaiak" vertex="1">
+          <mxGeometry height="82" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_lang" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;LangileakKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="260" x="310" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_lang_body" parent="g_c_lang" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- employees: ObservableList&amp;lt;Langilea&amp;gt;&#xa;---&#xa;+ refresh / saveStaff / editStaff()&#xa;+ toggleStaffChat(): void&#xa;+ toggleStaffActive(): void&#xa;+ deactivateStaff(): void" vertex="1">
+          <mxGeometry height="117" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_menu" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;MenuaKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="260" x="600" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_menu_body" parent="g_c_menu" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- menuItems: ObservableList&amp;lt;Platera&amp;gt;&#xa;- recipeComponents: ObservableList&#xa;---&#xa;+ refresh / saveMenuItem()&#xa;+ addRecipeIngredient / remove()&#xa;+ verifyServiceClosed(): void" vertex="1">
+          <mxGeometry height="117" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_osag" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;OsagaiakKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="260" x="890" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_osag_body" parent="g_c_osag" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- ingredients: ObservableList&amp;lt;Lehengaia&amp;gt;&#xa;- stockAlerts: ObservableList&amp;lt;String&amp;gt;&#xa;---&#xa;+ refresh / saveIngredient / edit()&#xa;+ registerStockEntry(): void&#xa;+ deactivateIngredient(): void" vertex="1">
+          <mxGeometry height="117" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_mah" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;MahaiakKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="240" x="1180" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_mah_body" parent="g_c_mah" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- tables: ObservableList&amp;lt;Mahaia&amp;gt;&#xa;---&#xa;+ refresh / createTable / editTable()&#xa;+ updateTableState / deactivateTable()" vertex="1">
+          <mxGeometry height="102" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_fakt" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#059669;swimlaneFillColor=#ffffff;strokeColor=#059669;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;FakturakKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="250" x="1450" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_fakt_body" parent="g_c_fakt" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- masterList: ObservableList&amp;lt;Faktura&amp;gt;&#xa;- filteredList: FilteredList&amp;lt;Faktura&amp;gt;&#xa;---&#xa;+ refresh / applyFilters()&#xa;+ saveInvoice / markAsPaid / Cancelled()" vertex="1">
+          <mxGeometry height="117" width="250" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_c_txat" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#0284c7;swimlaneFillColor=#ffffff;strokeColor=#0284c7;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;TxataKontrolagailua&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="260" x="1730" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="g_c_txat_body" parent="g_c_txat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=10;" value="- messages: ObservableList&amp;lt;TxatMezua&amp;gt;&#xa;- autoRefreshTimeline: Timeline (2.5s)&#xa;---&#xa;+ refresh / sendMessage()&#xa;+ garbitu(): void" vertex="1">
+          <mxGeometry height="117" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="g_models" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#334155;swimlaneFillColor=#ffffff;strokeColor=#334155;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;Modeloak (eus.goierri.jatetxea.admin.model)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="110" width="1950" x="40" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="g_models_body" parent="g_models" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;whiteSpace=wrap;html=1;fontColor=#0f172a;fontSize=11;" value="&lt;b&gt;KudeatzaileErabiltzailea&lt;/b&gt; (isManager, txataAktibo)  •  &lt;b&gt;Langilea&lt;/b&gt; (aktibo, txataAktibo)  •  &lt;b&gt;Platera&lt;/b&gt;  •  &lt;b&gt;PlaterEskandalloa&lt;/b&gt;  •  &lt;b&gt;Lehengaia&lt;/b&gt;  •  &lt;b&gt;LehengaiaAlerta&lt;/b&gt;  •  &lt;b&gt;Mahaia&lt;/b&gt;  •  &lt;b&gt;Faktura&lt;/b&gt;  •  &lt;b&gt;FinantzaLaburpena&lt;/b&gt;  •  &lt;b&gt;TxatMezua&lt;/b&gt;  •  &lt;b&gt;TxatEgoera&lt;/b&gt;" vertex="1">
+          <mxGeometry height="82" width="1950" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ge_api_impl" edge="1" parent="1" source="g_api" target="g_iapi" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#7c3aed;strokeWidth=2;" value="implements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_base_impl" edge="1" parent="1" source="g_base" target="g_ifresk" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#7c3aed;strokeWidth=2;" value="implements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_base_api" edge="1" parent="1" source="g_base" target="g_iapi" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;strokeColor=#334155;strokeWidth=1.5;" value="apiClient">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_1" edge="1" parent="1" source="g_c_lab" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_2" edge="1" parent="1" source="g_c_lang" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_3" edge="1" parent="1" source="g_c_menu" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_4" edge="1" parent="1" source="g_c_osag" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="extends">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_5" edge="1" parent="1" source="g_c_mah" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_6" edge="1" parent="1" source="g_c_fakt" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_inh_7" edge="1" parent="1" source="g_c_txat" target="g_base" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="tpv-csharp-uml" name="TPV Aplikazioa (C# WinForms)">
+    <mxGraphModel dx="1900" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2300" pageHeight="1450" background="#faf7f2" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t_title" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#881337;strokeColor=#881337;fontColor=#ffffff;fontSize=15;align=center;" value="&lt;b&gt;TPV APLIKAZIOA (desktop_tpv_csharp) — C# .NET 10 WINFORMS OOP KLASE DIAGRAMA&lt;/b&gt;&lt;br&gt;&lt;i&gt;Interfazeak (IApiService, IDpiEgokigarria) • Oinarri Klasea (BaseTpvForm : Form) • 8 Pantaila + 3 Modal + UI Motorra (Theme, UiPerf, ProductImageCache)&lt;/i&gt;" vertex="1">
+          <mxGeometry height="62" width="2180" x="40" y="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_idpi" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#7c3aed;swimlaneFillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;IDpiEgokigarria&lt;/b&gt;" vertex="1">
+          <mxGeometry height="95" width="230" x="260" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="t_idpi_body" parent="t_idpi" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="+ AplikatuGaiKomuna(): void&#xa;+ EgokituDpiAldaketan(): void" vertex="1">
+          <mxGeometry height="63" width="230" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_baseform" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#b45309;swimlaneFillColor=#ffffff;strokeColor=#b45309;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;BaseTpvForm&lt;/b&gt;&lt;br&gt;&lt;i&gt;: Form, IDpiEgokigarria&lt;/i&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="620" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="t_baseform_body" parent="t_baseform" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="+ virtual AplikatuGaiKomuna(): void&#xa;+ virtual EgokituDpiAldaketan(): void&#xa;# AktibatuDpiEgokitzapena(w, h): void" vertex="1">
+          <mxGeometry height="88" width="280" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_iapi" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;collapsible=0;whiteSpace=wrap;html=1;fillColor=#7c3aed;swimlaneFillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;IApiService&lt;/b&gt;" vertex="1">
+          <mxGeometry height="185" width="310" x="1020" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="t_iapi_body" parent="t_iapi" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="+ CheckHealthAsync(): Task&#xa;+ GetLangileakAsync() / LoginAsync()&#xa;+ GetMahaiakAsync() / AldatuEgoeraAsync()&#xa;+ GetPlaterakAsync() / StockAhalmenaAsync()&#xa;+ SortuEskaera / GehituPlatera / BidaliSukaldera()&#xa;+ ProzesatuOrdainketaAsync()&#xa;+ GetTxatEgoera / GetTxatMezuak / BidaliTxatMezua()" vertex="1">
+          <mxGeometry height="153" width="310" y="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_api" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#4338ca;swimlaneFillColor=#ffffff;strokeColor=#4338ca;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;ApiService&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="260" x="1420" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="t_api_body" parent="t_api" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _http: HttpClient&#xa;- _baseUrl: string&#xa;---&#xa;+ EzarriUnekoLangilea(...)&#xa;+ localhost/127.0.0.1 fallback" vertex="1">
+          <mxGeometry height="102" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_ui" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#0f766e;swimlaneFillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;UI Motorra (Theme • UiPerf • ProductImageCache)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="155" width="460" x="1740" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ui_body" parent="t_ui" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="&lt;b&gt;Theme&lt;/b&gt;: Warm Hospitality v2.0, PerMonitorV2 DPI (ConditionalWeakTable),&#xa;  DrawT1Logo(), DrawRoundedCard(), StyleButton(), GetEgoeraKoloreak()&#xa;&lt;b&gt;UiPerf&lt;/b&gt;: EnableDoubleBuffering() (Reflection), RunFlickerFree() (WM_SETREDRAW)&#xa;&lt;b&gt;ProductImageCache&lt;/b&gt;: ConcurrentDictionary 3-mailako cachea + DrawImageCover()" vertex="1">
+          <mxGeometry height="127" width="460" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_login" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;LoginForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="240" x="40" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_login_body" parent="t_f_login" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _baimendutakoLangileak (Aktibo)&#xa;- _pin: string (4 digitu)&#xa;---&#xa;+ SaiatuKonektatzenAsync()&#xa;+ LoginExekutatuAsync()" vertex="1">
+          <mxGeometry height="102" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_mah" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;MahaiakForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="240" x="310" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_mah_body" parent="t_f_mah" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _txartelakById: Dictionary&#xa;- _btnTxata (Barne Txata)&#xa;---&#xa;+ KargatuMahaiakAsync() (AJAX-diff)&#xa;+ BistaratuMahaiak() (in-place)" vertex="1">
+          <mxGeometry height="102" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_xeh" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;MahaiaXehetasunakForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="240" x="580" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_xeh_body" parent="t_f_xeh" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _eskaerak: List&amp;lt;EskaeraDto&amp;gt;&#xa;- _pulseTimer (dir-dir abisua)&#xa;---&#xa;+ SukalderaBidaliKlikatuaAsync()&#xa;+ KobratuEtaItxiAsync()" vertex="1">
+          <mxGeometry height="102" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_esk" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;EskaeraForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="240" x="850" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_esk_body" parent="t_f_esk" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _platerak / _stockMap&#xa;- _karritoa: List&amp;lt;CartItem&amp;gt;&#xa;---&#xa;+ AldatuKategoria()&#xa;+ EskaeraBidaliAsync()" vertex="1">
+          <mxGeometry height="102" width="240" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_ord" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;OrdainketaForm &amp;amp; TiketIkusteaForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="250" x="1120" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_ord_body" parent="t_f_ord" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="Eskudirua / Txartela / Bizum&#xa;80mm tiket fiskala&#xa;---&#xa;+ OrdainduAsync()&#xa;+ Inprimatu / Ikusi tiketa" vertex="1">
+          <mxGeometry height="102" width="250" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_err" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#881337;swimlaneFillColor=#ffffff;strokeColor=#881337;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;ErreserbakForm + Modalak&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="250" x="1400" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_err_body" parent="t_f_err" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="ErreserbakForm&#xa;+ ErreserbaBerriaModal&#xa;+ MahaikideakModal&#xa;+ OharraModal" vertex="1">
+          <mxGeometry height="102" width="250" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_f_txat" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#0284c7;swimlaneFillColor=#ffffff;strokeColor=#0284c7;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;TxataForm&lt;/b&gt;" vertex="1">
+          <mxGeometry height="130" width="260" x="1680" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="t_f_txat_body" parent="t_f_txat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=10;" value="- _api: IApiService&#xa;- _refreshTimer: Timer (2s)&#xa;---&#xa;+ KargatuMezuakAsync() (txataAktibo)&#xa;+ BidaliMezuaAsync()" vertex="1">
+          <mxGeometry height="102" width="260" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="t_dtos" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;collapsible=0;whiteSpace=wrap;html=1;fillColor=#334155;swimlaneFillColor=#ffffff;strokeColor=#334155;strokeWidth=2;fontColor=#ffffff;fontSize=11;rounded=1;" value="&lt;b&gt;DTO Ereduak (Jatetxea.Desktop.Models)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="110" width="1900" x="40" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="t_dtos_body" parent="t_dtos" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;whiteSpace=wrap;html=1;fontColor=#1c1917;fontSize=11;" value="&lt;b&gt;ApiResponse&amp;lt;T&amp;gt;&lt;/b&gt;  •  &lt;b&gt;LangileaDto&lt;/b&gt; (Aktibo, TxataAktibo)  •  &lt;b&gt;LoginEmaitzaDto&lt;/b&gt;  •  &lt;b&gt;MahaiaDto&lt;/b&gt;  •  &lt;b&gt;PlateraDto&lt;/b&gt;  •  &lt;b&gt;ErabilgarritasunaDto&lt;/b&gt;  •  &lt;b&gt;EskaeraDto&lt;/b&gt;  •  &lt;b&gt;EskaeraLerroaDto&lt;/b&gt;  •  &lt;b&gt;CartItem&lt;/b&gt;  •  &lt;b&gt;OrdainketaEskaeraDto&lt;/b&gt;  •  &lt;b&gt;OrdainketaErantzunaDto&lt;/b&gt;  •  &lt;b&gt;ErreserbaDto&lt;/b&gt;  •  &lt;b&gt;TxatEgoeraDto&lt;/b&gt;  •  &lt;b&gt;TxatMezuaDto&lt;/b&gt;" vertex="1">
+          <mxGeometry height="82" width="1900" y="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="te_base_idpi" edge="1" parent="1" source="t_baseform" target="t_idpi" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#7c3aed;strokeWidth=2;" value="implements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_api_iapi" edge="1" parent="1" source="t_api" target="t_iapi" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;dashed=1;strokeColor=#7c3aed;strokeWidth=2;" value="implements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_1" edge="1" parent="1" source="t_f_login" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_2" edge="1" parent="1" source="t_f_mah" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_3" edge="1" parent="1" source="t_f_xeh" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="extends">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_4" edge="1" parent="1" source="t_f_esk" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_5" edge="1" parent="1" source="t_f_ord" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_6" edge="1" parent="1" source="t_f_err" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="te_inh_7" edge="1" parent="1" source="t_f_txat" target="t_baseform" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;strokeColor=#b45309;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>

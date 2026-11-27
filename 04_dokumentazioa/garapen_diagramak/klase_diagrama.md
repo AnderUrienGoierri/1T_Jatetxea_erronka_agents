@@ -616,3 +616,81 @@ Jarraian, sistemako klase bakoitzean txertatutako **metodo guztien zerrenda zeha
 | **BaseLoginController** | `onPinDigit(digitoa: int)` | `void` | Teklatu numerikoan digitua sakatzean PINera gehitzen du. |
 | **BaseLoginController** | `onClearPin()` | `void` | Sartutako PIN zenbakia garbitzen du. |
 | **BaseLoginController** | `onLoginClick()` | `void` | PINa egiaztatu eta dagokion lan-pantaila nagusia kargatzen du. |
+
+---
+
+## 5. Gerente Aplikazioa (JavaFX 21 MVC + OOP) eta TPV Aplikazioa (C# .NET 10 WinForms)
+
+`klase_diagrama.drawio` fitxategiak **3 orri** ditu orain:
+1. `1T Jatetxea - Klase Diagrama Osoa` (Domeinua + REST APIa + Ikuspegi orokorra)
+2. `Gerente Aplikazioa (JavaFX MVC)` — `ApiKontratua` (`interface`), `ApiBezeroa`, `ApiSalbuespena extends IOException`, `KontrolagailuFabrika implements Callback`, `EkintzaAsinkronoak` + `CheckedSupplier<T>`, `PantailaFreskagarria` (`interface`), `BaseAdminKontrolagailua` (`abstract`), 8 kontroladoreak (`TxataKontrolagailua` barne) eta modeloak (`TxatMezua`, `TxatEgoera`, `Langilea.txataAktibo`).
+3. `TPV Aplikazioa (C# WinForms)` — `IApiService` (`interface`), `ApiService`, `IDpiEgokigarria` (`interface`), `BaseTpvForm : Form`, 8 pantaila nagusiak (`TxataForm` barne), 3 modalak, UI motorra (`Theme`, `UiPerf`, `ProductImageCache`) eta DTOak.
+
+### 5.1. Gerente JavaFX (`admin_desktop_java`) OOP eta MVC Diagrama
+
+```mermaid
+classDiagram
+    direction TB
+    class ApiKontratua { <<interface>> }
+    class ApiBezeroa
+    class PantailaFreskagarria { <<interface>> +refresh() +getPantailaIzena() +garbitu() }
+    class BaseAdminKontrolagailua { <<abstract>> #apiClient #session }
+    class KontrolagailuFabrika
+    class DiseinuNagusiaKontrolagailua
+    class SaioHasieraKontrolagailua
+    class LaburpenKontrolagailua
+    class LangileakKontrolagailua
+    class MenuaKontrolagailua
+    class OsagaiakKontrolagailua
+    class MahaiakKontrolagailua
+    class FakturakKontrolagailua
+    class TxataKontrolagailua
+
+    ApiKontratua <|.. ApiBezeroa
+    PantailaFreskagarria <|.. BaseAdminKontrolagailua
+    BaseAdminKontrolagailua --> ApiKontratua
+    BaseAdminKontrolagailua <|-- LaburpenKontrolagailua
+    BaseAdminKontrolagailua <|-- LangileakKontrolagailua
+    BaseAdminKontrolagailua <|-- MenuaKontrolagailua
+    BaseAdminKontrolagailua <|-- OsagaiakKontrolagailua
+    BaseAdminKontrolagailua <|-- MahaiakKontrolagailua
+    BaseAdminKontrolagailua <|-- FakturakKontrolagailua
+    BaseAdminKontrolagailua <|-- TxataKontrolagailua
+    DiseinuNagusiaKontrolagailua --> PantailaFreskagarria
+    KontrolagailuFabrika ..> BaseAdminKontrolagailua
+    KontrolagailuFabrika ..> SaioHasieraKontrolagailua
+```
+
+### 5.2. TPV C# (`desktop_tpv_csharp`) OOP Diagrama
+
+```mermaid
+classDiagram
+    direction TB
+    class Form { <<WinForms>> }
+    class IDpiEgokigarria { <<interface>> +AplikatuGaiKomuna() +EgokituDpiAldaketan() }
+    class BaseTpvForm
+    class IApiService { <<interface>> }
+    class ApiService
+    class LoginForm
+    class MahaiakForm
+    class MahaiaXehetasunakForm
+    class EskaeraForm
+    class ErreserbakForm
+    class OrdainketaForm
+    class TiketIkusteaForm
+    class TxataForm
+
+    Form <|-- BaseTpvForm
+    IDpiEgokigarria <|.. BaseTpvForm
+    IApiService <|.. ApiService
+    BaseTpvForm <|-- LoginForm
+    BaseTpvForm <|-- MahaiakForm
+    BaseTpvForm <|-- MahaiaXehetasunakForm
+    BaseTpvForm <|-- EskaeraForm
+    BaseTpvForm <|-- ErreserbakForm
+    BaseTpvForm <|-- OrdainketaForm
+    BaseTpvForm <|-- TiketIkusteaForm
+    BaseTpvForm <|-- TxataForm
+    MahaiakForm --> TxataForm
+    TxataForm --> IApiService
+```
