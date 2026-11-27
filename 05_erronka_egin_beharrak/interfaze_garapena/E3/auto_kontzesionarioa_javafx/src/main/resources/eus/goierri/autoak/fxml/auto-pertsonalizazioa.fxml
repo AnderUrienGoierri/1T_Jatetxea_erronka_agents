@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="eus.goierri.autoak.controller.AutoPertsonalizazioaKontrolagailua"
+            stylesheets="@../css/autoak.css"
+            prefWidth="1360" prefHeight="860">
+    <!-- TOP: Itzuli botoia (egoera galdu gabe), autoaren titulua eta urrats-barra -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
+            <Button fx:id="backButton" text="← Itzuli auto-sortara" onAction="#goBackToCatalog" styleClass="topbar-back-button"/>
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label fx:id="carTitleLabel" text="Toyota RAV4 Hybrid" styleClass="topbar-title"/>
+                <Label fx:id="carSubtitleLabel" text="SUV · Hibridoa · 5 plaza · 5 ate" styleClass="topbar-subtitle"/>
+            </VBox>
+            <HBox alignment="CENTER" spacing="10">
+                <Label text="1. Iragazketa ✓" styleClass="step-done"/>
+                <Label text="→" styleClass="topbar-subtitle"/>
+                <Label text="2. Pertsonalizazioa" styleClass="step-active"/>
+            </HBox>
+            <Button text="Berrezarri aukerak" onAction="#resetConfiguration" styleClass="danger-button"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER: Autoaren irudiak/aurrebista dinamikoa, ezaugarri teknikoak eta deskribapena -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="catalog-scroll">
+            <content>
+                <VBox spacing="18">
+                    <padding>
+                        <Insets top="20" right="24" bottom="24" left="24"/>
+                    </padding>
+
+                    <!-- Aurrebista bisuala (StackPane + kanpoko/barruko kolore adierazleak) -->
+                    <VBox spacing="12" styleClass="showroom-stage">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="viewModeLabel" text="Kanpoaldeko aurrebista" styleClass="section-heading" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                            <ToggleButton fx:id="viewExteriorBtn" text="Kanpoaldea" selected="true" onAction="#selectViewMode" styleClass="filter-pill"/>
+                            <ToggleButton fx:id="viewInteriorBtn" text="Barrualdea" onAction="#selectViewMode" styleClass="filter-pill"/>
+                            <ToggleButton fx:id="viewDimensionsBtn" text="Neurriak &amp; Espazioa" onAction="#selectViewMode" styleClass="filter-pill"/>
+                        </HBox>
+
+                        <StackPane fx:id="showroomVisualPane" minHeight="250" prefHeight="270">
+                            <Rectangle fx:id="colorBackdropRect" width="640" height="230" arcWidth="22" arcHeight="22" fill="#f8fafc" stroke="#cbd5e1"/>
+                            <ImageView fx:id="carImageView" fitWidth="470" fitHeight="210" preserveRatio="true">
+                                <image>
+                                    <Image url="@../img/suv.png"/>
+                                </image>
+                            </ImageView>
+                            <Label fx:id="visualOverlayLabel" text="" wrapText="true" visible="false" managed="false"
+                                   style="-fx-background-color: rgba(15,23,42,0.88); -fx-text-fill: white; -fx-padding: 18px 24px; -fx-background-radius: 12px; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        </StackPane>
+
+                        <HBox alignment="CENTER_LEFT" spacing="18">
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="spec-box">
+                                <Circle fx:id="exteriorSwatchCircle" radius="10" fill="#f8fafc" stroke="#64748b"/>
+                                <Label fx:id="exteriorPreviewLabel" text="Kanpoko kolorea: Zuri Polar" styleClass="filter-group-title"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="spec-box">
+                                <Circle fx:id="interiorSwatchCircle" radius="10" fill="#334155" stroke="#64748b"/>
+                                <Label fx:id="interiorPreviewLabel" text="Barruko akabera: Oihal Iluna" styleClass="filter-group-title"/>
+                            </HBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Ezaugarri teknikoak eta neurriak (GridPane) -->
+                    <VBox spacing="12" styleClass="card">
+                        <Label text="Ezaugarri teknikoak eta neurriak (motorraren arabera eguneratua)" styleClass="section-heading"/>
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="66"/>
+                            </rowConstraints>
+
+                            <VBox spacing="4" styleClass="spec-box" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="POTENTZIA" styleClass="spec-label"/>
+                                <Label fx:id="specPowerLabel" text="218 CV" styleClass="spec-value"/>
+                            </VBox>
+                            <VBox spacing="4" styleClass="spec-box" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="KONTSUMOA" styleClass="spec-label"/>
+                                <Label fx:id="specConsumptionLabel" text="5,6 L/100km" styleClass="spec-value"/>
+                            </VBox>
+                            <VBox spacing="4" styleClass="spec-box" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label text="NEURRIAK (L×Z×A)" styleClass="spec-label"/>
+                                <Label fx:id="specDimensionsLabel" text="4.600 × 1.855 × 1.685 mm" styleClass="spec-value"/>
+                            </VBox>
+                            <VBox spacing="4" styleClass="spec-box" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label text="MALETATEGIA" styleClass="spec-label"/>
+                                <Label fx:id="specTrunkLabel" text="580 L" styleClass="spec-value"/>
+                            </VBox>
+                        </GridPane>
+
+                        <Separator/>
+
+                        <VBox spacing="6">
+                            <Label text="Deskribapena eta erabilera gomendatua" styleClass="filter-group-title"/>
+                            <Label fx:id="descriptionLabel" text="Autoaren deskribapen zehatza hemen agertuko da." wrapText="true"/>
+                            <Label fx:id="useCasesLabel" text="Erabilera gomendatuak: Familia, Bidaiak" styleClass="muted-text"/>
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- RIGHT: Aukeraketa panela (Accordion + 4 TitledPane) eta Azken Prezioa -->
+    <right>
+        <VBox prefWidth="440" spacing="14" styleClass="config-sidebar">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+
+            <VBox spacing="3">
+                <Label text="Pertsonalizazio eta aukeraketa panela" styleClass="section-heading"/>
+                <Label text="Zabaldu atal bakoitza bertsioa, kolorea, barrualdea edo gehigarriak hautatzeko."
+                       wrapText="true" styleClass="muted-text"/>
+            </VBox>
+
+            <Accordion fx:id="configAccordion" VBox.vgrow="ALWAYS">
+                <panes>
+                    <TitledPane fx:id="enginePane" text="1. Bertsioa eta motorra">
+                        <content>
+                            <ScrollPane fitToWidth="true" styleClass="filter-scroll">
+                                <content>
+                                    <VBox fx:id="engineOptionsBox" spacing="10">
+                                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                    </VBox>
+                                </content>
+                            </ScrollPane>
+                        </content>
+                    </TitledPane>
+
+                    <TitledPane fx:id="colorPane" text="2. Kanpoko kolorea">
+                        <content>
+                            <ScrollPane fitToWidth="true" styleClass="filter-scroll">
+                                <content>
+                                    <FlowPane fx:id="colorOptionsPane" hgap="10" vgap="10">
+                                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                    </FlowPane>
+                                </content>
+                            </ScrollPane>
+                        </content>
+                    </TitledPane>
+
+                    <TitledPane fx:id="interiorPane" text="3. Barruko akabera">
+                        <content>
+                            <ScrollPane fitToWidth="true" styleClass="filter-scroll">
+                                <content>
+                                    <VBox fx:id="interiorOptionsBox" spacing="10">
+                                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                    </VBox>
+                                </content>
+                            </ScrollPane>
+                        </content>
+                    </TitledPane>
+
+                    <TitledPane fx:id="extrasPane" text="4. Ekipamendu gehigarria">
+                        <content>
+                            <ScrollPane fitToWidth="true" styleClass="filter-scroll">
+                                <content>
+                                    <VBox fx:id="extrasOptionsBox" spacing="10">
+                                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                    </VBox>
+                                </content>
+                            </ScrollPane>
+                        </content>
+                    </TitledPane>
+                </panes>
+            </Accordion>
+
+            <!-- Azken prezio eguneratua (beti ikusgai) -->
+            <VBox spacing="8" styleClass="price-summary-box">
+                <Label fx:id="priceBreakdownLabel" text="Oinarria: 38.500 € · Aukerak: +0 €"
+                       wrapText="true" styleClass="price-summary-caption"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <VBox HBox.hgrow="ALWAYS">
+                        <Label text="AZKEN PREZIOA (BEZ barne)" styleClass="price-summary-caption"/>
+                        <Label fx:id="finalPriceLabel" text="38.500 €" styleClass="price-summary-total"/>
+                    </VBox>
+                    <Button text="Eskaintza ikusi" onAction="#showOfferSummary" styleClass="primary-button"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>

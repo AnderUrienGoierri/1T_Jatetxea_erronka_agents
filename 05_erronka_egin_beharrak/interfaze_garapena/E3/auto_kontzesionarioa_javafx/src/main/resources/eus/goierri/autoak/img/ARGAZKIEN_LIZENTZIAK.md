@@ -1,0 +1,24 @@
+# Argazkien egiletza eta lizentziak
+
+Argazkiak Wikimedia Commonsetik datoz. Aplikazioan 960 pixeleko aurrebista murriztuak erabiltzen dira; estekek jatorrizko irudiak eta lizentziak adierazten dituzte.
+
+- **toyota-yaris.jpg**: [2020-2024 Toyota Yaris Hybrid.jpg](https://commons.wikimedia.org/wiki/File:2020-2024_Toyota_Yaris_Hybrid.jpg) — TTTNIS — [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
+- **toyota-rav4.jpg**: [2019 Toyota RAV4 Hybrid 02.jpg](https://commons.wikimedia.org/wiki/File:2019_Toyota_RAV4_Hybrid_02.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **vw-golf.jpg**: [2020 Volkswagen Golf Style 1.5 Front.jpg](https://commons.wikimedia.org/wiki/File:2020_Volkswagen_Golf_Style_1.5_Front.jpg) — Vauxford — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **tesla-model3.jpg**: [2024 Tesla Model 3 Highland Performance AWD.jpg](https://commons.wikimedia.org/wiki/File:2024_Tesla_Model_3_Highland_Performance_AWD.jpg) — Chanokchon — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **bmw-320d.jpg**: [BMW 3-Series Touring (G21) 330e (2020) (53047114326).jpg](https://commons.wikimedia.org/wiki/File:BMW_3-Series_Touring_(G21)_330e_(2020)_(53047114326).jpg) — Charles from Port Chester, New York — [CC BY 2.0](https://creativecommons.org/licenses/by/2.0).
+- **kia-ev6.jpg**: [Kia EV6 Automesse Ludwigsburg 2022 1X7A5931.jpg](https://commons.wikimedia.org/wiki/File:Kia_EV6_Automesse_Ludwigsburg_2022_1X7A5931.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **peugeot-5008.jpg**: [Peugeot 5008 BlueHDi Allure 2020 (50234928357).jpg](https://commons.wikimedia.org/wiki/File:Peugeot_5008_BlueHDi_Allure_2020_(50234928357).jpg) — RL GNZLZ from Chile — [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0).
+- **seat-ibiza.jpg**: [2021 Seat Ibiza FR.jpg](https://commons.wikimedia.org/wiki/File:2021_Seat_Ibiza_FR.jpg) — Calreyn88 — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **ford-transit.jpg**: [Ford Transit Custom (2023) 1X7A1605.jpg](https://commons.wikimedia.org/wiki/File:Ford_Transit_Custom_(2023)_1X7A1605.jpg) — Alexander-93 — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **mercedes-c.jpg**: [Mercedes-Benz C 200 AVANTGARDE (W206).jpg](https://commons.wikimedia.org/wiki/File:Mercedes-Benz_C_200_AVANTGARDE_(W206).jpg) — Tokumeigakarinoaoshima — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **toyota-corolla.jpg**: [2023 Toyota Corolla Hybrid (E210) hatchback IMG 9877.jpg](https://commons.wikimedia.org/wiki/File:2023_Toyota_Corolla_Hybrid_(E210)_hatchback_IMG_9877.jpg) — Alexander-93 — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **hyundai-tucson.jpg**: [Hyundai Tucson (NX4, SWB) PHEV 1X7A1858.jpg](https://commons.wikimedia.org/wiki/File:Hyundai_Tucson_(NX4,_SWB)_PHEV_1X7A1858.jpg) — Alexander-93 — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **renault-clio.jpg**: [Renault Clio V 1X7A0392.jpg](https://commons.wikimedia.org/wiki/File:Renault_Clio_V_1X7A0392.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **dacia-sandero.jpg**: [Dacia Sandero III 1X7A0329.jpg](https://commons.wikimedia.org/wiki/File:Dacia_Sandero_III_1X7A0329.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **nissan-qashqai.jpg**: [Nissan Qashqai (J12) Automesse Ludwigsburg 2022 1X7A5875.jpg](https://commons.wikimedia.org/wiki/File:Nissan_Qashqai_(J12)_Automesse_Ludwigsburg_2022_1X7A5875.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **hyundai-ioniq5.jpg**: [Hyundai Ioniq 5 IAA 2021 1X7A0189.jpg](https://commons.wikimedia.org/wiki/File:Hyundai_Ioniq_5_IAA_2021_1X7A0189.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **renault-kangoo.jpg**: [Renault Kangoo III 1X7A1519.jpg](https://commons.wikimedia.org/wiki/File:Renault_Kangoo_III_1X7A1519.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **skoda-octavia.jpg**: [Skoda Octavia IV Combi RS 1X7A0352.jpg](https://commons.wikimedia.org/wiki/File:Skoda_Octavia_IV_Combi_RS_1X7A0352.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **volvo-xc60.jpg**: [Volvo XC60 (SPA) FL 1X7A6406.jpg](https://commons.wikimedia.org/wiki/File:Volvo_XC60_(SPA)_FL_1X7A6406.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
+- **citroen-berlingo.jpg**: [Citroen Berlingo III Classic-Gala 2022 1X7A0002.jpg](https://commons.wikimedia.org/wiki/File:Citroen_Berlingo_III_Classic-Gala_2022_1X7A0002.jpg) — Alexander Migl — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
