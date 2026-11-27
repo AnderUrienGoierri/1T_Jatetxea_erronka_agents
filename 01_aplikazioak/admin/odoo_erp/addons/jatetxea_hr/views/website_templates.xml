@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Google Fonts: Cinzel, Plus Jakarta Sans & JetBrains Mono (1T Jatetxea v2.0 Style Guide) -->
+    <template id="jatetxea_website_fonts" inherit_id="website.layout" name="1T Jatetxea Google Fonts">
+        <xpath expr="//head" position="inside">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+            <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&amp;family=JetBrains+Mono:wght@500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        </xpath>
+    </template>
+
+    <!-- Login page corporate banner above email/password inputs -->
+    <template id="jatetxea_login_branding" inherit_id="web.login" name="1T Jatetxea Login Branding">
+        <xpath expr="//form[hasclass('oe_login_form')]" position="inside">
+            <div class="text-center mt-3 pt-3" style="border-top: 1px solid #e6dfd5;">
+                <small style="color: #78716c; font-size: 0.78rem;">
+                    1T Jatetxea S.L. · Goierri Eskola Erronka Integratua 2026<br/>
+                    Odoo 17 ERP · Giza Baliabideen Kudeaketa Zentrala
+                </small>
+            </div>
+        </xpath>
+    </template>
+</odoo>

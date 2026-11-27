@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - odoo_postgres_data:/var/lib/postgresql/data
     networks:
@@ -25,7 +25,7 @@ services:
     depends_on:
       - jatetxea-odoo-postgres
     ports:
-      - "8070:8069" # Host-eko 8070 portura bideratua, Windows Odoo zerbitzuarekin (8069) talkarik ez izateko
+      - "8070:8069" # Wi-Fi/VPN bidezko sarbidea; ez konfiguratu routerrean portu-aurrerapenik
     environment:
       - HOST=jatetxea-odoo-postgres
       - USER=odoo

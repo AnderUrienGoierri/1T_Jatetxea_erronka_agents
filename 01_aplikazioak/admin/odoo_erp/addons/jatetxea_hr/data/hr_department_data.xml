@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Sailak / Departments -->
+        <!-- Sailak / Departments (6 sail independente maila berean; aginte-katea Org Chart bidez) -->
         <record id="dept_zuzendaritza" model="hr.department">
             <field name="name">Zuzendaritza eta Administrazioa</field>
         </record>

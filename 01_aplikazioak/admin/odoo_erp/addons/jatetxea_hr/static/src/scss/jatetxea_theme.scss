@@ -1,0 +1,337 @@
+/* ==========================================================================
+   1T JATETXEA S.L. — Odoo 17 Website & Portal Theme (T1 Jatetxea v2.0)
+   Warm Hospitality Light (#FAF7F2) & Evening Espresso Dark (#0F0D0E)
+   Brand Chianti (#881337) & Antique Gold (#D4A359)
+   ========================================================================== */
+
+:root {
+    --t1-brand-primary: #881337;
+    --t1-brand-hover: #9f1239;
+    --t1-brand-dark: #4c0519;
+    --t1-brand-light: #fce7f0;
+    --t1-gold: #d4a359;
+    --t1-gold-light: #fde68a;
+    --t1-gold-dark: #b45309;
+    --t1-espresso: #0f0d0e;
+    --t1-espresso-card: #1a1618;
+    --t1-espresso-border: #352d31;
+    --t1-bg-warm: #faf7f2;
+    --t1-surface-warm: #f3efe8;
+    --t1-border-warm: #e6dfd5;
+    --t1-text-main: #1c1917;
+    --t1-text-secondary: #57534e;
+    --t1-text-muted: #78716c;
+    --t1-success: #15803d;
+    --t1-warning: #c2410c;
+    --t1-info: #0369a1;
+    --t1-danger: #b91c1c;
+    --t1-font-title: 'Cinzel', Georgia, serif;
+    --t1-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --t1-font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+    font-family: var(--t1-font-body) !important;
+    background-color: var(--t1-bg-warm);
+    color: var(--t1-text-main);
+}
+
+/* Header / Navbar — Evening Espresso & Chianti Editorial */
+header#top,
+header#top nav.navbar {
+    background: linear-gradient(135deg, #0f0d0e 0%, #4c0519 60%, #881337 100%) !important;
+    border-bottom: 2px solid var(--t1-gold) !important;
+    box-shadow: 0 6px 20px rgba(15, 13, 14, 0.28) !important;
+}
+
+header#top nav.navbar {
+    border-bottom: none !important;
+    box-shadow: none !important;
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+}
+
+header#top .navbar-brand img {
+    max-height: 48px !important;
+    width: auto !important;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+}
+
+header#top .nav-link,
+header#top .navbar-nav .nav-link,
+header#top a.nav-link,
+header#top .o_nav_link_btn {
+    color: #f5f0e8 !important;
+    font-family: var(--t1-font-body) !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+    transition: all 0.2s ease !important;
+}
+
+header#top .nav-link:hover,
+header#top .nav-link.active {
+    color: var(--t1-gold-light) !important;
+}
+
+header#top .btn-outline-secondary,
+header#top .o_no_autohide_item a.btn {
+    color: #faf7f2 !important;
+    border-color: rgba(212, 163, 89, 0.65) !important;
+    background-color: rgba(26, 22, 24, 0.45) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+header#top .btn-outline-secondary:hover,
+header#top .o_no_autohide_item a.btn:hover {
+    background-color: var(--t1-gold) !important;
+    color: #1c1917 !important;
+    border-color: var(--t1-gold) !important;
+}
+
+header#top .btn-primary,
+header#top .oe_cta .btn,
+header#top a.btn_cta {
+    background-color: var(--t1-gold) !important;
+    border-color: var(--t1-gold-dark) !important;
+    color: #1c1917 !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(212, 163, 89, 0.28) !important;
+}
+
+header#top .btn-primary:hover,
+header#top .oe_cta .btn:hover,
+header#top a.btn_cta:hover {
+    background-color: var(--t1-gold-light) !important;
+    color: #0f0d0e !important;
+}
+
+header#top .o_searchbar_form .btn,
+header#top .fa-search,
+header#top .oi-search,
+header#top button[aria-label="Search"],
+header#top a[aria-label="Search"] {
+    color: var(--t1-gold-light) !important;
+    background-color: rgba(250, 247, 242, 0.1) !important;
+    border-radius: 50% !important;
+}
+
+/* Primary Buttons across Website & Login */
+.btn-primary,
+.o_portal .btn-primary,
+.oe_login_form .btn-primary {
+    background-color: var(--t1-brand-primary) !important;
+    border-color: var(--t1-brand-primary) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    transition: all 0.22s ease !important;
+}
+
+.btn-primary:hover,
+.o_portal .btn-primary:hover,
+.oe_login_form .btn-primary:hover {
+    background-color: var(--t1-brand-hover) !important;
+    border-color: var(--t1-brand-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(136, 19, 55, 0.3) !important;
+}
+
+/* Login Page — Warm Hospitality Card */
+.oe_website_login_container {
+    padding: 3.5rem 1rem !important;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #faf7f2 0%, #f3efe8 100%);
+}
+
+form.oe_login_form {
+    max-width: 440px !important;
+    width: 100%;
+    background: #ffffff !important;
+    border: 1px solid var(--t1-border-warm) !important;
+    border-top: 4px solid var(--t1-brand-primary) !important;
+    border-radius: 14px !important;
+    padding: 2.25rem 2rem !important;
+    box-shadow: 0 14px 32px rgba(28, 25, 23, 0.08) !important;
+}
+
+form.oe_login_form label {
+    font-weight: 600 !important;
+    color: var(--t1-text-main) !important;
+    font-size: 0.88rem !important;
+}
+
+form.oe_login_form .form-control {
+    border-radius: 8px !important;
+    border-color: var(--t1-border-warm) !important;
+    padding: 0.65rem 0.85rem !important;
+}
+
+form.oe_login_form .form-control:focus {
+    border-color: var(--t1-brand-primary) !important;
+    box-shadow: 0 0 0 3px rgba(136, 19, 55, 0.14) !important;
+}
+
+form.oe_login_form a {
+    color: var(--t1-brand-primary) !important;
+    font-weight: 600;
+}
+
+/* Homepage Custom Classes */
+.t1-hero {
+    background: radial-gradient(circle at 50% 18%, rgba(136, 19, 55, 0.94) 0%, rgba(76, 5, 25, 0.97) 52%, #0f0d0e 100%) !important;
+    color: #faf7f2 !important;
+    border-bottom: 3px solid var(--t1-gold) !important;
+    padding: 5.5rem 1.5rem 5rem !important;
+}
+
+.t1-hero-badge {
+    display: inline-block;
+    font-family: var(--t1-font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--t1-gold-light);
+    background-color: rgba(212, 163, 89, 0.14);
+    border: 1px solid rgba(212, 163, 89, 0.45);
+    padding: 0.45rem 1.25rem;
+    border-radius: 999px;
+}
+
+.t1-hero-title {
+    font-family: var(--t1-font-title) !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    line-height: 1.18;
+    color: #faf7f2 !important;
+    text-shadow: 0 4px 18px rgba(15, 13, 14, 0.45);
+}
+
+.t1-btn-gold {
+    background-color: var(--t1-gold) !important;
+    color: #1c1917 !important;
+    border: 1px solid var(--t1-gold-dark) !important;
+    font-weight: 800 !important;
+    border-radius: 10px !important;
+    padding: 0.85rem 1.75rem !important;
+    box-shadow: 0 6px 20px rgba(212, 163, 89, 0.32);
+    transition: all 0.22s ease;
+}
+
+.t1-btn-gold:hover {
+    background-color: var(--t1-gold-light) !important;
+    color: #0f0d0e !important;
+    transform: translateY(-2px);
+}
+
+.t1-btn-outline-gold {
+    background-color: rgba(26, 22, 24, 0.55) !important;
+    color: #faf7f2 !important;
+    border: 1.5px solid rgba(212, 163, 89, 0.7) !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    padding: 0.85rem 1.75rem !important;
+    transition: all 0.22s ease;
+}
+
+.t1-btn-outline-gold:hover {
+    background-color: #faf7f2 !important;
+    color: #1c1917 !important;
+    border-color: #faf7f2 !important;
+    transform: translateY(-2px);
+}
+
+.t1-kpi-strip {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--t1-border-warm);
+}
+
+.t1-kpi-value {
+    font-family: var(--t1-font-title) !important;
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: var(--t1-brand-primary);
+    line-height: 1.1;
+}
+
+.t1-kpi-label {
+    font-family: var(--t1-font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--t1-text-secondary);
+    margin-top: 0.35rem;
+}
+
+.t1-section-warm {
+    background-color: var(--t1-bg-warm);
+}
+
+.t1-section-title {
+    font-family: var(--t1-font-title) !important;
+    color: var(--t1-brand-primary) !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.6px;
+}
+
+.t1-title-underline {
+    width: 72px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--t1-brand-primary), var(--t1-gold));
+    border-radius: 2px;
+    margin: 0.75rem auto 0;
+}
+
+.t1-card {
+    background-color: #ffffff;
+    border: 1px solid var(--t1-border-warm) !important;
+    border-top: 3px solid var(--t1-brand-primary) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(28, 25, 23, 0.05);
+    transition: all 0.22s ease;
+}
+
+.t1-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(136, 19, 55, 0.1);
+    border-top-color: var(--t1-gold) !important;
+}
+
+.t1-mono-pill {
+    font-family: var(--t1-font-mono) !important;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background-color: var(--t1-surface-warm);
+    color: var(--t1-brand-dark);
+    border: 1px solid var(--t1-border-warm);
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+}
+
+/* Footer — Evening Espresso Dark */
+footer#bottom,
+footer#bottom .o_footer {
+    background-color: #1a1618 !important;
+    color: #a8a29e !important;
+    border-top: 2px solid var(--t1-gold) !important;
+}
+
+footer#bottom a {
+    color: #e7e5e4 !important;
+}
+
+footer#bottom a:hover {
+    color: var(--t1-gold-light) !important;
+}
+
+footer#bottom .o_footer_copyright {
+    background-color: #0f0d0e !important;
+    border-top: 1px solid #352d31 !important;
+    color: #78716c !important;
+}

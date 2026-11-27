@@ -16,9 +16,9 @@ import os
 
 # Konfigurazio lehenetsia
 ODOO_URL = os.environ.get("ODOO_URL", "http://localhost:8070")
-ODOO_DB = os.environ.get("ODOO_DB", "jatetxea_odoo_db")
+ODOO_DB = os.environ.get("ODOO_DB", "jatetxea_odoo")
 ODOO_USER = os.environ.get("ODOO_USER", "admin")
-ODOO_PASSWORD = os.environ.get("ODOO_PASSWORD", "Errotagain169232$$")
+ODOO_PASSWORD = os.environ.get("ODOO_PASSWORD", "admin")
 
 # MySQL ezarpenak
 MYSQL_HOST = os.environ.get("MYSQL_HOST", "127.0.0.1")

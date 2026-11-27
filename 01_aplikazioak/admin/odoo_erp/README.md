@@ -1,100 +1,98 @@
-# 1T Jatetxea - Odoo 17 ERP eta Giza Baliabideak (HR)
+# 1T Jatetxea S.L. — Odoo 17 ERP eta Giza Baliabideak (`Employees / HR`)
 
-Goierri Eskola - 2. Mailako Erronka Integratua  
-**IT Administrazio Taldea:** Ander Urien Telleria (IT Lead), Julen Aguado Fernández, Iker Araujo Dominguez, Aratz Huegun Flores.
+**Goierri Eskola — 2. Mailako Erronka Integratua (2025-2026)**  
+**IT Administrazio Taldea (1. Taldea):** Ander Urien Telleria (IT Lead), Julen Aguado Fernández, Iker Araujo Dominguez, Aratz Huegun Flores.  
+**Dokumentazio Txosten Osoa (EKS Errubrika):** [ENPRESA_KUDEAKETA_SISTEMAK_ODOO_17_TXOSTENA.md](docs/ENPRESA_KUDEAKETA_SISTEMAK_ODOO_17_TXOSTENA.md)
 
 ---
 
 ## 1. Helburua eta Arkitektura
 
-Odoo 17 ERP sistemak jatetxearen barne kudeaketa administratiboa eta Giza Baliabideak (HR) zentralizatzen ditu:
-* **Langileen Fitxa Nagusiak** (`hr.employee`): Sailak, karguak, NAN/DNI, kontaktua eta arduradun hierarkikoa.
-* **Fitxaketak eta Ordutegi Kontrola** (`hr_attendance`): Sarrera-irteeren erregistroa, orduen kalkulua.
-* **Bajak eta Oporrak** (`hr_holidays`): Gaixotasun-bajak, lan-istripuak, baimenak eta opor egunak.
-* **Lan-Kontratuak** (`hr_contract`): Mugagabeak, denboraldikoak, soldata gordinak eta lanaldiak.
+Odoo 17 Community ERP sistemak (**LGPL-3** lizentzia, **On-Premise Docker**) 1T Jatetxea S.L.-ren Giza Baliabideak eta barne kudeaketa zentralizatzen ditu **Langileak (`hr` — Employees)** modulu nagusiaren inguruan:
 
-### Zergatik PostgreSQL eta ez MySQL?
-Odoo ERP-ak arkitektura propioan **PostgreSQL** datu-basea soilik onartzen du bere ORM indartsuarentzat. Jatetxearen aplikazio bezeroek (Web PHP, JavaFX KDS, Flutter, C# TPV) **MySQL (`jatetxea_db`)** erabiltzen dute denbora errealeko erreserba, karta eta eskaeretarako. Bi sistemak paraleloan modu koordinatuan funtzionatzen dute.
-
----
-
-## 2. Portuen Banaketa eta Talkak Ekiditea
-
-| Zerbitzua | Portua Host-ean | Portua Edukiontzian | Oharra |
-|---|---|---|---|
-| **1T Jatetxea Odoo 17** | **8070** | 8069 | Docker bidez isolatua (talkarik ez) |
-| **Odoo PostgreSQL DB** | **5432** | 5432 | Docker barruko datu-basea |
-| *Probetako Odoo Lokala* | *8069* | *Native Windows* | Host sisteman instalatutako aurreko proba zerbitzua (`odoo-server-17.0`) |
-| *Probetako Postgres Lokala* | *5433* | *Native Windows* | Host sisteman instalatutako PostgreSQL zerbitzua |
-
-> **Garrantzitsua:** IT Kontrol Zentralak portu 8069an aurretik "ONLINE" erakusten zuen arrazoia Windows Host-eko zerbitzu lokal bat zelako zen (`odoo-server-17.0`). Jatetxearen edukiontzi ofiziala **8070 portuan** hedatu dugu garbi eta seguru lan egiteko.
+* **Langileen Fitxa Integralak (`hr.employee`):** 15 langileen profil-irudi korporatiboak, 6 sailen hierarkia zuzena, lanpostuak, datu pribatuak (helbidea, NAN, GS, IBAN, larrialdi-kontaktua, ikasketak), 4 digituko TPV/Kiosk PIN ofizialak eta Badge ID-ak.
+* **Organigrama eta Gaitasunak (`hr_org_chart`, `hr_skills`):** CEO-tik sail bakoitzeko langileetarainoko organigrama interaktiboa, 37 CV lerro eta 79 gaitasun-erregistro.
+* **Lan-Kontratuak (`hr_contract`):** 15 kontratu aktibo, soldata gordinak, lanaldi motak (40h / 20h) eta Gipuzkoako Ostalaritza Hitzarmeneko klausulak.
+* **Fitxaketak (`hr_attendance`):** 53 sarrera-irteera erreal eta lan-orduen kalkulu automatikoa.
+* **Oporrak eta Bajak (`hr_holidays`):** 2026ko 23 opor-egunen esleipena, prestakuntza-egunak, onartutako oporrak/bajak eta onartzeko zain dauden eskaerak.
+* **1T Jatetxea v2.0 Marka Identitatea (`jatetxea_hr`):** Logo korporatiboa, favicona eta `http://localhost:8070/` Web Portala T1 v2.0 estilo diseinu gidarekin (*Chianti `#881337`, Antique Gold `#D4A359`, Warm Hospitality `#FAF7F2`, Evening Espresso `#0F0D0E`*).
 
 ---
 
-## 3. Langileen Plantilla eta Sailak
+## 2. Portuen Banaketa eta Sarbideak
 
-### A. IT Administrazio Taldea
-1. **Ander Urien Telleria** - IT Lead / FullStack Arkitektoa (`ander.urien@goierrieskola.eus`)
-2. **Julen Aguado Fernández** - Sare eta Suebaki Ingeniaria (`julen.aguado@goierrieskola.eus`)
-3. **Iker Araujo Dominguez** - Sistemen eta Birtualizazio Ingeniaria (`iker.araujo@goierrieskola.eus`)
-4. **Aratz Huegun Flores** - Zibersegurtasun eta Ebaluazio Burua (`aratz.huegun@goierrieskola.eus`)
+| Zerbitzua | URL / Helbidea | Portua Host-ean | Portua Edukiontzian | Oharra |
+| :--- | :--- | :---: | :---: | :--- |
+| **1T Jatetxea Odoo 17 ERP** | `http://localhost:8070` | **8070** | 8069 | Docker bidez isolatua (8069 talkarik ez) |
+| **Odoo PostgreSQL 15 DB** | `127.0.0.1:5432` | **5432** | 5432 | Datu-basea: `jatetxea_odoo` (`odoo`/`odoo`) |
+| **Jatetxearen Web Publikoa** | `http://localhost:8085` | **8085** | 80 | Bezeroen karta eta erreserbak (MySQL) |
 
-### B. Jatetxeko Langileak
-5. **Ainhoa Goikoetxea** - Chef Burua / Sukaldari Nagusia (Saila: Sukaldea)
-6. **Eneko Otegi** - Bigarren Sukaldaria / Parrilleroa (Saila: Sukaldea)
-7. **Mikel Arregi** - Maître / Zerbitzari Burua (Saila: Jantokia)
-8. **Maite Zabaleta** - Jantokiko Zerbitzaria (Saila: Jantokia)
-9. **Unai Lasa** - Jantokiko Zerbitzaria (Saila: Jantokia)
-10. **Gorka Mendizabal** - Barman / Barrako Arduraduna (Saila: Barra)
-11. **Uxue Etxarri** - Barrako Zerbitzaria (Saila: Barra)
-12. **Kepa Aldasoro** - Biltegi eta Hornidura Arduraduna (Saila: Biltegia)
-13. **Ander Madinabeitia** - Jatetxearen Zuzendaria (Saila: Zuzendaritza)
-14. **Joseba Ramos** - Jatetxearen Zuzendaria (Saila: Zuzendaritza)
-15. **Estebe Ormazabal** - Jatetxearen Zuzendaria (Saila: Zuzendaritza)
+* **Admin Sarbidea:** `ander.urien@goierrieskola.eus` (edo `admin`) / Pasahitza: `admin`
+* **Master Password (Database Manager):** `Errotagain169232$$`
+
+### Mugikorretik: Wi-Fi eta edozein tokitatik
+
+Odoo-k hosteko `8070` ataka erabiltzen du; PostgreSQL `5432` ataka host horretan bertan bakarrik dago eskuragarri.
+
+1. **Wi-Fi sare berean:** zerbitzarian exekutatu `ipconfig` eta hartu zerbitzariaren IPv4 helbidea. Mugikorreko Odoo aplikazioan sartu `http://<zerbitzariaren-IP>:8070` (adibidez, `http://192.168.10.10:8070`). Bi gailuek sare berean egon behar dute.
+2. **Windows Suebakia:** administratzaile gisa PowerShell ireki zerbitzarian eta baimendu 8070/TCP sare lokaletik:
+   ```powershell
+   New-NetFirewallRule -DisplayName "Odoo 8070 - LAN" -Direction Inbound -Protocol TCP -LocalPort 8070 -Action Allow -RemoteAddress LocalSubnet -Profile Any
+   ```
+3. **Edozein tokitatik:** instalatu Tailscale zerbitzarian eta mugikorrean, eta hasi saioa tailnet berean. Zerbitzarian `tailscale ip -4` exekutatu, eta mugikorrean erabili `http://<Tailscale-IP>:8070`. Windows Suebakiak konexioa blokeatzen badu, baimendu tailneteko helbide-tartea:
+   ```powershell
+   New-NetFirewallRule -DisplayName "Odoo 8070 - Tailscale" -Direction Inbound -Protocol TCP -LocalPort 8070 -Action Allow -RemoteAddress 100.64.0.0/10 -Profile Any
+   ```
+
+Ez ireki `8070` routerrean Internetera, eta ez argitaratu PostgreSQL `5432` ataka. Tailscale bidezko sarbideak VPN pribatuan mantentzen du konexioa; erabiltzaile eta pasahitz seguruak erabili.
 
 ---
 
-## 4. Karpetaren Egitura
+## 3. Karpetaren Egitura
 
-```
-1T_Jatetxea_ODOO/
-├── docker-compose.yml          # Odoo 17 + PostgreSQL 15 zerbitzuen definizioa
+```text
+01_aplikazioak/admin/odoo_erp/
+├── docker-compose.yml                         # Odoo 17 + PostgreSQL 15 definizioa
 ├── config/
-│   └── odoo.conf               # Odoo zerbitzariaren konfigurazio fitxategia
+│   └── odoo.conf                              # Odoo zerbitzariaren konfigurazioa (jatetxea_odoo)
 ├── addons/
-│   └── jatetxea_hr/            # Odoo 17 HR modulu pertsonalizatua
+│   └── jatetxea_hr/                           # 1T Jatetxea modulu pertsonalizatua (v17.0.2.0.0)
 │       ├── __init__.py
 │       ├── __manifest__.py
-│       └── data/
-│           ├── hr_department_data.xml
-│           ├── hr_job_data.xml
-│           ├── hr_employee_data.xml
-│           └── hr_contract_data.xml
-├── data/                       # CSV fitxategiak (zuzeneko inportaziorako)
-│   ├── 01_departamentuak.csv
-│   ├── 02_lanpostuak.csv
-│   ├── 03_langileak.csv
-│   ├── 04_kontratuak.csv
-│   ├── 05_fitxaketak.csv
-│   └── 06_bajak.csv
+│       ├── data/                              # XML hasierako datuak (sailak, lanpostuak, langileak, kontratuak)
+│       ├── views/
+│       │   └── website_templates.xml          # Google Fonts (Cinzel/Plus Jakarta Sans) eta Login marka
+│       └── static/
+│           ├── description/icon.png           # T1 Jatetxea aplikazio-ikonoa
+│           └── src/
+│               ├── img/                       # Logo ofizialak, favicona eta 15 langileen avatarrak
+│               └── scss/                      # jatetxea_theme.scss (Web) eta jatetxea_backend.scss (ERP)
+├── data/                                      # CSV babes-kopiak (01_departamentuak .. 06_bajak)
 ├── scripts/
-│   ├── abiarazi_odoo.ps1       # Zerbitzua altxatzeko script laguntzailea
-│   └── sync_mysql_to_odoo.py   # MySQL -> Odoo XML-RPC sinkronizatzailea
+│   ├── abiarazi_odoo.ps1                      # Zerbitzua abiarazteko PowerShell scripta
+│   ├── konfiguratu_odoo_osoa.py               # ORM bidezko konfigurazio integral idempotentea
+│   ├── konfiguratu_odoo_portal.py             # Portal konfigurazio esteka
+│   └── sync_mysql_to_odoo.py                  # MySQL -> Odoo XML-RPC sinkronizatzailea
+├── docs/
+│   ├── ENPRESA_KUDEAKETA_SISTEMAK_ODOO_17_TXOSTENA.md  # Erronkako dokumentazio osoa
+│   └── img/                                   # 15 pantaila-argazki erreal (00 .. 14)
 └── README.md
 ```
 
 ---
 
-## 5. Martxan Jartzeko Gida
+## 4. Martxan Jartzea eta Konfigurazio Osoa Aplikatzea
 
 1. **Edukiontziak abiarazi:**
    ```powershell
-   cd C:\Dev\GoierriEskola\2_maila\1T_Jatxetxea_Erronka\1T_Jatetxea_ODOO
-   docker compose up -d
+   docker start jatetxea_odoo_postgres jatetxea_odoo_erp
    ```
-2. **Nabigatzailean ireki:**
-   * URL: `http://localhost:8070`
-   * Master Password: `Errotagain169232$$`
-   * Datu-base berria sortu: `jatetxea_odoo_db`
-3. **Modulua instalatu:**
-   * Aplikazioak (Apps) atalean `jatetxea_hr` aktibatu, edo CSV datuak inportatu.
+   *(Edo garbi sortzeko: `.\scripts\abiarazi_odoo.ps1`)*
+2. **`jatetxea_hr` modulua eguneratu eta datu osoak kargatu (idempotentea):**
+   ```powershell
+   docker exec jatetxea_odoo_erp odoo -c /etc/odoo/odoo.conf -d jatetxea_odoo -u jatetxea_hr --stop-after-init --no-http
+   docker cp .\scripts\konfiguratu_odoo_osoa.py jatetxea_odoo_erp:/tmp/konfiguratu_odoo_osoa.py
+   docker exec jatetxea_odoo_erp sh -c "odoo shell -c /etc/odoo/odoo.conf -d jatetxea_odoo --no-http < /tmp/konfiguratu_odoo_osoa.py"
+   docker restart jatetxea_odoo_erp
+   ```
+3. **Nabigatzailean ireki:** `http://localhost:8070`

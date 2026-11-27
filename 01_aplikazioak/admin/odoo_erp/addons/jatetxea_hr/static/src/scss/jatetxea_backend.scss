@@ -1,0 +1,48 @@
+/* ==========================================================================
+   1T JATETXEA S.L. — Odoo 17 Backend ERP Branding (T1 Jatetxea v2.0)
+   Chianti (#881337), Borgoina (#4C0519) & Antique Gold (#D4A359)
+   ========================================================================== */
+
+.o_main_navbar {
+    background: linear-gradient(90deg, #4c0519 0%, #881337 65%, #6b0f2b 100%) !important;
+    border-bottom: 2px solid #d4a359 !important;
+}
+
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .dropdown-toggle {
+    color: #faf7f2 !important;
+}
+
+.o_main_navbar .o_nav_entry:hover,
+.o_main_navbar .dropdown-toggle:hover,
+.o_main_navbar .o_menu_sections .o_nav_entry.active {
+    background-color: rgba(212, 163, 89, 0.22) !important;
+    color: #fde68a !important;
+}
+
+.o_control_panel .btn-primary,
+.o_form_view .btn-primary,
+.o_list_view .btn-primary {
+    background-color: #881337 !important;
+    border-color: #881337 !important;
+}
+
+.o_control_panel .btn-primary:hover,
+.o_form_view .btn-primary:hover,
+.o_list_view .btn-primary:hover {
+    background-color: #9f1239 !important;
+    border-color: #9f1239 !important;
+}
+
+/* Employee Kanban Cards subtle refinement */
+.o_hr_employee_kanban .oe_kanban_global_click {
+    border-radius: 10px !important;
+    border: 1px solid #e6dfd5 !important;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.o_hr_employee_kanban .oe_kanban_global_click:hover {
+    border-color: #d4a359 !important;
+    box-shadow: 0 6px 18px rgba(136, 19, 55, 0.12) !important;
+}
