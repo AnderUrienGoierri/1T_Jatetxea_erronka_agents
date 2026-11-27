@@ -13,7 +13,7 @@ Dokumentu honek sistema osoa simulatzeko eta ekoizpenerako prestatutako Docker e
 | **jatetxea_web_php** | `php:8.4-apache` | `8085:80` | Jatetxearen webgune publikoa (Karta, Erreserbak, Iritziak) | Ubuntu Server (DMZ) |
 | **jatetxea_chat** | `node:20-alpine` | `3001:3001` | Socket.IO barne txat zerbitzaria (sukaldea, barra, zerbitzariak) | Windows Server (LAN) |
 | **jatetxea_kds_tv** | `nginx:alpine` | `8086:80` | Sukaldeko Android TVrako optimizatutako KDS web panela | Windows Server (LAN) |
-| **jatetxea_odoo_postgres** | `postgres:15-alpine` | `5432:5432` | Odoo ERParentzako PostgreSQL datu-basea | Windows Server (LAN) |
+| **jatetxea_odoo_postgres** | `postgres:15-alpine` | — (Docker sare barrukoa) | Odoo ERParentzako PostgreSQL datu-basea | Windows Server |
 | **jatetxea_odoo_erp** | `odoo:17` | `8070:8069` | Odoo ERP (Langileen baimenak, fitxaketak, bajak eta kudeaketa) | Windows Server (LAN) |
 | **jatetxea_phpmyadmin** | `phpmyadmin:5.2` | `8081:80` | MySQL kudeaketa-panela (phpMyAdmin) | Windows Server (LAN) |
 | **jatetxea_postgreSQL_adminer** | `adminer:latest` | `8082:8080` | PostgreSQL eta MySQL kudeaketa arina (Adminer) | Windows Server (LAN) |

@@ -14,7 +14,8 @@ services:
       - "3308:3306"
     volumes:
       - jatetxea_db_data:/var/lib/mysql
-      - ../../db/datu_basea_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../../db/01_egitura_schema.sql:/docker-entrypoint-initdb.d/01_egitura_schema.sql:ro
+      - ../../db/02_hasierako_datuak.sql:/docker-entrypoint-initdb.d/02_hasierako_datuak.sql:ro
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
@@ -122,8 +123,6 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
-    ports:
-      - "5432:5432"
     volumes:
       - odoo_postgres_data:/var/lib/postgresql/data
     networks:

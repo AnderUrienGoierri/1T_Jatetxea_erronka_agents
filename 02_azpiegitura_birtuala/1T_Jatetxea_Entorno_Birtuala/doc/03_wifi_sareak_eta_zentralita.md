@@ -80,3 +80,22 @@ KDS Android TV:       http://192.168.1.129:8086
 ```
 
 Guztia eguneratuta geratzen denez, mugikorreko emuladorea edo JavaFX aplikazioa abiaraztean, uneko WiFi sareko zerbitzariarekin konektatuko da berehala.
+
+### Odoo mugikorretik Wi-Fi edozein tokitatik erabiliz
+
+- **Wi-Fi berean:** mugikorreko Odoo aplikazioan sartu zerbitzariaren uneko IP helbidea eta `:8070` ataka (adibidez, `http://192.168.1.129:8070`). IP helbidea aldatu daiteke sarez aldatzean.
+- **Edozein tokitatik:** instalatu Tailscale zerbitzarian eta mugikorrean, eta erabili zerbitzariaren Tailscale IP helbidea: `http://<Tailscale-IP>:8070`. Bi gailuek tailnet berean egon behar dute.
+- Windows Suebakian, baimendu TCP `8070` ataka soilik `LocalSubnet`-etik eta Tailscale-ren `100.64.0.0/10` helbide-tartetik.
+- Ez ireki Odoo ataka routerrean Internetera; ezta PostgreSQL `5432` ataka ere.
+
+#### Ubuntu DMZ zerbitzariko Odoo
+
+Ubuntu zerbitzariko instalazioa `/home/taldea1/odoo-erp` karpetan dago, tokiko simulazioko Compose konfiguraziotik bereizita. Odoo `127.0.0.1:8070` helbidean bakarrik entzuten du, eta Tailscale Serve-k tailnetera bideratzen du; PostgreSQL-k ez du hostean atakarik argitaratzen. Erabili `tailscale serve status` komandoak erakusten duen izen osoa, ez Tailscale IPa, proxyak host-izena behar baitu.
+
+```bash
+cd ~/odoo-erp
+docker compose ps
+tailscale serve status
+```
+
+Migrazioko hasierako babeskopiak `~/odoo-erp/migration` karpeta pribatuan daude; ez dira aldizkako babeskopien ordezkoak. Docker eta Tailscale automatikoki abiarazten dira, eta Odoo-ren edukiontziek `unless-stopped` berrabiarazte-politika dute. Ikaskideei sarbidea eman aurretik, Tailscale-ren sarbide-politikan partekatutako erabiltzaileen trafikoa `8070` atakara mugatu eta Odoo-ko erabiltzaile bakoitzari bere kontua eman.

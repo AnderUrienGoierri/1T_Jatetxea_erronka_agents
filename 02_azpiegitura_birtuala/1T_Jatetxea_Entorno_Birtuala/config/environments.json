@@ -26,13 +26,13 @@
                      "innovatek":  {
                                        "deskribapena":  "Innovatek Sarea (Router ASUS / INN-WPRIVATE / Kablez)",
                                        "wifi_ssid":  "INN-WPRIVATE",
-                                       "api_host":  "10.100.30.128",
+                                       "api_host":  "192.168.1.10",
                                        "api_port":  5050,
-                                       "api_base_url":  "http://10.100.30.128:5050/api/v1",
-                                       "web_url":  "http://10.100.30.128:8085",
-                                       "chat_url":  "http://10.100.30.128:3001",
-                                       "odoo_url":  "http://10.100.30.128:8070",
-                                       "tv_kds_url":  "http://10.100.30.128:8086"
+                                       "api_base_url":  "http://192.168.1.10:5050/api/v1",
+                                       "web_url":  "http://192.168.1.10:8085",
+                                       "chat_url":  "http://192.168.1.10:3001",
+                                       "odoo_url":  "http://192.168.1.10:8070",
+                                       "tv_kds_url":  "http://192.168.1.10:8086"
                                    },
                      "tolosako_etxea":  {
                                             "deskribapena":  "Tolosako Etxeko WiFi Sarea",
@@ -48,13 +48,13 @@
                      "eskola":  {
                                     "deskribapena":  "Goierri Eskolako laborategiko WiFi/LAN sarea",
                                     "wifi_ssid":  "GOI_Ikasleak",
-                                    "api_host":  "192.168.1.10",
+                                    "api_host":  "172.16.243.60",
                                     "api_port":  5050,
-                                    "api_base_url":  "http://192.168.1.10:5050/api/v1",
-                                    "web_url":  "http://192.168.1.10:8085",
-                                    "chat_url":  "http://192.168.1.10:3001",
-                                    "odoo_url":  "http://192.168.1.10:8070",
-                                    "tv_kds_url":  "http://192.168.1.10:8086"
+                                    "api_base_url":  "http://172.16.243.60:5050/api/v1",
+                                    "web_url":  "http://172.16.243.60:8085",
+                                    "chat_url":  "http://172.16.243.60:3001",
+                                    "odoo_url":  "http://172.16.243.60:8070",
+                                    "tv_kds_url":  "http://172.16.243.60:8086"
                                 },
                      "vbox_erronka":  {
                                           "deskribapena":  "VirtualBox 3 Makina Birtualen Ingurunea (OPNsense + Ubuntu + Windows)",
