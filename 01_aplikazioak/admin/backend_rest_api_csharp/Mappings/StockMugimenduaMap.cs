@@ -24,6 +24,13 @@ public class StockMugimenduaMap : ClassMap<StockMugimendua>
             .Nullable()
             .LazyLoad();
 
+        Map(x => x.AlbaranZenbakia).Column("albaran_zenbakia").Length(50).Nullable();
+
+        References(x => x.Faktura)
+            .Column("faktura_id")
+            .Nullable()
+            .LazyLoad();
+
         Map(x => x.Oharrak).Column("oharrak").Length(200).Nullable();
         Map(x => x.Data).Column("data").Not.Nullable();
     }

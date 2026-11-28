@@ -25,6 +25,7 @@ public class LehengaiakController : BaseApiKontroladorea
             query = query.Where(l => !l.Ezabatua);
 
         var lehengaiak = await query
+            .Fetch(l => l.HornitzaileaEntitatea)
             .OrderBy(l => l.Izena)
             .ToListAsync();
 
@@ -36,7 +37,9 @@ public class LehengaiakController : BaseApiKontroladorea
             UnekoStocka = l.UnekoStocka,
             GutxienekoStocka = l.GutxienekoStocka,
             KostuUnitarioa = l.KostuUnitarioa,
-            Hornitzailea = l.Hornitzailea,
+            HornitzaileaId = l.HornitzaileaEntitatea?.Id,
+            Hornitzailea = l.HornitzaileaEntitatea?.Izena ?? l.Hornitzailea,
+            BezEhunekoa = l.HornitzaileaEntitatea?.BezEhunekoa ?? 10.00m,
             Ezabatua = l.Ezabatua
         }).ToList();
 
@@ -50,7 +53,9 @@ public class LehengaiakController : BaseApiKontroladorea
     public async Task<IActionResult> LortuIdBidez(int id)
     {
         using var session = IrekiSaioa();
-        var l = await session.GetAsync<Lehengaia>(id);
+        var l = await session.Query<Lehengaia>()
+            .Fetch(x => x.HornitzaileaEntitatea)
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (l == null)
             return NotFoundError($"Ez da aurkitu {id} ID-a duen lehengaia.");
 
@@ -62,7 +67,9 @@ public class LehengaiakController : BaseApiKontroladorea
             UnekoStocka = l.UnekoStocka,
             GutxienekoStocka = l.GutxienekoStocka,
             KostuUnitarioa = l.KostuUnitarioa,
-            Hornitzailea = l.Hornitzailea,
+            HornitzaileaId = l.HornitzaileaEntitatea?.Id,
+            Hornitzailea = l.HornitzaileaEntitatea?.Izena ?? l.Hornitzailea,
+            BezEhunekoa = l.HornitzaileaEntitatea?.BezEhunekoa ?? 10.00m,
             Ezabatua = l.Ezabatua
         };
 
@@ -110,6 +117,10 @@ public class LehengaiakController : BaseApiKontroladorea
 
         try
         {
+            Hornitzailea? hornitzaileaEnt = dto.HornitzaileaId.HasValue
+                ? await session.GetAsync<Hornitzailea>(dto.HornitzaileaId.Value)
+                : null;
+
             var lehengaia = new Lehengaia
             {
                 Izena = dto.Izena.Trim(),
@@ -117,7 +128,8 @@ public class LehengaiakController : BaseApiKontroladorea
                 UnekoStocka = dto.UnekoStocka,
                 GutxienekoStocka = dto.GutxienekoStocka,
                 KostuUnitarioa = dto.KostuUnitarioa,
-                Hornitzailea = dto.Hornitzailea?.Trim(),
+                HornitzaileaEntitatea = hornitzaileaEnt,
+                Hornitzailea = hornitzaileaEnt?.Izena ?? dto.Hornitzailea?.Trim(),
                 Ezabatua = false,
                 SortzeData = DateTime.Now
             };
@@ -147,7 +159,9 @@ public class LehengaiakController : BaseApiKontroladorea
                 UnekoStocka = lehengaia.UnekoStocka,
                 GutxienekoStocka = lehengaia.GutxienekoStocka,
                 KostuUnitarioa = lehengaia.KostuUnitarioa,
+                HornitzaileaId = hornitzaileaEnt?.Id,
                 Hornitzailea = lehengaia.Hornitzailea,
+                BezEhunekoa = hornitzaileaEnt?.BezEhunekoa ?? 10.00m,
                 Ezabatua = false
             };
 
@@ -199,11 +213,23 @@ public class LehengaiakController : BaseApiKontroladorea
                 }
             }
 
+            Hornitzailea? hornitzaileaEnt = dto.HornitzaileaId.HasValue
+                ? await session.GetAsync<Hornitzailea>(dto.HornitzaileaId.Value)
+                : null;
+
             lehengaia.Izena = dto.Izena.Trim();
             lehengaia.Unitatea = dto.Unitatea;
             lehengaia.GutxienekoStocka = dto.GutxienekoStocka;
             lehengaia.KostuUnitarioa = dto.KostuUnitarioa;
-            lehengaia.Hornitzailea = dto.Hornitzailea?.Trim();
+            if (dto.HornitzaileaId.HasValue)
+            {
+                lehengaia.HornitzaileaEntitatea = hornitzaileaEnt;
+                lehengaia.Hornitzailea = hornitzaileaEnt?.Izena ?? dto.Hornitzailea?.Trim();
+            }
+            else if (dto.Hornitzailea != null)
+            {
+                lehengaia.Hornitzailea = dto.Hornitzailea.Trim();
+            }
 
             await session.UpdateAsync(lehengaia);
             await tx.CommitAsync();
@@ -215,6 +241,7 @@ public class LehengaiakController : BaseApiKontroladorea
                 unitatea = lehengaia.Unitatea,
                 gutxienekoStocka = lehengaia.GutxienekoStocka,
                 kostuUnitarioa = lehengaia.KostuUnitarioa,
+                hornitzaileaId = lehengaia.HornitzaileaEntitatea?.Id,
                 hornitzailea = lehengaia.Hornitzailea
             }, 200, "Lehengaiaren datuak eguneratu dira; stocka aldatu gabe mantendu da.");
         }
@@ -226,7 +253,8 @@ public class LehengaiakController : BaseApiKontroladorea
     }
 
     /// <summary>
-    /// Hornitzailearen albarana erregistratu eta lehengaiaren stocka gehitu transakzio pesimistan (LockMode.Upgrade).
+    /// Hornitzailearen albarana erregistratu, lehengaiaren stocka gehitu eta erosketa-faktura
+    /// (ordainketa simulatuta) transakzio pesimista bakarrean sortzen du (LockMode.Upgrade).
     /// </summary>
     [HttpPost("sarrera")]
     public async Task<IActionResult> ErregistratuSarrera([FromBody] AlbaranaSarreraDto dto)
@@ -253,22 +281,104 @@ public class LehengaiakController : BaseApiKontroladorea
                 return ConflictError("Lehengaia desgaituta dago. Berreskuratu lehenago.");
             }
 
+            // 2. Hornitzailea ebatzi (bidalitakoa edo lehengaiari lotutakoa)
+            Hornitzailea? hornitzaileaEnt = null;
+            if (dto.HornitzaileaId.HasValue)
+            {
+                hornitzaileaEnt = await session.GetAsync<Hornitzailea>(dto.HornitzaileaId.Value);
+                if (hornitzaileaEnt == null || hornitzaileaEnt.Ezabatua)
+                {
+                    await RollbackSeguruaAsync(tx);
+                    return NotFoundError($"Ez da aurkitu {dto.HornitzaileaId.Value} ID-a duen hornitzailea.");
+                }
+            }
+            else if (lehengaia.HornitzaileaEntitatea != null)
+            {
+                hornitzaileaEnt = await session.GetAsync<Hornitzailea>(lehengaia.HornitzaileaEntitatea.Id);
+            }
+
+            string hornitzaileIzena = hornitzaileaEnt?.Izena
+                ?? (!string.IsNullOrWhiteSpace(dto.Hornitzailea) ? dto.Hornitzailea.Trim() : null)
+                ?? lehengaia.Hornitzailea
+                ?? "Hornitzaile Orokorra";
+            string? hornitzaileCif = hornitzaileaEnt?.Cif;
+
+            DateTime orain = DateTime.Now;
+            string albaranZenbakia = !string.IsNullOrWhiteSpace(dto.AlbaranZenbakia)
+                ? dto.AlbaranZenbakia.Trim()
+                : (!string.IsNullOrWhiteSpace(dto.Albarana)
+                    ? dto.Albarana.Trim()
+                    : $"ALB-{orain:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}");
+            if (albaranZenbakia.Length > 50) albaranZenbakia = albaranZenbakia[..50];
+
+            string ordainketaMetodoa = string.IsNullOrWhiteSpace(dto.OrdainketaMetodoa)
+                ? "Transferentzia"
+                : dto.OrdainketaMetodoa.Trim();
+            if (ordainketaMetodoa.Length > 50) ordainketaMetodoa = ordainketaMetodoa[..50];
+
             decimal aurrekoStocka = lehengaia.UnekoStocka;
             decimal stockBerria = aurrekoStocka + dto.Kantitatea;
 
-            // 2. Stocka eguneratu
+            // 3. Stocka eguneratu
             lehengaia.UnekoStocka = stockBerria;
             await session.UpdateAsync(lehengaia);
 
-            // 3. Auditoria erregistratu stock_mugimenduak taulan
-            string oharra = dto.Oharrak ?? (dto.Hornitzailea != null ? $"Hornitzailea: {dto.Hornitzailea}" : "Albaran sarrera");
+            // 4. Kostua, BEZa eta Erosketa-Faktura (ordainketa simulatuta) kalkulatu eta sortu
+            decimal kostuUnitarioa = (dto.KostuUnitarioa.HasValue && dto.KostuUnitarioa.Value > 0)
+                ? dto.KostuUnitarioa.Value
+                : lehengaia.KostuUnitarioa;
+            decimal oinarria = Math.Round(dto.Kantitatea * kostuUnitarioa, 2);
+            decimal bezEhunekoa = hornitzaileaEnt?.BezEhunekoa ?? 10.00m;
+            decimal bezZenbatekoa = Math.Round(oinarria * (bezEhunekoa / 100m), 2);
+            decimal guztira = oinarria + bezZenbatekoa;
+
+            Faktura? faktura = null;
+            if (dto.SortuFaktura)
+            {
+                string fakturaZenbakia = $"F{orain.Year}-G{orain:MMddHHmmss}{Random.Shared.Next(10, 99)}";
+                string kontzeptua = $"Albarana {albaranZenbakia} · {dto.Kantitatea:0.##} {lehengaia.Unitatea} {lehengaia.Izena}";
+                if (kontzeptua.Length > 255) kontzeptua = kontzeptua[..255];
+
+                faktura = new Faktura
+                {
+                    HornitzaileaEntitatea = hornitzaileaEnt,
+                    FakturaZenbakia = fakturaZenbakia,
+                    Mota = "Erosketa",
+                    Azpimota = "Osoa",
+                    Kontzeptua = kontzeptua,
+                    Hornitzailea = hornitzaileIzena,
+                    HornitzaileCif = hornitzaileCif,
+                    OinarriZergagarria = oinarria,
+                    BezEhunekoa = bezEhunekoa,
+                    BezZenbatekoa = bezZenbatekoa,
+                    Guztira = guztira,
+                    OrdainketaMetodoa = ordainketaMetodoa,
+                    Egoera = "Ordaindua",
+                    Data = orain,
+                    Oharrak = string.IsNullOrWhiteSpace(dto.Oharrak)
+                        ? $"Biltegiko albaran sarrera ({albaranZenbakia})"
+                        : dto.Oharrak.Trim(),
+                    Ezabatua = false,
+                    SortzeData = orain
+                };
+                await session.SaveAsync(faktura);
+            }
+
+            // 5. Auditoria erregistratu stock_mugimenduak taulan
+            string oharra = !string.IsNullOrWhiteSpace(dto.Oharrak)
+                ? $"{albaranZenbakia} | {hornitzaileIzena} | {dto.Oharrak.Trim()}"
+                : $"{albaranZenbakia} | Hornitzailea: {hornitzaileIzena} ({ordainketaMetodoa})";
+            if (oharra.Length > 200) oharra = oharra[..200];
+
             var mugimendua = new StockMugimendua
             {
                 Lehengaia = lehengaia,
                 Mota = "Sarrera_Albarana",
                 Kantitatea = dto.Kantitatea,
+                AlbaranZenbakia = albaranZenbakia,
+                Faktura = faktura,
                 Oharrak = oharra,
-                Data = DateTime.Now
+                Data = orain
             };
             await session.SaveAsync(mugimendua);
 
@@ -281,8 +391,22 @@ public class LehengaiakController : BaseApiKontroladorea
                 aurrekoStocka,
                 gehitutakoKantitatea = dto.Kantitatea,
                 unekoStockBerria = stockBerria,
-                unitatea = lehengaia.Unitatea
-            }, 200, "Albarana ondo erregistratu da eta stocka eguneratu da.");
+                unitatea = lehengaia.Unitatea,
+                hornitzaileaId = hornitzaileaEnt?.Id,
+                hornitzailea = hornitzaileIzena,
+                hornitzaileCif,
+                albaranZenbakia,
+                ordainketaMetodoa,
+                kostuUnitarioa,
+                oinarriZergagarria = oinarria,
+                bezEhunekoa,
+                bezZenbatekoa,
+                guztira,
+                fakturaId = faktura?.Id,
+                fakturaZenbakia = faktura?.FakturaZenbakia
+            }, 200, faktura != null
+                ? $"Albarana ({albaranZenbakia}) erregistratu da, stocka eguneratu da eta {faktura.FakturaZenbakia} erosketa-faktura ({guztira:F2} €) sortu da."
+                : "Albarana ondo erregistratu da eta stocka eguneratu da.");
         }
         catch (Exception ex)
         {

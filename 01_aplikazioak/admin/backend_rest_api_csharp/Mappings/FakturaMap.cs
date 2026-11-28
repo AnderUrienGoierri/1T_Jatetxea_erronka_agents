@@ -16,6 +16,11 @@ public class FakturaMap : ClassMap<Faktura>
             .Nullable()
             .LazyLoad();
 
+        References(x => x.HornitzaileaEntitatea)
+            .Column("hornitzailea_id")
+            .Nullable()
+            .LazyLoad();
+
         Map(x => x.FakturaZenbakia).Column("faktura_zenbakia").Length(50).Not.Nullable().Unique();
         Map(x => x.Mota).Column("mota").Length(30).Not.Nullable();
         Map(x => x.Azpimota).Column("azpimota").Length(30).Not.Nullable();

@@ -107,16 +107,20 @@ public class FakturakController : BaseApiKontroladorea
             Eskaera? eskaera = dto.EskaeraId.HasValue
                 ? await session.GetAsync<Eskaera>(dto.EskaeraId.Value)
                 : null;
+            Hornitzailea? hornitzaileaEnt = dto.HornitzaileaId.HasValue
+                ? await session.GetAsync<Hornitzailea>(dto.HornitzaileaId.Value)
+                : null;
 
             var faktura = new Faktura
             {
                 Eskaera = eskaera,
+                HornitzaileaEntitatea = hornitzaileaEnt,
                 FakturaZenbakia = zenbakia,
                 Mota = dto.Mota,
                 Azpimota = dto.Azpimota,
                 Kontzeptua = dto.Kontzeptua.Trim(),
-                Hornitzailea = dto.Hornitzailea,
-                HornitzaileCif = dto.HornitzaileCif,
+                Hornitzailea = hornitzaileaEnt?.Izena ?? dto.Hornitzailea,
+                HornitzaileCif = hornitzaileaEnt?.Cif ?? dto.HornitzaileCif,
                 BezeroNif = dto.BezeroNif,
                 BezeroIzena = dto.BezeroIzena,
                 BezeroHelbidea = dto.BezeroHelbidea,
@@ -202,6 +206,7 @@ public class FakturakController : BaseApiKontroladorea
     {
         Id = f.Id,
         EskaeraId = f.Eskaera?.Id,
+        HornitzaileaId = f.HornitzaileaEntitatea?.Id,
         FakturaZenbakia = f.FakturaZenbakia,
         Mota = f.Mota,
         Azpimota = f.Azpimota,

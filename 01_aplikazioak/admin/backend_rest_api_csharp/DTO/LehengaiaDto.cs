@@ -10,7 +10,9 @@ public class LehengaiaDTO
     public decimal UnekoStocka { get; set; }
     public decimal GutxienekoStocka { get; set; }
     public decimal KostuUnitarioa { get; set; }
+    public int? HornitzaileaId { get; set; }
     public string? Hornitzailea { get; set; }
+    public decimal BezEhunekoa { get; set; } = 10.00m;
     public bool Ezabatua { get; set; }
 }
 
@@ -32,6 +34,7 @@ public class LehengaiaSortuDto
     [Range(0, 999999)]
     public decimal KostuUnitarioa { get; set; } = 0;
 
+    public int? HornitzaileaId { get; set; }
     public string? Hornitzailea { get; set; }
 }
 
@@ -50,7 +53,9 @@ public class LehengaiaEguneratuDto
     [Range(0, 999999)]
     public decimal KostuUnitarioa { get; set; }
 
-    [StringLength(100)]
+    public int? HornitzaileaId { get; set; }
+
+    [StringLength(120)]
     public string? Hornitzailea { get; set; }
 }
 
@@ -70,10 +75,17 @@ public class AlbaranaSarreraDto
     [Required]
     public int LehengaiaId { get; set; }
 
+    public int? HornitzaileaId { get; set; }
+
     [Required]
     [Range(0.001, 999999.0)]
     public decimal Kantitatea { get; set; }
 
+    public decimal? KostuUnitarioa { get; set; }
+    public string? AlbaranZenbakia { get; set; }
+    public string? Albarana { get; set; }
+    public string? OrdainketaMetodoa { get; set; } = "Transferentzia";
+    public bool SortuFaktura { get; set; } = true;
     public string? Hornitzailea { get; set; }
     public string? Oharrak { get; set; }
 }

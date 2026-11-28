@@ -6,6 +6,7 @@ public class FakturaDTO
 {
     public int Id { get; set; }
     public int? EskaeraId { get; set; }
+    public int? HornitzaileaId { get; set; }
     public string FakturaZenbakia { get; set; } = string.Empty;
     public string Mota { get; set; } = "Salmenta"; // "Salmenta", "Erosketa"
     public string Azpimota { get; set; } = "Sinplifikatua"; // "Sinplifikatua", "Osoa"
@@ -29,6 +30,7 @@ public class FakturaDTO
 public class FakturaSortuDto
 {
     public int? EskaeraId { get; set; }
+    public int? HornitzaileaId { get; set; }
     public string? FakturaZenbakia { get; set; }
 
     [Required]

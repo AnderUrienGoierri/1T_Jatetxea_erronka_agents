@@ -16,7 +16,11 @@ public class LehengaiaMap : ClassMap<Lehengaia>
         Map(x => x.UnekoStocka).Column("uneko_stocka").Precision(10).Scale(3).Not.Nullable();
         Map(x => x.GutxienekoStocka).Column("gutxieneko_stocka").Precision(10).Scale(3).Not.Nullable();
         Map(x => x.KostuUnitarioa).Column("kostu_unitarioa").Precision(8).Scale(2).Not.Nullable();
-        Map(x => x.Hornitzailea).Column("hornitzailea").Length(100).Nullable();
+        References(x => x.HornitzaileaEntitatea)
+            .Column("hornitzailea_id")
+            .Nullable()
+            .LazyLoad();
+        Map(x => x.Hornitzailea).Column("hornitzailea").Length(120).Nullable();
         Map(x => x.Ezabatua).Column("ezabatua").Not.Nullable();
         Map(x => x.EzabatzeData).Column("ezabatze_data").Nullable();
         Map(x => x.SortzeData).Column("sortze_data").Not.Nullable();

@@ -206,12 +206,15 @@ app.MapGet("/", () =>
             "DELETE /api/v1/mahaiak/{id} (?hard=false) - Mahaia ezabatu (Soft/Hard)",
             "PUT    /api/v1/mahaiak/{id}/restore - Desgaitutako mahaia berreskuratu",
 
-            // 2. Lehengaiak (/api/v1/lehengaiak)
+            // 2. Hornitzaileak eta Lehengaiak (/api/v1/hornitzaileak, /api/v1/lehengaiak)
+            "GET    /api/v1/hornitzaileak - Hornitzaileen zerrenda (produktu mota eta BEZarekin)",
+            "GET    /api/v1/hornitzaileak/{id}/lehengaiak - Hornitzaile baten lehengaiak",
+            "POST   /api/v1/hornitzaileak - Hornitzaile berria sortu",
             "GET    /api/v1/lehengaiak (?barneEzabatuak=false) - Lehengai guztien zerrenda eta uneko stocka",
             "GET    /api/v1/lehengaiak/{id} - Lehengai bakarra ID bidez",
             "GET    /api/v1/lehengaiak/alertak - Erosketa-zerrenda: gutxieneko stocketik behera dauden lehengaiak",
             "POST   /api/v1/lehengaiak - Lehengai berria sortu",
-            "POST   /api/v1/lehengaiak/sarrera - Hornitzailearen albarana erregistratu eta stocka gehitu transakzionalean",
+            "POST   /api/v1/lehengaiak/sarrera - Hornitzailearen albarana + stock igoera + erosketa-faktura automatikoa",
             "DELETE /api/v1/lehengaiak/{id} (?hard=false) - Lehengaia ezabatu (Soft/Hard)",
             "PUT    /api/v1/lehengaiak/{id}/restore - Desgaitutako lehengaia berreskuratu",
 

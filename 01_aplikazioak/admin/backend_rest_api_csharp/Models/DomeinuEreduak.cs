@@ -5,6 +5,25 @@ namespace Jatetxea.Api.Models;
 /// NHibernate-k proxy-ak eta lazy loading-a sortu ahal izateko propietate guztiak 'public virtual' dira.
 /// </summary>
 
+public class Hornitzailea
+{
+    public virtual int Id { get; set; }
+    public virtual string Izena { get; set; } = string.Empty;
+    public virtual string Cif { get; set; } = string.Empty;
+    public virtual string ProduktuMota { get; set; } = string.Empty;
+    public virtual decimal BezEhunekoa { get; set; } = 10.00m;
+    public virtual string? Telefonoa { get; set; }
+    public virtual string? Emaila { get; set; }
+    public virtual string? Helbidea { get; set; }
+    public virtual bool Aktibo { get; set; } = true;
+    public virtual bool Ezabatua { get; set; }
+    public virtual DateTime? EzabatzeData { get; set; }
+    public virtual DateTime SortzeData { get; set; } = DateTime.Now;
+
+    public virtual IList<Lehengaia> Lehengaiak { get; set; } = new List<Lehengaia>();
+    public virtual IList<Faktura> Fakturak { get; set; } = new List<Faktura>();
+}
+
 public class Lehengaia
 {
     public virtual int Id { get; set; }
@@ -13,6 +32,7 @@ public class Lehengaia
     public virtual decimal UnekoStocka { get; set; }
     public virtual decimal GutxienekoStocka { get; set; }
     public virtual decimal KostuUnitarioa { get; set; }
+    public virtual Hornitzailea? HornitzaileaEntitatea { get; set; }
     public virtual string? Hornitzailea { get; set; }
     public virtual bool Ezabatua { get; set; }
     public virtual DateTime? EzabatzeData { get; set; }
@@ -172,6 +192,8 @@ public class StockMugimendua
     public virtual string Mota { get; set; } = "Kontsumoa_Platera";
     public virtual decimal Kantitatea { get; set; }
     public virtual Eskaera? Eskaera { get; set; }
+    public virtual string? AlbaranZenbakia { get; set; }
+    public virtual Faktura? Faktura { get; set; }
     public virtual string? Oharrak { get; set; }
     public virtual DateTime Data { get; set; } = DateTime.Now;
 }
@@ -211,6 +233,7 @@ public class Faktura
 {
     public virtual int Id { get; set; }
     public virtual Eskaera? Eskaera { get; set; }
+    public virtual Hornitzailea? HornitzaileaEntitatea { get; set; }
     public virtual string FakturaZenbakia { get; set; } = string.Empty;
     public virtual string Mota { get; set; } = "Salmenta";
     public virtual string Azpimota { get; set; } = "Sinplifikatua";
