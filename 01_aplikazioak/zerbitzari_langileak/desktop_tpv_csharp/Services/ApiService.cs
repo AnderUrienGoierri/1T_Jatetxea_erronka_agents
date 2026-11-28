@@ -9,6 +9,8 @@ public class ApiService : IApiService
     private HttpClient _http;
     private string _baseUrl;
 
+    public Uri MediaBaseUri => new(_http.BaseAddress!, "../../media/public/");
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true

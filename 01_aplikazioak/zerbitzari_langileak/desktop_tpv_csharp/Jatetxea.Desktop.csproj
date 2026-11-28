@@ -19,6 +19,9 @@
     <None Update="Assets\Images\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\admin\backend_rest_api_csharp\media\public\kredituak.html" Link="Assets\Images\kredituak.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

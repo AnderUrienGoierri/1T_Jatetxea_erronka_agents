@@ -405,6 +405,29 @@ public partial class EskaeraForm : BaseTpvForm
 
                 _pnlEdariAzpikategoriak.Controls.Add(btn);
             }
+            var kredituak = new LinkLabel
+            {
+                Text = "Irudien egileak",
+                AutoSize = true,
+                Margin = new Padding(Theme.S(this, 8), Theme.S(this, 10), 0, 0)
+            };
+            kredituak.LinkClicked += (_, _) =>
+            {
+                try
+                {
+                    string localCredits = Path.Combine(AppContext.BaseDirectory, "Assets", "Images", "kredituak.html");
+                    string target = File.Exists(localCredits)
+                        ? localCredits
+                        : new Uri(_api.MediaBaseUri, "kredituak.html").ToString();
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
+                        target) { UseShellExecute = true });
+                }
+                catch (System.ComponentModel.Win32Exception ex)
+                {
+                    MessageBox.Show($"Ezin izan da lizentzien orria ireki: {ex.Message}", "Irudien egileak");
+                }
+            };
+            _pnlEdariAzpikategoriak.Controls.Add(kredituak);
         }, preserveScroll: true);
     }
 
@@ -442,6 +465,7 @@ public partial class EskaeraForm : BaseTpvForm
         {
             _platerak = await _api.GetPlaterakAsync();
             _stockMap = await _api.GetPlaterenStockAhalmenaAsync();
+            await ProductImageCache.PreloadAsync(_platerak, _api.MediaBaseUri);
         }
         catch
         {

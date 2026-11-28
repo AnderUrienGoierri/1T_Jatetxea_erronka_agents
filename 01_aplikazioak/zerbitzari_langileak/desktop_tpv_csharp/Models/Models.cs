@@ -96,6 +96,9 @@ public class PlateraDto
     [JsonPropertyName("alergenoak")]
     public string? Alergenoak { get; set; }
 
+    [JsonPropertyName("irudiErreferentzia")]
+    public string? IrudiErreferentzia { get; set; }
+
     [JsonPropertyName("prestatzeDenboraMin")]
     public int PrestatzeDenboraMin { get; set; } = 15;
 

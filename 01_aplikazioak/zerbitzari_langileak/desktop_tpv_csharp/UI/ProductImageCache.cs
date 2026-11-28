@@ -1,29 +1,76 @@
 using System.Collections.Concurrent;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Jatetxea.Desktop.Models;
 
 namespace Jatetxea.Desktop.UI;
 
 /// <summary>
-/// TPV produktu-irudien memoria-cache profesionala (lokalean, offline %100):
-/// - 3 mailako bilaketa: Platerak/platera_{id} -> Platerak/{slug} -> Kategoriak/{kategoria}
-/// - Fitxategia blokeatu gabe kargatzen du (MemoryStream bidez)
-/// - GDI+ Cover-Crop (object-fit: cover) marrazketa deformaziorik gabe
+/// APIko produktu-irudiak eta haien cache lokala; gainerakoentzat irudi lokalak.
 /// </summary>
 public static class ProductImageCache
 {
     private static readonly ConcurrentDictionary<string, Bitmap?> Cache = new(StringComparer.OrdinalIgnoreCase);
     private static readonly string BaseImagesDir = Path.Combine(AppContext.BaseDirectory, "Assets", "Images");
     private static readonly string[] Extensions = { ".jpg", ".jpeg", ".png", ".webp" };
+    private static readonly HttpClient MediaClient = new() { Timeout = TimeSpan.FromSeconds(5) };
+
+    public static async Task PreloadAsync(IEnumerable<PlateraDto> platerak, Uri mediaBaseUri)
+    {
+        var keys = platerak.Select(p => p.IrudiErreferentzia)
+            .Where(k => k != null && Regex.IsMatch(k, @"\Aplaterak/[a-z0-9-]+\.jpg\z"))
+            .Distinct(StringComparer.Ordinal)
+            .Cast<string>();
+        await Task.WhenAll(keys.Select(key => LoadMediaAsync(key, mediaBaseUri)));
+    }
+
+    private static async Task LoadMediaAsync(string key, Uri mediaBaseUri)
+    {
+        string cacheKey = "media:" + key;
+        if (Cache.ContainsKey(cacheKey)) return;
+        string cacheDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Jatetxea", "ProductImages");
+        string hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(mediaBaseUri + key)));
+        string path = Path.Combine(cacheDir, hash + ".jpg");
+        try
+        {
+            byte[] data = await MediaClient.GetByteArrayAsync(new Uri(mediaBaseUri, key));
+            using var stream = new MemoryStream(data);
+            using var image = Image.FromStream(stream);
+            var bitmap = new Bitmap(image);
+            if (!Cache.TryAdd(cacheKey, bitmap)) bitmap.Dispose();
+            Directory.CreateDirectory(cacheDir);
+            await File.WriteAllBytesAsync(path, data);
+            return;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException or UnauthorizedAccessException or ArgumentException or System.Runtime.InteropServices.ExternalException)
+        {
+            Trace.TraceWarning("Ezin izan da produktu-irudia eguneratu ({0}): {1}", key, ex.Message);
+        }
+
+        if (File.Exists(path))
+        {
+            var bitmap = LoadBitmapUnlocked(path);
+            if (bitmap != null && !Cache.TryAdd(cacheKey, bitmap)) bitmap.Dispose();
+        }
+    }
 
     /// <summary>
     /// Plater edo edari baten irudia lortzen du cachetik (3 mailako fallback hierarkikoarekin).
     /// </summary>
     public static Bitmap? GetImage(PlateraDto platera)
     {
-        string cacheKey = $"p:{platera.Id}:{platera.Kategoria}:{platera.Izena}";
+        if (!string.IsNullOrEmpty(platera.IrudiErreferentzia))
+        {
+            Cache.TryGetValue("media:" + platera.IrudiErreferentzia, out var remoteImage);
+            return remoteImage;
+        }
+        string cacheKey = $"p:{platera.Id}:{platera.Kategoria}:{platera.Izena}:{platera.IrudiErreferentzia}";
         return Cache.GetOrAdd(cacheKey, _ => ResolveImage(platera));
     }
 
