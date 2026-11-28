@@ -1,8 +1,8 @@
 -- =====================================================================
 -- 1T JATETXEA - DATU-BASEAREN EGITURA (DDL - SCHEMA)
 -- Motorra: MySQL 8.0 InnoDB | Karaktere-jokoa: utf8mb4
--- Bertsioa: 3.0 (Egitura eta Datuak banatuta: 01_egitura_schema.sql)
--- Barne: 16 taula, CHECK/UNIQUE/FK murrizketak, indizeak eta 3 VIEW
+-- Bertsioa: 3.1 (Egitura eta Datuak banatuta: 01_egitura_schema.sql)
+-- Barne: 17 taula (hornitzaileak barne), CHECK/UNIQUE/FK murrizketak, indizeak eta 3 VIEW
 -- =====================================================================
 
 SET NAMES utf8mb4;
@@ -15,8 +15,27 @@ CREATE DATABASE jatetxea_db
 USE jatetxea_db;
 
 -- =====================================================================
--- 1. KATALOGOA ETA BILTEGIA (LEHENGAIAK, PLATERAK, ERREZETAK)
+-- 1. KATALOGOA ETA BILTEGIA (HORNITZAILEAK, LEHENGAIAK, PLATERAK, ERREZETAK)
 -- =====================================================================
+
+-- 1.0 HORNITZAILEAK (PRODUKTU MOTA BAKOITZEKO HORNITZAILE BAT)
+CREATE TABLE hornitzaileak (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    izena VARCHAR(120) NOT NULL UNIQUE,
+    cif VARCHAR(20) NOT NULL UNIQUE,
+    produktu_mota VARCHAR(80) NOT NULL,
+    bez_ehunekoa DECIMAL(4,2) NOT NULL DEFAULT 10.00,
+    telefonoa VARCHAR(20) NULL,
+    emaila VARCHAR(120) NULL,
+    helbidea VARCHAR(200) NULL,
+    aktibo TINYINT(1) NOT NULL DEFAULT 1,
+    ezabatua TINYINT(1) NOT NULL DEFAULT 0,
+    ezabatze_data DATETIME NULL,
+    sortze_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_hornitzaile_bez CHECK (bez_ehunekoa >= 0 AND bez_ehunekoa <= 100),
+    INDEX idx_hornitzaile_mota (produktu_mota, ezabatua)
+) ENGINE=InnoDB;
 
 -- 1.1 LEHENGAIAK / OSAGAIAK
 CREATE TABLE lehengaiak (
@@ -26,7 +45,8 @@ CREATE TABLE lehengaiak (
     uneko_stocka DECIMAL(10,3) NOT NULL DEFAULT 0.000,
     gutxieneko_stocka DECIMAL(10,3) NOT NULL DEFAULT 5.000,
     kostu_unitarioa DECIMAL(8,2) NOT NULL DEFAULT 0.00,
-    hornitzailea VARCHAR(100) NULL,
+    hornitzailea_id INT NULL,
+    hornitzailea VARCHAR(120) NULL,
     ezabatua TINYINT(1) NOT NULL DEFAULT 0,
     ezabatze_data DATETIME NULL,
     sortze_data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -34,7 +54,10 @@ CREATE TABLE lehengaiak (
     CONSTRAINT chk_lehengai_uneko_stocka CHECK (uneko_stocka >= 0),
     CONSTRAINT chk_lehengai_gutxieneko_stocka CHECK (gutxieneko_stocka >= 0),
     CONSTRAINT chk_lehengai_kostu_unitarioa CHECK (kostu_unitarioa >= 0),
-    INDEX idx_lehengai_stock (uneko_stocka, gutxieneko_stocka, ezabatua)
+    CONSTRAINT fk_lehengai_hornitzailea FOREIGN KEY (hornitzailea_id)
+        REFERENCES hornitzaileak(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    INDEX idx_lehengai_stock (uneko_stocka, gutxieneko_stocka, ezabatua),
+    INDEX idx_lehengai_hornitzailea (hornitzailea_id)
 ) ENGINE=InnoDB;
 
 -- 1.2 PLATERAK ETA EDARIAK (KARTA / MENUA - 14 KATEGORIA)
@@ -49,6 +72,7 @@ CREATE TABLE platerak (
     ) NOT NULL,
     prezioa DECIMAL(6,2) NOT NULL,
     alergenoak VARCHAR(200) NULL,
+    irudi_erreferentzia VARCHAR(255) NULL,
     aktibo TINYINT(1) NOT NULL DEFAULT 1,
     ezabatua TINYINT(1) NOT NULL DEFAULT 0,
     ezabatze_data DATETIME NULL,
@@ -267,6 +291,8 @@ CREATE TABLE stock_mugimenduak (
     mota ENUM('Sarrera_Albarana', 'Kontsumoa_Platera', 'Egokitzapena_Inbentarioa') NOT NULL,
     kantitatea DECIMAL(10,3) NOT NULL,
     eskaera_id INT NULL,
+    albaran_zenbakia VARCHAR(50) NULL,
+    faktura_id INT NULL,
     oharrak VARCHAR(200) NULL,
     data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -274,7 +300,8 @@ CREATE TABLE stock_mugimenduak (
     CONSTRAINT fk_mugimendu_lehengaia FOREIGN KEY (lehengaia_id)
         REFERENCES lehengaiak(id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT fk_mugimendu_eskaera FOREIGN KEY (eskaera_id)
-        REFERENCES eskaerak(id) ON DELETE RESTRICT ON UPDATE CASCADE
+        REFERENCES eskaerak(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX idx_mugimendu_faktura (faktura_id)
 ) ENGINE=InnoDB;
 
 -- 3.5 IRITZIAK (BEZEROEN BALORAZIOAK, 0-5 IZAR)
@@ -328,6 +355,7 @@ CREATE TABLE ordainketak (
 CREATE TABLE fakturak (
     id INT AUTO_INCREMENT PRIMARY KEY,
     eskaera_id INT NULL,
+    hornitzailea_id INT NULL,
     faktura_zenbakia VARCHAR(50) NOT NULL UNIQUE,
     mota ENUM('Salmenta', 'Erosketa') NOT NULL DEFAULT 'Salmenta',
     azpimota ENUM('Sinplifikatua', 'Osoa') NOT NULL DEFAULT 'Sinplifikatua',
@@ -352,10 +380,17 @@ CREATE TABLE fakturak (
 
     CONSTRAINT fk_faktura_eskaera FOREIGN KEY (eskaera_id)
         REFERENCES eskaerak(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_faktura_hornitzailea FOREIGN KEY (hornitzailea_id)
+        REFERENCES hornitzaileak(id) ON DELETE SET NULL ON UPDATE CASCADE,
     INDEX idx_faktura_mota (mota, egoera, data),
+    INDEX idx_faktura_hornitzailea (hornitzailea_id),
     INDEX idx_faktura_zenbakia (faktura_zenbakia),
     INDEX idx_faktura_data (data)
 ) ENGINE=InnoDB;
+
+ALTER TABLE stock_mugimenduak
+    ADD CONSTRAINT fk_mugimendu_faktura FOREIGN KEY (faktura_id)
+        REFERENCES fakturak(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- =====================================================================
 -- 5. IKUSPEGIAK (VIEWS) — STOCK ETA BALORAZIO KALKULU DINAMIKOAK
@@ -364,15 +399,16 @@ CREATE TABLE fakturak (
 -- 5.1 Erosi beharreko lehengaiak (stocka gutxienekoaren azpitik edo berdin)
 CREATE OR REPLACE VIEW v_erosi_beharreko_lehengaiak AS
 SELECT
-    id AS lehengaia_id,
-    izena,
-    unitatea,
-    uneko_stocka,
-    gutxieneko_stocka,
-    (gutxieneko_stocka * 2 - uneko_stocka) AS proposatutako_erosketa,
-    hornitzailea
-FROM lehengaiak
-WHERE uneko_stocka <= gutxieneko_stocka AND ezabatua = 0;
+    l.id AS lehengaia_id,
+    l.izena,
+    l.unitatea,
+    l.uneko_stocka,
+    l.gutxieneko_stocka,
+    (l.gutxieneko_stocka * 2 - l.uneko_stocka) AS proposatutako_erosketa,
+    COALESCE(h.izena, l.hornitzailea) AS hornitzailea
+FROM lehengaiak l
+LEFT JOIN hornitzaileak h ON l.hornitzailea_id = h.id
+WHERE l.uneko_stocka <= l.gutxieneko_stocka AND l.ezabatua = 0;
 
 -- 5.2 Plater bakoitzaren ekoizpen-ahalmena (osagai mugatzailearen arabera)
 CREATE OR REPLACE VIEW v_plateren_stock_ahalmena AS
