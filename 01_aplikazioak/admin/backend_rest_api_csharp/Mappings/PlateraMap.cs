@@ -16,6 +16,7 @@ public class PlateraMap : ClassMap<Platera>
         Map(x => x.Kategoria).Column("kategoria").Length(40).Not.Nullable();
         Map(x => x.Prezioa).Column("prezioa").Precision(6).Scale(2).Not.Nullable();
         Map(x => x.Alergenoak).Column("alergenoak").Length(200).Nullable();
+        Map(x => x.IrudiErreferentzia).Column("irudi_erreferentzia").Length(255).Nullable();
         Map(x => x.Aktibo).Column("aktibo").Not.Nullable();
         Map(x => x.Ezabatua).Column("ezabatua").Not.Nullable();
         Map(x => x.EzabatzeData).Column("ezabatze_data").Nullable();

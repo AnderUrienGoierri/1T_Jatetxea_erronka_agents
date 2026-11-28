@@ -80,6 +80,16 @@ app.UseSwaggerUI(options =>
 
 app.UseCors("AllowAll");
 
+// Produktu-irudi publikoak bakarrik; langileen edo bezeroen argazkiak ez.
+var mediaPublicPath = builder.Configuration["MediaPublicPath"]
+    ?? Path.Combine(builder.Environment.ContentRootPath, "media", "public");
+Directory.CreateDirectory(mediaPublicPath);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.GetFullPath(mediaPublicPath)),
+    RequestPath = "/media/public"
+});
+
 // Konektatutako bezeroak eta aplikazioak denbora errealean erregistratzeko middleware-a
 app.Use(async (context, next) =>
 {

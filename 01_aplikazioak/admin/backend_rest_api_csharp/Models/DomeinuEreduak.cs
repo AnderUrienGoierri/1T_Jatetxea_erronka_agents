@@ -30,6 +30,7 @@ public class Platera
     public virtual string Kategoria { get; set; } = "Bigarrena";
     public virtual decimal Prezioa { get; set; }
     public virtual string? Alergenoak { get; set; }
+    public virtual string? IrudiErreferentzia { get; set; }
     public virtual bool Aktibo { get; set; } = true;
     public virtual bool Ezabatua { get; set; }
     public virtual DateTime? EzabatzeData { get; set; }

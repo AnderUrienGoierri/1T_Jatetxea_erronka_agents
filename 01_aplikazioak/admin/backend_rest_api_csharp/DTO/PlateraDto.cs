@@ -10,6 +10,7 @@ public class PlateraDTO
     public string Kategoria { get; set; } = string.Empty;
     public decimal Prezioa { get; set; }
     public string? Alergenoak { get; set; }
+    public string? IrudiErreferentzia { get; set; }
     public bool Aktibo { get; set; }
     public bool Ezabatua { get; set; }
 }

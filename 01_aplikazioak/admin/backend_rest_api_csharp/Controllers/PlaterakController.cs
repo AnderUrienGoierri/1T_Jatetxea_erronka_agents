@@ -38,6 +38,7 @@ public class PlaterakController : BaseApiKontroladorea
             Kategoria = p.Kategoria,
             Prezioa = p.Prezioa,
             Alergenoak = p.Alergenoak,
+            IrudiErreferentzia = p.IrudiErreferentzia,
             Aktibo = p.Aktibo,
             Ezabatua = p.Ezabatua
         }).ToList();
@@ -85,6 +86,7 @@ public class PlaterakController : BaseApiKontroladorea
             Kategoria = p.Kategoria,
             Prezioa = p.Prezioa,
             Alergenoak = p.Alergenoak,
+            IrudiErreferentzia = p.IrudiErreferentzia,
             Aktibo = p.Aktibo,
             Ezabatua = p.Ezabatua
         };
