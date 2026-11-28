@@ -33,6 +33,7 @@ flowchart TB
         MOBILE["Bezeroaren app-a<br/>Flutter"]
         TPV["TPV eta komandera<br/>C# / Android"]
         KDS["Sukaldea, barra eta biltegia<br/>JavaFX / Android TV"]
+        KUDEAKETA["Kudeaketa mahaigaina<br/>JavaFX"]
     end
 
     subgraph ZERBITZUAK["ZERBITZUAK"]
@@ -52,6 +53,7 @@ flowchart TB
     MOBILE --> API
     TPV --> API
     KDS --> API
+    KUDEAKETA --> API
     API --> MYSQL
     ODOO --> PG
     ADMIN -.-> INFRA
@@ -59,7 +61,7 @@ flowchart TB
     classDef client fill:#fff8f1,stroke:#b45309,color:#301b16,stroke-width:1px
     classDef service fill:#fff2f4,stroke:#881337,color:#3f0b1c,stroke-width:1px
     classDef data fill:#f3f5f7,stroke:#596675,color:#18212b,stroke-width:1px
-    class WEB,MOBILE,TPV,KDS client
+    class WEB,MOBILE,TPV,KDS,KUDEAKETA client
     class API,CHAT,ODOO,ADMIN service
     class MYSQL,PG,INFRA data
 ```
