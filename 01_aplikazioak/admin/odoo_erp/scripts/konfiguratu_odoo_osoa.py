@@ -41,9 +41,9 @@ def read_b64(rel_path):
 
 
 print("=== [1/7] Enpresa (res.company) eta Webgunea (website) konfiguratzen ===")
-logo_official_b64 = read_b64("t1_logo_official.png")
-logo_dark_b64 = read_b64("t1_logo_header_dark.png")
-favicon_b64 = read_b64("t1_favicon.png")
+logo_official_b64 = read_b64("t1_logo.svg")
+logo_dark_b64 = read_b64("t1_logo_dark.svg")
+favicon_b64 = read_b64("t1_isotipoa.svg")
 
 spain = env["res.country"].search([("code", "=", "ES")], limit=1)
 gipuzkoa = env["res.country.state"].search([("country_id", "=", spain.id), ("code", "=", "SS")], limit=1)
@@ -135,7 +135,7 @@ footer_arch = """<data inherit_id="website.layout" name="Default" active="True">
                     <div class="row g-4">
                         <div class="col-lg-5">
                             <div class="d-flex align-items-center gap-3 mb-3">
-                                <img src="/jatetxea_hr/static/src/img/t1_favicon.png" alt="1T Jatetxea" style="width: 44px; height: 44px; border-radius: 10px;"/>
+                                <img src="/jatetxea_hr/static/src/img/t1_isotipoa.svg" alt="1T Jatetxea" style="width: 44px; height: 44px; border-radius: 10px;"/>
                                 <div>
                                     <h5 class="mb-0" style="font-family: 'Cinzel', Georgia, serif; color: #d4a359; font-weight: 800; letter-spacing: 1.4px;">1T JATETXEA S.L.</h5>
                                     <small style="color: #e7e5e4; letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.7rem;">Osteria &amp; Parrilla · Italo-Euskalduna</small>
@@ -198,7 +198,7 @@ home_html = """<t name="Homepage" t-name="website.homepage">
                                 <a href="/web/login" class="btn t1-btn-gold btn-lg">
                                     <i class="fa fa-sign-in me-2"/>Sartu Odoo ERP Sisteman
                                 </a>
-                                <a href="http://localhost:8085" target="_blank" class="btn t1-btn-outline-gold btn-lg">
+                                <a href="http://127.0.0.1:8088/" target="_blank" class="btn t1-btn-outline-gold btn-lg">
                                     <i class="fa fa-cutlery me-2"/>Jatetxearen Karta eta Webgunea
                                 </a>
                                 <a href="/contactus" class="btn t1-btn-outline-gold btn-lg">
