@@ -79,30 +79,57 @@
             <HBox spacing="10" alignment="BOTTOM_LEFT">
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
                     <Label text="Hornitzailea" styleClass="field-label"/>
-                    <TextField fx:id="supplierField" promptText="Aukerakoa"/>
+                    <ComboBox fx:id="supplierCombo" maxWidth="Infinity" promptText="Aukeratu hornitzailea"/>
                 </VBox>
                 <Button fx:id="createButton" text="Osagaia sortu" onAction="#saveIngredient"
                         styleClass="primary-button"/>
             </HBox>
             <Button fx:id="cancelEditButton" text="Edizioa utzi" onAction="#cancelEdit"
                     maxWidth="Infinity" styleClass="secondary-button"/>
-        </VBox>
-        <VBox prefWidth="300" spacing="10" styleClass="card">
-            <Label text="Stock-sarrera" styleClass="section-title"/>
-            <Label text="Hautatu inbentarioko lerro bat, eta erregistratu jasotako kantitatea."
-                   wrapText="true" styleClass="muted-text"/>
-            <VBox spacing="5">
-                <Label text="Kantitatea" styleClass="field-label"/>
-                <TextField fx:id="entryQuantityField" promptText="Kantitatea"/>
-            </VBox>
-            <VBox spacing="5">
-                <Label text="Oharra / albarana" styleClass="field-label"/>
-                <TextField fx:id="entryNoteField" promptText="Aukerakoa"/>
-            </VBox>
-            <Button fx:id="stockEntryButton" text="Stock-sarrera erregistratu"
-                    onAction="#registerStockEntry" maxWidth="Infinity" styleClass="secondary-button"/>
             <Label fx:id="alertCountLabel" text="Stock alertak kargatzen..." styleClass="section-title"/>
-            <ListView fx:id="alertList" prefHeight="120"/>
+            <ListView fx:id="alertList" prefHeight="105"/>
+        </VBox>
+        <VBox prefWidth="390" spacing="9" styleClass="card">
+            <Label text="Albaran sarrera eta ordainketa" styleClass="section-title"/>
+            <Label text="Aukeratu hornitzailea, produktua eta kantitatea: stocka igoko da eta erosketa-faktura automatikoki sortuko da."
+                   wrapText="true" styleClass="muted-text"/>
+            <VBox spacing="4">
+                <Label text="1. Hornitzailea" styleClass="field-label"/>
+                <ComboBox fx:id="entrySupplierCombo" maxWidth="Infinity" promptText="Aukeratu hornitzailea"/>
+                <Label fx:id="entrySupplierInfoLabel" text="CIF eta BEZ informazioa" styleClass="fine-print"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="2. Produktua / Lehengaia" styleClass="field-label"/>
+                <ComboBox fx:id="entryIngredientCombo" maxWidth="Infinity" promptText="Aukeratu lehengaia"/>
+            </VBox>
+            <HBox spacing="10">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label fx:id="entryQuantityLabel" text="3. Kantitatea" styleClass="field-label"/>
+                    <TextField fx:id="entryQuantityField" promptText="Adib. 10"/>
+                </VBox>
+                <VBox spacing="4" prefWidth="150">
+                    <Label text="Ordainketa metodoa" styleClass="field-label"/>
+                    <ComboBox fx:id="entryMethodCombo" maxWidth="Infinity"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Albaran zk. (aukerakoa)" styleClass="field-label"/>
+                    <TextField fx:id="entryAlbaranField" promptText="Automatikoa"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Oharrak" styleClass="field-label"/>
+                    <TextField fx:id="entryNoteField" promptText="Aukerakoa"/>
+                </VBox>
+            </HBox>
+            <VBox spacing="3" style="-fx-background-color: #f8fafc; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8;">
+                <Label text="ORDAINKETA SIMULAZIOA (EROSKETA FAKTURA)" styleClass="fine-print"/>
+                <Label fx:id="entryCostDetailLabel" text="Oinarria: 0.00 € · BEZ (10%): 0.00 €" styleClass="muted-text"/>
+                <Label fx:id="entryTotalCostLabel" text="GUZTIRA ORDAINTZEKO: 0.00 €"
+                       style="-fx-font-weight: bold; -fx-text-fill: #15803d; -fx-font-size: 13px;"/>
+            </VBox>
+            <Button fx:id="stockEntryButton" text="+ Albarana sartu eta ordaindu"
+                    onAction="#registerStockEntry" maxWidth="Infinity" styleClass="primary-button"/>
         </VBox>
     </HBox>
 </VBox>
