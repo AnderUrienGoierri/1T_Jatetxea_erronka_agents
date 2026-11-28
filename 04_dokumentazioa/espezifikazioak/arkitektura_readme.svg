@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1110" viewBox="0 0 1200 1110" role="img" aria-labelledby="title desc">
+  <title id="title">1T Jatetxea: aplikazioen eta azpiegituraren arkitektura</title>
+  <desc id="desc">Bezeroen eta langileen aplikazioek REST APIa erabiltzen dute. APIak MySQL erabiltzen du, Odoo-k PostgreSQL; IT Kontrol Zentralak azpiegitura kudeatzen du. Ingurune birtualak OPNsense, Windows Server eta Ubuntu makinak ditu.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L8 4 0 8Z" fill="#9b5970"/>
+    </marker>
+    <symbol id="browser" viewBox="0 0 32 32">
+      <rect x="3" y="5" width="26" height="22" rx="3" fill="none" stroke="#a42046" stroke-width="2"/>
+      <path d="M3 11h26M8 8h1m3 0h1m3 0h1" fill="none" stroke="#a42046" stroke-width="2" stroke-linecap="round"/>
+      <path d="m12 16-3 3 3 3m8-6 3 3-3 3" fill="none" stroke="#a42046" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="phone" viewBox="0 0 32 32">
+      <rect x="8" y="2" width="16" height="28" rx="3" fill="none" stroke="#a42046" stroke-width="2"/>
+      <path d="M13 5h6M14 26h4" stroke="#a42046" stroke-width="2" stroke-linecap="round"/>
+      <path d="M11 9h10v13H11z" fill="#fbe8ee"/>
+    </symbol>
+    <symbol id="desktop" viewBox="0 0 32 32">
+      <rect x="3" y="4" width="26" height="19" rx="2" fill="none" stroke="#a42046" stroke-width="2"/>
+      <path d="M16 23v5m-6 1h12M7 18h18" stroke="#a42046" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="server" viewBox="0 0 32 32">
+      <rect x="3" y="3" width="26" height="11" rx="3" fill="none" stroke="#a42046" stroke-width="2"/>
+      <rect x="3" y="18" width="26" height="11" rx="3" fill="none" stroke="#a42046" stroke-width="2"/>
+      <circle cx="8" cy="8.5" r="1.5" fill="#a42046"/><circle cx="8" cy="23.5" r="1.5" fill="#a42046"/>
+      <path d="M13 9h11m-11 15h11" stroke="#a42046" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="chat" viewBox="0 0 32 32">
+      <path d="M5 5h22v17H15l-6 5v-5H5z" fill="none" stroke="#a42046" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10 11h12M10 16h8" stroke="#a42046" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="database" viewBox="0 0 32 32">
+      <ellipse cx="16" cy="7" rx="12" ry="4" fill="#e5edf5" stroke="#3d6381" stroke-width="2"/>
+      <path d="M4 7v17c0 2.2 5.4 4 12 4s12-1.8 12-4V7M4 15c0 2.2 5.4 4 12 4s12-1.8 12-4" fill="none" stroke="#3d6381" stroke-width="2"/>
+    </symbol>
+    <symbol id="windows" viewBox="0 0 24 24">
+      <path fill="#0078d4" d="M2 3.5h9.4v7.9H2V3.5zm10.6 0H22v7.9h-9.4V3.5zM2 12.6h9.4v7.9H2v-7.9zm10.6 0H22v7.9h-9.4v-7.9z"/>
+    </symbol>
+    <symbol id="ubuntu" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="11" fill="#e95420"/>
+      <circle cx="12" cy="12" r="5.2" fill="none" stroke="#fff" stroke-width="2.1"/>
+      <circle cx="5.2" cy="12" r="2.1" fill="#fff" stroke="#e95420" stroke-width=".9"/>
+      <circle cx="15.4" cy="6.1" r="2.1" fill="#fff" stroke="#e95420" stroke-width=".9"/>
+      <circle cx="15.4" cy="17.9" r="2.1" fill="#fff" stroke="#e95420" stroke-width=".9"/>
+    </symbol>
+    <symbol id="opnsense" viewBox="0 0 24 24">
+      <path fill="#d94f00" d="M5.25 0v5.25h13.5v13.5H24V7.5L16.5 0Zm13.5 18.75H5.25V5.25H0V16.5L7.5 24h11.25Z"/>
+    </symbol>
+    <symbol id="flutter" viewBox="0 0 128 128">
+      <path fill="#3fb6d3" d="M12.3 64.2 76.3 0h39.4L32.1 83.6zM76.3 128h39.4L81.6 93.9l34.1-34.8H76.3L42.2 93.5z"/>
+      <path fill="#19599a" d="M115.7 128 81.6 93.9l-20 19.2L76.3 128z"/>
+    </symbol>
+    <symbol id="java" viewBox="0 0 128 128">
+      <path fill="#0074bd" d="M47.617 98.12s-4.767 2.774 3.397 3.71c9.892 1.13 14.947.968 25.845-1.092 0 0 2.871 1.795 6.873 3.351-24.439 10.47-55.308-.607-36.115-5.969zm-2.988-13.665s-5.348 3.959 2.823 4.805c10.567 1.091 18.91 1.18 33.354-1.6 0 0 1.993 2.025 5.132 3.131-29.542 8.64-62.446.68-41.309-6.336z"/>
+      <path fill="#ea2d2e" d="M76.491 1.587S89.459 14.563 64.188 34.51c-20.266 16.006-4.621 25.13-.007 35.559-11.831-10.673-20.509-20.07-14.688-28.815C58.041 28.42 81.722 22.195 76.491 1.587z"/>
+      <path fill="#0074bd" d="M102.123 108.229s3.529 2.91-3.888 5.159c-14.102 4.272-58.706 5.56-71.094.171-4.451-1.938 3.899-4.625 6.526-5.192 2.739-.593 4.303-.485 4.303-.485-4.953-3.487-32.013 6.85-13.743 9.815 49.821 8.076 90.817-3.637 77.896-9.468z"/>
+    </symbol>
+  </defs>
+  <rect width="1200" height="1110" rx="20" fill="#fbf8f6"/>
+  <rect width="1200" height="108" rx="20" fill="#4a1025"/>
+  <path d="M0 88h1200v20H0z" fill="#4a1025"/>
+  <text x="44" y="52" fill="#fff" font-family="Arial, sans-serif" font-size="26" font-weight="700">1T JATETXEA</text>
+  <text x="44" y="80" fill="#f0d7dc" font-family="Arial, sans-serif" font-size="16">Aplikazioak, zerbitzuak eta azpiegitura</text>
+  <text x="1155" y="62" text-anchor="end" fill="#e7bc70" font-family="Arial, sans-serif" font-size="15" font-weight="700">ARKITEKTURA OROKORRA</text>
+
+  <g font-family="Arial, sans-serif">
+    <text x="44" y="148" fill="#8b2749" font-size="13" font-weight="700" letter-spacing="2">01 / ERABILTZAILEEN INTERFAZEAK</text>
+    <g fill="#fff" stroke="#ead9d7">
+      <rect x="44" y="166" width="210" height="116" rx="12"/><rect x="270" y="166" width="210" height="116" rx="12"/>
+      <rect x="496" y="166" width="210" height="116" rx="12"/><rect x="722" y="166" width="210" height="116" rx="12"/>
+      <rect x="948" y="166" width="208" height="116" rx="12"/>
+    </g>
+    <use href="#browser" x="59" y="181" width="32" height="32"/><use href="#phone" x="285" y="181" width="32" height="32"/>
+    <use href="#desktop" x="511" y="181" width="32" height="32"/><use href="#desktop" x="737" y="181" width="32" height="32"/>
+    <use href="#desktop" x="963" y="181" width="32" height="32"/>
+    <use href="#flutter" x="432" y="183" width="26" height="26"/><use href="#windows" x="659" y="183" width="26" height="26"/>
+    <use href="#java" x="884" y="183" width="26" height="26"/><use href="#java" x="1108" y="183" width="26" height="26"/>
+    <g fill="#321e23" font-size="16" font-weight="700">
+      <text x="59" y="235">Web publikoa</text><text x="285" y="235">Bezeroaren app-a</text>
+      <text x="511" y="235">TPV eta komandera</text><text x="737" y="235">Sukaldea eta stocka</text>
+      <text x="963" y="235">Kudeaketa mahaigaina</text>
+    </g>
+    <g fill="#6d6062" font-size="13">
+      <text x="59" y="257">PHP / Apache</text><text x="285" y="257">Flutter</text>
+      <text x="511" y="257">C# / Android</text><text x="737" y="257">JavaFX / Android TV</text>
+      <text x="963" y="257">JavaFX</text>
+    </g>
+
+    <g stroke="#9b5970" stroke-width="2" fill="none">
+      <path d="M149 282v30M375 282v30M601 282v30M827 282v30M1052 282v30"/>
+      <path d="M149 312h903v48" marker-end="url(#arrow)"/>
+    </g>
+    <text x="44" y="351" fill="#8b2749" font-size="13" font-weight="700" letter-spacing="2">02 / ZERBITZUAK</text>
+    <g fill="#fff" stroke="#ead9d7">
+      <rect x="44" y="369" width="266" height="110" rx="12"/><rect x="326" y="369" width="266" height="110" rx="12"/>
+      <rect x="608" y="369" width="266" height="110" rx="12"/><rect x="890" y="369" width="266" height="110" rx="12"/>
+    </g>
+    <use href="#desktop" x="61" y="383" width="32" height="32"/><use href="#server" x="343" y="383" width="32" height="32"/>
+    <use href="#chat" x="625" y="383" width="32" height="32"/><use href="#server" x="907" y="383" width="32" height="32"/>
+    <g fill="#321e23" font-size="16" font-weight="700">
+      <text x="61" y="438">IT Kontrol Zentrala</text><text x="343" y="438">Odoo 17 ERP</text>
+      <text x="625" y="438">Barne txata</text><text x="907" y="438">REST API</text>
+    </g>
+    <g fill="#6d6062" font-size="13">
+      <text x="61" y="460">Zerbitzuen kudeaketa</text><text x="343" y="460">Giza baliabideak</text>
+      <text x="625" y="460">Node.js / Socket.IO</text><text x="907" y="460">ASP.NET Core</text>
+    </g>
+
+    <path d="M459 479v87" fill="none" stroke="#9b5970" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M1023 479v87" fill="none" stroke="#9b5970" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M177 479v20H20v271h60v10" fill="none" stroke="#9b5970" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+    <text x="44" y="548" fill="#8b2749" font-size="13" font-weight="700" letter-spacing="2">03 / DATUAK</text>
+    <g fill="#fff" stroke="#d6e0e8">
+      <rect x="326" y="575" width="266" height="100" rx="12"/><rect x="890" y="575" width="266" height="100" rx="12"/>
+    </g>
+    <use href="#database" x="343" y="590" width="32" height="32"/><use href="#database" x="907" y="590" width="32" height="32"/>
+    <g fill="#203849" font-size="16" font-weight="700">
+      <text x="343" y="641">PostgreSQL</text><text x="907" y="641">MySQL</text>
+    </g>
+    <g fill="#596b78" font-size="13"><text x="343" y="660">Odoo datuak</text><text x="907" y="660">Jatetxeko datuak</text></g>
+
+    <text x="44" y="740" fill="#8b2749" font-size="13" font-weight="700" letter-spacing="2">04 / AZPIEGITURA ETA MAKINA BIRTUALAK</text>
+    <rect x="44" y="789" width="1112" height="208" rx="14" fill="#f2f5f7" stroke="#d6e0e8"/>
+    <text x="66" y="820" fill="#203849" font-size="15" font-weight="700">Docker / VirtualBox · Ingurune birtuala</text>
+    <text x="66" y="844" fill="#596b78" font-size="13">Makina birtualak eta sare-laborategia</text>
+    <g fill="#fff" stroke="#d6e0e8">
+      <rect x="66" y="863" width="338" height="105" rx="10"/><rect x="431" y="863" width="338" height="105" rx="10"/>
+      <rect x="796" y="863" width="338" height="105" rx="10"/>
+    </g>
+    <use href="#opnsense" x="84" y="881" width="34" height="34"/><use href="#windows" x="449" y="881" width="34" height="34"/>
+    <use href="#ubuntu" x="814" y="881" width="34" height="34"/>
+    <g fill="#203849" font-size="16" font-weight="700"><text x="130" y="899">OPNsense</text><text x="495" y="899">Windows Server</text><text x="860" y="899">Ubuntu</text></g>
+    <g fill="#596b78" font-size="13"><text x="130" y="923">Suebakia / FreeBSD</text><text x="495" y="923">Barne-sarea</text><text x="860" y="923">DMZ / web zerbitzaria</text></g>
+    <path d="M45 1032h30" fill="none" stroke="#9b5970" stroke-width="2"/>
+    <text x="84" y="1037" fill="#6d6062" font-size="13">Datu-konexioa</text>
+    <path d="M235 1032h30" fill="none" stroke="#9b5970" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="274" y="1037" fill="#6d6062" font-size="13">Azpiegituraren kudeaketa</text>
+    <text x="44" y="1075" fill="#827478" font-size="12">Ikuspegi orokorra · Geziek harreman nagusiak adierazten dituzte</text>
+  </g>
+</svg>
