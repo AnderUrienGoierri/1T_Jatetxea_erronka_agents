@@ -6,6 +6,7 @@
                 <p class="footer-slogan">Bi tradizio, artisautza bakarra &mdash; Euskal Herria eta Italia sukalde berean.</p>
             </div>
             <p class="footer-copy">&copy; <?php echo date('Y'); ?> T1 Jatetxea · Goierri Eskola. 3-Mailako Arkitektura (Web PHP, Desktop C# TPV, JavaFX KDS/BDS/Stock, C# REST API, MySQL 8.0).</p>
+            <p class="footer-copy"><a href="assets/php/irudia.php?key=kredituak.html">Edarien irudien egileak eta lizentziak</a></p>
         </div>
     </footer>
 

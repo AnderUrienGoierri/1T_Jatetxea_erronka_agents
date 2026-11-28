@@ -13,11 +13,15 @@ $client_api_env = getenv('CLIENT_API_BASE_URL');
 if (!empty($client_api_env)) {
     $client_api_url = $client_api_env;
 } else {
-    $client_host = explode(':', $_SERVER['HTTP_HOST'] ?? 'localhost')[0];
+    $host_parts = explode(':', $_SERVER['HTTP_HOST'] ?? 'localhost');
+    $client_host = $host_parts[0];
+    $client_port = $host_parts[1] ?? '';
     if (empty($client_host) || $client_host === '_' || $client_host === '0.0.0.0') {
         $client_host = 'localhost';
     }
-    $client_api_url = "http://{$client_host}:5050/api/v1";
+    // VirtualBox NAT bidez 8088 portutik sartzen bada, APIa 5051 portuan dago; bestela 5050.
+    $api_port = ($client_port === '8088') ? '5051' : '5050';
+    $client_api_url = "http://{$client_host}:{$api_port}/api/v1";
 }
 ?>
 <!DOCTYPE html>

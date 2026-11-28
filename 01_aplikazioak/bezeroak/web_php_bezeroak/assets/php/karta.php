@@ -85,12 +85,19 @@ foreach ($platerak as $pl) {
                             $stockAhalmena = isset($ahalmenaMap[$plateraId]) ? $ahalmenaMap[$plateraId] : null;
                             $agortuta = ($stockAhalmena !== null && $stockAhalmena === 0);
 
-                            // Plateraren irudi lokala (ID zehatza lehenik, kategoria fallback gisa)
-                            $platerImgRel = "assets/img/platerak/platera_{$plateraId}.jpg";
-                            $platerImgAbs = __DIR__ . "/../img/platerak/platera_{$plateraId}.jpg";
-                            if (!file_exists($platerImgAbs)) {
-                                $katFile = $katFallbackMap[$kategoriaRaw] ?? 'bigarrena.jpg';
-                                $platerImgRel = "assets/img/kategoriak/{$katFile}";
+                            $imageKey = $p['irudiErreferentzia'] ?? null;
+                            if (is_string($imageKey) && preg_match('~\Aplaterak/[a-z0-9-]+\.jpg\z~', $imageKey)) {
+                                $platerImgRel = 'assets/php/irudia.php?key=' . rawurlencode($imageKey);
+                            } elseif (!empty($imageKey)) {
+                                error_log("Plateraren irudi-erreferentzia baliogabea: {$plateraId}");
+                                $platerImgRel = 'assets/img/t1_isotipoa.svg';
+                            } else {
+                                $platerImgRel = "assets/img/platerak/platera_{$plateraId}.jpg";
+                                $platerImgAbs = __DIR__ . "/../img/platerak/platera_{$plateraId}.jpg";
+                                if (!file_exists($platerImgAbs)) {
+                                    $katFile = $katFallbackMap[$kategoriaRaw] ?? 'bigarrena.jpg';
+                                    $platerImgRel = "assets/img/kategoriak/{$katFile}";
+                                }
                             }
                         ?>
                         <div class="plater-card <?php echo $agortuta ? 'agortuta' : ''; ?>" data-kategoria="<?php echo $kategoria; ?>">
