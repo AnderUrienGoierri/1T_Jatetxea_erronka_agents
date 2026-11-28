@@ -77,6 +77,7 @@ kredentzialak_zentrala.md
 kredentzialak_*.md
 *.env.local
 *.env.production
+/06_makina_birtual_sistema/
 
 # 8. Sistema Eragilea eta Aldi Baterako Fitxategiak
 .vscode/
