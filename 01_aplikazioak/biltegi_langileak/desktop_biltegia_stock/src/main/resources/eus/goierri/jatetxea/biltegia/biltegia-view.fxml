@@ -75,20 +75,20 @@
             </HBox>
 
             <!-- TAULA ETA SARRERA FORMA BANATUA -->
-            <SplitPane dividerPositions="0.70" orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
+            <SplitPane dividerPositions="0.65" orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
                 <!-- LEHENGAIEN ZERRENDA -->
                 <VBox spacing="10.0" styleClass="card-panel">
                     <Label styleClass="card-title" text="Biltegiko Produktuak eta Stock Maila" />
                     
                     <TableView fx:id="tblLehengaiak" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="colId" prefWidth="55.0" text="# ID" />
+                            <TableColumn fx:id="colId" prefWidth="50.0" text="# ID" />
                             <TableColumn fx:id="colIzena" prefWidth="170.0" text="Lehengaia / Produktua" />
-                            <TableColumn fx:id="colUnekoStocka" prefWidth="110.0" text="Uneko Stocka" />
-                            <TableColumn fx:id="colGutxienekoa" prefWidth="110.0" text="Gutxienekoa" />
-                            <TableColumn fx:id="colKostua" prefWidth="95.0" text="Kostu Unitar." />
-                            <TableColumn fx:id="colHornitzailea" prefWidth="150.0" text="Hornitzailea" />
-                            <TableColumn fx:id="colEgoera" prefWidth="120.0" text="Egoera" />
+                            <TableColumn fx:id="colUnekoStocka" prefWidth="105.0" text="Uneko Stocka" />
+                            <TableColumn fx:id="colGutxienekoa" prefWidth="100.0" text="Gutxienekoa" />
+                            <TableColumn fx:id="colKostua" prefWidth="90.0" text="Kostu Unitar." />
+                            <TableColumn fx:id="colHornitzailea" prefWidth="175.0" text="Hornitzailea" />
+                            <TableColumn fx:id="colEgoera" prefWidth="115.0" text="Egoera" />
                         </columns>
                         <placeholder>
                             <Label text="Ez da lehengairik aurkitu." />
@@ -96,34 +96,55 @@
                     </TableView>
                 </VBox>
 
-                <!-- ESKUINEKO PANELA: HORNIDURA BERRIA SARTZEKO FORMA -->
-                <VBox spacing="14.0" styleClass="card-panel">
-                    <Label styleClass="card-title" text="Hornidura Berria Sartu" />
-                    <Label style="-fx-font-size: 12px; -fx-text-fill: #64748b;" text="Erregistratu hornitzailearen albarana stocka handitzeko." wrapText="true" />
+                <!-- ESKUINEKO PANELA: HORNIDURA BERRIA ETA KOBRO SIMULAZIOA -->
+                <VBox spacing="10.0" styleClass="card-panel">
+                    <Label styleClass="card-title" text="Albaran Sarrera eta Ordainketa" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #64748b;" text="Aukeratu hornitzailea eta produktua: stocka automatikoki igoko da eta erosketa-faktura sortuko da." wrapText="true" />
 
-                    <VBox spacing="4.0">
-                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Aukeratu Lehengaia:" />
+                    <VBox spacing="3.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="1. Aukeratu Hornitzailea:" />
+                        <ComboBox fx:id="cmbHornitzailea" maxWidth="Infinity" promptText="Aukeratu hornitzailea..." />
+                        <Label fx:id="lblHornitzaileInfo" style="-fx-font-size: 11px; -fx-text-fill: #64748b;" text="CIF eta BEZ informazioa" />
+                    </VBox>
+
+                    <VBox spacing="3.0">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="2. Aukeratu Produktua / Lehengaia:" />
                         <ComboBox fx:id="cmbLehengaia" maxWidth="Infinity" promptText="Aukeratu lehengaia..." />
                     </VBox>
 
-                    <VBox spacing="4.0">
-                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Gehitzeko Kantitatea:" />
-                        <TextField fx:id="txtKantitatea" promptText="Adib. 10.50" />
-                    </VBox>
+                    <HBox spacing="10.0">
+                        <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                            <Label fx:id="lblKantitateaLabel" style="-fx-font-weight: bold; -fx-font-size: 12px;" text="3. Kantitatea:" />
+                            <TextField fx:id="txtKantitatea" promptText="Adib. 10" />
+                        </VBox>
+                        <VBox spacing="3.0" prefWidth="150.0">
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Ordainketa Metodoa:" />
+                            <ComboBox fx:id="cmbOrdainketaMetodoa" maxWidth="Infinity" />
+                        </VBox>
+                    </HBox>
 
-                    <VBox spacing="4.0">
-                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Faktura / Albaran Zk.:" />
-                        <TextField fx:id="txtAlbarana" promptText="Adib. ALB-2026-089" />
-                    </VBox>
+                    <HBox spacing="10.0">
+                        <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Albaran Zk. (aukerakoa):" />
+                            <TextField fx:id="txtAlbarana" promptText="Hutsik = automatikoa" />
+                        </VBox>
+                        <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Oharrak:" />
+                            <TextField fx:id="txtOharrak" promptText="Hornitzailearen oharrak..." />
+                        </VBox>
+                    </HBox>
 
-                    <VBox spacing="4.0">
-                        <Label style="-fx-font-weight: bold; -fx-font-size: 12px;" text="Oharrak:" />
-                        <TextField fx:id="txtOharrak" promptText="Hornitzailearen oharrak..." />
+                    <!-- KOBRO / ORDAINKETA SIMULAZIOAREN LABURPENA -->
+                    <VBox spacing="4.0" style="-fx-background-color: #f8fafc; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10;">
+                        <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #475569;" text="ORDAINKETA SIMULAZIOA (EROSKETA FAKTURA)" />
+                        <Label fx:id="lblKostuOinarria" style="-fx-font-size: 12px; -fx-text-fill: #334155;" text="Oinarri zergagarria: 0.00 €" />
+                        <Label fx:id="lblKostuBeza" style="-fx-font-size: 12px; -fx-text-fill: #334155;" text="BEZ (%10): 0.00 €" />
+                        <Label fx:id="lblKostuGuztira" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #15803d;" text="GUZTIRA ORDAINTZEKO: 0.00 €" />
                     </VBox>
 
                     <Region VBox.vgrow="ALWAYS" />
 
-                    <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onSarreraErregistratuClick" styleClass="btn-success" text="+ Stock Sarrera Erregistratu" />
+                    <Button fx:id="btnGordeSarrera" maxWidth="Infinity" mnemonicParsing="false" onAction="#onSarreraErregistratuClick" styleClass="btn-success" text="+ Albarana Sartu eta Ordaindu" />
                 </VBox>
             </SplitPane>
         </VBox>

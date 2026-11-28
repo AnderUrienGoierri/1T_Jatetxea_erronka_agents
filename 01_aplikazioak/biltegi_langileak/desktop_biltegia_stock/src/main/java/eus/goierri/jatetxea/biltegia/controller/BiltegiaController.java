@@ -3,6 +3,8 @@ package eus.goierri.jatetxea.biltegia.controller;
 import eus.goierri.jatetxea.biltegia.BiltegiaApp;
 import eus.goierri.jatetxea.core.api.ApiZerbitzua;
 import eus.goierri.jatetxea.core.controller.BaseController;
+import eus.goierri.jatetxea.core.model.AlbaranaSarreraErantzuna;
+import eus.goierri.jatetxea.core.model.Hornitzailea;
 import eus.goierri.jatetxea.core.model.Lehengaia;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -13,6 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 public class BiltegiaController extends BaseController {
 
@@ -35,14 +39,25 @@ public class BiltegiaController extends BaseController {
     @FXML private TextField txtBilaketa;
     @FXML private CheckBox chkAlertakSoilik;
 
+    @FXML private ComboBox<Hornitzailea> cmbHornitzailea;
+    @FXML private Label lblHornitzaileInfo;
     @FXML private ComboBox<Lehengaia> cmbLehengaia;
+    @FXML private Label lblKantitateaLabel;
     @FXML private TextField txtKantitatea;
+    @FXML private ComboBox<String> cmbOrdainketaMetodoa;
     @FXML private TextField txtAlbarana;
     @FXML private TextField txtOharrak;
+    @FXML private Label lblKostuOinarria;
+    @FXML private Label lblKostuBeza;
+    @FXML private Label lblKostuGuztira;
+    @FXML private Button btnGordeSarrera;
 
     private final ApiZerbitzua api = new ApiZerbitzua();
     private final ObservableList<Lehengaia> datuZerrenda = FXCollections.observableArrayList();
+    private final ObservableList<Hornitzailea> hornitzaileZerrenda = FXCollections.observableArrayList();
+    private final ObservableList<Lehengaia> hornitzailearenLehengaiak = FXCollections.observableArrayList();
     private FilteredList<Lehengaia> iragazitakoDatuak;
+    private boolean sinkronizatzen = false;
 
     @Override
     protected Class<?> getAppResourceClass() {
@@ -82,6 +97,42 @@ public class BiltegiaController extends BaseController {
         iragazitakoDatuak = new FilteredList<>(datuZerrenda, p -> true);
         tblLehengaiak.setItems(iragazitakoDatuak);
 
+        if (cmbOrdainketaMetodoa != null) {
+            cmbOrdainketaMetodoa.setItems(FXCollections.observableArrayList("Transferentzia", "Txartela", "Eskudirua"));
+            cmbOrdainketaMetodoa.setValue("Transferentzia");
+        }
+
+        if (cmbHornitzailea != null) {
+            cmbHornitzailea.setItems(hornitzaileZerrenda);
+            cmbHornitzailea.valueProperty().addListener((obs, zaharra, berria) -> {
+                if (!sinkronizatzen) {
+                    eguneratuHornitzailearenProduktuak(berria, null);
+                }
+            });
+        }
+
+        if (cmbLehengaia != null) {
+            cmbLehengaia.setItems(hornitzailearenLehengaiak);
+            cmbLehengaia.valueProperty().addListener((obs, zaharra, berria) -> eguneratuOrdainketaAurrebista());
+        }
+
+        if (txtKantitatea != null) {
+            txtKantitatea.textProperty().addListener((obs, zaharra, berria) -> eguneratuOrdainketaAurrebista());
+        }
+
+        // Taulan lehengai bat klikatzean, bere hornitzailea eta lehengaia automatikoki hautatu
+        tblLehengaiak.getSelectionModel().selectedItemProperty().addListener((obs, zaharra, hautatua) -> {
+            if (hautatua != null && cmbHornitzailea != null) {
+                Hornitzailea dagokionHornitzailea = bilatuHornitzailea(hautatua);
+                if (dagokionHornitzailea != null) {
+                    sinkronizatzen = true;
+                    cmbHornitzailea.setValue(dagokionHornitzailea);
+                    sinkronizatzen = false;
+                    eguneratuHornitzailearenProduktuak(dagokionHornitzailea, hautatua.getId());
+                }
+            }
+        });
+
         if (txtBilaketa != null) {
             txtBilaketa.textProperty().addListener((obs, zaharra, berria) -> aplikatuIragazkia());
         }
@@ -94,18 +145,39 @@ public class BiltegiaController extends BaseController {
     }
 
     public void kargatuDatuak() {
+        Integer aurrekoHornitzaileId = cmbHornitzailea != null && cmbHornitzailea.getValue() != null
+                ? cmbHornitzailea.getValue().getId() : null;
+        Integer aurrekoLehengaiId = cmbLehengaia != null && cmbLehengaia.getValue() != null
+                ? cmbLehengaia.getValue().getId() : null;
+
         new Thread(() -> {
             try {
+                List<Hornitzailea> hornitzaileak = api.lortuHornitzaileak();
                 List<Lehengaia> lehengaiak = api.lortuLehengaiak();
                 Platform.runLater(() -> {
-                    datuZerrenda.clear();
-                    datuZerrenda.addAll(lehengaiak);
-                    if (cmbLehengaia != null) {
-                        cmbLehengaia.setItems(datuZerrenda);
+                    hornitzaileZerrenda.setAll(hornitzaileak);
+                    datuZerrenda.setAll(lehengaiak);
+
+                    if (cmbHornitzailea != null && !hornitzaileZerrenda.isEmpty()) {
+                        Hornitzailea hautatzekoa = hornitzaileZerrenda.stream()
+                                .filter(h -> aurrekoHornitzaileId != null && h.getId() == aurrekoHornitzaileId)
+                                .findFirst()
+                                .orElse(hornitzaileZerrenda.get(0));
+                        sinkronizatzen = true;
+                        cmbHornitzailea.setValue(hautatzekoa);
+                        sinkronizatzen = false;
+                        eguneratuHornitzailearenProduktuak(hautatzekoa, aurrekoLehengaiId);
+                    } else if (cmbLehengaia != null) {
+                        hornitzailearenLehengaiak.setAll(datuZerrenda);
+                        if (!hornitzailearenLehengaiak.isEmpty()) {
+                            cmbLehengaia.setValue(hornitzailearenLehengaiak.get(0));
+                        }
+                        eguneratuOrdainketaAurrebista();
                     }
+
                     eguneratuKpiak();
                     if (lblIturria != null) {
-                        lblIturria.setText("Iturria: REST API (" + ApiZerbitzua.getBaseUrl() + "/lehengaiak)");
+                        lblIturria.setText("Iturria: REST API (" + ApiZerbitzua.getBaseUrl() + ")");
                     }
                 });
             } catch (Exception ex) {
@@ -114,6 +186,89 @@ public class BiltegiaController extends BaseController {
                 });
             }
         }).start();
+    }
+
+    private Hornitzailea bilatuHornitzailea(Lehengaia lehengaia) {
+        if (lehengaia.getHornitzaileaId() != null) {
+            for (Hornitzailea h : hornitzaileZerrenda) {
+                if (h.getId() == lehengaia.getHornitzaileaId()) return h;
+            }
+        }
+        String izena = lehengaia.getHornitzailea();
+        if (!izena.isBlank()) {
+            for (Hornitzailea h : hornitzaileZerrenda) {
+                if (h.getIzena().equalsIgnoreCase(izena)) return h;
+            }
+        }
+        return null;
+    }
+
+    private void eguneratuHornitzailearenProduktuak(Hornitzailea hornitzailea, Integer hautatuLehengaiId) {
+        if (hornitzailea == null) {
+            hornitzailearenLehengaiak.setAll(datuZerrenda);
+            if (lblHornitzaileInfo != null) lblHornitzaileInfo.setText("Hautatu hornitzaile bat bere produktuak ikusteko");
+        } else {
+            if (lblHornitzaileInfo != null) {
+                lblHornitzaileInfo.setText(String.format(Locale.US, "CIF: %s · Mota: %s · BEZ: %.0f%%",
+                        hornitzailea.getCif(), hornitzailea.getProduktuMota(), hornitzailea.getBezEhunekoa()));
+            }
+            List<Lehengaia> iragazita = datuZerrenda.stream()
+                    .filter(l -> (l.getHornitzaileaId() != null && l.getHornitzaileaId() == hornitzailea.getId())
+                            || l.getHornitzailea().equalsIgnoreCase(hornitzailea.getIzena()))
+                    .toList();
+            hornitzailearenLehengaiak.setAll(iragazita);
+        }
+
+        if (cmbLehengaia != null) {
+            if (hornitzailearenLehengaiak.isEmpty()) {
+                cmbLehengaia.setValue(null);
+            } else {
+                Lehengaia hautatzekoa = hornitzailearenLehengaiak.stream()
+                        .filter(l -> hautatuLehengaiId != null && l.getId() == hautatuLehengaiId)
+                        .findFirst()
+                        .orElse(hornitzailearenLehengaiak.get(0));
+                cmbLehengaia.setValue(hautatzekoa);
+            }
+        }
+        eguneratuOrdainketaAurrebista();
+    }
+
+    private void eguneratuOrdainketaAurrebista() {
+        Lehengaia hautatua = cmbLehengaia != null ? cmbLehengaia.getValue() : null;
+        Hornitzailea hornitzailea = cmbHornitzailea != null ? cmbHornitzailea.getValue() : null;
+
+        if (lblKantitateaLabel != null) {
+            lblKantitateaLabel.setText(hautatua != null
+                    ? "3. Kantitatea (" + hautatua.getUnitatea() + " · " + hautatua.getKostuaFormateatua() + "):"
+                    : "3. Kantitatea:");
+        }
+
+        double kantitatea = 0.0;
+        if (txtKantitatea != null && txtKantitatea.getText() != null && !txtKantitatea.getText().isBlank()) {
+            try {
+                double val = Double.parseDouble(txtKantitatea.getText().trim().replace(',', '.'));
+                if (val > 0) kantitatea = val;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        double kostuUnit = hautatua != null ? hautatua.getKostua() : 0.0;
+        double bezEhunekoa = hornitzailea != null
+                ? hornitzailea.getBezEhunekoa()
+                : (hautatua != null ? hautatua.getBezEhunekoa() : 10.0);
+        double oinarria = Math.round(kantitatea * kostuUnit * 100.0) / 100.0;
+        double beza = Math.round(oinarria * (bezEhunekoa / 100.0) * 100.0) / 100.0;
+        double guztira = oinarria + beza;
+
+        if (lblKostuOinarria != null) {
+            lblKostuOinarria.setText(String.format(Locale.US, "Oinarri zergagarria: %.2f €", oinarria));
+        }
+        if (lblKostuBeza != null) {
+            lblKostuBeza.setText(String.format(Locale.US, "BEZ (%.0f%%): %.2f €", bezEhunekoa, beza));
+        }
+        if (lblKostuGuztira != null) {
+            lblKostuGuztira.setText(String.format(Locale.US, "GUZTIRA ORDAINTZEKO: %.2f €", guztira));
+        }
     }
 
     private void aplikatuIragazkia() {
@@ -167,9 +322,10 @@ public class BiltegiaController extends BaseController {
 
     @FXML
     private void onGordeSarreraClick() {
+        Hornitzailea hornitzailea = cmbHornitzailea != null ? cmbHornitzailea.getValue() : null;
         Lehengaia hautatua = cmbLehengaia != null ? cmbLehengaia.getValue() : null;
         if (hautatua == null) {
-            erakutsiAlerta("Baliozkotze errorea", "Hautatu lehengai bat sarrera erregistratzeko.");
+            erakutsiAlerta("Baliozkotze errorea", "Hautatu hornitzaile bat eta lehengai bat sarrera erregistratzeko.");
             return;
         }
 
@@ -183,29 +339,71 @@ public class BiltegiaController extends BaseController {
             return;
         }
 
+        String metodoa = cmbOrdainketaMetodoa != null && cmbOrdainketaMetodoa.getValue() != null
+                ? cmbOrdainketaMetodoa.getValue() : "Transferentzia";
         String albarana = txtAlbarana != null ? txtAlbarana.getText().trim() : "";
         String oharrak = txtOharrak != null ? txtOharrak.getText().trim() : "";
 
+        double bezEhunekoa = hornitzailea != null ? hornitzailea.getBezEhunekoa() : hautatua.getBezEhunekoa();
+        double oinarria = Math.round(kantitatea * hautatua.getKostua() * 100.0) / 100.0;
+        double beza = Math.round(oinarria * (bezEhunekoa / 100.0) * 100.0) / 100.0;
+        double guztira = oinarria + beza;
+
+        Alert baieztapena = new Alert(Alert.AlertType.CONFIRMATION);
+        baieztapena.setTitle("Hornitzailearen Ordainketa Simulazioa");
+        baieztapena.setHeaderText("Baieztatu albaran sarrera eta ordainketa?");
+        baieztapena.setContentText(String.format(Locale.US,
+                "Hornitzailea: %s%nProduktua: %s (+%.2f %s)%nOinarria: %.2f € · BEZ (%.0f%%): %.2f €%nGUZTIRA ORDAINTZEKO: %.2f € (%s)",
+                hornitzailea != null ? hornitzailea.getIzena() : hautatua.getHornitzailea(),
+                hautatua.getIzena(), kantitatea, hautatua.getUnitatea(),
+                oinarria, bezEhunekoa, beza, guztira, metodoa));
+        Optional<ButtonType> erantzuna = baieztapena.showAndWait();
+        if (erantzuna.isEmpty() || erantzuna.get() != ButtonType.OK) {
+            return;
+        }
+
+        if (btnGordeSarrera != null) btnGordeSarrera.setDisable(true);
+        if (lblEgoeraMezua != null) lblEgoeraMezua.setText("Albarana eta erosketa-faktura erregistratzen...");
+
+        Integer hornitzaileaId = hornitzailea != null ? hornitzailea.getId() : hautatua.getHornitzaileaId();
+
         new Thread(() -> {
             try {
-                boolean ok = api.gehituStockSarrera(hautatua.getId(), kantitatea, albarana, oharrak);
+                AlbaranaSarreraErantzuna res = api.erregistratuAlbaranaSarrera(
+                        hornitzaileaId, hautatua.getId(), kantitatea, albarana, metodoa, oharrak);
                 Platform.runLater(() -> {
-                    if (ok) {
+                    if (btnGordeSarrera != null) btnGordeSarrera.setDisable(false);
+                    if (res.isArrakasta()) {
+                        String laburpena = String.format(Locale.US,
+                                "✓ +%.2f %s %s · Faktura: %s (%.2f € %s)",
+                                kantitatea, hautatua.getUnitatea(), hautatua.getIzena(),
+                                res.getFakturaZenbakia(), res.getGuztira(), res.getOrdainketaMetodoa());
                         if (lblEgoeraMezua != null) {
-                            lblEgoeraMezua.setText("✓ " + kantitatea + " " + hautatua.getUnitatea() + " gehitu dira " + hautatua.getIzena() + " lehengaian.");
+                            lblEgoeraMezua.setText(laburpena);
                         }
                         if (txtKantitatea != null) txtKantitatea.clear();
                         if (txtAlbarana != null) txtAlbarana.clear();
                         if (txtOharrak != null) txtOharrak.clear();
                         kargatuDatuak();
+
+                        Alert info = new Alert(Alert.AlertType.INFORMATION);
+                        info.setTitle("Sarrera eta Ordainketa Burututa");
+                        info.setHeaderText("Albarana ondo erregistratu da!");
+                        info.setContentText(String.format(Locale.US,
+                                "Albarana: %s%nHornitzailea: %s%nProduktua: %s%nStock berria: %.2f %s%nErosketa-faktura: %s%nOrdaindutakoa: %.2f € (%s)",
+                                res.getAlbaranZenbakia(), res.getHornitzailea(), res.getIzena(),
+                                res.getUnekoStockBerria(), res.getUnitatea(),
+                                res.getFakturaZenbakia(), res.getGuztira(), res.getOrdainketaMetodoa()));
+                        info.show();
                     } else {
                         if (lblEgoeraMezua != null) {
-                            lblEgoeraMezua.setText("Errorea stock sarrera erregistratzean.");
+                            lblEgoeraMezua.setText("Errorea: " + res.getMezua());
                         }
                     }
                 });
             } catch (Exception ex) {
                 Platform.runLater(() -> {
+                    if (btnGordeSarrera != null) btnGordeSarrera.setDisable(false);
                     if (lblEgoeraMezua != null) lblEgoeraMezua.setText("Errorea: " + ex.getMessage());
                 });
             }
