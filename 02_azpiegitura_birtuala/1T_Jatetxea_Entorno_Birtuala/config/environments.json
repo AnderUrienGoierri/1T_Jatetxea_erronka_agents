@@ -1,5 +1,5 @@
 ﻿{
-    "active_profile":  "etxean",
+    "active_profile":  "tolosako_etxea",
     "profiles":  {
                      "localhost":  {
                                        "deskribapena":  "Tokiko probak garatzailearen ordenagailuan (127.0.0.1)",
@@ -37,24 +37,24 @@
                      "tolosako_etxea":  {
                                             "deskribapena":  "Tolosako Etxeko WiFi Sarea",
                                             "wifi_ssid":  "MIWIFI_dc7U",
-                                            "api_host":  "192.168.1.166",
+                                            "api_host":  "192.168.1.180",
                                             "api_port":  5050,
-                                            "api_base_url":  "http://192.168.1.166:5050/api/v1",
-                                            "web_url":  "http://192.168.1.166:8085",
-                                            "chat_url":  "http://192.168.1.166:3001",
-                                            "odoo_url":  "http://192.168.1.166:8070",
-                                            "tv_kds_url":  "http://192.168.1.166:8086"
+                                            "api_base_url":  "http://192.168.1.180:5050/api/v1",
+                                            "web_url":  "http://192.168.1.180:8085",
+                                            "chat_url":  "http://192.168.1.180:3001",
+                                            "odoo_url":  "http://192.168.1.180:8070",
+                                            "tv_kds_url":  "http://192.168.1.180:8086"
                                         },
                      "eskola":  {
                                     "deskribapena":  "Goierri Eskolako laborategiko WiFi/LAN sarea",
                                     "wifi_ssid":  "GOI_Ikasleak",
-                                    "api_host":  "172.16.243.60",
+                                    "api_host":  "172.16.243.72",
                                     "api_port":  5050,
-                                    "api_base_url":  "http://172.16.243.60:5050/api/v1",
-                                    "web_url":  "http://172.16.243.60:8085",
-                                    "chat_url":  "http://172.16.243.60:3001",
-                                    "odoo_url":  "http://172.16.243.60:8070",
-                                    "tv_kds_url":  "http://172.16.243.60:8086"
+                                    "api_base_url":  "http://172.16.243.72:5050/api/v1",
+                                    "web_url":  "http://172.16.243.72:8085",
+                                    "chat_url":  "http://172.16.243.72:3001",
+                                    "odoo_url":  "http://172.16.243.72:8070",
+                                    "tv_kds_url":  "http://172.16.243.72:8086"
                                 },
                      "vbox_erronka":  {
                                           "deskribapena":  "VirtualBox 3 Makina Birtualen Ingurunea (OPNsense + Ubuntu + Windows)",
