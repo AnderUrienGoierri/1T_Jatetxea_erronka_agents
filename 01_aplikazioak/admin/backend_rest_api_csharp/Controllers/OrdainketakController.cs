@@ -172,6 +172,33 @@ public class OrdainketakController : BaseApiKontroladorea
             };
             await session.SaveAsync(ordainketa);
 
+            // 7.5 Kontabilitatea: Salmenta-faktura sinplifikatua automatikoki sortu (fakturak taulan)
+            bool badagoFaktura = await session.Query<Faktura>()
+                .AnyAsync(f => f.Eskaera != null && f.Eskaera.Id == eskaera.Id && f.Mota == "Salmenta" && !f.Ezabatua);
+            if (!badagoFaktura)
+            {
+                var salmentaFaktura = new Faktura
+                {
+                    Eskaera = eskaera,
+                    FakturaZenbakia = $"F{orain.Year}-S{dto.EskaeraId:D5}",
+                    Mota = "Salmenta",
+                    Azpimota = "Sinplifikatua",
+                    Kontzeptua = $"Jatetxe zerbitzua - Mahaia {mahaiZenbakia} (Eskaera #{dto.EskaeraId})",
+                    BezeroIzena = "Bezero Arrunta",
+                    OinarriZergagarria = subtotal,
+                    BezEhunekoa = 10.00m,
+                    BezZenbatekoa = bez,
+                    Guztira = ordainduBeharrekoa,
+                    OrdainketaMetodoa = motaNormalizatua,
+                    Egoera = "Ordaindua",
+                    Data = orain,
+                    Oharrak = $"TPV tiketa: {tiketZenbakia}",
+                    Ezabatua = false,
+                    SortzeData = orain
+                };
+                await session.SaveAsync(salmentaFaktura);
+            }
+
             // 8. Eskaera 'Kobratua' moduan markatu
             eskaera.Egoera = "Kobratua";
             await session.UpdateAsync(eskaera);
