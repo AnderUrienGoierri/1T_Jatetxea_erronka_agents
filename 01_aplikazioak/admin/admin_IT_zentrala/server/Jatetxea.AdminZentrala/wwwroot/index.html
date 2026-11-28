@@ -456,6 +456,11 @@
               class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100 rounded-md text-xs font-medium border border-zinc-800 hover:border-zinc-700 transition flex items-center gap-1.5"
               title="Docker Desktop atzeko planoan (minimizatuta) piztu RAM memoria aurreztuz"
             >
+              <img
+                src="icons/docker_new.png"
+                alt="Docker"
+                class="w-4 h-4 rounded-[3px] object-cover flex-shrink-0"
+              />
               <span
                 id="spinDockerStart"
                 class="hidden animate-spin inline-block w-3 h-3 border-2 border-zinc-300 border-t-transparent rounded-full"
@@ -465,10 +470,15 @@
             <button
               id="btnDockerStop"
               onclick="itzaliDockerDaemon()"
-              class="hidden px-2.5 py-1.5 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded-md text-xs font-medium transition"
+              class="hidden px-2.5 py-1.5 bg-zinc-900 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900/60 rounded-md text-xs font-medium transition flex items-center gap-1.5"
               title="Docker Desktop itzali eta RAM memoria askatu"
             >
-              Itzali Docker (RAM)
+              <img
+                src="icons/docker_new.png"
+                alt="Docker"
+                class="w-4 h-4 rounded-[3px] object-cover flex-shrink-0 opacity-85"
+              />
+              <span>Itzali Docker (RAM)</span>
             </button>
             <button
               onclick="hasiFluxuKoordinatua()"
@@ -3071,9 +3081,28 @@
               }
             }
 
+            const serviceIconMap = {
+              mysql: "icons/mysql.svg",
+              phpmyadmin: "icons/phpmyadmin.svg",
+              api: "icons/dotnetcore.svg",
+              web: "icons/php.svg",
+              chat: "icons/socketio.svg",
+              kds_tv: "icons/android.svg",
+              odoo: "icons/odoo.svg",
+              postgres: "icons/postgresql.svg",
+              opnsense_web: "icons/opnsense.svg",
+              opnsense_ssh: "icons/opnsense.svg",
+              winserver_rdp: "icons/windows.svg",
+              winserver_ssh: "icons/windows.svg",
+              ubuntu_ssh: "icons/ubuntu.svg",
+            };
+            const svcIconSrc = serviceIconMap[p.id] || "icons/docker_new.png";
+            const svcIconHtml = `<img src="${svcIconSrc}" alt="${p.izena}" class="w-4 h-4 object-contain flex-shrink-0" />`;
+
             tr.innerHTML = `
                         <td class="py-2.5 px-3 font-medium text-zinc-200 flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full ${statusDotClass}"></span>
+                            <span class="w-2 h-2 rounded-full flex-shrink-0 ${statusDotClass}"></span>
+                            ${svcIconHtml}
                             <span class="hover:underline font-medium text-zinc-100">${p.izena}</span>
                         </td>
                         <td class="py-2.5 px-3 text-zinc-400">${p.mota}</td>
@@ -3111,6 +3140,7 @@
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center space-x-2 min-w-0 cursor-pointer" onclick="irekiModala('${p.id}')">
                     <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 ${statusDotClass}"></span>
+                    ${svcIconHtml}
                     <span class="font-bold text-zinc-100 text-sm truncate hover:underline">${p.izena}</span>
                   </div>
                   <div class="flex-shrink-0">${statusBadgeHtml}</div>
