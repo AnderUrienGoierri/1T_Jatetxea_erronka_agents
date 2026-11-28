@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eus.goierri.jatetxea.komandera.data.api.ApiClient
 import eus.goierri.jatetxea.komandera.data.model.*
+import eus.goierri.jatetxea.komandera.ui.components.PlateraIrudia
 import eus.goierri.jatetxea.komandera.ui.state.AppPreferences
 import eus.goierri.jatetxea.komandera.ui.theme.*
 import kotlinx.coroutines.delay
@@ -992,6 +993,16 @@ fun EskaeraLerroElementua(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                PlateraIrudia(
+                    plateraId = lerro.plateraId,
+                    izena = lerro.platerIzena,
+                    kategoria = lerro.kategoria,
+                    cornerRadius = 8.dp,
+                    modifier = Modifier.size(46.dp)
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
                 Box(
                     modifier = Modifier
                         .size(34.dp)
@@ -1008,7 +1019,7 @@ fun EskaeraLerroElementua(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

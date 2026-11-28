@@ -49,6 +49,7 @@ import eus.goierri.jatetxea.komandera.data.model.GehituPlateraRequest
 import eus.goierri.jatetxea.komandera.data.model.KategoriaLaguntzailea
 import eus.goierri.jatetxea.komandera.data.model.PlateraDto
 import eus.goierri.jatetxea.komandera.data.model.SortuEskaeraRequest
+import eus.goierri.jatetxea.komandera.ui.components.PlateraIrudia
 import eus.goierri.jatetxea.komandera.ui.state.AppPreferences
 import eus.goierri.jatetxea.komandera.ui.theme.*
 import kotlinx.coroutines.launch
@@ -663,9 +664,17 @@ fun PlateraItem(
         Column(modifier = Modifier.padding(14.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top
             ) {
+                PlateraIrudia(
+                    plateraId = platera.id,
+                    izena = platera.izena,
+                    kategoria = platera.kategoria,
+                    cornerRadius = 10.dp,
+                    modifier = Modifier.size(76.dp)
+                )
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = platera.izena,
@@ -689,8 +698,6 @@ fun PlateraItem(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.width(8.dp))
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
