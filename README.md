@@ -26,45 +26,7 @@
 
 Ondoko diagramak osagai nagusien ikuspegi orokorra erakusten du. Geziek harreman nagusiak adierazten dituzte; ez dute aplikazio bakoitzaren funtzionalitate-maila edo hedapen-topologia zehatza ordezkatzen.
 
-```mermaid
-flowchart TB
-    subgraph INTERFAZEAK["ERABILTZAILEEN INTERFAZEAK"]
-        WEB["Web publikoa<br/>PHP / Apache"]
-        MOBILE["Bezeroaren app-a<br/>Flutter"]
-        TPV["TPV eta komandera<br/>C# / Android"]
-        KDS["Sukaldea, barra eta biltegia<br/>JavaFX / Android TV"]
-        KUDEAKETA["Kudeaketa mahaigaina<br/>JavaFX"]
-    end
-
-    subgraph ZERBITZUAK["ZERBITZUAK"]
-        API["REST API<br/>ASP.NET Core"]
-        CHAT["Barne txata<br/>Node.js / Socket.IO"]
-        ODOO["Odoo 17<br/>ERP / Giza baliabideak"]
-        ADMIN["IT Kontrol Zentrala<br/>Zerbitzuen kudeaketa"]
-    end
-
-    subgraph DATUAK["DATUAK ETA AZPIEGITURA"]
-        MYSQL[("MySQL<br/>Jatetxeko datuak")]
-        PG[("PostgreSQL<br/>Odoo datuak")]
-        INFRA["Docker · VirtualBox<br/>OPNsense · Cisco"]
-    end
-
-    WEB --> API
-    MOBILE --> API
-    TPV --> API
-    KDS --> API
-    KUDEAKETA --> API
-    API --> MYSQL
-    ODOO --> PG
-    ADMIN -.-> INFRA
-
-    classDef client fill:#fff8f1,stroke:#b45309,color:#301b16,stroke-width:1px
-    classDef service fill:#fff2f4,stroke:#881337,color:#3f0b1c,stroke-width:1px
-    classDef data fill:#f3f5f7,stroke:#596675,color:#18212b,stroke-width:1px
-    class WEB,MOBILE,TPV,KDS,KUDEAKETA client
-    class API,CHAT,ODOO,ADMIN service
-    class MYSQL,PG,INFRA data
-```
+![Arkitektura: aplikazioak REST APIarekin, APIa MySQLekin, Odoo PostgreSQLekin eta IT Kontrol Zentrala azpiegitura birtualarekin konektatuta; OPNsense, Windows Server eta Ubuntu makinak.](04_dokumentazioa/espezifikazioak/arkitektura_readme.svg)
 
 **Datu-fluxu nagusia:** aplikazioek REST APIa erabiltzen dute jatetxeko datuetarako; Odoo-k bere PostgreSQL datu-basea erabiltzen du. Txata eta IT Kontrol Zentrala zerbitzu osagarri bereiziak dira.
 
