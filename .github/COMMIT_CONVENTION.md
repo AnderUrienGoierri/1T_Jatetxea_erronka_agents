@@ -22,9 +22,10 @@ Agiri honek **1T Jatetxea Kudeaketa Sistema Integralerako** git komit-mezuak ida
    - Erabat debekatuta dago emojirik erabiltzea komit-mezuetan, adar-izenetan edo PR tituluetan.
    - Tonuak teknikoa, zehatza eta profesionala izan behar du beti.
 
-3. **Urrats Bakar Bakoitzeko Komit Atomikoa:**
-   - `gemini/IA_garapena.pdf` metodologiari jarraituz, pantaila edo funtzionalitate bakoitza probatu eta onartzean, berehalako komit atomikoa egingo da.
-   - Ez metatu hainbat aplikaziotako aldaketak komit bakar batean.
+3. **Urrats Bakar Bakoitzeko Komit Atomiko Txikia (Derrigorrezkoa):**
+   - `gemini/IA_garapena.pdf` metodologiari jarraituz, aldaketak **beti komit txikietan banatu behar dira**, pauso txiki eta zehatz bakoitza bereiziz (adibidez: aktiboak/irudiak gehitzea, logika sortzea, UI integrazioa, dokumentazioa, konfigurazioa).
+   - Ez metatu hainbat aplikazio, modulu edo pauso ezberdinetako aldaketak komit bakar batean.
+   - Pantaila, osagai edo konponketa txiki bakoitza egiaztatu bezain laster bere komit atomikoa sortuko da.
 
 ---
 
@@ -55,7 +56,10 @@ Esparruak komitak eragiten dion azpisistema edo osagaia adierazten du:
 - `web-php`: Web PHP Frontend publikoa (8085 ataka).
 - `mobile-client`: Flutter bezeroen mugikor-aplikazioa.
 - `mobile-waiter`: Flutter zerbitzarien mugikor-aplikazioa.
+- `android-komandera`: Android Jetpack Compose zerbitzarien komandera aplikazioa.
 - `tv`: Android TV Sukaldea KDS aplikazioa.
+- `github`: `.github` arauak, txantiloiak eta automatizazioak.
+- `config`: Sare-profilak eta ingurune-konfigurazioak.
 - `db`: MySQL 8.0 datu-basea, eskema, migrazioak eta prozedurak.
 - `docker`: Docker Compose zerbitzuak eta edukiontziak.
 - `opnsense`: OPNsense suebakia, NAT arauak eta routing-a.
