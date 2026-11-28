@@ -49,7 +49,8 @@ data class PlateraDto(
     @SerializedName("alergenoak") val alergenoak: String? = null,
     @SerializedName("prestatzeDenboraMin") val prestatzeDenboraMin: Int = 15,
     @SerializedName("aktibo") val aktibo: Boolean = true,
-    var stockAhalmena: Int = 999
+    var stockAhalmena: Int = 999,
+    @SerializedName("irudiErreferentzia") val irudiErreferentzia: String? = null
 )
 
 data class ErabilgarritasunaDto(

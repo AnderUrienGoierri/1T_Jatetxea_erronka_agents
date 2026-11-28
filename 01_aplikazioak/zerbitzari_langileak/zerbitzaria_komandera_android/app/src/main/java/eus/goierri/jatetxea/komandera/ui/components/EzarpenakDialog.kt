@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -44,6 +45,7 @@ fun EzarpenakDialog(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var fitxaAktiboa by remember { mutableStateOf(if (zerbitzaria != null) "PREF" else "SAREA") }
+    var kredituakIrekita by remember { mutableStateOf(false) }
 
     // Sare aldagaiak
     var unekoWifiSsid by remember { mutableStateOf(NetworkProfiles.lortuUnekoWifiIzena(context)) }
@@ -169,6 +171,9 @@ fun EzarpenakDialog(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
+                        TextButton(onClick = { kredituakIrekita = true }) {
+                            Text(AppPreferences.tr("Irudien egileak eta lizentziak", "Autores y licencias de imágenes", "Image credits and licenses"))
+                        }
                         // 1. ERABILTZAILEAREN DATUAK
                         if (zerbitzaria != null) {
                             Text(
@@ -220,6 +225,45 @@ fun EzarpenakDialog(
                                         text = "Rola: ${zerbitzaria.rola}  ·  ID: #${zerbitzaria.id}",
                                         fontSize = 11.sp,
                                         color = TextMuted
+                                    )
+                                }
+                                if (kredituakIrekita) {
+                                    AlertDialog(
+                                        onDismissRequest = { kredituakIrekita = false },
+                                        title = { Text(AppPreferences.tr("Irudien kredituak", "Créditos de imágenes", "Image credits")) },
+                                        text = {
+                                            SelectionContainer {
+                                                Text(
+                                                    text = """
+                                                        Wikimedia Commons: argazkien tamaina murriztu da eta irudiak moztu daitezke.
+
+                                                        Sagar zukua: Verband der deutschen Fruchtsaftindustrie e.V., CC BY-SA 3.0
+                                                        https://commons.wikimedia.org/wiki/File:Apfelsaft_im_Glas.jpg
+
+                                                        Freskagarria: Jun, CC BY-SA 4.0
+                                                        https://commons.wikimedia.org/wiki/File:Coca-Cola_Okinawa_can.jpg
+
+                                                        Tonika: Reedy, CC BY-SA 3.0
+                                                        https://commons.wikimedia.org/wiki/File:Schweppes_Indian_Tonic_Water_(front).jpg
+
+                                                        Limonada: Mervat, CC BY-SA 4.0
+                                                        https://commons.wikimedia.org/wiki/File:Lemon_%26_Mint.jpg
+
+                                                        Mostoa: Augustus Binu, CC BY-SA 3.0
+                                                        https://commons.wikimedia.org/wiki/File:Grape_Juice.jpg
+
+                                                        https://creativecommons.org/licenses/by-sa/3.0/
+                                                        https://creativecommons.org/licenses/by-sa/4.0/
+                                                    """.trimIndent(),
+                                                    modifier = Modifier.verticalScroll(rememberScrollState())
+                                                )
+                                            }
+                                        },
+                                        confirmButton = {
+                                            TextButton(onClick = { kredituakIrekita = false }) {
+                                                Text(AppPreferences.tr("Itxi", "Cerrar", "Close"))
+                                            }
+                                        }
                                     )
                                 }
                             }

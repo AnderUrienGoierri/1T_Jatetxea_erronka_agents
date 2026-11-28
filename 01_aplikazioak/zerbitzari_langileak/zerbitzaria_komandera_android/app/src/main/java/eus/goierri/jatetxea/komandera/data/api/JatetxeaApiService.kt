@@ -28,6 +28,9 @@ interface JatetxeaApiService {
     @GET("platerak")
     suspend fun getPlaterak(@Query("kategoria") kategoria: String? = null): Response<ApiResponse<PlateraDto>>
 
+    @GET("platerak/{id}")
+    suspend fun getPlatera(@Path("id") id: Int): Response<ApiResponse<PlateraDto>>
+
     @GET("platerak/erabilgarritasuna")
     suspend fun getPlaterenStockAhalmena(): Response<ApiResponse<ErabilgarritasunaDto>>
 

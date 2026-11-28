@@ -997,6 +997,7 @@ fun EskaeraLerroElementua(
                     plateraId = lerro.plateraId,
                     izena = lerro.platerIzena,
                     kategoria = lerro.kategoria,
+                    bilatuErreferentzia = true,
                     cornerRadius = 8.dp,
                     modifier = Modifier.size(46.dp)
                 )

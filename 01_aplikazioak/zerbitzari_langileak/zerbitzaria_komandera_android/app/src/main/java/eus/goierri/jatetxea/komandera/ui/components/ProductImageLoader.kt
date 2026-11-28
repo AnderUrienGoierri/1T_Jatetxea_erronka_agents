@@ -2,6 +2,7 @@ package eus.goierri.jatetxea.komandera.ui.components
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.util.LruCache
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,21 +31,34 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import eus.goierri.jatetxea.komandera.data.api.ApiClient
 import eus.goierri.jatetxea.komandera.data.model.KategoriaLaguntzailea
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.text.Normalizer
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
- * Produktu-irudien (platerak eta edariak) cache eta kargatzaile lokala (%100 offline).
- * desktop_tpv_csharp (ProductImageCache.cs) eta web_php_bezeroak-eko 3 mailako hierarkia bera jarraitzen du:
- *   1. images/Platerak/platera_{id}.{jpg|jpeg|png|webp}
- *   2. images/Platerak/{slug} edo gako-hitz espezifikoa
- *   3. images/Kategoriak/{kategoria} edo alias-a
+ * Irudi partekatuak APItik kargatzen ditu; erreferentziarik gabe, irudi lokalak erabiltzen ditu.
  */
 object ProductImageLoader {
     private val bitmapCache = LruCache<String, ImageBitmap>(80)
+    private val imageClient = OkHttpClient.Builder()
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .followRedirects(false)
+        .followSslRedirects(false)
+        .build()
+    private val sharedKeys = setOf(
+        "platerak/freskagarria.jpg", "platerak/sagar-zukua.jpg",
+        "platerak/tonika.jpg", "platerak/limonada-menta.jpg", "platerak/mosto-gorria.jpg"
+    )
     @Volatile
     private var platerakFiles: Set<String>? = null
     @Volatile
@@ -71,6 +85,15 @@ object ProductImageLoader {
 
     fun resolveAssetPath(context: Context, plateraId: Int, izena: String, kategoria: String): String? {
         ensureIndex(context)
+        val sharedKey = when (izena) {
+            "Freskagarria (Kola, Laranja, Limoia 33cl)" -> "platerak/freskagarria.jpg"
+            "Etxeko Sagar Zuku Ekologikoa (25cl)" -> "platerak/sagar-zukua.jpg"
+            "Tonika Premium (20cl)" -> "platerak/tonika.jpg"
+            "Limonada Etxekoa Menta Freskoarekin" -> "platerak/limonada-menta.jpg"
+            "Mosto Gorria (20cl)" -> "platerak/mosto-gorria.jpg"
+            else -> null
+        }
+        if (sharedKey != null) return "images/shared/$sharedKey"
         val pFiles = platerakFiles.orEmpty()
         val kFiles = kategoriakFiles.orEmpty()
 
@@ -107,6 +130,42 @@ object ProductImageLoader {
     }
 
     fun getCached(path: String): ImageBitmap? = bitmapCache.get(path)
+
+    suspend fun loadShared(context: Context, baseUrl: String, reference: String): ImageBitmap? {
+        val base = baseUrl.toHttpUrlOrNull()
+        if (base == null || !reference.matches(Regex("platerak/[A-Za-z0-9_-]+\\.(jpg|jpeg|png|webp)"))) {
+            Log.w("ProductImageLoader", "Irudi-erreferentzia edo API helbidea baliogabea")
+            return null
+        }
+        val url = base.resolve("/media/public/$reference") ?: return null
+        val cacheKey = url.toString()
+        bitmapCache.get(cacheKey)?.let { return it }
+        return withContext(Dispatchers.IO) {
+            try {
+                imageClient.newCall(Request.Builder().url(url).build()).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+                    val body = response.body ?: throw IOException("Irudi hutsa")
+                    val bytes = ByteArrayOutputStream()
+                    body.byteStream().use { stream ->
+                        val buffer = ByteArray(8192)
+                        while (true) {
+                            val count = stream.read(buffer)
+                            if (count < 0) break
+                            if (bytes.size() + count > 5 * 1024 * 1024) throw IOException("Irudia handiegia da")
+                            bytes.write(buffer, 0, count)
+                        }
+                    }
+                    val data = bytes.toByteArray()
+                    val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+                        ?: throw IOException("Ezin da irudia deskodetu")
+                    bitmap.asImageBitmap().also { bitmapCache.put(cacheKey, it) }
+                }
+            } catch (e: IOException) {
+                Log.w("ProductImageLoader", "Ezin izan da irudi partekatua kargatu", e)
+                if (reference in sharedKeys) loadBitmap(context, "images/shared/$reference") else null
+            }
+        }
+    }
 
     suspend fun loadBitmap(context: Context, assetPath: String, targetPx: Int = 256): ImageBitmap? {
         bitmapCache.get(assetPath)?.let { return it }
@@ -174,18 +233,41 @@ fun PlateraIrudia(
     izena: String,
     kategoria: String,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 10.dp
+    cornerRadius: Dp = 10.dp,
+    irudiErreferentzia: String? = null,
+    bilatuErreferentzia: Boolean = false
 ) {
     val context = LocalContext.current
+    val baseUrl = ApiClient.baseUrl
+    var reference by remember(plateraId, baseUrl, irudiErreferentzia, bilatuErreferentzia) {
+        mutableStateOf(irudiErreferentzia)
+    }
+    LaunchedEffect(plateraId, baseUrl, bilatuErreferentzia) {
+        if (bilatuErreferentzia && plateraId > 0) {
+            try {
+                val response = ApiClient.service.getPlatera(plateraId)
+                if (response.isSuccessful && response.body()?.data != null) {
+                    reference = response.body()?.data?.irudiErreferentzia
+                } else {
+                    Log.w("ProductImageLoader", "Ezin izan da plateraren irudi-erreferentzia lortu: HTTP ${response.code()}")
+                }
+            } catch (e: IOException) {
+                Log.w("ProductImageLoader", "Ezin izan da plateraren irudi-erreferentzia lortu", e)
+            }
+        }
+    }
     val assetPath = remember(plateraId, izena, kategoria) {
         ProductImageLoader.resolveAssetPath(context, plateraId, izena, kategoria)
     }
-    var imageBitmap by remember(assetPath) {
-        mutableStateOf(assetPath?.let { ProductImageLoader.getCached(it) })
+    var imageBitmap by remember(assetPath, reference, baseUrl) {
+        mutableStateOf(if (reference.isNullOrBlank()) assetPath?.let { ProductImageLoader.getCached(it) } else null)
     }
 
-    LaunchedEffect(assetPath) {
-        if (assetPath != null && imageBitmap == null) {
+    LaunchedEffect(assetPath, reference, baseUrl) {
+        val currentReference = reference
+        if (!currentReference.isNullOrBlank()) {
+            imageBitmap = ProductImageLoader.loadShared(context, baseUrl, currentReference)
+        } else if (assetPath != null && imageBitmap == null) {
             imageBitmap = ProductImageLoader.loadBitmap(context, assetPath)
         }
     }

@@ -671,6 +671,7 @@ fun PlateraItem(
                     plateraId = platera.id,
                     izena = platera.izena,
                     kategoria = platera.kategoria,
+                    irudiErreferentzia = platera.irudiErreferentzia,
                     cornerRadius = 10.dp,
                     modifier = Modifier.size(76.dp)
                 )
