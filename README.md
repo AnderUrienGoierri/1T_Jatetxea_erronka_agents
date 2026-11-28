@@ -76,6 +76,7 @@ flowchart TB
 | Jantokia eta barra | Android komandera | Kotlin, Jetpack Compose | [Komanderaren gida](01_aplikazioak/zerbitzari_langileak/zerbitzaria_komandera_android/README.md) |
 | Sukaldea | KDS telebista | Kotlin, Android TV | [Android TV gida](01_aplikazioak/sukalde_langileak/sukaldea_kds_android_tv/README.md) |
 | Sukaldea, barra eta biltegia | Mahaigaineko aplikazioak | JavaFX, Maven | [Sukaldea](01_aplikazioak/sukalde_langileak/desktop_sukaldea_kds/) · [Barra](01_aplikazioak/zerbitzari_langileak/desktop_barra_bds/) · [Biltegia](01_aplikazioak/biltegi_langileak/desktop_biltegia_stock/) |
+| Administrazioa | Kudeaketa mahaigaina | JavaFX, Maven | [Java kudeaketa gida](01_aplikazioak/admin/admin_desktop_java/README.md) |
 | Administrazioa | IT Kontrol Zentrala | ASP.NET Core | [Kontrol-panelaren gida](01_aplikazioak/admin/admin_IT_zentrala/README.md) |
 | Administrazioa | Odoo ERP | Odoo 17, PostgreSQL | [Odoo gida](01_aplikazioak/admin/odoo_erp/README.md) |
 | Zerbitzuak | REST API nagusia | ASP.NET Core, MySQL | [API bilduma eta probak](postman/README.md) |
