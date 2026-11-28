@@ -3,7 +3,9 @@ package eus.goierri.jatetxea.core.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import eus.goierri.jatetxea.core.model.AlbaranaSarreraErantzuna;
 import eus.goierri.jatetxea.core.model.Eskaera;
+import eus.goierri.jatetxea.core.model.Hornitzailea;
 import eus.goierri.jatetxea.core.model.Langilea;
 import eus.goierri.jatetxea.core.model.Lehengaia;
 import eus.goierri.jatetxea.core.model.Platera;
@@ -238,6 +240,19 @@ public class ApiZerbitzua {
         return response.statusCode() == 200 || response.statusCode() == 204;
     }
 
+    public List<Hornitzailea> lortuHornitzaileak() throws IOException, InterruptedException {
+        HttpRequest request = sortuRequestBuilder("/hornitzaileak")
+                .timeout(Duration.ofSeconds(5))
+                .GET()
+                .build();
+        HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return Collections.emptyList();
+        }
+        Type listType = new TypeToken<List<Hornitzailea>>() {}.getType();
+        return parseList(response.body(), listType);
+    }
+
     public List<Lehengaia> lortuLehengaiak() throws IOException, InterruptedException {
         HttpRequest request = sortuRequestBuilder("/lehengaiak")
                 .timeout(Duration.ofSeconds(5))
@@ -251,21 +266,60 @@ public class ApiZerbitzua {
         return parseList(response.body(), listType);
     }
 
-    public boolean gehituStockSarrera(int lehengaiaId, double kantitatea, String albarana, String oharrak) throws IOException, InterruptedException {
+    public AlbaranaSarreraErantzuna erregistratuAlbaranaSarrera(
+            Integer hornitzaileaId,
+            int lehengaiaId,
+            double kantitatea,
+            String albarana,
+            String ordainketaMetodoa,
+            String oharrak) throws IOException, InterruptedException {
         JsonObject json = new JsonObject();
+        if (hornitzaileaId != null) {
+            json.addProperty("hornitzaileaId", hornitzaileaId);
+        }
         json.addProperty("lehengaiaId", lehengaiaId);
         json.addProperty("kantitatea", kantitatea);
-        json.addProperty("albarana", albarana);
-        json.addProperty("oharrak", oharrak);
+        if (albarana != null && !albarana.isBlank()) {
+            json.addProperty("albaranZenbakia", albarana.trim());
+        }
+        if (ordainketaMetodoa != null && !ordainketaMetodoa.isBlank()) {
+            json.addProperty("ordainketaMetodoa", ordainketaMetodoa.trim());
+        }
+        json.addProperty("sortuFaktura", true);
+        if (oharrak != null && !oharrak.isBlank()) {
+            json.addProperty("oharrak", oharrak.trim());
+        }
 
         HttpRequest request = sortuRequestBuilder("/lehengaiak/sarrera")
-                .timeout(Duration.ofSeconds(5))
+                .timeout(Duration.ofSeconds(8))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
                 .build();
 
         HttpResponse<String> response = bezeroa.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.statusCode() == 200 || response.statusCode() == 201;
+        AlbaranaSarreraErantzuna emaitza = new AlbaranaSarreraErantzuna();
+        boolean ok = response.statusCode() == 200 || response.statusCode() == 201;
+        try {
+            JsonObject root = gson.fromJson(response.body(), JsonObject.class);
+            if (root != null) {
+                if (root.has("data") && root.get("data").isJsonObject()) {
+                    emaitza = gson.fromJson(root.get("data"), AlbaranaSarreraErantzuna.class);
+                }
+                if (root.has("message") && !root.get("message").isJsonNull()) {
+                    emaitza.setMezua(root.get("message").getAsString());
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        emaitza.setArrakasta(ok);
+        if (!ok && emaitza.getMezua().isBlank()) {
+            emaitza.setMezua("Errorea stock sarrera erregistratzean (" + response.statusCode() + ").");
+        }
+        return emaitza;
+    }
+
+    public boolean gehituStockSarrera(int lehengaiaId, double kantitatea, String albarana, String oharrak) throws IOException, InterruptedException {
+        return erregistratuAlbaranaSarrera(null, lehengaiaId, kantitatea, albarana, "Transferentzia", oharrak).isArrakasta();
     }
 
     public List<Platera> lortuPlaterak() throws IOException, InterruptedException {

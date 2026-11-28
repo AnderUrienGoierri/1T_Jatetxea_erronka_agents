@@ -20,7 +20,13 @@ public class Lehengaia {
     @SerializedName(value = "kostua", alternate = {"kostuUnitarioa", "kostu_unitarioa"})
     private double kostua;
 
+    @SerializedName(value = "hornitzaileaId", alternate = {"hornitzailea_id"})
+    private Integer hornitzaileaId;
+
     private String hornitzailea;
+
+    @SerializedName(value = "bezEhunekoa", alternate = {"bez_ehunekoa"})
+    private double bezEhunekoa = 10.0;
 
     public Lehengaia() {}
 
@@ -61,8 +67,14 @@ public class Lehengaia {
     public double getKostua() { return kostua; }
     public void setKostua(double kostua) { this.kostua = kostua; }
 
+    public Integer getHornitzaileaId() { return hornitzaileaId; }
+    public void setHornitzaileaId(Integer hornitzaileaId) { this.hornitzaileaId = hornitzaileaId; }
+
     public String getHornitzailea() { return hornitzailea != null ? hornitzailea : ""; }
     public void setHornitzailea(String hornitzailea) { this.hornitzailea = hornitzailea; }
+
+    public double getBezEhunekoa() { return bezEhunekoa > 0 ? bezEhunekoa : 10.0; }
+    public void setBezEhunekoa(double bezEhunekoa) { this.bezEhunekoa = bezEhunekoa; }
 
     public String getStockFormateatua() {
         return String.format(java.util.Locale.US, "%.2f %s", stock, getUnitatea()).trim();
