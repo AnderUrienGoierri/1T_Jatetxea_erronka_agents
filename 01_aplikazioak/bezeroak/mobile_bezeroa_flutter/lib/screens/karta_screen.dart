@@ -545,6 +545,17 @@ class _KartaScreenState extends State<KartaScreen> {
 
   Widget _buildPlaterCard(Platera platera) {
     final agortua = platera.stockAhalmena <= 0;
+    final imageKey = platera.irudiErreferentzia;
+    final hasImage = imageKey != null &&
+        RegExp(r'^platerak/[a-z0-9-]+\.jpg$').hasMatch(imageKey);
+    final mediaBase = Uri.parse('${ApiService.baseUrl}/').resolve('../../media/public/');
+    const credits = {
+      'platerak/sagar-zukua.jpg': 'Verband der deutschen Fruchtsaftindustrie e.V.\nhttps://commons.wikimedia.org/wiki/File:Apfelsaft_im_Glas.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/',
+      'platerak/freskagarria.jpg': 'Jun\nhttps://commons.wikimedia.org/wiki/File:Coca-Cola_Okinawa_can.jpg\nhttps://creativecommons.org/licenses/by-sa/4.0/',
+      'platerak/tonika.jpg': 'Reedy\nhttps://commons.wikimedia.org/wiki/File:Schweppes_Indian_Tonic_Water_(front).jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/',
+      'platerak/limonada-menta.jpg': 'Mervat\nhttps://commons.wikimedia.org/wiki/File:Lemon_%26_Mint.jpg\nhttps://creativecommons.org/licenses/by-sa/4.0/',
+      'platerak/mosto-gorria.jpg': 'Augustus Binu\nhttps://commons.wikimedia.org/wiki/File:Grape_Juice.jpg\nhttps://creativecommons.org/licenses/by-sa/3.0/',
+    };
 
     return Card(
       elevation: 1,
@@ -561,6 +572,49 @@ class _KartaScreenState extends State<KartaScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (hasImage) ...[
+                Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        mediaBase.resolve(imageKey).toString(),
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const SizedBox(
+                          width: 72,
+                          height: 72,
+                          child: Icon(Icons.image_not_supported_outlined),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Irudien egileak eta lizentziak',
+                      icon: const Icon(Icons.info_outline, size: 18),
+                      onPressed: () => showDialog<void>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Irudien egileak eta lizentziak'),
+                          content: SingleChildScrollView(
+                            child: SelectableText(
+                              '${credits[imageKey] ?? mediaBase.resolve('kredituak.html')}\n\n'
+                              'Irudia txikitu eta bistaratzean moztu daiteke.',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Itxi'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 12),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

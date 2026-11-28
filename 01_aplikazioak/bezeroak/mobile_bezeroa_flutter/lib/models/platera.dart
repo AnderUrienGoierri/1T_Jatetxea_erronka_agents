@@ -5,6 +5,7 @@ class Platera {
   final String kategoria;
   final double prezioa;
   final String? alergenoak;
+  final String? irudiErreferentzia;
   final int prestatzeDenboraMin;
   final bool aktibo;
   int stockAhalmena;
@@ -16,6 +17,7 @@ class Platera {
     required this.kategoria,
     required this.prezioa,
     this.alergenoak,
+    this.irudiErreferentzia,
     this.prestatzeDenboraMin = 15,
     this.aktibo = true,
     this.stockAhalmena = 999,
@@ -29,6 +31,7 @@ class Platera {
       kategoria: json['kategoria'] as String? ?? 'Guztiak',
       prezioa: (json['prezioa'] as num?)?.toDouble() ?? 0.0,
       alergenoak: json['alergenoak'] as String?,
+      irudiErreferentzia: json['irudiErreferentzia'] as String?,
       prestatzeDenboraMin: json['prestatzeDenboraMin'] as int? ?? 15,
       aktibo: json['aktibo'] as bool? ?? true,
       stockAhalmena: json['stockAhalmena'] as int? ?? 999,
